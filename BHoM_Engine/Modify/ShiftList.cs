@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -39,6 +39,11 @@ namespace BH.Engine.Base
         [Output("list", "A list with items in the input list .")]
         public static List<T> ShiftList<T>(this List<T> list, int offset)
         {
+            int steps = (offset / list.Count);
+            if (offset < 0)
+                steps--;
+           
+            offset -= steps * list.Count;
             return list.Skip(offset).Concat(list.Take(offset)).ToList();
         }
 

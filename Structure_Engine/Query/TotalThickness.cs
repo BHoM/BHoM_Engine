@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -173,6 +173,33 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
+        public static double TotalThickness(this Cassette property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            return property.TopThickness + property.BottomThickness + property.RibHeight;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
+        public static double TotalThickness(this BuiltUpRibbed property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            return property.TopThickness + property.RibHeight;
+        }
+
+
+        /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
 
@@ -200,4 +227,5 @@ namespace BH.Engine.Structure
     }
 
 }
+
 

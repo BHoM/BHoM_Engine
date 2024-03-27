@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,7 +22,7 @@
 
 using BH.Engine.Base;
 using BH.Engine.Geometry;
-using BH.oM.Analytical.Elements;
+using BH.oM.Analytical.Graph;
 using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
 using System;
@@ -116,6 +116,7 @@ namespace BH.Engine.Analytical
         }
     }
 }
+
 
 
 

@@ -1,0 +1,12 @@
+﻿{
+  "MessageForDeleted": {
+    "BH.Engine.Environment.Query.NewElement1D(BH.oM.Environment.Elements.Opening, BH.oM.Geometry.ICurve)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed.",
+    "BH.Engine.Environment.Query.NewElement1D(BH.oM.Environment.Elements.Panel, BH.oM.Geometry.ICurve)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed.",
+    "BH.Engine.Environment.Query.NewElement1D(BH.oM.Environment.Elements.Space, BH.oM.Geometry.ICurve)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed.",
+    "BH.Engine.Environment.Create.NewElement1D(BH.oM.Environment.Elements.Opening, BH.oM.Geometry.ICurve)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed.",
+    "BH.Engine.Environment.Create.NewElement1D(BH.oM.Environment.Elements.Panel, BH.oM.Geometry.ICurve)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed.",
+    "BH.Engine.Environment.Create.NewInternalElement2D(BH.oM.Environment.Elements.Panel)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed.",
+    "BH.Engine.Environment.Query.CleanSpace(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>)": "This method has been deprecated since 3.3, as it provided no meaningful output as the connected space attribute was not updated.",
+    "BH.Engine.Environment.Query.FilterPanelsNotByType(System.Collections.Generic.List<BH.oM.Environment.Elements.Panel>, BH.oM.Environment.Elements.PanelType)": "This method has been deprecated since 3.3, as its functionality has been captured by FilterPanelsByType which now outputs matched and unmatched panels."
+  }
+}

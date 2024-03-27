@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -72,7 +72,7 @@ namespace BH.Engine.Structure
             Panel panel = new Panel();
             foreach (Polyline polyline in polylines)
             {
-                panel = Create.Panel(polyline, null, null, feMesh.Name);
+                panel = Create.Panel(polyline, name:feMesh.Name);
                 if (feMesh.Property != null)
                 {
                     panel.Property = feMesh.Property;
@@ -94,5 +94,6 @@ namespace BH.Engine.Structure
 
     }
 }
+
 
 

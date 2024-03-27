@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -73,8 +73,8 @@ namespace BH.Engine.Analytical
             }
 
             ILink<TNode> clone = link.ShallowClone();
-            clone.StartNode = (TNode)clone.StartNode.SetGeometry(curve.IStartPoint());
-            clone.EndNode = (TNode)clone.EndNode.SetGeometry(curve.IEndPoint());
+            clone.Start = (TNode)clone.Start.SetGeometry(curve.IStartPoint());
+            clone.End = (TNode)clone.End.SetGeometry(curve.IEndPoint());
             return clone;
         }
 
@@ -119,6 +119,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
     }
 }
+
 
 
 

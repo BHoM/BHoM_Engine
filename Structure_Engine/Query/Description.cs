@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -352,6 +352,32 @@ namespace BH.Engine.Structure
 
             return $"Ribbed Depth: {property.TotalDepth:G3} Spacing: {property.Spacing:G3} sWidth: {property.StemWidth:G3}" +
                 $" - {CheckGetMaterialName(property.Material)}";
+        }
+
+        /***************************************************/
+
+        [Description("Generates a default description for the SurfaceProperty.")]
+        [Input("property", "The SurfaceProperty to get a default description for.")]
+        [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
+        public static string Description(this BuiltUpRibbed property)
+        {
+            if (property == null)
+                return "null property";
+
+            return $"Ribbed: {property.TopThickness:G3} THK slab {CheckGetMaterialName(property.Material)} on {property.RibHeight:G3}x{property.RibThickness:G3} ribs {CheckGetMaterialName(property.RibMaterial ?? property.Material)} spaced {property.RibSpacing:G3}";
+        }
+
+        /***************************************************/
+
+        [Description("Generates a default description for the SurfaceProperty.")]
+        [Input("property", "The SurfaceProperty to get a default description for.")]
+        [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
+        public static string Description(this Cassette property)
+        {
+            if (property == null)
+                return "null property";
+
+            return $"Cassette Top: {property.TopThickness:G3} THK {CheckGetMaterialName(property.Material)} Bot: {property.BottomThickness:G3} THK {CheckGetMaterialName(property.BottomMaterial ?? property.Material)} Ribs: {property.RibHeight:G3}x{property.RibThickness:G3} {CheckGetMaterialName(property.RibMaterial ?? property.Material)} spaced {property.RibSpacing:G3}";
         }
 
         /***************************************************/
@@ -869,6 +895,7 @@ namespace BH.Engine.Structure
 
     }
 }
+
 
 
 

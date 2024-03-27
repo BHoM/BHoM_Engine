@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -56,22 +56,22 @@ namespace BH.Engine.Structure
             // Default the Bars end if the input is an Point
             if (newElements0D[0] is Point)
             {
-                clone.StartNode = new Node { Position = newElements0D[0] as Point };
+                clone.Start = new Node { Position = newElements0D[0] as Point };
                 if (clone.Release != null)
                     clone.Release.StartRelease = Create.FixConstraint6DOF();
             }
             else
-                clone.StartNode = newElements0D[0] as Node;
+                clone.Start = newElements0D[0] as Node;
 
             // Default the Bars end if the input is an Point
             if (newElements0D[1] is Point)
             {
-                clone.EndNode = new Node { Position = newElements0D[1] as Point };
+                clone.End = new Node { Position = newElements0D[1] as Point };
                 if (clone.Release != null)
                     clone.Release.EndRelease = Create.FixConstraint6DOF();
             }
             else
-                clone.EndNode = newElements0D[1] as Node;
+                clone.End = newElements0D[1] as Node;
 
             return clone;
         }
@@ -128,6 +128,7 @@ namespace BH.Engine.Structure
         /******************************************/
     }
 }
+
 
 
 

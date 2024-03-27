@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -77,29 +77,8 @@ namespace BH.Engine.Geometry
         [Output("intersection", "The line corresponding to the overlap of the two provided lines or null if no overlap could be found.")]
         public static Line BooleanIntersection(this Line line, Line refLine, double tolerance = Tolerance.Distance)
         {
-            if (line == null || line.Length() <= tolerance || refLine.Length() <= tolerance)
-                return null;
-
-            if (line.IsCollinear(refLine, tolerance))
-            {
-                List<Line> splitLine = line.SplitAtPoints(refLine.ControlPoints(), tolerance);
-                if (splitLine.Count == 3)
-                    return splitLine[1];
-                else if (splitLine.Count == 2)
-                {
-                    Point aPt = refLine.ControlPoints().Average();
-                    return line.Start.SquareDistance(aPt) < line.End.SquareDistance(aPt) ? splitLine[0] : splitLine[1];
-                }
-                else
-                {
-                    double sqTol = tolerance * tolerance;
-                    Point aPt = splitLine[0].ControlPoints().Average();
-                    Point aRPt = refLine.ControlPoints().Average();
-                    return aRPt.SquareDistance(splitLine[0]) > sqTol && aPt.SquareDistance(refLine) > sqTol ? null : line.DeepClone();
-                }
-            }
-
-            return null;
+            List<Line> result = new List<Line> { line }.BooleanIntersection(new List<Line> { refLine }, tolerance);
+            return result.Count == 0 ? null : result[0];
         }
 
         /***************************************************/
@@ -111,15 +90,38 @@ namespace BH.Engine.Geometry
         [Output("intersection", "The collection of lines corresponding to the overlaps of the first line and any of the reference lines.")]
         public static List<Line> BooleanIntersection(this Line line, List<Line> refLines, double tolerance = Tolerance.Distance)
         {
-            List<Line> result = new List<Line>();
-            if (line.Length() <= tolerance)
-                return result;
+            return new List<Line> { line }.BooleanIntersection(refLines, tolerance);
+        }
 
-            foreach (Line l in refLines.BooleanUnion(tolerance))
+        /***************************************************/
+
+
+        [Description("Computes the boolean intersection of two collections of lines, e.g. all overlaps of the first set of lines with the reference lines and returns a new collection of lines matching the overlap.")]
+        [Input("lines", "First list of lines to intersect.")]
+        [Input("refLines", "A list of reference lines to intersect with the first list of lines.")]
+        [Input("tolerance", "Tolerance to be used in the method.", typeof(Length))]
+        [Output("intersection", "The list of lines corresponding to the overlaps of the first list of lines and any of the reference lines.")]
+        public static List<Line> BooleanIntersection(this List<Line> lines, List<Line> refLines, double tolerance = Tolerance.Distance)
+        {
+            double sqTol = tolerance * tolerance;
+            lines = lines.Where(x => x != null && x.SquareLength() > sqTol).ToList();
+            List<Line> refLeft = refLines.Where(x => x != null && x.SquareLength() > sqTol).ToList();
+            
+            List<Line> result = new List<Line>();
+            foreach (var cluster in lines.ClusterCollinear(tolerance))
             {
-                Line intersection = line.BooleanIntersection(l, tolerance);
-                if (intersection != null)
-                    result.Add(intersection);
+                List<Line> toIntersect = new List<Line>();
+                for (int i = refLeft.Count - 1; i >= 0; i--)
+                {
+                    if (refLeft[i].IsCollinear(cluster[0]))
+                    {
+                        toIntersect.Add(refLeft[i]);
+                        refLeft.RemoveAt(i);
+                    }
+                }
+
+                if (toIntersect.Count != 0)
+                    result.AddRange(cluster.BooleanIntersectionCollinear(toIntersect, tolerance));
             }
 
             return result;
@@ -128,22 +130,17 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Computes the boolean intersection of a collection of lines, e.g. the overlap of all the provided lines and returns this overlap as a new line.")]
-        [Input("lines", "The collection of lines to intersect.")]
+        [Input("lines", "The list of lines to intersect.")]
         [Input("tolerance", "Tolerance to be used in the method.", typeof(Length))]
         [Output("intersection", "The line corresponding to the overlap all of the provided lines.")]
         public static Line BooleanIntersection(this List<Line> lines, double tolerance = Tolerance.Distance)
         {
-            if (lines[0].Length() <= tolerance)
+            if (lines.IsCollinear(tolerance))
+                return lines.BooleanIntersectionCollinear(tolerance);
+            else
                 return null;
-
-            Line result = lines[0].DeepClone();
-            for (int i = 1; i < lines.Count; i++)
-            {
-                result = result.BooleanIntersection(lines[i], tolerance);
-            }
-
-            return result;
         }
+
 
 
         /***************************************************/
@@ -410,7 +407,8 @@ namespace BH.Engine.Geometry
             return result;
         }
 
-        /**************************************************
+
+        /***************************************************/
         /***          Private methods                    ***/
         /***************************************************/
 
@@ -432,10 +430,62 @@ namespace BH.Engine.Geometry
             return false;
         }
 
-        /***************************************************/      
+        /***************************************************/
+
+        private static List<Line> BooleanIntersectionCollinear(this List<Line> lines, List<Line> lines2, double tolerance)
+        {
+            Vector dir = lines[0].Direction();
+            (Point, Point) extents1 = lines.Extents(dir, tolerance);
+            (Point, Point) extents2 = lines2.Extents(dir, tolerance);
+            Point min = (extents1.Item1 - extents2.Item1).DotProduct(dir) < 0 ? extents1.Item1 : extents2.Item1;
+
+            List<(double, double)> ranges1 = lines.SortedDomains(min, tolerance);
+            List<(double, double)> ranges2 = lines2.SortedDomains(min, tolerance);
+
+            List<(double, double)> mergedRanges1 = ranges1.MergeRanges(tolerance);
+            List<(double, double)> mergedRanges2 = ranges2.MergeRanges(tolerance);
+
+            List<(double, double)> intersectedRanges = new List<(double, double)>();
+            int i = 0;
+            foreach ((double, double) range in mergedRanges1)
+            {
+                for (; i < mergedRanges2.Count; i++)
+                {
+                    if (range.Item1 - mergedRanges2[i].Item2 < -tolerance && range.Item2 - mergedRanges2[i].Item1 > tolerance)
+                        intersectedRanges.Add((Math.Max(range.Item1, mergedRanges2[i].Item1), Math.Min(range.Item2, mergedRanges2[i].Item2)));
+
+                    if (range.Item2 - mergedRanges2[i].Item2 < tolerance)
+                        break;
+                }
+            }
+
+            return intersectedRanges.Select(x => new Line { Start = min + dir * x.Item1, End = min + dir * x.Item2 }).ToList();
+        }
+
+        /***************************************************/
+
+        private static Line BooleanIntersectionCollinear(this List<Line> lines, double tolerance)
+        {
+            Line dirLine = lines.Select(x => x.Start).Union(lines.Select(x => x.End)).FitLine(tolerance);
+            Vector dir = dirLine.Direction(tolerance);
+            (Point, Point) extents = lines.Extents(dir, tolerance);
+            Point min = dirLine.ClosestPoint(extents.Item1, true);
+
+            List<(double, double)> ranges = lines.SortedDomains(min, tolerance);
+            double maxStart = ranges.Select(x => x.Item1).OrderByDescending(x => x).First();
+            double minEnd = ranges.Select(x => x.Item2).OrderBy(x => x).First();
+
+            if (minEnd - maxStart > tolerance)
+                return new Line { Start = min + dir * maxStart, End = min + dir * minEnd };
+            else
+                return null;
+        }
+
+        /***************************************************/
 
     }
 }
+
 
 
 

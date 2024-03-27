@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -46,7 +46,7 @@ namespace BH.Engine.Geometry
         public static List<Arc> SplitAtPoints(this Arc arc, List<Point> points, double tolerance = Tolerance.Distance)
         {
             if (!points.Any())
-                return new List<Arc> { arc.DeepClone() };
+                return new List<Arc> { arc };
 
             List<Arc> result = new List<Arc>();
             List<Point> cPts = new List<Point>();
@@ -158,7 +158,7 @@ namespace BH.Engine.Geometry
                 }
 
                 if (angles.Count == 0)  //No angles in range
-                    return new List<Arc> { arc.DeepClone() };
+                    return new List<Arc> { arc };
 
                 //Sorts the angle and remove duplicates within tolerance
                 //Both more efficient and accurate to handles this with the angles compared to removing duplicate input points
@@ -185,7 +185,7 @@ namespace BH.Engine.Geometry
                 }
             }
             else
-                result.Add(arc.DeepClone());
+                result.Add(arc);
             return result;
         }
 
@@ -242,7 +242,7 @@ namespace BH.Engine.Geometry
                 tmpArc = tmpArc.Rotate(cirCen, normal, rotAng);
                 tmpArc.StartAngle = 0;
                 tmpArc.EndAngle = enAng;
-                result.Add(tmpArc.DeepClone());
+                result.Add(tmpArc);
             }
             else
             {
@@ -257,7 +257,7 @@ namespace BH.Engine.Geometry
                     tmpArc = tmpArc.Rotate(cirCen, normal, rotAng);
                     tmpArc.StartAngle = 0;
                     tmpArc.EndAngle = enAng;
-                    result.Add(tmpArc.DeepClone());
+                    result.Add(tmpArc);
                 }
             }
             return result;
@@ -292,7 +292,7 @@ namespace BH.Engine.Geometry
                 }
             }
             else
-                result.Add(line.DeepClone());
+                result.Add(line);
 
             return result;
         }
@@ -310,7 +310,7 @@ namespace BH.Engine.Geometry
                 return null;
 
             if (points.Count == 0)
-                return new List<ICurve> { curve.DeepClone() };
+                return new List<ICurve> { curve };
 
             List<ICurve> result = new List<ICurve>();
 
@@ -405,7 +405,7 @@ namespace BH.Engine.Geometry
         public static List<Polyline> SplitAtPoints(this Polyline curve, List<Point> points, double tolerance = Tolerance.Distance)
         {
             if (points.Count == 0)
-                return new List<Polyline> { curve.DeepClone() };
+                return new List<Polyline> { curve };
 
             List<Polyline> result = new List<Polyline>();
             List<Line> segments = curve.SubParts();
@@ -435,7 +435,7 @@ namespace BH.Engine.Geometry
                 if (intStart && section.ControlPoints.Count > 1)
                 {
                     result.Add(section);
-                    section = new Polyline { ControlPoints = new List<Point> { l.Start.DeepClone() } };
+                    section = new Polyline { ControlPoints = new List<Point> { l.Start } };
                 }
 
                 if (iPts.Count > 0)
@@ -525,6 +525,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
 
 
 

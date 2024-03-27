@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -66,7 +66,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
         
-        public static double AreaIntegration(List<IntegrationSlice> slices, double curve, double from, double to, ref double centroid)
+        public static double AreaIntegration(this List<IntegrationSlice> slices, double curve, double from, double to, ref double centroid)
         {
             double result = 0;
             double max = System.Math.Max(from, to);
@@ -94,7 +94,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
         
-        public static double AreaIntegration(List<IntegrationSlice> slices, double constant, double xPower, double yPower, double origin = 0)
+        public static double AreaIntegration(this List<IntegrationSlice> slices, double constant, double xPower, double yPower, double origin = 0)
         {
             double result = 0;
             for (int i = 0; i < slices.Count; i++)
@@ -109,7 +109,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
         
-        public static double AreaIntegration(List<IntegrationSlice> slices, double constant, double xPower, double yPower, double from = double.MinValue, double to = double.MaxValue, double origin = 0)
+        public static double AreaIntegration(this List<IntegrationSlice> slices, double constant, double xPower, double yPower, double from = double.MinValue, double to = double.MaxValue, double origin = 0)
         {
             double result = 0;
             double max = System.Math.Max(from, to);
@@ -133,7 +133,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double AreaIntegration(List<IntegrationSlice> slices, Vector direction, ICurve curve, double from, double to, ref double centroid)
+        public static double AreaIntegration(this List<IntegrationSlice> slices, Vector direction, ICurve curve, double from, double to, ref double centroid)
         {
             double result = 0;
             double max = System.Math.Max(from, to);
@@ -171,7 +171,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        public static double AreaIntegration(List<IntegrationSlice> solid, List<IntegrationSlice> voids, Vector direction, ICurve curve, double from, double to, ref double centroid)
+        public static double AreaIntegration(this List<IntegrationSlice> solid, List<IntegrationSlice> voids, Vector direction, ICurve curve, double from, double to, ref double centroid)
         {
             double centroidSolid = 0;
             double centroidVoid = 0;
@@ -186,6 +186,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
 
 
 

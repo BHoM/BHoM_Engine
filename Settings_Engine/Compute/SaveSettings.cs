@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -63,8 +63,12 @@ namespace BH.Engine.Settings
                 return false;
             }
 
+            Modify.UpdateSettings(settings); //Update the settings in memory as well so the next call to GetSettings has these settings which were saved
+
             return true;
         }
+
+        /***************************************************/
 
         [Description("Saves all settings in memory to their respective files. Settings are saved back to the same file they were loaded from, overwriting them if they've changed. If settings were added during runtime and do not have an associated file, then a new file will be created with the name {settingsType}.json. If no folder is specified, the default of %ProgramData%/BHoM/Settings/{settingsType}.json will be used.")]
         [Input("outputDirectory", "Optional input to specify where to save settings file to. If the provided output directory differs from the saved load directory, settings will be saved in the provided output directory and not where they were originally loaded from.")]
@@ -99,3 +103,4 @@ namespace BH.Engine.Settings
         }
     }
 }
+

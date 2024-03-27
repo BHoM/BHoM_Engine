@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -35,33 +35,6 @@ namespace BH.Engine.Spatial
 {
     public static partial class Query
     {
-        /******************************************/
-        /****            IElement0D            ****/
-        /******************************************/
-
-        [Description("Queries the area of the geometrical representation of an IElement0D. Always returns zero due to zero-dimensionality of an IElement0D.")]
-        [Input("element0D", "The IElement0D to query the area of.")]
-        [Output("area", "The area of the geometrical representation of an IElement0D.", typeof(Area))]
-        public static double Area(this IElement0D element0D)
-        {
-            return 0;
-        }
-
-
-        /******************************************/
-        /****            IElement1D            ****/
-        /******************************************/
-
-        [Description("Queries the area of the geometrical representation of an IElement1D. Always returns zero because an IElement1D has only 1 dimension, i.e. should not be represented as a region even if closed.")]
-        [Input("element1D", "The IElement1D to query the area of.")]
-        [Output("area", "The area of the geometrical representation of an IElement1D.", typeof(Area))]
-        public static double Area(this IElement1D element1D)
-        {
-            BH.Engine.Base.Compute.RecordWarning("Area of an IElement1D cannot be queried because IElement1D has only 1 dimension, i.e. should not be represented as a region even if closed.");
-            return 0;
-        }
-
-
         /******************************************/
         /****            IElement2D            ****/
         /******************************************/
@@ -137,8 +110,17 @@ namespace BH.Engine.Spatial
         }
 
         /******************************************/
+        /****   Private Methods                ****/
+        /******************************************/
+
+        private static double Area(object obj)
+        {
+            BH.Engine.Base.Compute.RecordError($"Cannot calculate the area for object of type {obj.GetType().FullName}.");
+            return 0;
+        }
     }
 }
+
 
 
 

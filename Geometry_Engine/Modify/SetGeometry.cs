@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -33,56 +33,56 @@ namespace BH.Engine.Geometry
 
         public static Point SetGeometry(this Point point, Point newPoint)
         {
-            return newPoint.DeepClone();
+            return newPoint;
         }
 
         /***************************************************/
 
         public static ICurve SetGeometry(this Line curve, ICurve newCurve)
         {
-            return newCurve.DeepClone();
+            return newCurve;
         }
 
         /***************************************************/
 
         public static ICurve SetGeometry(this Arc curve, ICurve newCurve)
         {
-            return newCurve.DeepClone();
+            return newCurve;
         }
 
         /***************************************************/
 
         public static ICurve SetGeometry(this Circle curve, ICurve newCurve)
         {
-            return newCurve.DeepClone();
+            return newCurve;
         }
 
         /***************************************************/
 
         public static ICurve SetGeometry(this Ellipse curve, ICurve newCurve)
         {
-            return newCurve.DeepClone();
+            return newCurve;
         }
 
         /***************************************************/
 
         public static ICurve SetGeometry(this NurbsCurve curve, ICurve newCurve)
         {
-            return newCurve.DeepClone();
+            return newCurve;
         }
 
         /***************************************************/
 
         public static ICurve SetGeometry(this Polyline curve, ICurve newCurve)
         {
-            return newCurve.DeepClone();
+            return newCurve;
         }
 
         /***************************************************/
 
         public static ICurve SetGeometry(this PolyCurve curve, ICurve newCurve)
         {
-            return newCurve.DeepClone();
+            return newCurve ;
         }
 
         /***************************************************/
@@ -97,6 +97,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
 
 
 

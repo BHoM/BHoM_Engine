@@ -1,0 +1,7 @@
+﻿{
+  "MessageForDeleted": {
+    "BH.Engine.Geometry.Query.Centre(BH.oM.Geometry.Polyline, System.Double)": "This method has been deprecated since 4.1, as the method used was incorrect. If this method was used, please replace with the Centroid method instead",
+    "BH.Engine.Geometry.Query.Radius(BH.oM.Geometry.Arc)": "This method has been deprecated since 4.1, as Radius is now a public property of the Arc class",
+    "BH.Engine.Geometry.Query.IGeometryHash(BH.oM.Geometry.IGeometry)": "This method is now replaced by the HashArray method, with minor variations. Read the description for HashArray for more information."
+  }
+}

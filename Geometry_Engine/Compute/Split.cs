@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,8 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
+using BH.Engine.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -30,130 +31,67 @@ namespace BH.Engine.Geometry
 {
     public static partial class Compute
     {
+        /***************************************************/
+        /****              Public Methods               ****/
+        /***************************************************/
+
+        [PreviousVersion("7.1", "BH.Engine.Geometry.Compute.Split(BH.oM.Geometry.Polyline, System.Collections.Generic.List<BH.oM.Geometry.Line>, System.Double, System.Int32)")]
         [Description("Split an outer region by the cutting lines into a collection of closed contained regions within the outer region.")]
         [Input("outerRegion", "An outer region that will contain the closed regions generated.")]
         [Input("cuttingLines", "The lines to cut the outer region by.")]
         [Input("distanceTolerance", "Tolerance to use for distance measurment operations, default to BH.oM.Geometry.Tolerance.Distance.")]
-        [Input("decimalPlaces", "All coordinates of the geometry will be rounded to the number of decimal places specified. Default 6.")]
         [Output("regions", "Closed polygon regions contained within the outer region cut by the cutting lines.")]
-        public static List<Polyline> Split(this Polyline outerRegion, List<Line> cuttingLines, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance, int decimalPlaces = 6)
+        public static List<Polyline> Split(this Polyline outerRegion, List<Line> cuttingLines, double distanceTolerance = Tolerance.Distance)
         {
+            if (outerRegion.IsNull() || cuttingLines.IsNull())
+                return null;
+
+            if (!outerRegion.IsPlanar(distanceTolerance))
+            {
+                BH.Engine.Base.Compute.RecordError("Polyline could not be split because it is not planar.");
+                return null;
+            }
+
+            if (outerRegion.IsSelfIntersecting(distanceTolerance))
+            {
+                BH.Engine.Base.Compute.RecordError("Polyline could not be split because it is self intersecting.");
+                return null;
+            }
+
+            Plane fitPlane = outerRegion.FitPlane(distanceTolerance);
+            int originalLineCount = cuttingLines.Count;
+            cuttingLines = cuttingLines.Where(x => x.IsInPlane(fitPlane, distanceTolerance)).ToList();
+            if (originalLineCount != cuttingLines.Count)
+                BH.Engine.Base.Compute.RecordWarning("Some of the lines have been ignored in the process of splitting the outline because they were not coplanar with it.");
+
             //Preproc the cutting lines to take only the parts inside the outer region
-            cuttingLines = cuttingLines.BooleanUnion(distanceTolerance);
-            cuttingLines = cuttingLines.SelectMany(x => x.SplitAtPoints(outerRegion.LineIntersections(x, false, distanceTolerance), distanceTolerance)).ToList();
+            cuttingLines = cuttingLines.BooleanUnion(distanceTolerance, true);
+            cuttingLines = cuttingLines.SelectMany(x => x.SplitAtPoints(outerRegion.LineIntersections(x, false, distanceTolerance).CullDuplicates(distanceTolerance), distanceTolerance)).ToList();
             cuttingLines = cuttingLines.Where(x => outerRegion.IsContaining(new List<Point> { (x.Start + x.End) / 2 }, false, distanceTolerance)).ToList();
             if (cuttingLines.Count == 0)
                 return new List<Polyline> { outerRegion };
 
-            List<Point> intersectingPoints = BH.Engine.Geometry.Query.LineIntersections(cuttingLines); //Get the points to split the lines by
-            List<Line> splitCurves = cuttingLines.SelectMany(x => x.ISplitAtPoints(intersectingPoints)).Cast<Line>().ToList(); //Split the cutting lines at their points
-            List<Line> perimeterLines = outerRegion.SubParts().SelectMany(x => x.SplitAtPoints(cuttingLines.SelectMany(y => y.LineIntersections(x)).ToList())).ToList();
+            List<Point> intersectingPoints = cuttingLines.LineIntersections(false, distanceTolerance).CullDuplicates(distanceTolerance); //Get the points to split the lines by
+            List<Line> splitCurves = cuttingLines.SelectMany(x => x.SplitAtPoints(intersectingPoints, distanceTolerance)).Cast<Line>().ToList(); //Split the cutting lines at their points
+            List<Line> perimeterLines = outerRegion.SubParts().SelectMany(x => x.SplitAtPoints(cuttingLines.SelectMany(y => y.LineIntersections(x, false, distanceTolerance)).ToList())).ToList();
 
-            splitCurves.AddRange(splitCurves); //Duplicate the inner curves within the list, each line will only be used twice one two adjacent regions
-            splitCurves.AddRange(perimeterLines); //Add the perimeters back in as single lines
+            // Make sure nodes of outline and splitting curves perfectly overlap
+            List<Line> allLines = splitCurves.Union(perimeterLines).ToList();
+            List<Point> snapPoints = allLines.Select(x => x.Start).Union(allLines.Select(x => x.End)).ToList().CullDuplicates();
+            SnapToPoints(allLines, snapPoints, distanceTolerance);
 
-            List<Polyline> cutRegions = new List<Polyline>(); //Return object to store the resulting regions
+            // Recreate the outline
+            Polyline outline = perimeterLines.Join(distanceTolerance).First();
 
-            //The actual magic starts now
-            while (perimeterLines.Count > 0)
-            {
-                Line start = perimeterLines[0];
+            // Cull splitting curves that do not cut through the full depth of polygon (one of end points with valence 1)
+            List<Line> allCurves = splitCurves.Union(perimeterLines).ToList();
+            allCurves.RemoveOutliers(distanceTolerance);
+            splitCurves = splitCurves.Where(x => allCurves.Contains(x)).ToList();
 
-                List<Line> searchLines = splitCurves.Distinct().ToList(); //Each iteration will reduce the search space
-                searchLines.Remove(start); //Do not need the current line being evaluated in the search criteria
-
-                Point startPt = start.Start.RoundCoordinates(decimalPlaces);
-                Point endPt = start.End.RoundCoordinates(decimalPlaces);
-
-                List<LineTree> children = searchLines.Where(x => x.Start.RoundCoordinates(decimalPlaces) == endPt || x.End.RoundCoordinates(decimalPlaces) == endPt).Select(x =>
-                {
-                    Point uPt = (x.Start.RoundCoordinates(decimalPlaces) == endPt ? x.End.RoundCoordinates(decimalPlaces) : x.Start.RoundCoordinates(decimalPlaces));
-                    return new LineTree
-                    {
-                        Parent = start,
-                        ThisLine = x,
-                        UnconnectedPoint = uPt,
-                    };
-                }).ToList();
-
-                LineTree last = null; //The last line in the path, once we find it then we can traverse up the tree to the start
-                List<LineTree> master = new List<LineTree>(); //As we're only generating the LineTree on each iteration, we need to keep track of what we've created this iteration for traversing. We're generating the LineTrees on each iteration between the children is dependent on the directionality of the start, so cannot be preprocessed (until someone refactors this to enable such a thing!)
-                
-                while (children.Count > 0 && last == null) //while(last == null) risks an infinite loop if we never find the last node, we should eventually run out of children though
-                {
-                    master.AddRange(children);
-                    List<LineTree> grandchildren = new List<LineTree>();
-
-                    foreach (LineTree lt in children)
-                    {
-                        //If the search line already has a LineTree object in `master` then it means we've already looked at it in some capacity, and didn't find what we're looking for - so this is to limit the search space to narrow in on the solution
-                        List<LineTree> ltChildren = searchLines.Where(x => master.FirstOrDefault(y => y.ThisLine == x) == null && (x.Start.RoundCoordinates(decimalPlaces) == lt.UnconnectedPoint || x.End.RoundCoordinates(decimalPlaces) == lt.UnconnectedPoint)).Select(x =>
-                        {
-                            Point uPt = (x.Start.RoundCoordinates(decimalPlaces) == lt.UnconnectedPoint ? x.End.RoundCoordinates(decimalPlaces) : x.Start.RoundCoordinates(decimalPlaces));
-                            return new LineTree
-                            {
-                                Parent = lt.ThisLine,
-                                ThisLine = x,
-                                UnconnectedPoint = uPt,
-                            };
-                        }).ToList();
-                        
-                        //Take distinct only
-                        ltChildren = ltChildren.GroupBy(p => p.ThisLine).Select(g => g.First()).ToList();
-
-                        LineTree foundStart = ltChildren.FirstOrDefault(x => x.ThisLine.Start.RoundCoordinates(decimalPlaces) == startPt || x.ThisLine.End.RoundCoordinates(decimalPlaces) == startPt);
-
-                        if (foundStart != null)
-                        {
-                            last = foundStart;
-                            break;
-                        }
-
-                        grandchildren.AddRange(ltChildren);
-                    }
-
-                    children = new List<LineTree>(grandchildren.GroupBy(p => p.ThisLine).Select(g => g.First())); //Add distinct grandchildren only
-                }
-
-                if (last == null)
-                    continue; //Probably means we had an error and didn't find the last node, so let's try the next perimeter line
-
-                //Generate the closed region
-                List<Line> outlines = new List<Line>();
-                outlines.Add(last.ThisLine);
-
-                while (last.Parent != start)
-                {
-                    last = master.FirstOrDefault(x => x.ThisLine == last.Parent);
-                    outlines.Add(last.ThisLine);
-                }
-                outlines.Add(start); //Close the region
-
-                //Tidy up the search space for the next iteration
-                foreach (Line l in outlines)
-                {
-                    if (perimeterLines.Contains(l))
-                        perimeterLines.Remove(l);
-
-                    splitCurves.Remove(l);
-                }
-
-                //Set up the perimeter lines to include any new 'perimeter lines' - lines which only have one instance in the list
-                foreach (Line add in splitCurves)
-                {
-                    if (splitCurves.Count(x => x == add) == 1)
-                        perimeterLines.Add(add);
-                }
-
-                perimeterLines = perimeterLines.Distinct().ToList();
-
-                cutRegions.Add(outlines.Join()[0]);
-            }
-
-            return cutRegions;
+            // Turn the preprocessed lines into outlines
+            return OutlinesFromPreprocessedLines(outline, splitCurves, distanceTolerance);
         }
+
+        /***************************************************/
     }
 }
-
-
-

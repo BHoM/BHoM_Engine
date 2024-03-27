@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -184,15 +184,15 @@ namespace BH.Engine.Facade
 
             if ((glassEdgeUValue > 0) && (glassUValue > 0))
             {
+                if (cavityUValue > 0)
+                {
+                    glassUValue = 1 / (1 / cavityUValue + 1 / glassUValue);
+                }
                 for (int i = 0; i < edgeAreas.Count; i++)
                 {
                     edgeUValProduct += (glassEdgeUValue * edgeAreas[i]);
                 }
                 centerUValue = (((glassArea * glassUValue) + edgeUValProduct) / centerArea);
-                if (cavityUValue > 0)
-                {
-                    centerUValue = 1 / (1 / cavityUValue + 1 / centerUValue);
-                }
             }
             else
             {
@@ -230,4 +230,5 @@ namespace BH.Engine.Facade
 
     }
 }
+
 

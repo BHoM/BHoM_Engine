@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -43,7 +43,7 @@ namespace BH.Engine.Geometry
         [Output("C", "A single Polyline oriented counter clockwise with the same area as the sum of all the polylines.")]
         public static Polyline WetBlanketInterpretation(List<Polyline> pLines, double tol = Tolerance.Distance)
         {
-            List<Polyline> clones = pLines.Select(x => x.RemoveShortSegments(tol, tol).DeepClone()).ToList();
+            List<Polyline> clones = pLines.Select(x => x.RemoveShortSegments(tol, tol)).ToList();
 
             int digits = (int)Math.Floor(-Math.Log10(tol));
 
@@ -275,6 +275,7 @@ namespace BH.Engine.Geometry
 
     }
 }
+
 
 
 

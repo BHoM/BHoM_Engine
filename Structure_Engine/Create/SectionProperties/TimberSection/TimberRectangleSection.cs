@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -42,6 +42,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("7.1", "BH.Engine.Structure.Create.TimberRectangleSection(System.Double, System.Double, System.Double, BH.oM.Structure.MaterialFragments.Timber, System.String)")]
         [Description("Creates a rectangular solid timber section from input dimensions.")]
         [Input("height", "Height of the section.", typeof(Length))]
         [Input("width", "Width of the section.", typeof(Length))]
@@ -49,7 +50,7 @@ namespace BH.Engine.Structure
         [Input("material", "Timber material to be applied to the section. If null a default material will be extracted from the database.")]
         [Input("name", "Name of the timber section. This is required for most structural packages to create the section.")]
         [Output("section", "The created rectangular solid timber section.")]
-        public static TimberSection TimberRectangleSection(double height, double width, double cornerRadius = 0, Timber material = null, string name = "")
+        public static TimberSection TimberRectangleSection(double height, double width, double cornerRadius = 0, ITimber material = null, string name = "")
         {
             return TimberSectionFromProfile(Spatial.Create.RectangleProfile(height, width, cornerRadius), material, name);
         }
@@ -57,6 +58,7 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
+
 
 
 

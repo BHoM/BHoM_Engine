@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -33,6 +33,7 @@ using System.ComponentModel;
 using BH.Engine.Base;
 using System.Collections;
 using System.Data;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Base
 {
@@ -115,7 +116,7 @@ namespace BH.Engine.Base
         [Input("obj", "Objects the string should be calculated for.")]
         [Input("cc", "HashConfig, options for the hash calculation.")]
         [Input("nestingLevel", "Nesting level of the property.")]
-        [Input("currentPropertyFullName", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.StartNode.Point.X`")]
+        [Input("currentPropertyFullName", "(Optional) Indicates the 'property path' of the current object, e.g. `BH.oM.Structure.Elements.Bar.Start.Point.X`")]
         private static string HashString(object obj, BaseComparisonConfig cc, int nestingLevel, string currentPropertyFullName = null)
         {
             string definingString = "";
@@ -233,6 +234,11 @@ namespace BH.Engine.Base
                 if (BH.Engine.Base.Compute.TryRunExtensionMethod(obj, "HashString", parameters, out hashStringFromExtensionMethod))
                     return (string)hashStringFromExtensionMethod;
 
+                if (cc.UseGeometryHash && typeof(IGeometry).IsAssignableFrom(type))
+                {
+                    return GeometryHash((IGeometry)obj, cc, currentPropertyFullName);
+                }
+
                 // If the object is an IObject (= a BHoM class), let's look at its properties. 
                 // We only do this for IObjects (BHoM types) since we cannot guarantee full compatibility of the following procedure with any possible (non-BHoM) type.
                 PropertyInfo[] properties = type.GetProperties();
@@ -283,8 +289,24 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
+        private static string GeometryHash(this IGeometry igeom, BaseComparisonConfig comparisonConfig, string fullName)
+        {
+            if (igeom == null)
+                return null;
+
+            if (m_GeomHashFunc == null)
+            {
+                var mis = Query.ExtensionMethods(typeof(IGeometry), "GeometryHash");
+                if (!mis?.Any() ?? true)
+                    throw new InvalidOperationException("Could not dynamically load the GeometryHash method.");
+
+                m_GeomHashFunc = (Func<IGeometry, BaseComparisonConfig, string, string>)Delegate.CreateDelegate(typeof(Func<IGeometry, BaseComparisonConfig, string, string>), mis.First());
+            }
+
+            return m_GeomHashFunc(igeom, comparisonConfig, fullName);
+        }
+
+        private static Func<IGeometry, BaseComparisonConfig, string, string> m_GeomHashFunc = null;
     }
 }
-
-
-

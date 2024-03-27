@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -29,6 +29,7 @@ using System.Text;
 using System.Threading.Tasks;
 using BH.oM.Base.Attributes;
 using BH.oM.Base.Attributes.Enums;
+using BH.oM.Base.Debugging;
 
 namespace BH.Engine.Base
 {
@@ -160,6 +161,7 @@ namespace BH.Engine.Base
         [Description("Provides a human-friendly text representation of a type.")]
         [Input("type", "type to convert to text.")]
         [Input("includePath", "If true, the path/namespace will be provided.")]
+        [Input("replaceGeneric", "If true, generic types will be replaced.")]
         [Input("genericStart", "Start symbol used for the beginning of the generic parameters, if any. Usually, '<'.")]
         [Input("genericSeparator", "Symbol used to separate the generic parameters. Usually, ','.")]
         [Input("genericEnd", "Start symbol used for the end of the generic parameters, if any. Usually, '>'.")]
@@ -228,6 +230,29 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
+        [Description("Get a string representation of a BHoM event.")]
+        [Input("bhomEvent", "The BHoM event to convert to text.")]
+        [Input("includePath", "If true, the stack trace for the event will be included.")]
+        [Output("Text representation.")]
+        public static string ToText(this Event bhomEvent, bool includePath = true)
+        {
+            if(bhomEvent == null)
+                return "null";
+
+            string result = "";
+            result += $"Type: {bhomEvent.Type.ToString()}\n";
+            result += $"Message: {bhomEvent.Message}\n";
+            
+            if(includePath)
+                result += $"Stack Trace: {bhomEvent.StackTrace}\n";
+
+            result += $"UTC Time: {bhomEvent.UtcTime.ToString("HH:mm:ss dd/MM/yyyy")}\n";
+
+            return result;
+        }
+
+        /***************************************************/
         /**** Fallback Methods                          ****/
         /***************************************************/
 
@@ -245,7 +270,3 @@ namespace BH.Engine.Base
         /***************************************************/
     }
 }
-
-
-
-

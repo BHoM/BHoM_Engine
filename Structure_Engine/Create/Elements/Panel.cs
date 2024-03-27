@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -151,31 +151,10 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Public Methods - ToBeRemoved               ****/
-        /***************************************************/
-
-        [ToBeRemoved("3.1", "Method that use a mixture of geometry and objects between edges and openings removed.")]
-        public static Panel Panel(List<Edge> externalEdges, List<ICurve> openings = null, ISurfaceProperty property = null, string name = "")
-        {
-            List<Opening> pOpenings = openings != null ? openings.Select(o => Create.Opening(o)).ToList() : new List<Opening>();
-            return Panel(externalEdges, pOpenings, property, null, name);
-        }
-
-        /***************************************************/
-
-        [ToBeRemoved("3.1", "Method that use a mixture of geometry and objects between edges and openings removed.")]
-        public static Panel Panel(ICurve outline, List<Opening> openings = null, ISurfaceProperty property = null, string name = "")
-        {
-            if (!outline.IIsClosed()) return null;
-            List<Edge> externalEdges = outline.ISubParts().Select(x => new Edge { Curve = x }).ToList();
-
-            return Panel(externalEdges, openings, property, null, name);
-        }
-
-        /***************************************************/
 
     }
 }
+
 
 
 

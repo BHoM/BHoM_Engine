@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -24,6 +24,7 @@
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Analytical.Elements;
+using BH.oM.Analytical.Graph;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -60,7 +61,7 @@ namespace BH.Engine.Analytical
         public static Line Geometry<TNode>(this ILink<TNode> link)
             where TNode : INode
         {
-            return new Line { Start = link?.StartNode?.Position, End = link?.EndNode?.Position };
+            return new Line { Start = link?.Start?.Position, End = link?.End?.Position };
         }
 
         /***************************************************/
@@ -82,9 +83,9 @@ namespace BH.Engine.Analytical
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            return new PlanarSurface(
-                    Engine.Geometry.Compute.IJoin(panel?.ExternalEdges?.Select(x => x?.Curve).ToList()).FirstOrDefault(),
-                    panel?.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x?.Edges.Select(y => y?.Curve).ToList())).Cast<ICurve>().ToList());
+            return Engine.Geometry.Create.PlanarSurface(
+                Engine.Geometry.Compute.IJoin(panel?.ExternalEdges?.Select(x => x?.Curve).ToList()).FirstOrDefault(),
+                panel?.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x?.Edges.Select(y => y?.Curve).ToList())).Cast<ICurve>().ToList());
         }
 
         /***************************************************/
@@ -237,5 +238,6 @@ namespace BH.Engine.Analytical
         
     }
 }
+
 
 

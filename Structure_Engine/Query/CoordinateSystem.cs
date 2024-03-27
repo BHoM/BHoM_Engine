@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -56,7 +56,7 @@ namespace BH.Engine.Structure
         {
             Vector tan = bar?.Tangent(true);
             Vector ax = bar?.Normal()?.CrossProduct(tan);
-            return tan != null && ax != null ? Engine.Geometry.Create.CartesianCoordinateSystem(bar.StartNode.Position, tan, ax) : null;
+            return tan != null && ax != null ? Engine.Geometry.Create.CartesianCoordinateSystem(bar.Start.Position, tan, ax) : null;
         }
 
         /***************************************************/
@@ -111,6 +111,7 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
+
 
 
 

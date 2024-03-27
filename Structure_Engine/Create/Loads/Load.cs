@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -110,7 +110,7 @@ namespace BH.Engine.Structure
                         BHoMGroup<BHoMObject> group = new BHoMGroup<BHoMObject>() { Name = groupName };
                         return new GravityLoad { Loadcase = loadcase, GravityDirection = force, Objects = group, Name = groupName };
                     }
-                case LoadType.PointForce:
+                case LoadType.PointLoad:
                     {
                         BHoMGroup<Node> group = new BHoMGroup<Node>() { Name = groupName };
                         return PointLoad(loadcase, group, force, moment, axis, groupName);
@@ -144,7 +144,7 @@ namespace BH.Engine.Structure
                 case LoadType.AreaUniformLoad:
                     {
                         BHoMGroup<IAreaElement> group = new BHoMGroup<IAreaElement>() { Name = groupName };
-                        return AreaUniformlyDistributedLoad(loadcase, force, group, axis, isProjected, groupName);
+                        return new AreaUniformlyDistributedLoad() { Loadcase = loadcase, Pressure = force, Objects = group, Axis = axis, Projected = isProjected, Name = groupName };
                     }
                 case LoadType.BarVaryingLoad:
                 case LoadType.BarPointLoad:
@@ -161,6 +161,7 @@ namespace BH.Engine.Structure
 
     }
 }
+
 
 
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -56,13 +56,19 @@ namespace BH.Engine.Structure
         [Output("mass", "The mass of the Panel.", typeof(Mass))]
         public static double Mass(this Panel panel)
         {
-            return panel.IsNull() ? 0 : panel.Area() * panel.Property.IMassPerArea();
+            if (panel.IsNull())
+                return 0;
+
+            double volume = panel.SolidVolume();
+            MaterialComposition comp = panel.MaterialComposition();
+            return comp.Materials.Zip(comp.Ratios, (m, r) => m.Density * r * volume).Sum();
         }
 
         /***************************************************/
 
     }
 }
+
 
 
 

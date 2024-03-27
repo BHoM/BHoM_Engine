@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -58,21 +58,21 @@ namespace BH.Engine.Analytical
             if (newElements0D[0] is Point)
             {
                 //clone.StartNode = new TNode() { Position = newElements0D[0] as Point };
-                clone.StartNode = Activator.CreateInstance<TNode>();
-                clone.StartNode.Position = newElements0D[0] as Point;
+                clone.Start = Activator.CreateInstance<TNode>();
+                clone.Start.Position = newElements0D[0] as Point;
             }
             else
-                clone.StartNode = (TNode)newElements0D[0];
+                clone.Start = (TNode)newElements0D[0];
 
             // Default the ILink end if the input is an Point
             if (newElements0D[1] is Point)
             {
                 //clone.EndNode = new TNode() { Position = newElements0D[1] as Point };
-                clone.EndNode = Activator.CreateInstance<TNode>();
-                clone.EndNode.Position = newElements0D[1] as Point;
+                clone.End = Activator.CreateInstance<TNode>();
+                clone.End.Position = newElements0D[1] as Point;
             }
             else
-                clone.EndNode = (TNode)newElements0D[1];
+                clone.End = (TNode)newElements0D[1];
 
             return clone;
         }
@@ -80,6 +80,7 @@ namespace BH.Engine.Analytical
         /******************************************/
     }
 }
+
 
 
 

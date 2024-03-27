@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -61,11 +61,37 @@ namespace BH.Engine.Base
             }
         }
 
+        /***************************************************/
+
+        [Description("Gets the events from the BHoM event log that have occurred on or since the given date/time.")]
+        [Input("utcDateTime", "A date/time in the UTC timezone. Only events recorded ON (to the second) or AFTER this date/time will be returned.")]
+        [Output("events", "Events from the BHoM event log raised since the given date/time.")]
+        public static List<Event> EventsSince(DateTime utcDateTime)
+        {
+            lock (Global.DebugLogLock)
+            {
+                Log log = Query.DebugLog();
+                return log.AllEvents.Where(x => x.UtcTime >= utcDateTime).ToList();
+            }
+        }
 
         /***************************************************/
+
+        [Description("Gets the events from the BHoM event log that have occurred since the last time you asked to view the event logs. On the first time of asking, this will be all events which have occurred. Each time you run this component, the bookmark will be updated to reflect the current UTC Date/Time.")]
+        [Output("events", "Events from the BHoM event log raised since the last time you queried the event log via the bookmark method.")]
+        public static List<Event> EventsSinceBookmark()
+        {
+            List<Event> events = EventsSince(m_LastBookmark);
+
+            m_LastBookmark = DateTime.UtcNow; //Update the bookmark to now
+
+            return events;
+        }
+
+        /***************************************************/
+        /*** Private variables                         *****/
+        /***************************************************/
+
+        private static DateTime m_LastBookmark = DateTime.UtcNow; //Default to the current UTC time on load
     }
 }
-
-
-
-

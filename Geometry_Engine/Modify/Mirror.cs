@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -198,7 +198,7 @@ namespace BH.Engine.Geometry
 
         public static Mesh Mirror(this Mesh mesh, Plane p)
         {
-            return new Mesh { Vertices = mesh.Vertices.Select(x => x.Mirror(p)).ToList(), Faces = mesh.Faces.Select(x => x.DeepClone()).ToList() };
+            return new Mesh { Vertices = mesh.Vertices.Select(x => x.Mirror(p)).ToList(), Faces = mesh.Faces.ToList() };
         }
 
         /***************************************************/
@@ -246,6 +246,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
 
 
 

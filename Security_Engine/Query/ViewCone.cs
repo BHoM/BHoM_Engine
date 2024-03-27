@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,13 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.ComponentModel;
+using BH.Engine.Geometry;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Security.Elements;
-using BH.oM.Base.Attributes;
-using System.Collections.Generic;
-using BH.Engine.Geometry;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Security
 {
@@ -50,6 +50,9 @@ namespace BH.Engine.Security
             double coneArcLength = cameraDevice.HorizontalFieldOfView;
             double coneAngle = Math.Asin(coneArcLength / (2 * coneRadius)) * 2;
 
+            if (double.IsNaN(coneAngle))
+                coneAngle = Math.PI;
+
             Vector viewDirection = BH.Engine.Geometry.Create.Vector(cameraLocation, cameraDevice.TargetPosition);
             Vector startPointDir = viewDirection.Rotate(-coneAngle / 2, Vector.ZAxis);
             Vector endPointDir = viewDirection.Rotate(coneAngle / 2, Vector.ZAxis);
@@ -70,4 +73,5 @@ namespace BH.Engine.Security
 
     }
 }
+
 

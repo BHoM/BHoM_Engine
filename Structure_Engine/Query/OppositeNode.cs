@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -42,10 +42,10 @@ namespace BH.Engine.Structure
             if (bar.IsNull() || node.IsNull())
                 return null;
 
-            if (bar.EndNode.BHoM_Guid == node.BHoM_Guid)
-                return bar.StartNode;
-            else if (bar.StartNode.BHoM_Guid == node.BHoM_Guid)
-                return bar.EndNode;
+            if (bar.End.BHoM_Guid == node.BHoM_Guid)
+                return bar.Start;
+            else if (bar.Start.BHoM_Guid == node.BHoM_Guid)
+                return bar.End;
             else
             {
                 Base.Compute.RecordError("The Bar does not contain the provided Node.");
@@ -57,6 +57,7 @@ namespace BH.Engine.Structure
     }
 
 }
+
 
 
 

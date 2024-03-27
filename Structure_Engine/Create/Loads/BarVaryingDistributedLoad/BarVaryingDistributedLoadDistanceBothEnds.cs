@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -52,12 +52,12 @@ namespace BH.Engine.Structure
                      "Method will group Bars by their length, according to the tolerance, and return one load for each group.")]
         [InputFromProperty("loadcase")]
         [InputFromProperty("group", "Objects")]
-        [Input("startToStartDistance", "Distance along each Bar from the StartNode to the start of the load.")]
-        [Input("endToEndDistance", "Distance along each Bar from the EndNode to the end of the load.")]
         [InputFromProperty("relativePositions")]
+        [Input("startToStartDistance", "Distance along each Bar from the StartNode to the start of the load.")]
         [InputFromProperty("forceAtStart")]
+        [InputFromProperty("momentAtStart")]       
+        [Input("endToEndDistance", "Distance along each Bar from the EndNode to the end of the load.")]         
         [InputFromProperty("forceAtEnd")]
-        [InputFromProperty("momentAtStart")]
         [InputFromProperty("momentAtEnd")]
         [InputFromProperty("axis")]
         [InputFromProperty("projected")]
@@ -105,12 +105,12 @@ namespace BH.Engine.Structure
                              "Method will group Bars by their length, according to the tolerance, and return one load for each group.")]
         [InputFromProperty("loadcase")]
         [Input("objects", "The collection of Bars the load should be applied to.")]
-        [Input("startToStartDistance", "Distance along each Bar from the StartNode to the start of the load.")]
-        [Input("endToEndDistance", "Distance along each Bar from the EndNode to the end of the load.")]
         [InputFromProperty("relativePositions")]
+        [Input("startToStartDistance", "Distance along each Bar from the StartNode to the start of the load.")]
         [InputFromProperty("forceAtStart")]
-        [InputFromProperty("forceAtEnd")]
         [InputFromProperty("momentAtStart")]
+        [Input("endToEndDistance", "Distance along each Bar from the EndNode to the end of the load.")]
+        [InputFromProperty("forceAtEnd")]
         [InputFromProperty("momentAtEnd")]
         [InputFromProperty("axis")]
         [InputFromProperty("projected")]
@@ -139,7 +139,7 @@ namespace BH.Engine.Structure
         private static Dictionary<double, List<Bar>> GroupBarsByLength(this IEnumerable<Bar> bars, double tolerance)
         {
             //Check that bars have valid geometry
-            bars = bars.Where(x => x != null && x.StartNode != null && x.EndNode != null && x.StartNode.Position != null && x.EndNode.Position != null);
+            bars = bars.Where(x => x != null && x.Start != null && x.End != null && x.Start.Position != null && x.End.Position != null);
 
             Dictionary<double, List<Bar>> dict = new Dictionary<double, List<Bar>>();
             foreach (var group in bars.GroupBy(x => (int)Math.Round(x.Length() / tolerance)))
@@ -153,6 +153,7 @@ namespace BH.Engine.Structure
 
     }
 }
+
 
 
 

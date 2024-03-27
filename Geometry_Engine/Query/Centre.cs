@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -35,19 +35,6 @@ namespace BH.Engine.Geometry
         public static Point Centre(this Arc arc, double tolerance = Tolerance.Distance)
         {
             return arc.CoordinateSystem.Origin;
-        }
-
-        /***************************************************/
-
-        [ToBeRemoved("4.1", "To be removed as it is generally incorrect. Advising using Centroid instead.")]
-        public static Point Centre(this Polyline polyline, double tolerance = Tolerance.Distance)
-        {
-            //TODO: this is an average point, not centroid - should be distinguished
-
-            if (!polyline.IsClosed(tolerance))
-                return polyline.ControlPoints.Average(); // TODO: not true for a self-intersecting polyline?
-            else
-                return polyline.ControlPoints.GetRange(0, polyline.ControlPoints.Count - 1).Average();
         }
 
         /***************************************************/
@@ -90,6 +77,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
 
 
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,14 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
+using BH.oM.Base.Attributes;
+using BH.oM.Data.Collections;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Base.Attributes;
-using BH.oM.Base;
-using BH.oM.Geometry;
-using BH.oM.Data.Collections;
+using System.Linq;
 
 namespace BH.Engine.Data
 {
@@ -127,7 +126,7 @@ namespace BH.Engine.Data
 
             foreach (DomainTree<T> data in list)
             {
-                if ((data.DomainBox.Domains[index].Min + data.DomainBox.Domains[index].Min) / 2 < centre)
+                if ((data.DomainBox.Domains[index].Min + data.DomainBox.Domains[index].Max) / 2 < centre)
                     one.Add(data);
                 else
                     two.Add(data);
@@ -148,6 +147,7 @@ namespace BH.Engine.Data
 
     }
 }
+
 
 
 

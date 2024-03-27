@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <FileVersion>7.0.0.0</FileVersion>
+    <FileVersion>7.1.0.0</FileVersion>
     <AssemblyVersion>7.0.0.0</AssemblyVersion>
     <Description>https://github.com/BHoM/BHoM_Engine</Description>
     <IsPackable>false</IsPackable>

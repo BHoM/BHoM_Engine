@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -73,8 +73,8 @@ namespace BH.Engine.Security
             {
                 if (obstacle.IsContaining(new List<Point> { cameraLocation }, true, distanceTolerance))
                 {
-                    Base.Compute.RecordWarning("Camera Device is inside obstacle. Null value will be returned.");
-                    return null;
+                    Base.Compute.RecordWarning("Camera Device is inside obstacle that will be skipped.");
+                    continue;
                 }
 
                 foreach (Line obstLine in obstacle.SubParts())
@@ -129,7 +129,7 @@ namespace BH.Engine.Security
             //create points chain
             List<Point> pointsChain = linesDict.PointsChain(cameraLocation, radius, distanceTolerance);
 
-            //create cone
+            //create camera cone
             PolyCurve cameraViewPolyCurve = pointsChain.CameraViewPolyCurve(coneArc, distanceTolerance);
 
             return cameraViewPolyCurve;
@@ -323,6 +323,9 @@ namespace BH.Engine.Security
             pointsChain = pointsChain.CullDuplicates(tolerance);
             pointsChain.Add(cameraLocation);
 
+            //reverse points chain to have correct start and end arc angles
+            pointsChain.Reverse();
+
             return pointsChain;
         }
 
@@ -345,14 +348,15 @@ namespace BH.Engine.Security
                 {
                     double p1Param = coneArc.ParameterAtPoint(pt1, tolerance);
                     double p2Param = coneArc.ParameterAtPoint(pt2, tolerance);
-                    double p3Param = (p1Param + p2Param) / 2;
-                    Point pt3 = coneArc.PointAtParameter(p3Param);
-                    Arc newArc = BH.Engine.Geometry.Create.Arc(pt1, pt3, pt2, tolerance);
+                    double startAngle = coneArc.EndAngle * p1Param;
+                    double endAngle = coneArc.EndAngle * p2Param;
+                    Arc newArc = Create.Arc(coneArc.CoordinateSystem, coneArc.Radius, startAngle, endAngle);
+
                     curves.Add(newArc);
                 }
                 else
                 {
-                    Line line = BH.Engine.Geometry.Create.Line(pt1, pt2);
+                    Line line = Create.Line(pt1, pt2);
                     curves.Add(line);
                 }
             }
@@ -367,6 +371,7 @@ namespace BH.Engine.Security
 
     }
 }
+
 
 
 

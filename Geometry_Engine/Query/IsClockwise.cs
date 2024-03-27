@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -67,7 +67,7 @@ namespace BH.Engine.Geometry
             {
                 dir2 = (cc[i] - cc[i - 1]).Normalise();
                 double signedAngle = dir1.SignedAngle(dir2, normal);
-                dir1 = dir2.DeepClone();
+                dir1 = dir2;
 
                 if (Math.PI - Math.Abs(signedAngle) <= Tolerance.Angle)
                 {
@@ -209,6 +209,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
 
 
 

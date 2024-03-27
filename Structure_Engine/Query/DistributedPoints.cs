@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -59,14 +59,14 @@ namespace BH.Engine.Structure
             Vector tan;
             if (startLength == 0 && endLength == 0)
             {
-                startPos = bar.StartNode.Position;
+                startPos = bar.Start.Position;
                 tan = bar.Tangent() / (double)divisions;
             }
             else
             {
                 double length = bar.Length();
                 tan = bar.Tangent() / length;
-                startPos = bar.StartNode.Position + tan * startLength;
+                startPos = bar.Start.Position + tan * startLength;
 
                 tan *= (length - endLength - startLength) / (double)divisions;
             }
@@ -83,6 +83,7 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
+
 
 
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -39,7 +39,7 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a circular hollow profile based on input dimensions. Method generates edge curves based on the inputs.")]
+        [Description("Creates a solid circular profile based on input dimensions. Method generates edge curves based on the inputs.")]
         [InputFromProperty("diameter")]
         [Output("circle", "The created CircleProfile.")]
         public static CircleProfile CircleProfile(double diameter)
@@ -65,6 +65,7 @@ namespace BH.Engine.Spatial
         /***************************************************/
     }
 }
+
 
 
 

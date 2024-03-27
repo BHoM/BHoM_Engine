@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
             double d = Math.Sqrt(x * x + y * y + z * z);
 
             if (d == 0)
-                return vector.DeepClone();
+                return vector;
 
             return new Vector { X = x / d, Y = y / d, Z = z / d };
         }
@@ -61,6 +61,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
 
 
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -81,6 +81,54 @@ namespace BH.Engine.Settings
             }
 
             Global.BHoMSettingsLoaded.Add(fullSettingsLoadedKey);
+        }
+
+        /***************************************************/
+
+        [Description("Load a single settings file into memory for use. Settings file must contain one object in BHoM serialised JSON which is an object implementing the ISettings interface. Any settings object within the file will overwrite any previously loaded settings in memory.")]
+        [Input("filePath", "The full file path of the settings JSON file to be loaded.")]
+        public static void LoadSettingsFromFile(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+            {
+                BH.Engine.Base.Compute.RecordError("File Path is null or empty.");
+                return;
+            }
+
+            if(!File.Exists(filePath))
+            {
+                BH.Engine.Base.Compute.RecordError($"File at {filePath} does not exist to read from.");
+                return;
+            }
+
+            string contents = "";
+
+            try
+            {
+                contents = File.ReadAllText(filePath);
+            }
+            catch(Exception ex)
+            {
+                BH.Engine.Base.Compute.RecordError(ex, $"Error occurred in reading in file from {filePath}.");
+            }
+
+            if(string.IsNullOrEmpty(contents))
+            {
+                BH.Engine.Base.Compute.RecordError($"Failed to read data from {filePath}.");
+                return;
+            }
+
+            try
+            {
+                ISettings settings = BH.Engine.Serialiser.Convert.FromJson(contents) as ISettings;
+                Type type = settings.GetType();
+                Global.BHoMSettings[type] = settings;
+                Global.BHoMSettingsFilePaths[type] = filePath;
+            }
+            catch (Exception ex)
+            {
+                BH.Engine.Base.Compute.RecordError(ex, $"Cannot deserialise the contents of {filePath} to an ISettings object.");
+            }
         }
     }
 }

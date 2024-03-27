@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -135,11 +135,56 @@ namespace BH.Engine.Structure
         [PreviousInputNames("property","loadingPanelProperty")]
         [Description("Gets the mass per area for a LoadingPanelProperty. This will always return 0.")]
         [Input("property", "The LoadingPanelProperty property to calculate the mass per area for.")]
-        [Output("massPerArea", "The mass per area for the property. THis will always return 0 for a LoadingPanelProperty.", typeof(MassPerUnitArea))]
+        [Output("massPerArea", "The mass per area for the property. This will always return 0 for a LoadingPanelProperty.", typeof(MassPerUnitArea))]
         public static double MassPerArea(this LoadingPanelProperty property)
         {
             return 0;
         }
+
+
+        /***************************************************/
+
+        [Description("Gets the mass per area for a Cassette.")]
+        [Input("property", "The Cassette property to calculate the mass per area for.")]
+        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
+        public static double MassPerArea(this Cassette property)
+        {
+            if (property.IsNull() || property.Material.IsNull())
+                return double.NaN;
+
+            if (property.RibThickness <= 0 || property.RibSpacing < property.RibThickness)
+            {
+                Base.Compute.RecordError($"The {nameof(Cassette.RibThickness)} is 0 or {nameof(Cassette.RibSpacing)} smaller than {nameof(Cassette.RibThickness)}. The {nameof(Cassette)} is invalid and mass per area cannot be computed.");
+                return double.NaN;
+            }
+
+            double volPerAreaRibZone = property.RibHeight * (property.RibThickness / property.RibSpacing);
+            return property.TopThickness * property.Material.Density + 
+                   property.BottomThickness * (property.BottomMaterial ?? property.Material).Density + 
+                   volPerAreaRibZone * (property.RibMaterial ?? property.Material).Density;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the mass per area for a BuiltUpRibbed.")]
+        [Input("property", "The BuiltUpRibbed property to calculate the mass per area for.")]
+        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
+        public static double MassPerArea(this BuiltUpRibbed property)
+        {
+            if (property.IsNull() || property.Material.IsNull())
+                return double.NaN;
+
+            if (property.RibThickness <= 0 || property.RibSpacing < property.RibThickness)
+            {
+                Base.Compute.RecordError($"The {nameof(BuiltUpRibbed.RibThickness)} is 0 or {nameof(BuiltUpRibbed.RibSpacing)} smaller than {nameof(BuiltUpRibbed.RibThickness)}. The {nameof(BuiltUpRibbed)} is invalid and mass per area cannot be computed.");
+                return double.NaN;
+            }
+
+            double volPerAreaRibZone = property.RibHeight * (property.RibThickness / property.RibSpacing);
+            return property.TopThickness * property.Material.Density +
+                   volPerAreaRibZone * (property.RibMaterial ?? property.Material).Density;
+        }
+
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
@@ -156,6 +201,7 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
+
 
 
 

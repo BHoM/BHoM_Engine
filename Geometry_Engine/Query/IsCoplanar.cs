@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -39,18 +39,13 @@ namespace BH.Engine.Geometry
             if (points.Count < 4)
                 return true;
 
-            double[,] vMatrix = new double[points.Count - 1, 3];
-            for (int i = 0; i < points.Count - 1; i++)
-            {
-                vMatrix[i, 0] = points[i + 1].X - points[0].X;
-                vMatrix[i, 1] = points[i + 1].Y - points[0].Y;
-                vMatrix[i, 2] = points[i + 1].Z - points[0].Z;
-            }
+            Plane fitPlane = points.FitPlane(tolerance);
 
-            double REFTolerance = vMatrix.REFTolerance(tolerance);
-            double[,] rref = vMatrix.RowEchelonForm(true, REFTolerance);
-            int nonZeroRows = rref.CountNonZeroRows(REFTolerance);
-            return nonZeroRows < 3;
+            // Coincident points can be considered coplanar
+            if (fitPlane == null)
+                return true;
+
+            return points.All(x => Math.Abs(fitPlane.Normal.DotProduct(x - fitPlane.Origin)) <= tolerance);
         }
 
         /***************************************************/
@@ -86,10 +81,18 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        public static bool IsCoplanar(this List<Line> lines, double tolerance = Tolerance.Distance)
+        {
+            List<Point> cPts = lines.Select(x => x.Start).Union(lines.Select(x => x.End)).ToList();
+            return cPts.IsCoplanar(tolerance);
+        }
+
+        /***************************************************/
+
         public static bool IsCoplanar(this Polyline curve1, Polyline curve2, double tolerance = Tolerance.Distance)
         {
-            List<Point> cPts = curve1.DeepClone().ControlPoints;
-            cPts.AddRange(curve2.DeepClone().ControlPoints);
+            List<Point> cPts = curve1.ControlPoints.ToList();
+            cPts.AddRange(curve2.ControlPoints);
             return cPts.IsCoplanar(tolerance);
         }
 
@@ -198,6 +201,7 @@ namespace BH.Engine.Geometry
         /***************************************************/        
     }
 }
+
 
 
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -93,6 +93,12 @@ namespace BH.Engine.Structure
                 return new List<Bar>();
             }
 
+            if (property == null)
+            {
+                Engine.Base.Compute.RecordError("The Constant Framing Property is null and as such, analytical bars cannot be constructed. Please ensure all of the inputs have a valid value to calculate the analytical bars.");
+                return new List<Bar>();
+            }
+
             bool isLinear = centreLine.IIsLinear();
             Plane curvePlane = null;
 
@@ -162,6 +168,7 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
+
 
 
 

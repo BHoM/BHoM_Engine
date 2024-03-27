@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -54,7 +54,7 @@ namespace BH.Engine.Geometry
         public static Plane Plane(Point p1, Point p2, Point p3)
         {
             Vector normal = Query.CrossProduct(p2 - p1, p3 - p1).Normalise();
-            return new Plane { Origin = p1.DeepClone(), Normal = normal };
+            return new Plane { Origin = p1, Normal = normal };
         }
 
 
@@ -92,6 +92,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
 
 
 

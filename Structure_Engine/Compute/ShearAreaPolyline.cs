@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -49,7 +49,7 @@ namespace BH.Engine.Structure
         [Input("tol", "The tolerance for considering a line segment horizontal or vertical. /n" +
                       "i.e. (value at endpoint - value at startpoint) < tol.")]
         [Output("shearArea", "The shear area of the section.")]
-        [DocumentationURL("https://bhom.xyz/documentation/Conventions/Shear-Area-Derivation/", oM.Base.Attributes.Enums.DocumentationType.Documentation)]
+        [DocumentationURL("https://bhom.xyz/documentation/BHoM_oM/Structure_oM/Shear-Area-Derivation/", oM.Base.Attributes.Enums.DocumentationType.Documentation)]
         public static double ShearAreaPolyline(this Polyline pLine, double momentOfInertia, double tol = Tolerance.Distance)
         {
             if (pLine.IsNull())
@@ -202,6 +202,7 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
+
 
 
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,6 +22,7 @@
 
 using BH.Engine.Base;
 using BH.oM.Analytical.Elements;
+using BH.oM.Analytical.Graph;
 using BH.oM.Analytical.Fragments;
 using BH.oM.Base;
 using BH.oM.Geometry;
@@ -172,17 +173,17 @@ namespace BH.Engine.Analytical
         {
             Relation relation = new Relation()
             {
-                Source = link.StartNode.BHoM_Guid,
-                Target = link.EndNode.BHoM_Guid,
+                Source = link.Start.BHoM_Guid,
+                Target = link.End.BHoM_Guid,
                 Curve = (ICurve)link.IGeometry(),
             };
 
             Graph subgraph = new Graph();
-            subgraph.Entities.Add(link.StartNode.BHoM_Guid, link.StartNode);
-            subgraph.Entities.Add(link.EndNode.BHoM_Guid, link.EndNode);
+            subgraph.Entities.Add(link.Start.BHoM_Guid, link.Start);
+            subgraph.Entities.Add(link.End.BHoM_Guid, link.End);
             subgraph.Entities.Add(link.BHoM_Guid, link);
-            subgraph.Relations.Add(new Relation() { Source = link.StartNode.BHoM_Guid, Target = link.BHoM_Guid });
-            subgraph.Relations.Add(new Relation() { Source = link.BHoM_Guid, Target = link.StartNode.BHoM_Guid });
+            subgraph.Relations.Add(new Relation() { Source = link.Start.BHoM_Guid, Target = link.BHoM_Guid });
+            subgraph.Relations.Add(new Relation() { Source = link.BHoM_Guid, Target = link.Start.BHoM_Guid });
             relation.Subgraph = subgraph;
 
             return relation;
@@ -203,6 +204,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
     }
 }
+
 
 
 

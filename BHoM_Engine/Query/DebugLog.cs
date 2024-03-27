@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -45,16 +45,41 @@ namespace BH.Engine.Base
             }
         }
 
+        /***************************************************/
+
+        internal static Log SuppressedLog()
+        {
+            lock(Global.DebugLogLock)
+            {
+                if (m_SuppressedLog == null)
+                    m_SuppressedLog = new Log();
+
+                return m_SuppressedLog;
+            }
+        }
+
+        /***************************************************/
+
+        internal static void ResetSuppressedLog()
+        {
+            lock(Global.DebugLogLock)
+            {
+                m_SuppressedLog = new Log();
+            }
+        }
+
 
         /***************************************************/
         /**** Private Fields                            ****/
         /***************************************************/
 
         private static Log m_DebugLog = new Log();
+        private static Log m_SuppressedLog = new Log(); //If someone has switched off the log for any reason, keep a record of their events in this log instead - this way they're not completely removed and could be accessed if they switched it off by accident
 
         /***************************************************/
     }
 }
+
 
 
 

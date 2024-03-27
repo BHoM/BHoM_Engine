@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -51,7 +51,7 @@ namespace BH.Engine.Geometry
 
         public static Plane Translate(this Plane plane, Vector transform)
         {
-            return new Plane { Origin = plane.Origin + transform, Normal = plane.Normal.DeepClone() };
+            return new Plane { Origin = plane.Origin + transform, Normal = plane.Normal };
         }
 
         /***************************************************/
@@ -80,7 +80,7 @@ namespace BH.Engine.Geometry
 
         public static Circle Translate(this Circle curve, Vector transform)
         {
-            return new Circle { Centre = curve.Centre + transform, Normal = curve.Normal.DeepClone(), Radius = curve.Radius };
+            return new Circle { Centre = curve.Centre + transform, Normal = curve.Normal, Radius = curve.Radius };
         }
 
         /***************************************************/
@@ -128,7 +128,7 @@ namespace BH.Engine.Geometry
 
         public static Extrusion Translate(this Extrusion surface, Vector transform)
         {
-            return new Extrusion { Curve = surface.Curve.ITranslate(transform), Direction = surface.Direction.DeepClone(), Capped = surface.Capped };
+            return new Extrusion { Curve = surface.Curve.ITranslate(transform), Direction = surface.Direction, Capped = surface.Capped };
         }
 
         /***************************************************/
@@ -174,7 +174,7 @@ namespace BH.Engine.Geometry
 
         public static Mesh Translate(this Mesh mesh, Vector transform)
         {
-            return new Mesh { Vertices = mesh.Vertices.Select(x => x + transform).ToList(), Faces = mesh.Faces.Select(x => x.DeepClone()).ToList() };
+            return new Mesh { Vertices = mesh.Vertices.Select(x => x + transform).ToList(), Faces = mesh.Faces.ToList() };
         }
 
         /***************************************************/
@@ -221,6 +221,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
 
 
 

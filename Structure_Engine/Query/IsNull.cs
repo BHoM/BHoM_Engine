@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -83,7 +83,7 @@ namespace BH.Engine.Structure
                 ErrorMessage(methodName, "Bar", msg);
                 return true;
             }
-            else if (bar.StartNode.IsNull("The Node (StartNode) is owned by a Bar.", methodName) || bar.EndNode.IsNull("The Node (EndNode) is owned by a Bar.", methodName))
+            else if (bar.Start.IsNull("The Node (Start) is owned by a Bar.", methodName) || bar.End.IsNull("The Node (End) is owned by a Bar.", methodName))
                 return true;
 
             return false;
@@ -345,22 +345,6 @@ namespace BH.Engine.Structure
             if (panelReinforcement == null)
             {
                 ErrorMessage(methodName, "PanelReinforcement", msg);
-                return true;
-            }
-
-            return false;
-        }
-
-        [Description("Checks if a Reinforcement is null and outputs relevant error message.")]
-        [Input("reinforcement", "The Reinforcement to test for null.")]
-        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
-        [Output("isNull", "True if the Reinforcement is null.")]
-        public static bool IsNull(this Reinforcement reinforcement, string msg = "", [CallerMemberName] string methodName = "Method")
-        {
-            if (reinforcement == null)
-            {
-                ErrorMessage(methodName, "Reinforcement", msg);
                 return true;
             }
 
@@ -706,5 +690,6 @@ namespace BH.Engine.Structure
 
     }
 }
+
 
 

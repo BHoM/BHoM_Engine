@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -88,10 +88,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Returns the BoundingBox of the BoundingBox as a clone of the provided box.")]
+        [Description("Returns the BoundingBox of the BoundingBox (itself).")]
         public static BoundingBox Bounds(this BoundingBox boundingBox)
         {
-            return boundingBox == null ? null : boundingBox.DeepClone();
+            return boundingBox == null ? null : boundingBox;
         }
 
 
@@ -546,6 +546,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
 
 
 

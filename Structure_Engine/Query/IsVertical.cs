@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2023, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -40,7 +40,7 @@ namespace BH.Engine.Structure
                      "For general structural conventions please see the documentation.")]
         [Input("bar", "The Bar to check for verticality.")]
         [Output("result", "Returns true if the Bar is vertical.")]
-        [DocumentationURL("https://bhom.xyz/documentation/Conventions/BHoM-Structural-Conventions/", oM.Base.Attributes.Enums.DocumentationType.Documentation)]
+        [DocumentationURL("https://bhom.xyz/documentation/BHoM_oM/Structure_oM/BHoM-Structural-Conventions/", oM.Base.Attributes.Enums.DocumentationType.Documentation)]
         public static bool IsVertical(this Bar bar)
         {
             return bar.IsNull() ? false : Engine.Geometry.Query.IsVertical(bar.Centreline());
@@ -50,6 +50,7 @@ namespace BH.Engine.Structure
 
     }
 }
+
 
 
 
