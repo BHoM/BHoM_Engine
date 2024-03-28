@@ -83,16 +83,25 @@ namespace BH.Engine.Analytical
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            ICurve externalPLine = Engine.Geometry.Compute.IJoin(panel?.ExternalEdges?.Select(x => x?.Curve).ToList()).FirstOrDefault();
-            List<ICurve> internalPLines = panel?.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x?.Edges.Select(y => y?.Curve).ToList())).Cast<ICurve>().ToList();
-            List<PolyCurve> regions = BH.Engine.Geometry.Compute.BooleanDifference(externalPLine, internalPLines);
-            if (regions.Count == 1)
-                return Engine.Geometry.Create.PlanarSurface(externalPLine, internalPLines);
+            //firstly, compute the union of all the internal boundaries, as intersecting openings will cause issues for difference calculations. Then compute the boolean intersection of each of the internal boundaries with the external boundary to limit the openings to within the panel. Then compute the boolean difference of the external boundary with the intersections, and ignore any regions returned that are contained in the internal boundaries (don't make surfaces from openings). create planar surfaces from each of the regions, and create a polysurface from the planar surfaces. Don't have to check if the polysurface is planar, as if the inputs were not planar, a planar surface would not be created.
+            ICurve externalBoundary = Engine.Geometry.Compute.IJoin(panel?.ExternalEdges?.Select(x => x?.Curve).ToList()).FirstOrDefault();
+            List<PolyCurve> internalBoundaries = panel?.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x?.Edges.Select(y => y?.Curve).ToList())).BooleanUnion();
+            List<PolyCurve> intersections = new List<PolyCurve>();
+
+            foreach (PolyCurve internalCurve in internalBoundaries)
+                intersections.AddRange(externalBoundary.BooleanIntersection(internalCurve));
+
+            List<PolyCurve> regions = externalBoundary.BooleanDifference(intersections);
+
             List<oM.Geometry.ISurface> surfaces = new List<oM.Geometry.ISurface>();
+
             foreach (PolyCurve region in regions)
             {
+                if (intersections.Any(x => x.IIsEqual(region)))
+                    continue;
                 surfaces.Add(Engine.Geometry.Create.PlanarSurface(region));
             }
+
             return Engine.Geometry.Create.PolySurface(surfaces);
         }
 
