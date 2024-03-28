@@ -83,26 +83,27 @@ namespace BH.Engine.Analytical
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            //firstly, compute the union of all the internal boundaries, as intersecting openings will cause issues for difference calculations. Then compute the boolean intersection of each of the internal boundaries with the external boundary to limit the openings to within the panel. Then compute the boolean difference of the external boundary with the intersections, and ignore any regions returned that are contained in the internal boundaries (don't make surfaces from openings). create planar surfaces from each of the regions, and create a polysurface from the planar surfaces. Don't have to check if the polysurface is planar, as if the inputs were not planar, a planar surface would not be created.
             ICurve externalBoundary = Engine.Geometry.Compute.IJoin(panel?.ExternalEdges?.Select(x => x?.Curve).ToList()).FirstOrDefault();
+            // Get normal to make sure internal boundaries are clockwise wrt the external boundary.
             Vector normal = externalBoundary.INormal();
+            //compute union of internal openings.
             List<PolyCurve> internalBoundaries = panel?.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x?.Edges.Select(y => y?.Curve).ToList())).BooleanUnion();
 
+            //flip unionised internal boundaries if they are not clockwise
             for (int i=0; i < internalBoundaries.Count; i++)
             {
                 if (!internalBoundaries[i].IsClockwise(normal))
                     internalBoundaries[i] = internalBoundaries[i].Flip();
             }
 
+            //calculate the boolean intersection of the external boundary and all its internal curves.
             List<ICurve> intersections = new List<ICurve>();
-
             foreach (PolyCurve internalCurve in internalBoundaries)
                 intersections.AddRange(externalBoundary.BooleanIntersection(internalCurve));
 
+            // Get every distinct region within the external boundary wrt the intersections of the external boundary and internal boundaries, then remove any regions equal to the intersections. and create surfaces from each region, with openings.
             List<PolyCurve> regions = externalBoundary.BooleanDifference(intersections);
-
             List<oM.Geometry.ISurface> surfaces = new List<oM.Geometry.ISurface>();
-
             foreach (PolyCurve region in regions)
             {
                 if (intersections.Any(x => x.IIsEqual(region)))
@@ -110,7 +111,8 @@ namespace BH.Engine.Analytical
                 surfaces.Add(Engine.Geometry.Create.PlanarSurface(region, intersections));
             }
 
-            return Engine.Geometry.Create.PolySurface(surfaces);
+            //create a polysurface from the surfaces. This means that the geometry of a panel is always a PolySurface, which may have 
+            return surfaces.Count == 1 ? surfaces[0] : Engine.Geometry.Create.PolySurface(surfaces);
         }
 
         /***************************************************/
