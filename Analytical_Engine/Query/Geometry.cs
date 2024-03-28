@@ -104,12 +104,15 @@ namespace BH.Engine.Analytical
             // Get every distinct region within the external boundary wrt the intersections of the external boundary and internal boundaries, then remove any regions equal to the intersections. and create surfaces from each region, with openings.
             List<PolyCurve> regions = externalBoundary.BooleanDifference(intersections);
             List<oM.Geometry.ISurface> surfaces = new List<oM.Geometry.ISurface>();
+
+            BH.Engine.Base.Compute.StartSuppressRecordingEvents(suppressWarnings: true); //start suppressing warnings - the warnings from PlanarSurface() don't need to be displayed for Panels. The warnings talk about using BooleanIntersection etc. which is not very useful for a user creating a panel. If needed, they can be accessed from the log.
             foreach (PolyCurve region in regions)
             {
                 if (intersections.Any(x => x.IIsEqual(region)))
                     continue;
                 surfaces.Add(Engine.Geometry.Create.PlanarSurface(region, intersections));
             }
+            BH.Engine.Base.Compute.StopSuppressRecordingEvents(); //stop suppressing warnings
 
             //create a polysurface from the surfaces. This means that the geometry of a panel is always a PolySurface, which may have 
             return surfaces.Count == 1 ? surfaces[0] : Engine.Geometry.Create.PolySurface(surfaces);
