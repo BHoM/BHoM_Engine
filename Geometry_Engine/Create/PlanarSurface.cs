@@ -139,7 +139,7 @@ namespace BH.Engine.Geometry
                     List<PolyCurve> regions = externalBoundary.BooleanDifference(new List<ICurve>() { intCurve });
                     if (regions.Count > 1)
                     {
-                        BH.Engine.Base.Compute.RecordError("Cannot create a single planar surface: One of the internal boundaries splits the external boundary into more than one surface.\nTry running BooleanDifference on the external and internal boundaries and creating planar surfaces from the output regions.");
+                        BH.Engine.Base.Compute.RecordError("Cannot create a single planar surface: One of the internal boundaries splits the external boundary into more than one surface.\nTry running BooleanDifference on the external and internal boundaries and creating planar surfaces from the desired output regions.");
                         return null;
                     }
                     else if (regions.Count == 0)
