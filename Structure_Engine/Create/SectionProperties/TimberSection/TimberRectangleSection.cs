@@ -42,7 +42,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("7.1", "BH.Engine.Structure.Create.TimberRectangleSection(System.Double, System.Double, System.Double, BH.oM.Structure.MaterialFragments.Timber, System.String)")]
         [Description("Creates a rectangular solid timber section from input dimensions.")]
         [Input("height", "Height of the section.", typeof(Length))]
         [Input("width", "Width of the section.", typeof(Length))]

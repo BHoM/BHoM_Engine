@@ -1,6 +1,0 @@
-﻿{
-  "MessageForDeleted": {
-    "BH.Engine.Physical.Create.NewElement1D(BH.oM.Physical.Elements.ISurface, BH.oM.Geometry.ICurve)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed.",
-    "BH.Engine.Physical.Create.NewElement1D(BH.oM.Physical.Elements.IOpening, BH.oM.Geometry.ICurve)": "NewElement methods were refactored in BHoM 3.2 with these methods marked for deletion, and have now been removed."
-  }
-}
