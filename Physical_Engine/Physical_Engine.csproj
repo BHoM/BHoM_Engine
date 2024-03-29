@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyVersion>7.0.0.0</AssemblyVersion>
@@ -10,15 +9,12 @@
     <RootNamespace>BH.Engine.Physical</RootNamespace>
     <FileVersion>7.2.0.0</FileVersion>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\Build\</OutputPath>
   </PropertyGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
   </Target>
-
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
     <ProjectReference Include="..\Diffing_Engine\Diffing_Engine.csproj" />
@@ -27,7 +23,6 @@
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
     <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="BHoM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\BHoM.dll</HintPath>

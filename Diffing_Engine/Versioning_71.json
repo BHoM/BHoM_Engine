@@ -1,5 +1,0 @@
-﻿{
-  "MessageForDeleted": {
-    "BH.Engine.Diffing.Query.ListModifiedProperties(System.Collections.Generic.Dictionary<System.String, System.Collections.Generic.Dictionary<System.String, System.Tuple<System.Object, System.Object>>>, System.Collections.Generic.List<System.String>)": "This method has been deprecated since 5.0 due to the new Diffing object structure."
-  }
-}
