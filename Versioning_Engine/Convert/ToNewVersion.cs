@@ -153,8 +153,11 @@ namespace BH.Engine.Versioning
                         catch (Exception e)
                         {
                             Engine.Base.Compute.RecordError(e.Message);
-                            if (e.GetType().Name == "NoUpdateException")    //No update -> no point in trying the rest
-                                break;
+                            if (e.GetType().Name == "NoUpdateException")
+                            {
+                                noUpdateMessage = e.Message;
+                                result = null;
+                            }
                         }
 
                         if (result != null && document != result)
@@ -164,7 +167,7 @@ namespace BH.Engine.Versioning
                         }
                     }
 
-                    if (wasUpdated)
+                    if (wasUpdated || noUpdateMessage != null)
                     {
                         string newDocument = noUpdateMessage != null ? null : Compute.VersioningKey(document);
                         string newVersion = Engine.Base.Query.BHoMVersion();
