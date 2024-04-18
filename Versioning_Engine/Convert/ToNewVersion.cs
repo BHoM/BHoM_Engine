@@ -152,11 +152,16 @@ namespace BH.Engine.Versioning
                         }
                         catch (Exception e)
                         {
-                            Engine.Base.Compute.RecordError(e.Message);
+
                             if (e.GetType().Name == "NoUpdateException")
                             {
+                                Engine.Base.Compute.RecordError(e.Message);
                                 noUpdateMessage = e.Message;
                                 result = null;
+                            }
+                            else
+                            {
+                                Engine.Base.Compute.RecordError(e, "BHoMUpgrader exception:");
                             }
                         }
 
