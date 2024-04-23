@@ -107,6 +107,8 @@ namespace BH.Engine.Matter
 
             Dictionary<string, Tuple<Material, double>> hashedMaterialVolumeTuples = new Dictionary<string, Tuple<Material, double>>();
 
+            comparisonConfig = comparisonConfig ?? new ComparisonConfig() { PropertyExceptions = new List<string> { "BHoM_Guid" } };
+
             for (int j = 0; j < localMatTakeoffs.Count; j++)
             {
                 for (int i = 0; i < localMatTakeoffs[j].Materials.Count; i++)
