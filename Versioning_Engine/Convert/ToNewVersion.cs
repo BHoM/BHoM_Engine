@@ -119,24 +119,6 @@ namespace BH.Engine.Versioning
                             }
                         }
                     }
-
-                    // Record the fact that a document needed to be upgraded
-                    if (wasUpdated || noUpdateMessage != null)
-                    {
-                        string newDocument = noUpdateMessage != null ? null : Compute.VersioningKey(document);
-                        string newVersion = Engine.Base.Query.BHoMVersion();
-                        string oldVersion = string.IsNullOrWhiteSpace(version) ? "?.?" : version;
-                        string message = noUpdateMessage ?? $"{oldDocument} from version {oldVersion} has been upgraded to {newDocument} (version {newVersion})";
-
-                        BH.Engine.Base.Compute.RecordEvent(new VersioningEvent
-                        {
-                            OldDocument = oldDocument,
-                            NewDocument = newDocument,
-                            OldVersion = oldVersion,
-                            NewVersion = newVersion,
-                            Message = message
-                        });
-                    }
                 }
                 else
                 {
@@ -148,11 +130,11 @@ namespace BH.Engine.Versioning
                         {
                             //Get pre-compiled upgrader method for the version
                             Func<BsonDocument, BsonDocument> upgrader = GetUpgraderMethod(versions[i]);
-                            result = upgrader(document);    //Upgrade
+                            if (upgrader != null)
+                                result = upgrader(document);    //Upgrade
                         }
                         catch (Exception e)
                         {
-
                             if (e.GetType().Name == "NoUpdateException")
                             {
                                 Engine.Base.Compute.RecordError(e.Message);
@@ -171,26 +153,25 @@ namespace BH.Engine.Versioning
                             document = result;
                         }
                     }
-
-                    if (wasUpdated || noUpdateMessage != null)
-                    {
-                        string newDocument = noUpdateMessage != null ? null : Compute.VersioningKey(document);
-                        string newVersion = Engine.Base.Query.BHoMVersion();
-                        string oldVersion = string.IsNullOrWhiteSpace(version) ? "?.?" : version;
-                        string message = noUpdateMessage ?? $"{oldDocument} from version {oldVersion} has been upgraded to {newDocument} (version {newVersion})";
-
-                        BH.Engine.Base.Compute.RecordEvent(new VersioningEvent
-                        {
-                            OldDocument = oldDocument,
-                            NewDocument = newDocument,
-                            OldVersion = oldVersion,
-                            NewVersion = newVersion,
-                            Message = message
-                        });
-                    }
                 }
             }
 
+            if (wasUpdated || noUpdateMessage != null)
+            {
+                string newDocument = noUpdateMessage != null ? null : Compute.VersioningKey(document);
+                string newVersion = Engine.Base.Query.BHoMVersion();
+                string oldVersion = string.IsNullOrWhiteSpace(version) ? "?.?" : version;
+                string message = noUpdateMessage ?? $"{oldDocument} from version {oldVersion} has been upgraded to {newDocument} (version {newVersion})";
+
+                BH.Engine.Base.Compute.RecordEvent(new VersioningEvent
+                {
+                    OldDocument = oldDocument,
+                    NewDocument = newDocument,
+                    OldVersion = oldVersion,
+                    NewVersion = newVersion,
+                    Message = message
+                });
+            }
             return document;
         }
 
@@ -287,6 +268,23 @@ namespace BH.Engine.Versioning
 
         /***************************************************/
 
+        private static string FindFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                path = Path.Combine(BH.Engine.Base.Query.BHoMFolderUpgrades(), path);
+
+                if (!File.Exists(path))
+                {
+                    Base.Compute.RecordWarning(path.Split(new char[] { '\\' }).Last() + " is missing. The object will not be upgraded");
+                    return null;
+                }
+            }
+            return path;
+        }
+
+        /***************************************************/
+
         private static Func<BsonDocument, BsonDocument> GetUpgraderMethod(string version)
         {
             // Return the pipe if already exists
@@ -296,17 +294,9 @@ namespace BH.Engine.Versioning
 
             // Find the upgrader file
             string upgraderName = "BHoMUpgrader" + version.Replace(".", "");
-            string processFile = upgraderName + "\\" + upgraderName + ".exe";
-            if (!File.Exists(processFile))
-            {
-                processFile = Path.Combine(BH.Engine.Base.Query.BHoMFolderUpgrades(), processFile);
-
-                if (!File.Exists(processFile))
-                {
-                    Base.Compute.RecordWarning(processFile.Split(new char[] { '\\' }).Last() + " is missing. The object will not be upgraded");
-                    return null;
-                }
-            }
+            string processFile = FindFile(upgraderName + "\\" + upgraderName + ".exe");
+            if (processFile == null)
+                return null;
 
             Assembly converterAssembly = Assembly.LoadFrom(processFile);
 
@@ -316,17 +306,9 @@ namespace BH.Engine.Versioning
                 if (upgraderAssembly == null)
                 {
                     string baseUpgraderName = "BHoMUpgrader" + version.Replace(".", "");
-                    string baseProcessFile = upgraderName + "\\" + "BHoMUpgrader" + ".dll";
-                    if (!File.Exists(baseProcessFile))
-                    {
-                        baseProcessFile = Path.Combine(BH.Engine.Base.Query.BHoMFolderUpgrades(), baseProcessFile);
-
-                        if (!File.Exists(baseProcessFile))
-                        {
-                            Base.Compute.RecordWarning(baseProcessFile.Split(new char[] { '\\' }).Last() + " is missing. The object will not be upgraded");
-                            return null;
-                        }
-                    }
+                    string baseProcessFile = FindFile(upgraderName + "\\" + "BHoMUpgrader" + ".dll");
+                    if (baseUpgraderName == null)
+                        return null;
                     upgraderAssembly = Assembly.LoadFrom(baseProcessFile);
                 }
                 Type upgraderType = upgraderAssembly.GetTypes().First(x => x.Name == "Upgrader");
