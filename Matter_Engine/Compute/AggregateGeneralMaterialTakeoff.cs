@@ -104,8 +104,6 @@ namespace BH.Engine.Matter
             }
 
             List<GeneralMaterialTakeoff> localMatTakeoffs = generalMaterialTakeoffs.ToList();
-
-            comparisonConfig = comparisonConfig ?? new ComparisonConfig() { PropertyExceptions = new List<string> { "BHoM_Guid" } };
             Dictionary<string, TakeoffItem> hashedTakeoffItems = new Dictionary<string, TakeoffItem>();
 
             for (int j = 0; j < localMatTakeoffs.Count; j++)

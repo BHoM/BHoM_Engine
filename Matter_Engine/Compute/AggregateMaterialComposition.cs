@@ -92,7 +92,6 @@ namespace BH.Engine.Matter
                 return new MaterialComposition(new List<Material>(), new List<double>());
 
             Dictionary<string, Tuple<Material, double>> hashedMaterialRatioTuples = new Dictionary<string, Tuple<Material, double>>();
-            comparisonConfig = comparisonConfig ?? new ComparisonConfig() { PropertyExceptions = new List<string> { "BHoM_Guid" } };
 
             for (int j = 0; j < localMatComps.Count; j++)
             {
