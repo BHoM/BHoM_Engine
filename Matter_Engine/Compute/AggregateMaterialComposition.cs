@@ -49,63 +49,71 @@ namespace BH.Engine.Matter
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("7.2", "BH.Engine.Matter.Compute.AggregateMaterialComposition(System.Collections.Generic.IEnumerable<BH.oM.Dimensional.IElementM>)")]
         [Description("Calculates an aggregate MaterialComposition from a collection of elements.")]
         [Input("elements", "The elements to iterate over in generation of the MaterialCombination.")]
         [Output("materialComposition", "A MaterialComposition containing the unique materials across all elements and their relative proportions.")]
-        public static MaterialComposition AggregateMaterialComposition(IEnumerable<IElementM> elements)
+        public static MaterialComposition AggregateMaterialComposition(IEnumerable<IElementM> elements, BaseComparisonConfig comparisonConfig = null)
         {
-            return AggregateMaterialComposition(elements.Select(x => x.IMaterialComposition()), elements.Select(x => x.ISolidVolume()));
+            return AggregateMaterialComposition(elements.Select(x => x.IMaterialComposition()), elements.Select(x => x.ISolidVolume()), comparisonConfig);
         }
 
         /***************************************************/
 
+        [PreviousVersion("7.2", "BH.Engine.Matter.Compute.AggregateMaterialComposition(System.Collections.Generic.IEnumerable<BH.oM.Physical.Materials.MaterialComposition>, System.Collections.Generic.IEnumerable<System.Double>)")]
         [Description("Calculates an aggregate MaterialComposition from a collection individual MaterialCompositions and their relative ratios.")]
         [Input("materialCompositions", "The individual MaterialCompositions to aggregate together.")]
         [Input("ratios", "The relative volumetric based ratios of each MaterialComposition. The number of ratios must match the number of MaterialCompositions.", typeof(Ratio))]
         [Output("materialComposition", "A MaterialComposition incorporating the provided materials from each individual MaterialComposition and newly calculated ratios, factoring both the input ratio values and the individual Material ratios in the existing MaterialCompositions.")]
-        public static MaterialComposition AggregateMaterialComposition(IEnumerable<MaterialComposition> materialCompositions, IEnumerable<double> ratios)
+        public static MaterialComposition AggregateMaterialComposition(IEnumerable<MaterialComposition> materialCompositions, IEnumerable<double> ratios, BaseComparisonConfig comparisonConfig = null)
         {
-            List<Material> allMaterials = new List<Material>();
-            List<double> allRatios = new List<double>();
+            if (materialCompositions == null)
+            {
+                Base.Compute.RecordError("Cannot compute AggregateMaterialComposition for a null collection of MaterialCompositions.");
+                return null;
+            }
+            if (ratios == null)
+            {
+                Base.Compute.RecordError("Cannot compute AggregateMaterialComposition for a null collection of Ratios.");
+                return null;
+            }
 
             List<MaterialComposition> localMatComps = materialCompositions.ToList();
+
             List<double> localRatios = ratios.ToList();
 
             if (localMatComps.Count != localRatios.Count)
+            {
+                Base.Compute.RecordError("Same number of MaterialCompositions and Ratios need to be provided to be able to compute AggregateMaterialComposition.");
                 return null;
+            }
+
+            if(localMatComps.Count == 0)
+                return new MaterialComposition(new List<Material>(), new List<double>());
+
+            Dictionary<string, Tuple<Material, double>> hashedMaterialRatioTuples = new Dictionary<string, Tuple<Material, double>>();
+            comparisonConfig = comparisonConfig ?? new ComparisonConfig() { PropertyExceptions = new List<string> { "BHoM_Guid" } };
 
             for (int j = 0; j < localMatComps.Count; j++)
             {
+                double compositionRatio = localRatios[j];
                 for (int i = 0; i < localMatComps[j].Materials.Count; i++)
                 {
                     Material mat = localMatComps[j].Materials[i];
-                    mat = BH.Engine.Diffing.Modify.SetRevisionFragment(mat);
+                    double matRatio = localMatComps[j].Ratios[i] * compositionRatio;
+                    string hash = mat.Hash(comparisonConfig);
+                    Tuple<Material, double> matVolumePair;
+                    if (hashedMaterialRatioTuples.TryGetValue(hash, out matVolumePair))
+                        matVolumePair = new Tuple<Material, double>(matVolumePair.Item1, matVolumePair.Item2 + matRatio);
+                    else
+                        matVolumePair = new Tuple<Material, double>(mat, matRatio);
 
-                    bool existed = false;
-                    for (int k = 0; k < allMaterials.Count; k++)
-                    {
-                        if (allMaterials[k].FindFragment<RevisionFragment>().Hash == mat.FindFragment<RevisionFragment>().Hash)
-                        {
-                            allRatios[k] += localMatComps[j].Ratios[i] * localRatios[j];
-                            existed = true;
-                            break;
-                        }
-                    }
-                    if (!existed)
-                    {
-                        allMaterials.Add(mat);
-                        allRatios.Add(localMatComps[j].Ratios[i] * localRatios[j]);
-                    }
+                    hashedMaterialRatioTuples[hash] = matVolumePair;
                 }
             }
+            double factor = 1 / hashedMaterialRatioTuples.Sum(x => x.Value.Item2);
+            return new MaterialComposition(hashedMaterialRatioTuples.Values.Select(x => x.Item1), hashedMaterialRatioTuples.Values.Select(x => x.Item2 * factor));
 
-            foreach (Material mat in allMaterials)
-            {
-                mat.RemoveFragment(typeof(RevisionFragment));
-            }
-
-            double factor = 1 / allRatios.Sum();
-            return new MaterialComposition(allMaterials, allRatios.Select(x => x * factor).ToList());
         }
 
         /***************************************************/
