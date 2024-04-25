@@ -104,7 +104,6 @@ namespace BH.Engine.Matter
             }
 
             List<GeneralMaterialTakeoff> localMatTakeoffs = generalMaterialTakeoffs.ToList();
-
             Dictionary<string, TakeoffItem> hashedTakeoffItems = new Dictionary<string, TakeoffItem>();
 
             for (int j = 0; j < localMatTakeoffs.Count; j++)
