@@ -38,7 +38,7 @@ namespace BH.Engine.Diffing
         [Input("obj2", "Second object to check for equality.")]
         [Input("comparisonConfig", "Comparison configuration to be used for the comparison.")]
         [Output("equal", "True if the two objects are the same within the scope defined by the provided ComparisonConfig, otherwise false.")]
-        public static bool IsEqual(this object obj1, object obj2, ComparisonConfig comparisonConfig = null)
+        public static bool IsEqual(this object obj1, object obj2, BaseComparisonConfig comparisonConfig = null)
         {
             if (obj1 == null || obj2 == null)
                 return obj1 == obj2;
