@@ -20,20 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.ComponentModel;
+using BH.Engine.Base;
+using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Diffing;
-using BH.oM.Base;
-using kellerman = KellermanSoftware.CompareNetObjects;
-using System.Reflection;
-using BH.Engine.Base;
-using BH.Engine.Reflection;
+using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using kellerman = KellermanSoftware.CompareNetObjects;
 
 namespace BH.Engine.Diffing
 {
@@ -51,12 +47,27 @@ namespace BH.Engine.Diffing
             "\nIf no difference was found, returns null.")]
         public static ObjectDifferences ObjectDifferences(this object pastObject, object followingObject, BaseComparisonConfig comparisonConfig = null)
         {
-            // Result object.
             ObjectDifferences result = new ObjectDifferences() { PastObject = pastObject, FollowingObject = followingObject };
-
+            
             // Null check. At least one of the objects must be not null.
             if (pastObject == null && followingObject == null)
                 return result;
+
+            result.Differences.AddRange(pastObject.Differences(followingObject, comparisonConfig));
+            return result;
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Finds the actual differences between the objects.")]
+        private static IEnumerable<PropertyDifference> Differences(this object pastObject, object followingObject, BaseComparisonConfig comparisonConfig = null)
+        {
+            // Result object.
+            List<PropertyDifference> returned = new List<PropertyDifference>();
+            PropertyDifference toReturn;
 
             // Set ComparisonConfig if null. Clone it for immutability in the UI.
             BaseComparisonConfig cc = comparisonConfig == null ? new ComparisonConfig() : comparisonConfig.DeepClone();
@@ -122,8 +133,12 @@ namespace BH.Engine.Diffing
                 {
                     ComparisonInclusion comparisonInclusion = comparisonInclusionFromExtensionMethod as ComparisonInclusion;
                     if (comparisonInclusion != null && comparisonInclusion.Include)
+                    {
                         // Add to the final result.
-                        result.AddPropertyDifference(comparisonInclusion.DisplayName, kellermanPropertyDifference.Object1, kellermanPropertyDifference.Object2, propertyFullName);
+                        toReturn = PropertyDifference(pastObject, followingObject, comparisonInclusion.DisplayName, kellermanPropertyDifference.Object1, kellermanPropertyDifference.Object2, propertyFullName);
+                        returned.Add(toReturn);
+                        yield return toReturn;
+                    }
 
                     // Because a `ComparisonInclusion()` extension method was found, we've already determined if this difference was to be considered or not. Continue.
                     continue;
@@ -142,7 +157,7 @@ namespace BH.Engine.Diffing
                     propertyFullName = propertyFullName.Replace(".Value", "");
 
                     // Workaround for Kellerman duplicating the CustomData differences.
-                    if (result.Differences.Any(d => d.FullName == propertyFullName))
+                    if (returned.Any(d => d.FullName == propertyFullName))
                         continue;
 
                     // Check if we are talking about CustomObjects.
@@ -185,40 +200,37 @@ namespace BH.Engine.Diffing
                     continue;
 
                 // Add to the final result.
-                result.AddPropertyDifference(propertyDisplayName, kellermanPropertyDifference.Object1, kellermanPropertyDifference.Object2, propertyFullName);
+                toReturn = PropertyDifference(pastObject, followingObject, propertyDisplayName, kellermanPropertyDifference.Object1, kellermanPropertyDifference.Object2, propertyFullName);
+                returned.Add(toReturn);
+                yield return toReturn;
             }
-
-            if (result.Differences.Count == 0)
-                return null;
-
-            return result;
         }
 
         /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
 
         [Description("Removes square bracket indexing from property paths, e.g. `Bar.Fragments[0].Something` is returned as `Bar.Fragments.Something`.")]
-        private static void AddPropertyDifference(this ObjectDifferences objectDifferences, string propertyDiffDisplayName, object pastValue, object follValue, string fullName, string description = null)
+        private static PropertyDifference PropertyDifference(this object pastObject, object followingObject, string propertyDiffDisplayName, object pastValue, object follValue, string fullName, string description = null)
         {
             description = string.IsNullOrWhiteSpace(description) ?
-                PropertyDifferenceDescription(objectDifferences, propertyDiffDisplayName, pastValue, follValue)
+                PropertyDifferenceDescription(pastObject, followingObject, propertyDiffDisplayName, pastValue, follValue)
                 : description;
 
-            objectDifferences.Differences.Add(new PropertyDifference()
+            return new PropertyDifference()
             {
                 Name = propertyDiffDisplayName,
                 Description = description,
                 PastValue = pastValue,
                 FollowingValue = follValue,
                 FullName = fullName
-            }); ;
+            };
         }
 
-        private static string PropertyDifferenceDescription(ObjectDifferences objectDifferences, string propertyDiffDisplayName, object pastValue, object follValue, bool includeObjName = true, bool includeObjType = false, bool includeObjGuid = false)
+        /***************************************************/
+
+        private static string PropertyDifferenceDescription(this object pastObject, object followingObject, string propertyDiffDisplayName, object pastValue, object follValue, bool includeObjName = true, bool includeObjType = false, bool includeObjGuid = false)
         {
             if (pastValue is IEnumerable && follValue is IEnumerable)
-                return $"The collection stored in the property `{propertyDiffDisplayName}` of the `{objectDifferences.PastObject.GetType().FullName}` was modified.";
+                return $"The collection stored in the property `{propertyDiffDisplayName}` of the `{pastObject.GetType().FullName}` was modified.";
 
             Type t = pastValue?.GetType() ?? follValue?.GetType() ?? typeof(object);
 
@@ -228,12 +240,12 @@ namespace BH.Engine.Diffing
             {
                 bool addedObjectDescription = false;
 
-                objectDescription = objectDifferences.PastObject is CustomObject ? "CustomObject " : "Object ";
+                objectDescription = pastObject is CustomObject ? "CustomObject " : "Object ";
 
                 if (includeObjName)
                 {
-                    string pastObjName = (objectDifferences.PastObject as IBHoMObject)?.Name;
-                    string follObjName = (objectDifferences.FollowingObject as IBHoMObject)?.Name;
+                    string pastObjName = (pastObject as IBHoMObject)?.Name;
+                    string follObjName = (followingObject as IBHoMObject)?.Name;
 
                     if (!string.IsNullOrWhiteSpace(pastObjName) && pastObjName == follObjName)
                     {
@@ -242,16 +254,16 @@ namespace BH.Engine.Diffing
                     }
                 }
 
-                if (includeObjType && !(objectDifferences.PastObject is CustomObject))
+                if (includeObjType && !(pastObject is CustomObject))
                 {
-                    objectDescription += $"of type `{objectDifferences.PastObject.GetType().FullName}` ";
+                    objectDescription += $"of type `{pastObject.GetType().FullName}` ";
                     addedObjectDescription = true;
                 }
 
                 if (includeObjGuid)
                 {
-                    Guid? pastObjGuid = (objectDifferences.PastObject as IBHoMObject)?.BHoM_Guid;
-                    Guid? follObjGuid = (objectDifferences.FollowingObject as IBHoMObject)?.BHoM_Guid;
+                    Guid? pastObjGuid = (pastObject as IBHoMObject)?.BHoM_Guid;
+                    Guid? follObjGuid = (followingObject as IBHoMObject)?.BHoM_Guid;
 
                     if (pastObjGuid != null && pastObjGuid == follObjGuid)
                     {
@@ -301,10 +313,7 @@ namespace BH.Engine.Diffing
 
             return propertyName.WildcardMatch(wildcardPattern);
         }
+
+        /***************************************************/
     }
 }
-
-
-
-
-
