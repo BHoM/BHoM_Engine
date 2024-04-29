@@ -67,7 +67,7 @@ namespace BH.Engine.Geometry
             if (curve.IsNull())
                 return null;
 
-            return new Ellipse { Axis1 = curve.Axis1, Axis2 = -curve.Axis2, Centre = curve.Centre, Radius1 = curve.Radius1, Radius2 = curve.Radius2 };
+            return new Ellipse {  CoordinateSystem = Create.CartesianCoordinateSystem(curve.CoordinateSystem.Origin, curve.CoordinateSystem.X, -curve.CoordinateSystem.Y), Radius1 = curve.Radius1, Radius2 = curve.Radius2 };
         }
 
         /***************************************************/

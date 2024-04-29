@@ -62,7 +62,7 @@ namespace BH.Engine.Geometry
         [Output("startTan", "The tangent vector at the start of the Ellipse.")]
         public static Vector StartDir(this Ellipse ellipse)
         {
-            return ellipse?.Axis2;
+            return ellipse?.CoordinateSystem?.Y;
         }
 
         /***************************************************/

@@ -52,20 +52,20 @@ namespace BH.Engine.Geometry
             {
                 a = ellipse.Radius1;
                 b = ellipse.Radius2;
-                va = ellipse.Axis1;
+                va = ellipse.CoordinateSystem.X;
             }
             else
             {
                 a = ellipse.Radius2;
                 b = ellipse.Radius1;
-                va = ellipse.Axis2;
+                va = ellipse.CoordinateSystem.Y;
             }
 
             //Distance from centre
             double c = Math.Sqrt(a * a - b * b);    
             va = va * c;
 
-            return new Output<Point, Point> { Item1 = ellipse.Centre + va, Item2 = ellipse.Centre - va };
+            return new Output<Point, Point> { Item1 = ellipse.CoordinateSystem.Origin + va, Item2 = ellipse.CoordinateSystem.Origin - va };
         }
 
         /***************************************************/

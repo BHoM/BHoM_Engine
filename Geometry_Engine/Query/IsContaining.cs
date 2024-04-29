@@ -188,7 +188,7 @@ namespace BH.Engine.Geometry
 
             //Tranform the point to the local coordinates of the ellipse
             //After tranformation can see it as the ellipse centred in the origin with first axis long global x and second axis along global y
-            Cartesian coordinateSystem = Create.CartesianCoordinateSystem(curve.Centre, curve.Axis1, curve.Axis2);
+            Cartesian coordinateSystem = curve.CoordinateSystem;
             TransformMatrix transform = Create.OrientationMatrixLocalToGlobal(coordinateSystem);
 
             double sqTol = tolerance * tolerance;

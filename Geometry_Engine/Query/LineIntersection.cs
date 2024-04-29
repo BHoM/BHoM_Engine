@@ -273,7 +273,7 @@ namespace BH.Engine.Geometry
             Line l = new Line { Start = line.Start, End = line.End, Infinite = useInfiniteLine || line.Infinite };
             List<Point> iPts = new List<Point>();
 
-            Plane p = new Plane { Origin = ellipse.Centre, Normal = ellipse.Normal() };
+            Plane p = new Plane { Origin = ellipse.CoordinateSystem.Origin, Normal = ellipse.CoordinateSystem.Z };
             if (Math.Abs(p.Normal.DotProduct(l.Direction())) > Tolerance.Angle)
             {   // Not Coplanar
                 Point pt = l.PlaneIntersection(p, tolerance: tolerance);
@@ -283,7 +283,7 @@ namespace BH.Engine.Geometry
             else
             {   // Coplanar
                 //Transform to ellipse coordinates
-                Cartesian coordinateSystem = Create.CartesianCoordinateSystem(ellipse.Centre, ellipse.Axis1, ellipse.Axis2);
+                Cartesian coordinateSystem = ellipse.CoordinateSystem;
                 TransformMatrix transform = Create.OrientationMatrixLocalToGlobal(coordinateSystem);
                 Line lineLoc = l.Transform(transform);
 

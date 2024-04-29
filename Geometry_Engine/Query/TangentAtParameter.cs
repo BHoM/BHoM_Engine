@@ -101,7 +101,7 @@ namespace BH.Engine.Geometry
 
             double angle = t * 2 * Math.PI;
 
-            return (curve.Axis2 * (Math.Cos(angle) / curve.Radius1) - curve.Axis1 * (Math.Sin(angle) / curve.Radius2)).Normalise();
+            return (curve.CoordinateSystem.Y * (Math.Cos(angle) / curve.Radius1) - curve.CoordinateSystem.X * (Math.Sin(angle) / curve.Radius2)).Normalise();
         }
 
         /***************************************************/

@@ -219,15 +219,15 @@ namespace BH.Engine.Geometry
             //Solving for f(t) = 0 given the ellipse parameter at the intersection point
 
             //Magnitude of projecting curve axes to plane normal
-            double a = curve.Axis1.DotProduct(plane.Normal);    
-            double b = curve.Axis2.DotProduct(plane.Normal);
+            double a = curve.CoordinateSystem.X.DotProduct(plane.Normal);    
+            double b = curve.CoordinateSystem.Y.DotProduct(plane.Normal);
 
             if ((Math.Abs(a) + Math.Abs(b)) < tolerance)  //Curve and plane are parallel
                 return new List<Point>();
 
             a = a * curve.Radius1;                                              //First axis projected to the plane normal and scaled by the radius 
             b = b * curve.Radius2;                                              //Second axis projected to the plane normal and scaled by the radius
-            double c = plane.Normal.DotProduct(curve.Centre - plane.Origin);    //Signed distance from the centre to the plane
+            double c = plane.Normal.DotProduct(curve.CoordinateSystem.Origin - plane.Origin);    //Signed distance from the centre to the plane
 
             List<double> ts = new List<double>();
 
@@ -266,7 +266,7 @@ namespace BH.Engine.Geometry
             }
 
             //Function for getting the point on the ellipse based ont the angle parameter
-            Func<double, Point> ellipsePt = t => curve.Centre + Math.Cos(t) * curve.Radius1 * curve.Axis1 + Math.Sin(t) * curve.Radius2 * curve.Axis2;
+            Func<double, Point> ellipsePt = t => curve.CoordinateSystem.Origin + Math.Cos(t) * curve.Radius1 * curve.CoordinateSystem.X + Math.Sin(t) * curve.Radius2 * curve.CoordinateSystem.Y;
 
             if (checkTangency)
             {

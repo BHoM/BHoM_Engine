@@ -94,13 +94,13 @@ namespace BH.Engine.Geometry
             if (curve.ClosestPoint(point).SquareDistance(point) > tolerance * tolerance)
                 return -1;
 
-            Vector v = point - curve.Centre;
+            Vector v = point - curve.CoordinateSystem.Origin;
 
-            Vector vProj1 = curve.Axis1 * v.DotProduct(curve.Axis1) / curve.Radius1;
-            Vector vProj2 = curve.Axis2 * v.DotProduct(curve.Axis2) / curve.Radius2;
+            Vector vProj1 = curve.CoordinateSystem.X * v.DotProduct(curve.CoordinateSystem.X) / curve.Radius1;
+            Vector vProj2 = curve.CoordinateSystem.Y * v.DotProduct(curve.CoordinateSystem.Y) / curve.Radius2;
             v = vProj1 + vProj2;
 
-            return ((curve.Axis1.SignedAngle(v, curve.Normal()) + 2 * Math.PI) % (2 * Math.PI)) / (2 * Math.PI);
+            return ((curve.CoordinateSystem.X.SignedAngle(v, curve.Normal()) + 2 * Math.PI) % (2 * Math.PI)) / (2 * Math.PI);
         }
 
         /***************************************************/

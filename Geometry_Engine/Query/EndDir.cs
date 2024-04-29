@@ -62,7 +62,7 @@ namespace BH.Engine.Geometry
         [Output("endTan", "The tangent vector at the end of the Ellipse.")]
         public static Vector EndDir(this Ellipse ellipse)
         {
-            return ellipse?.Axis2;
+            return ellipse?.CoordinateSystem?.Y;
         }
 
         /***************************************************/
