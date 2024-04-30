@@ -48,11 +48,11 @@ namespace BH.Engine.Base
             }
 
             List<Type> typeList = new List<Type>();
-            if (name.StartsWith("BH.Engine"))
+            if (name.IsEngineNamespace())
                 typeList = Query.EngineTypeList();
-            else if (name.StartsWith("BH.Adapter"))
+            else if (name.IsAdapterNamespace())
                 typeList = Query.AdapterTypeList();
-            else if (name.StartsWith("BH.oM"))
+            else if (name.IsOmNamespace())
                 typeList = Query.BHoMTypeList();
             else
                 typeList = Query.AllTypeList();
