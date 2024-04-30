@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -310,9 +311,10 @@ namespace BH.Engine.Geometry
             }
 
             //Construct list of tangent vectors and orthogonal vectors
-            List<double> lengths = new List<double>();
-            List<Vector> tans = new List<Vector>();
-            List<Vector> orthos = new List<Vector>();
+            //List<double> lengths = new List<double>();
+            //List<Vector> tans = new List<Vector>();
+            //List<Vector> orthos = new List<Vector>();
+            List<Tuple<double, Vector, Vector, double>> segments = new List<Tuple<double, Vector, Vector, double>>();
             for (int i = 0; i < cPts.Count - 1; i++)
             {
                 Vector tan = (cPts[i + 1] - cPts[i]);
@@ -324,10 +326,15 @@ namespace BH.Engine.Geometry
                 }
                 else
                 {
-                    lengths.Add(length);
+
+
                     if (options.RemoveShortSegments || length > 0)
-                        tans.Add(tan * (1 / length));
-                    orthos.Add(normal.CrossProduct(tan).Normalise());
+                        tan = tan * (1 / length);
+
+                    segments.Add(new Tuple<double, Vector, Vector, double>(length, tan, normal.CrossProduct(tan).Normalise(), 0));
+                    //lengths.Add(length);
+                    //tans.Add(tan);
+                    //orthos.Add(normal.CrossProduct(tan).Normalise());
                 }
             }
 
@@ -335,13 +342,13 @@ namespace BH.Engine.Geometry
                 cPts.RemoveAt(cPts.Count - 1);
 
             //Construct list of translation vectors for each vertex, each scaled to represent a offset by 1
-            List<Vector> trans = new Vector[cPts.Count].ToList();
-            List<double> lengthChange = new double[tans.Count].ToList();
+            //List<Vector> trans = new Vector[cPts.Count].ToList();
+            //List<double> lengthChange = new double[tans.Count].ToList();
 
             double sinTol = Math.Pow(Math.Sin(angleTol / 2), 2);
 
             List<int> cornerComputes = new List<int>(Enumerable.Range(0, cPts.Count));
-            List<int> segmentsComputes = new List<int>(Enumerable.Range(0, tans.Count));
+            List<int> segmentsComputes = new List<int>(Enumerable.Range(0, segments.Count));
 
             bool firstIteration = true;
 
