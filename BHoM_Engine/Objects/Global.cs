@@ -78,8 +78,8 @@ namespace BH.Engine.Base
 
         static Global()
         {
-            OmNamespacePattern = new Regex(@"^BH\.(\w+\.)?oM.");
-            EngineNamespacePattern = new Regex(@"^BH\.(\w+\.)?Engine.");
+            OmNamespacePattern = new Regex(@"^BH\.(\w+\.)?oM\.");
+            EngineNamespacePattern = new Regex(@"^BH\.(\w+\.)?Engine\.");
             AdapterNamespacePattern = new Regex(@"^BH\.Adapter");
 
             // Subscribe to the assembly load event.
