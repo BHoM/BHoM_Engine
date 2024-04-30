@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using BH.oM.Quantities.Attributes;
+using System.Diagnostics;
 
 namespace BH.Engine.Geometry
 {
@@ -311,10 +312,9 @@ namespace BH.Engine.Geometry
             }
 
             //Construct list of tangent vectors and orthogonal vectors
-            //List<double> lengths = new List<double>();
-            //List<Vector> tans = new List<Vector>();
-            //List<Vector> orthos = new List<Vector>();
-            List<Tuple<double, Vector, Vector, double>> segments = new List<Tuple<double, Vector, Vector, double>>();
+            List<double> lengths = new List<double>();
+            List<Vector> tans = new List<Vector>();
+            List<Vector> orthos = new List<Vector>();
             for (int i = 0; i < cPts.Count - 1; i++)
             {
                 Vector tan = (cPts[i + 1] - cPts[i]);
@@ -331,10 +331,9 @@ namespace BH.Engine.Geometry
                     if (options.RemoveShortSegments || length > 0)
                         tan = tan * (1 / length);
 
-                    segments.Add(new Tuple<double, Vector, Vector, double>(length, tan, normal.CrossProduct(tan).Normalise(), 0));
-                    //lengths.Add(length);
-                    //tans.Add(tan);
-                    //orthos.Add(normal.CrossProduct(tan).Normalise());
+                    lengths.Add(length);
+                    tans.Add(tan);
+                    orthos.Add(normal.CrossProduct(tan).Normalise());
                 }
             }
 
@@ -342,13 +341,14 @@ namespace BH.Engine.Geometry
                 cPts.RemoveAt(cPts.Count - 1);
 
             //Construct list of translation vectors for each vertex, each scaled to represent a offset by 1
-            //List<Vector> trans = new Vector[cPts.Count].ToList();
-            //List<double> lengthChange = new double[tans.Count].ToList();
+            List<Vector> trans = new Vector[cPts.Count].ToList();
+            List<double> lengthChange = new double[tans.Count].ToList();
+
 
             double sinTol = Math.Pow(Math.Sin(angleTol / 2), 2);
 
             List<int> cornerComputes = new List<int>(Enumerable.Range(0, cPts.Count));
-            List<int> segmentsComputes = new List<int>(Enumerable.Range(0, segments.Count));
+            List<int> segmentsComputes = new List<int>(Enumerable.Range(0, tans.Count));
 
             bool firstIteration = true;
 
@@ -603,6 +603,346 @@ namespace BH.Engine.Geometry
                 }
             }
 
+
+            if (isClosed)
+                cPts.Add(cPts[0]);
+
+            if (cPts.Count < 3 || (isClosed && cPts.Count < 4))
+            {
+                Base.Compute.RecordError("Method failed to produce correct offset. Returning null.");
+                return null;
+            }
+
+            return new Polyline() { ControlPoints = cPts };
+        }
+
+        /***************************************************/
+
+        [Description("Creates an offset of a curve. Works only on planar curves")]
+        [Input("curve", "Curve to offset")]
+        [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
+        [Input("options", "Options for the offset operation. Default values is used if nothing is provided.")]
+        [Input("normal", "Normal of a plane for offset operation, not needed for closed curves")]
+        [Output("curve", "Resulting offset")]
+        public static Polyline Offset3(this Polyline curve, double offset, Vector normal = null, OffsetOptions options = null, double distTol = Tolerance.Distance, double angleTol = Tolerance.Angle)
+        {
+            if (curve == null || curve.Length() < distTol)
+                return null;
+
+            if (offset == 0)
+                return curve;
+            if (!curve.IsPlanar(distTol))
+            {
+                BH.Engine.Base.Compute.RecordError("Offset works only on planar curves");
+                return null;
+            }
+
+            options = options ?? new OffsetOptions();   //Initialise to default values if nothing is provided
+            bool isClosed = curve.IsClosed(distTol);
+
+            List<Point> cPts = new List<Point>(curve.ControlPoints);
+
+            if (normal == null)
+                if (!isClosed)
+                {
+                    int i = 2;
+                    Vector v1 = cPts[1] - cPts[0];
+                    do
+                    {
+                        normal = v1.CrossProduct(cPts[i] - cPts[0]);
+                        i++;
+                        if (i >= cPts.Count)
+                        {
+                            Base.Compute.RecordError("Normal vector is required to be provided for a linear curve.");
+                            return null;
+                        }
+                    } while (normal.Length() < distTol);
+                }
+                else
+                    normal = curve.Normal();
+            else
+                normal = normal.Normalise();
+
+            if (offset < 0) //Always work with a positive offset value, makes it possible to make correct assumptions for various edge cases
+            {
+                offset = -offset;
+                normal = -normal;
+            }
+
+            //Construct list of tangent vectors and orthogonal vectors
+            List<Tuple<double, Vector, Vector, double>> segments = new List<Tuple<double, Vector, Vector, double>>();
+            for (int i = 0; i < cPts.Count - 1; i++)
+            {
+                Vector tan = (cPts[i + 1] - cPts[i]);
+                double length = tan.Length();
+                if (options.RemoveShortSegments && length < distTol) //Check for short segments and remove
+                {
+                    cPts.RemoveAt(i + 1);
+                    i--;
+                }
+                else
+                {
+                    if (options.RemoveShortSegments || length > 0)
+                        tan = tan * (1 / length);
+
+                    segments.Add(new Tuple<double, Vector, Vector, double>(length, tan, normal.CrossProduct(tan).Normalise(), 0));
+                    //lengths.Add(length);
+                    //tans.Add(tan);
+                    //orthos.Add(normal.CrossProduct(tan).Normalise());
+                }
+            }
+
+            if (isClosed)
+                cPts.RemoveAt(cPts.Count - 1);
+
+            //Construct list of translation vectors for each vertex, each scaled to represent a offset by 1
+            //List<Vector> trans = new Vector[cPts.Count].ToList();
+            //List<double> lengthChange = new double[tans.Count].ToList();
+
+            List<Tuple<Point, Vector, double>> vertices = cPts.Select(x => new Tuple<Point, Vector, double>(x, null, 0)).ToList();
+
+            double sinTol = Math.Pow(Math.Sin(angleTol / 2), 2);
+
+            List<int> cornerComputes = new List<int>(Enumerable.Range(0, cPts.Count));
+            List<int> segmentsComputes = new List<int>(Enumerable.Range(0, segments.Count));
+
+            bool firstIteration = true;
+
+            //Loop and continue offseting until all offsets done.
+            while (offset > 0)
+            {
+
+                //Compute corner offset vectors. First whileloop iteration computes for all corners
+                //Subsequent iteration only updates corners that have seen a change
+                while (cornerComputes.Count > 0)
+                {
+                    int i = cornerComputes[0];
+                    cornerComputes.RemoveAt(0);
+
+                    if (!isClosed && i == 0)
+                        vertices[i] = new Tuple<Point, Vector, double>(vertices[i].Item1, segments[i].Item3, 0);
+                    else if (!isClosed && i == cPts.Count - 1)
+                        vertices[i] = new Tuple<Point, Vector, double>(vertices[i].Item1, segments[i - 1].Item3, 0);
+                    else
+                    {
+                        int prev = i == 0 ? segments.Count - 1 : i - 1;
+
+                        var seg1 = segments[prev];
+                        var seg2 = segments[i];
+
+                        Vector dir = (seg1.Item3 + seg2.Item3) / 2;
+
+                        //Below factor gives the correct magnitude for corner scaling based on equal angle triangles.
+                        //ortho projected onto the direction gives a right angled triangle with the same angles as the triangle
+                        //formed by offset vetor with correct length and dir.
+                        double length = dir.SquareLength();
+
+                        if (options.HandleAdjacentParallelSegments && length < sinTol)    //equivalent to check that angle between two adjecent segements is less than angle tolerance
+                        {
+                            bool outwards = false;
+                            if (firstIteration) //Only relevant to check for outwards for first iteration. Subsequent iterations can never end up in this case
+                            {
+                                int i0 = i - 2;
+                                if (isClosed && i0 < 0)
+                                    i0 = segments.Count + i0;
+
+                                int i3 = i + 1;
+                                if (isClosed && i3 > segments.Count - 1)
+                                    i3 = i3 % segments.Count;
+
+                                if (i0 >= 0 && i3 <= segments.Count - 1)
+                                {
+                                    Vector t0 = segments[i0].Item2;
+                                    Vector t1 = seg1.Item2;
+                                    Vector t3 = segments[i3].Item2;
+
+                                    double l1 = seg1.Item1;
+                                    double l2 = seg2.Item1;
+                                    double lengthDif = l1 - l2;
+
+
+                                    double t0n1 = t0.DotProduct(seg1.Item3);
+                                    double t3n1 = t3.DotProduct(seg1.Item3);
+
+                                    if (Math.Abs(lengthDif) < distTol)
+                                    {
+                                        if (t0n1 * t3n1 < 0)
+                                        {
+                                            //Same side
+                                            if (t0n1 < 0)
+                                                outwards = -t0.DotProduct(t1) > t3.DotProduct(t1);
+                                            else
+                                                outwards = -t0.DotProduct(t1) < t3.DotProduct(t1);
+                                        }
+                                        else
+                                            outwards = t0n1 < 0;
+                                    }
+                                    else if (lengthDif < 0)
+                                        outwards = t0n1 < 0;
+                                    else
+                                        outwards = t3n1 < 0;
+
+                                }
+                            }
+
+                            if (outwards)
+                            {
+                                vertices.Insert(i, new Tuple<Point, Vector, double>(vertices[i].Item1, null, 0));
+                                segments.Insert(i, new Tuple<double, Vector, Vector, double>(0, segments[prev].Item2, segments[prev].Item3, 0));
+
+                                for (int j = 0; j < cornerComputes.Count; j++)
+                                {
+                                    if (cornerComputes[j] > i)
+                                        cornerComputes[j]++;
+                                }
+
+                                for (int j = 0; j < segmentsComputes.Count; j++)
+                                {
+                                    if (segmentsComputes[j] > i - 1)
+                                        segmentsComputes[j]++;
+                                }
+
+                                segmentsComputes.Add(prev);
+                                segmentsComputes.Add(i);
+                                segmentsComputes.Add((i + 1) % segments.Count);
+                                segmentsComputes = segmentsComputes.Distinct().ToList();
+
+                                cornerComputes.Insert(0, i);
+                                cornerComputes.Insert(0, i + 1);
+                            }
+                            else
+                            {
+                                vertices.RemoveAt(i);
+                                int removed = 1;
+
+                                if (vertices[prev].Item1.Distance(vertices[i].Item1) < distTol)
+                                {
+                                    vertices.RemoveAt(i);
+                                    segments.RemoveAt(i);
+                                    segments.RemoveAt(prev);
+
+                                    removed++;
+                                }
+                                else
+                                {
+                                    segments.RemoveAt(i);
+                                    
+                                    Vector tan = cPts[i] - cPts[prev];
+                                    double lengthNew = tan.Length();
+                                    tan = tan * (1 / lengthNew);
+                                    segments[prev] = new Tuple<double, Vector, Vector, double>(lengthNew, tan, normal.CrossProduct(tan).Normalise(), 0);
+                                }
+
+                                for (int j = 0; j < cornerComputes.Count; j++)
+                                {
+                                    if (cornerComputes[j] > i)
+                                        cornerComputes[j] -= removed;
+                                }
+
+                                cornerComputes.Insert(0, i);
+                                cornerComputes.Insert(0, prev);
+                                cornerComputes = cornerComputes.Distinct().ToList();
+
+                                for (int j = 0; j < segmentsComputes.Count; j++)
+                                {
+                                    if (segmentsComputes[j] > i - 1)
+                                        segmentsComputes[j] -= removed;
+                                }
+                                segmentsComputes = segmentsComputes.Distinct().ToList();
+                            }
+
+                        }
+                        else
+                        {
+                            Vector trans = dir * (1 / length);
+                            double vertLengthChange = seg1.Item2.DotProduct(trans);
+                            vertices[i] = new Tuple<Point, Vector, double>(vertices[i].Item1, trans, vertLengthChange);
+                        }
+                    }
+                }
+
+                //Find maximum offset possible
+                double maxOffset = offset;
+
+                if (options.HandleCreatedSelfIntersections)
+                {
+                    //Compute how much the length of each segment is affected by a unit offset (length 1)
+                    //First whileloop iteration runs though all segemnts, later loop iterations only recomputes for segments that have seen a change
+                    while (segmentsComputes.Count > 0)
+                    {
+                        int i = segmentsComputes[0];
+                        segmentsComputes.RemoveAt(0);
+                        double change;
+                        if (!isClosed && i == 0)
+                            change = vertices[i + 1].Item3;
+                        else if (!isClosed && i == segments.Count - 1)
+                            change = vertices[i].Item3;
+                        else
+                        {
+                            change = vertices[i].Item3 + vertices[(i + 1) % (vertices.Count - 1)].Item3;
+                        }
+
+                        segments[i] = new Tuple<double, Vector, Vector, double>(segments[i].Item1, segments[i].Item2, segments[i].Item3, change);
+                    }
+
+
+                    for (int i = 0; i < segments.Count; i++)
+                    {
+                        double offsetScale = -segments[i].Item1 / segments[i].Item4;
+                        if (offsetScale > 0)
+                            maxOffset = Math.Min(maxOffset, offsetScale);
+                    }
+                }
+
+                //Offset the points
+                for (int i = 0; i < vertices.Count; i++)
+                {
+                    var v = vertices[i];
+                    vertices[i] = new Tuple<Point, Vector, double>(v.Item1 + v.Item2 * maxOffset, v.Item2 ,v.Item3);
+                }
+
+                offset -= maxOffset;
+
+                //If remaining offset, make adjustments (remove 0 length segments etc) for next iteration
+                if (offset > 0)
+                {
+                    firstIteration = false;
+
+                    bool recomputeLastSegment = false;
+
+                    for (int i = 0; i < segments.Count; i++)
+                    {
+                        var seg = segments[i];
+                        double l = seg.Item1 + seg.Item4 * maxOffset;   //new length of segment
+                        if (l < distTol)
+                        {
+                            //If smaller than tolerance, remove from segment lists
+                            segments.RemoveAt(i);
+                            if (i == 0)
+                            {
+                                if (isClosed)
+                                    recomputeLastSegment = true;
+                            }
+                            else
+                                segmentsComputes.Add(i - 1);
+
+                            segmentsComputes.Add(i % segments.Count);
+
+                            //And from vertex lists
+                            vertices.RemoveAt(i);
+                            cornerComputes.Add(i % cPts.Count);
+                            i--;
+                        }
+                        else
+                            segments[i] = new Tuple<double, Vector, Vector, double>(l, seg.Item2, seg.Item3, seg.Item4);
+                    }
+
+                    if (recomputeLastSegment)
+                        segmentsComputes.Add(segments.Count - 1);
+                }
+            }
+
+            cPts = vertices.Select(x => x.Item1).ToList();
 
             if (isClosed)
                 cPts.Add(cPts[0]);
