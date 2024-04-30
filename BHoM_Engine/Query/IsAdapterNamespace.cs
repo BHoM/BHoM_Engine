@@ -36,7 +36,7 @@ namespace BH.Engine.Base
         [Output("isAdapter", "True if the input namespace is a valid BHoM Adapter namespace, otherwise false.")]
         public static bool IsAdapterNamespace(this string ns)
         {
-            return ns != null && ns.StartsWith("BH.Adapter");
+            return ns != null && Global.AdapterNamespacePattern.IsMatch(ns);
         }
 
         /***************************************************/

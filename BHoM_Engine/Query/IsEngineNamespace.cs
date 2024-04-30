@@ -22,7 +22,6 @@
 
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
-using System.Text.RegularExpressions;
 
 namespace BH.Engine.Base
 {
@@ -37,15 +36,8 @@ namespace BH.Engine.Base
         [Output("isEngine", "True if the input namespace is a valid BHoM Engine namespace, otherwise false.")]
         public static bool IsEngineNamespace(this string ns)
         {
-            return ns != null && m_RegexEngineNamespace.IsMatch(ns);
+            return ns != null && Global.EngineNamespacePattern.IsMatch(ns);
         }
-
-
-        /***************************************************/
-        /****          Private fields - regex           ****/
-        /***************************************************/
-
-        private static Regex m_RegexEngineNamespace = new Regex(@"BH.(\w+.)?Engine.");
 
         /***************************************************/
     }
