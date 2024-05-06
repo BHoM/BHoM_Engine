@@ -65,6 +65,7 @@ namespace BH.Engine.Base
         [PreviousVersion("7.2", "BH.Engine.Base.Create.GenericType(System.String, System.Collections.Generic.List<System.String>, System.Boolean)")]
         [Description("Creates a generic BHoM type that matches the given name.")]
         [Input("name", "Name to be searched for among all BHoM generic types.")]
+        [Input("arguments", "Generic parameters of the type to create.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
         [Input("takeFirstIfMultiple", "Defines what happens in case of finding multiple matching types. If true, first type found will be returned, otherwise null.")]
         [Output("type", "BHoM generic type that matches the given name.")]
