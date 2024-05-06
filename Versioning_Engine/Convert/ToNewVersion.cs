@@ -313,6 +313,11 @@ namespace BH.Engine.Versioning
                 }
                 Type upgraderType = upgraderAssembly.GetTypes().First(x => x.Name == "Upgrader");
                 m_Upgrader = Activator.CreateInstance(upgraderType);
+                try
+                {
+                    (m_Upgrader as dynamic).LogToConsole = false;
+                }
+                catch (Exception ex) { }
                 m_UpgraderMethod = upgraderType.GetMethod("Upgrade", BindingFlags.NonPublic | BindingFlags.Instance);
 
                 Type baseConverterType = upgraderAssembly.GetTypes().First(x => x.Name == "Converter");
