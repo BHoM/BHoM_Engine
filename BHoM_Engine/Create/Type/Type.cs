@@ -36,11 +36,13 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("7.2", "BH.Engine.Base.Create.Type(System.String, System.Boolean)")]
         [Description("Creates a BHoM type that matches the given name.")]
         [Input("name", "Name to be searched for among all BHoM types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
+        [Input("takeFirstIfMultiple", "Defines what happens in case of finding multiple matching types. If true, first type found will be returned, otherwise null.")]
         [Output("type", "BHoM type that matches the given name.")]
-        public static Type Type(string name, bool silent = false)
+        public static Type Type(string name, bool silent = false, bool takeFirstIfMultiple = false)
         {
             if (name == null)
             {
@@ -49,9 +51,9 @@ namespace BH.Engine.Base
             }
 
             if (name.Contains('<'))
-                return GenericTypeAngleBrackets(name, silent);
+                return GenericTypeAngleBrackets(name, silent, takeFirstIfMultiple);
             else if (name.Contains('`') && name.Contains("[["))
-                return GenericTypeSquareBrackets(name, silent);
+                return GenericTypeSquareBrackets(name, silent, takeFirstIfMultiple);
 
             string unQualifiedName = name.Contains(",") ? name.Split(',').First() : name;
             List<Type> types = null;
@@ -68,7 +70,7 @@ namespace BH.Engine.Base
                     if (type != null)
                         type = type.MakeByRefType();
                 }
-                    
+
                 if (type == null && !silent)
                     Compute.RecordError($"A type corresponding to {name} cannot be found.");
 
@@ -76,6 +78,8 @@ namespace BH.Engine.Base
             }
             else if (types.Count == 1)
                 return types[0];
+            else if (types.Count > 1 && takeFirstIfMultiple)
+                return types.OrderBy(x => x.Assembly.FullName).First();
             else if (!silent)
             {
                 string message = "Ambiguous match: Multiple types correspond the the name provided: \n";

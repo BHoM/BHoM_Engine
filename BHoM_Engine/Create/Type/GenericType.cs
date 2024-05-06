@@ -35,11 +35,13 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("7.2", "BH.Engine.Base.Create.GenericType(System.String, System.Boolean)")]
         [Description("Creates a generic BHoM type that matches the given name.")]
         [Input("name", "Name to be searched for among all BHoM generic types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
+        [Input("takeFirstIfMultiple", "Defines what happens in case of finding multiple matching types. If true, first type found will be returned, otherwise null.")]
         [Output("type", "BHoM generic type that matches the given name.")]
-        public static Type GenericType(string name, bool silent = false)
+        public static Type GenericType(string name, bool silent = false, bool takeFirstIfMultiple = false)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -48,9 +50,9 @@ namespace BH.Engine.Base
             }
 
             if (name.Contains("<"))
-                return GenericTypeAngleBrackets(name, silent);
+                return GenericTypeAngleBrackets(name, silent, takeFirstIfMultiple);
             else if (name.Contains('`') && name.Contains("[["))
-                return GenericTypeSquareBrackets(name, silent);
+                return GenericTypeSquareBrackets(name, silent, takeFirstIfMultiple);
             else   //No split chars found, return null and error as type is not generic
             {
                 Compute.RecordError($"Provided string is not a generic type. Provided string was: {name}.");
@@ -60,21 +62,21 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        
-
+        [PreviousVersion("7.2", "BH.Engine.Base.Create.GenericType(System.String, System.Collections.Generic.List<System.String>, System.Boolean)")]
         [Description("Creates a generic BHoM type that matches the given name.")]
         [Input("name", "Name to be searched for among all BHoM generic types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
+        [Input("takeFirstIfMultiple", "Defines what happens in case of finding multiple matching types. If true, first type found will be returned, otherwise null.")]
         [Output("type", "BHoM generic type that matches the given name.")]
-        public static Type GenericType(string name, List<string> arguments, bool silent = false)
+        public static Type GenericType(string name, List<string> arguments, bool silent = false, bool takeFirstIfMultiple = false)
         {
-            Type typeDefinition = Type(name, silent);
+            Type typeDefinition = Type(name, silent, takeFirstIfMultiple);
             if (typeDefinition == null)
                 return null;
 
             try
             {
-                return typeDefinition.MakeGenericType(arguments.Select(x => Type(x, silent)).ToArray());    //Call to Type(x) will recursively call this method for inner generic types
+                return typeDefinition.MakeGenericType(arguments.Select(x => Type(x, silent, takeFirstIfMultiple)).ToArray());    //Call to Type(x) will recursively call this method for inner generic types
             }
             catch
             {
@@ -90,7 +92,7 @@ namespace BH.Engine.Base
         [Input("name", "Name to be searched for among all BHoM generic types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
         [Output("type", "BHoM generic type that matches the given name.")]
-        private static Type GenericTypeAngleBrackets(string name, bool silent = false)
+        private static Type GenericTypeAngleBrackets(string name, bool silent = false, bool takeFirstIfMultiple = false)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -141,7 +143,7 @@ namespace BH.Engine.Base
             }
             //Main type definition as string up until the first split char (first '<').
             //Number of generic arguments will be 1 less than the number of argsSplit count
-            return GenericType(name.Substring(0, argsSplit[0]) + "`" + (argsSplit.Count - 1), arguments, silent);
+            return GenericType(name.Substring(0, argsSplit[0]) + "`" + (argsSplit.Count - 1), arguments, silent, takeFirstIfMultiple);
         }
 
         /***************************************************/
@@ -150,7 +152,7 @@ namespace BH.Engine.Base
         [Input("name", "Name to be searched for among all BHoM generic types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
         [Output("type", "BHoM generic type that matches the given name.")]
-        private static Type GenericTypeSquareBrackets(string name, bool silent = false)
+        private static Type GenericTypeSquareBrackets(string name, bool silent = false, bool takeFirstIfMultiple = false)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -210,7 +212,7 @@ namespace BH.Engine.Base
             string mainName = name.Substring(0, nameEnd);
             //Main type definition as string up until the first split char (first '<').
             //Number of generic arguments will be 1 less than the number of argsSplit count
-            return GenericType(mainName, arguments, silent);
+            return GenericType(mainName, arguments, silent, takeFirstIfMultiple);
         }
 
         /***************************************************/
