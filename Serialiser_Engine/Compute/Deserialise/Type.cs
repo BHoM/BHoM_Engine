@@ -147,7 +147,7 @@ namespace BH.Engine.Serialiser
             if (fullName == "T")
                 return null;
             if (fullName.IsOmNamespace())
-                type = Base.Create.Type(fullName, true);
+                type = Base.Create.Type(fullName, true, true);
             else if (fullName.IsEngineNamespace())
                 type = Base.Create.EngineType(fullName, true);
             else
@@ -157,7 +157,7 @@ namespace BH.Engine.Serialiser
             {
                 List<Type> types = Base.Create.AllTypes(fullName, true);
                 if (types.Count > 0)
-                    type = types.First();
+                    type = types.OrderBy(x => x.Assembly.FullName).First();
             }
 
             return type;

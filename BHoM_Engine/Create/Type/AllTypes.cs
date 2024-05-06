@@ -47,16 +47,7 @@ namespace BH.Engine.Base
                 return new List<Type>();
             }
 
-            List<Type> typeList = new List<Type>();
-            if (name.IsEngineNamespace())
-                typeList = Query.EngineTypeList();
-            else if (name.IsAdapterNamespace())
-                typeList = Query.AdapterTypeList();
-            else if (name.IsOmNamespace())
-                typeList = Query.BHoMTypeList();
-            else
-                typeList = Query.AllTypeList();
-
+            List<Type> typeList = Query.AllTypeList();
             List<Type> types;
             if (name.Contains(','))
                 types = typeList.Where(x => x.AssemblyQualifiedName.Contains(name)).ToList();
