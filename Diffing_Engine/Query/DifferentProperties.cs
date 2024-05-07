@@ -54,7 +54,7 @@ namespace BH.Engine.Diffing
             ObjectDifferences objectDifferences = Query.ObjectDifferences(obj1, obj2, comparisonConfig);
 
             if (objectDifferences == null)
-                return null;
+                return new Dictionary<string, Tuple<object, object>>();
 
             // Group the `ObjectDifferences` in a Dictionary.
             Dictionary<string, Tuple<object, object>> result = objectDifferences.Differences.GroupBy(d => d.FullName)
