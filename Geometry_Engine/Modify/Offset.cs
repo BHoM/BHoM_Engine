@@ -388,7 +388,11 @@ namespace BH.Engine.Geometry
 
                         if (options.HandleAdjacentParallelSegments && length < sinTol)    //equivalent to check that angle between two adjecent segements is less than angle tolerance
                         {
-                            HandleParalellAdjecentPolylinearSegments(segments, vertices, cornerComputes, segmentsComputes, normal, isClosed, firstIteration, distTol, i, prev);
+                            if (!HandleParalellAdjecentPolylinearSegments(segments, vertices, cornerComputes, segmentsComputes, normal, isClosed, firstIteration, distTol, i, prev)) 
+                            {
+                                Base.Compute.RecordWarning("Polyline reduced to nothing. Empty polyline returned.");
+                                return new Polyline();
+                            }
                         }
                         else
                         {
@@ -477,6 +481,9 @@ namespace BH.Engine.Geometry
 
                     if (recomputeLastSegment)
                         segmentsComputes.Add(segments.Count - 1);
+
+                    segmentsComputes = segmentsComputes.Distinct().ToList();
+                    cornerComputes = cornerComputes.Distinct().ToList();
                 }
             }
 
@@ -775,7 +782,7 @@ namespace BH.Engine.Geometry
         /***  Private Methods                            ***/
         /***************************************************/
 
-        private static void HandleParalellAdjecentPolylinearSegments(List<Tuple<double, Vector, Vector, double>> segments, List<Tuple<Point, Vector, double>> vertices, List<int> cornerComputes, List<int> segmentsComputes, Vector normal, bool isClosed, bool firstIteration, double distTol, int i, int prev)
+        private static bool HandleParalellAdjecentPolylinearSegments(List<Tuple<double, Vector, Vector, double>> segments, List<Tuple<Point, Vector, double>> vertices, List<int> cornerComputes, List<int> segmentsComputes, Vector normal, bool isClosed, bool firstIteration, double distTol, int i, int prev)
         {
             bool outwards = false;
             if (firstIteration) //Only relevant to check for outwards for first iteration. Subsequent iterations can never end up in this case
@@ -861,6 +868,15 @@ namespace BH.Engine.Geometry
                 vertices.RemoveAt(i);
                 int removed = 1;
 
+                if (vertices.Count <= 1)
+                    return false;
+
+                if (prev > i)
+                    prev--;
+
+                if (isClosed && i > vertices.Count - 1)
+                    i = 0;
+
                 if (vertices[prev].Item1.Distance(vertices[i].Item1) < distTol)
                 {
                     //If the corner removed leads to the previous and next points being adjecent, remove one of them as well as the two segments leading up to the removed vertex
@@ -882,6 +898,10 @@ namespace BH.Engine.Geometry
                     segments[prev] = new Tuple<double, Vector, Vector, double>(lengthNew, tan, tan.CrossProduct(normal).Normalise(), 0);
                 }
 
+                if (vertices.Count <= 1)
+                    return false;
+
+
                 for (int j = 0; j < cornerComputes.Count; j++)
                 {
                     if (cornerComputes[j] > i)
@@ -897,8 +917,9 @@ namespace BH.Engine.Geometry
                     if (segmentsComputes[j] > i - 1)
                         segmentsComputes[j] -= removed;
                 }
-                segmentsComputes = segmentsComputes.Distinct().ToList();
+                segmentsComputes = segmentsComputes.Where(x => x >= 0).Distinct().ToList();
             }
+            return true;
         }
 
         /***************************************************/
