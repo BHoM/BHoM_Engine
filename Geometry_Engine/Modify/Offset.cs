@@ -910,16 +910,45 @@ namespace BH.Engine.Geometry
 
                 cornerComputes.Insert(0, i);
                 cornerComputes.Insert(0, prev);
-                cornerComputes = cornerComputes.Distinct().ToList();
+                cornerComputes.SortAndRemoveDuplicatesAndNegatives();
 
                 for (int j = 0; j < segmentsComputes.Count; j++)
                 {
                     if (segmentsComputes[j] > i - 1)
                         segmentsComputes[j] -= removed;
                 }
-                segmentsComputes = segmentsComputes.Where(x => x >= 0).Distinct().ToList();
+
+                segmentsComputes.SortAndRemoveDuplicatesAndNegatives();
+
             }
             return true;
+        }
+
+        private static void SortAndRemoveDuplicatesAndNegatives(this List<int> list) 
+        {
+            list.Sort();
+
+            while (list.Count > 0)
+            {
+                if (list[0] < 0)
+                    list.RemoveAt(0);
+                else
+                    break;
+            }
+
+            int index = list.Count - 1;
+            while (index > 0)
+            {
+                if (list[index] == list[index - 1])
+                {
+                    if (index < list.Count - 1)
+                        (list[index], list[list.Count - 1]) = (list[list.Count - 1], list[index]);
+                    list.RemoveAt(list.Count - 1);
+                    index--;
+                }
+                else
+                    index--;
+            }
         }
 
         /***************************************************/
