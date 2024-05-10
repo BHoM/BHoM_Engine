@@ -799,10 +799,11 @@ namespace BH.Engine.Geometry
         /***  Private Methods                            ***/
         /***************************************************/
 
+        [Description("Support method for Polyline offsets for the case of two adjecent polyline segments creating a acute angle within provided tolerance. This case is handled either by vertex and segment removal, or introduction of additional vertices.")]
         private static bool HandleParalellAdjecentPolylinearSegments(List<Tuple<double, Vector, Vector, double>> segments, List<Tuple<Point, Vector, double>> vertices, List<int> cornerComputes, List<int> segmentsComputes, Vector normal, bool isClosed, bool firstIteration, double distTol, int i, int prev, double angleTol)
         {
             bool outwards = false;
-            if (firstIteration)
+            if (firstIteration) //Only need to check if "Inwards" or "Outwards" for first iteration, as subsequent iterations all can be assumed to be inwards (vanishing)
                 outwards = CheckAcuteCornerOutwards(segments, isClosed,i, prev, angleTol, distTol);
             
             if (outwards)
@@ -870,24 +871,24 @@ namespace BH.Engine.Geometry
                 }
 
                 if (vertices.Count <= 1)
-                    return false;
+                    return false;   //Vertex list small enough that nothing is left. Method to return empty polyline.
 
 
+                //Readjust corner compute indecies due to vertex removal 
                 for (int j = 0; j < cornerComputes.Count; j++)
                 {
                     if (cornerComputes[j] > i)
                         cornerComputes[j] -= removed;
                 }
-
-                
+                //Set corners that require recomputation due to vertex removal
                 int recomputeIndex = i - removed;
-                if (recomputeIndex > 0)
+                if (recomputeIndex > 0) //Standard case for internal vertex
                 {
                     cornerComputes.Add(recomputeIndex - 1);
                     cornerComputes.Add(recomputeIndex);
                     cornerComputes.Add((recomputeIndex + 1) % vertices.Count);
                 }
-                else if (recomputeIndex == 0)
+                else if (recomputeIndex == 0)   //Recomputation around the start vertex
                 {
                     if (isClosed)
                         cornerComputes.Add(vertices.Count - 1);
@@ -903,7 +904,7 @@ namespace BH.Engine.Geometry
                         if (isClosed)
                             cornerComputes.Add(vertices.Count - 1);
                     }
-                    else
+                    else    //i == 1
                     {
                         cornerComputes.Add(0);
                         cornerComputes.Add(1);
@@ -911,18 +912,6 @@ namespace BH.Engine.Geometry
                             cornerComputes.Add(2);
                     }
                 }
-
-                //if (recomputeIndex > 0)
-                //    cornerComputes.Add((recomputeIndex - 1) % vertices.Count);
-                //else if (isClosed)
-                //    cornerComputes.Add(vertices.Count - 1);
-
-                //if (recomputeIndex >= 0)
-                //    cornerComputes.Add((recomputeIndex) % vertices.Count);
-                //else if (isClosed)
-                //    cornerComputes.Add(vertices.Count - 1);
-
-                //cornerComputes.Add((recomputeIndex + 1) % vertices.Count);
 
                 for (int j = 0; j < segmentsComputes.Count; j++)
                 {
@@ -939,6 +928,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [Description("Method that finds if a particular corner should be lead to an outwards of inwards offset.")]
         private static bool CheckAcuteCornerOutwards(List<Tuple<double, Vector, Vector, double>> segments, bool isClosed, int i, int prev, double angleTol, double distTol)
         {
 
@@ -971,6 +961,10 @@ namespace BH.Engine.Geometry
                             break;
                         }
                     }
+                    if (i0 == i)    //Looped all the way around, all segments parallel
+                    {
+                        return false;
+                    }
                     t0 = segments[i0].Item2;
 
                 }
@@ -1001,6 +995,11 @@ namespace BH.Engine.Geometry
                             break;
                         }
                     }
+                    if (i3 == prev)    //Looped all the way around, all segments parallel
+                    {
+                        return false;
+                    }
+
                     t3 = segments[i3].Item2;
 
                 }
