@@ -40,26 +40,28 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
+        [PreviousVersion("7.2", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.Line, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Creates an offset of a curve")]
         [Input("curve", "Curve to offset")]
         [Input("offset", "Offset distance. Positive value offsets to the right with normal pointing up and direction of a curve pointing forward")]
         [Input("normal", "Normal of a plane for offset operation")]
         [Input("tangentExtensions", "If true, arc segments of a PolyCurve will be extend by a tangent line, if false - by arc")]
         [Output("curve", "Resulting offset")]
-        public static Line Offset(this Line curve, double offset, Vector normal, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
+        public static Line Offset(this Line curve, double offset, Vector normal, OffsetOptions options = null, double tolerance = Tolerance.Distance)
         {
             return curve.Translate(normal.CrossProduct(curve.Start - curve.End).Normalise() * offset);
         }
 
         /***************************************************/
 
+        [PreviousVersion("7.2", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.Arc, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Creates an offset of a curve")]
         [Input("curve", "Curve to offset")]
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
         [Input("normal", "Normal of a plane for offset operation")]
         [Input("tangentExtensions", "If true, arc segments of a PolyCurve will be extend by a tangent line, if false - by arc")]
         [Output("curve", "Resulting offset")]
-        public static Arc Offset(this Arc curve, double offset, Vector normal, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
+        public static Arc Offset(this Arc curve, double offset, Vector normal, OffsetOptions options = null, double tolerance = Tolerance.Distance)
         {
             if (offset == 0)
                 return curve;
@@ -90,13 +92,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [PreviousVersion("7.2", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.Circle, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Creates an offset of a curve")]
         [Input("curve", "Curve to offset")]
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
         [Input("normal", "Normal of a plane for offset operation")]
         [Input("tangentExtensions", "If true, arc segments of a PolyCurve will be extend by a tangent line, if false - by arc")]
         [Output("curve", "Resulting offset")]
-        public static Circle Offset(this Circle curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
+        public static Circle Offset(this Circle curve, double offset, Vector normal = null, OffsetOptions options = null, double tolerance = Tolerance.Distance)
         {
             if (offset == 0)
                 return curve;
@@ -128,146 +131,14 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Creates an offset of a curve. Works only on planar curves")]
-        [Input("curve", "Curve to offset")]
-        [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
-        [Input("tangentExtensions", "If true, arc segments of a PolyCurve will be extend by a tangent line, if false - by arc")]
-        [Input("normal", "Normal of a plane for offset operation, not needed for closed curves")]
-        [Output("curve", "Resulting offset")]
-        public static Polyline Offset(this Polyline curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
-        {
-            if (curve == null || curve.Length() < tolerance)
-                return null;
-
-            if (!curve.IsPlanar(tolerance))
-            {
-                BH.Engine.Base.Compute.RecordError("Offset works only on planar curves");
-                return null;
-            }
-
-            bool isClosed = curve.IsClosed(tolerance);
-
-            if (normal == null)
-                if (!isClosed)
-                    BH.Engine.Base.Compute.RecordError("Normal is missing. Normal vector is not needed only for closed curves");
-                else
-                    normal = curve.Normal();
-            else
-                normal = normal.Normalise();
-
-            if (offset == 0)
-                return curve;
-
-            if (offset > 0.05 * curve.Length())
-                return (curve.Offset(offset / 2, normal, tangentExtensions, tolerance))?.Offset(offset / 2, normal, tangentExtensions, tolerance);
-
-            List<Point> cPts = new List<Point>(curve.ControlPoints);
-            List<Point> tmp = new List<Point>(curve.ControlPoints);
-
-            if (!isClosed)
-            {
-                for (int i = 0; i < cPts.Count - 1; i++) //moving every vertex perpendicularly to each of it's edgses. At this point only direction of move is good.
-                {
-                    Vector trans = (cPts[i + 1] - cPts[i]).CrossProduct(normal);
-                    trans = trans.Normalise() * offset;
-                    tmp[i] += trans;
-                    tmp[i + 1] += trans;
-                }
-
-                for (int i = 1; i < cPts.Count - 1; i++) //adjusting move distance
-                {
-                    Vector trans = (tmp[i] - cPts[i]);
-                    trans = trans.Normalise() * Math.Abs(offset) / Math.Sin(Math.Abs((cPts[i] - cPts[i - 1]).Angle(cPts[i] - cPts[i + 1])) / 2);
-                    tmp[i] = cPts[i] + trans;
-                }
-
-            }
-            else
-            {
-                cPts.RemoveAt(cPts.Count - 1);
-                tmp.RemoveAt(tmp.Count - 1);
-                for (int i = 0; i < cPts.Count; i++) //moving every vertex perpendicularly to each of it's edgses. At this point only direction of move is good.
-                {
-                    Vector trans = (cPts[(i + 1) % cPts.Count] - cPts[i]).CrossProduct(normal);
-                    trans = trans.Normalise() * offset;
-                    tmp[i] += trans;
-                    tmp[(i + 1) % cPts.Count] += trans;
-                }
-
-                for (int i = 0; i < cPts.Count; i++)  //adjusting move distance
-                {
-                    if (!(Math.Abs(Math.Sin((cPts[i] - cPts[(i + cPts.Count - 1) % cPts.Count]).Angle(cPts[i] - cPts[(i + 1) % cPts.Count]))) < Tolerance.Angle))
-                    {
-                        Vector trans = (tmp[i] - cPts[i]);
-                        trans = trans.Normalise() * Math.Abs(offset) / Math.Sin(Math.Abs((cPts[i] - cPts[(i + cPts.Count - 1) % cPts.Count]).Angle(cPts[i] - cPts[(i + 1) % cPts.Count])) / 2);
-                        tmp[i] = cPts[i] + trans;
-                    }
-                }
-                tmp.Add(tmp[0]);
-            }
-
-            Polyline result = new Polyline { ControlPoints = tmp };
-            List<Line> lines = result.SubParts();
-
-            if (isClosed)
-                tmp.RemoveAt(tmp.Count - 1);
-
-            //removing erroneous curves
-            int counter = 0;
-            for (int i = 0; i < lines.Count; i++)
-            {
-                if (lines[i].PointAtParameter(0.5).Distance(curve) + tolerance < Math.Abs(offset) &&
-                   (lines[i].Start.Distance(curve) + tolerance < Math.Abs(offset) ||
-                    lines[i].End.Distance(curve) + tolerance < Math.Abs(offset)))
-                {
-                    Line line1 = new Line { Start = tmp[i], End = tmp[(i + tmp.Count - 1) % tmp.Count], Infinite = true };
-                    Line line2 = new Line { Start = tmp[(i + 1) % tmp.Count], End = tmp[(i + 2) % tmp.Count], Infinite = true };
-
-                    if (!(line1.LineIntersection(line2, false, tolerance) == null))
-                        tmp[i] = line1.LineIntersection(line2, false, tolerance);
-
-                    tmp.RemoveAt((i + 1) % tmp.Count);
-
-                    if (tmp.Count == 0)
-                    {
-                        Base.Compute.RecordError("Method failed to produce correct offset. Returning null.");
-                        return null;
-                    }
-                    tmp.Add(tmp[0]);
-                    lines = result.SubParts();
-                    tmp.RemoveAt(tmp.Count - 1);
-                    i--;
-                    counter++;
-                }
-            }
-
-            if (isClosed)
-                tmp.Add(tmp[0]);
-
-            if (tmp.Count < 3 || (isClosed && tmp.Count < 4))
-            {
-                Base.Compute.RecordError("Method failed to produce correct offset. Returning null.");
-                return null;
-            }
-
-            if (counter > 0)
-                Base.Compute.RecordWarning("Reduced " + counter + " line(s). Offset may be wrong. Please inspect the results.");
-
-            if (result.IsSelfIntersecting(tolerance) || result.LineIntersections(curve, tolerance).Count != 0)
-                Base.Compute.RecordWarning("Intersections occured. Offset may be wrong. Please inspect the results.");
-
-            return result;
-        }
-
-        /***************************************************/
-
+        [PreviousVersion("7.2", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.Polyline, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Creates an offset of a curve. Works only on planar curves")]
         [Input("curve", "Curve to offset")]
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
         [Input("options", "Options for the offset operation. Default values is used if nothing is provided.")]
         [Input("normal", "Normal of a plane for offset operation, not needed for closed curves")]
         [Output("curve", "Resulting offset")]
-        public static Polyline Offset2(this Polyline curve, double offset, Vector normal = null, OffsetOptions options = null, double distTol = Tolerance.Distance, double angleTol = Tolerance.Angle)
+        public static Polyline Offset(this Polyline curve, double offset, Vector normal = null, OffsetOptions options = null, double distTol = Tolerance.Distance, double angleTol = Tolerance.Angle)
         {
             if (curve == null || curve.Length() < distTol)
                 return null;
@@ -450,8 +321,6 @@ namespace BH.Engine.Geometry
                 //If remaining offset, make adjustments (remove 0 length segments etc) for next iteration
                 if (offset > 0)
                 {
-                    firstIteration = false;
-
                     bool recomputeLastSegment = false;
 
                     for (int i = 0; i < segments.Count; i++)
@@ -502,6 +371,8 @@ namespace BH.Engine.Geometry
                     segmentsComputes = segmentsComputes.Distinct().ToList();
                     cornerComputes = cornerComputes.Distinct().ToList();
                 }
+
+                firstIteration = false;
             }
 
             cPts = vertices.Select(x => x.Item1).ToList();
@@ -520,21 +391,25 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        [PreviousVersion("7.2", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.PolyCurve, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Creates an offset of a curve. Works only on planar curves")]
         [Input("curve", "Curve to offset")]
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
         [Input("normal", "Normal of a plane for offset operation, not needed for closed curves")]
         [Output("curve", "Resulting offset")]
-        public static PolyCurve Offset(this PolyCurve curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
+        public static PolyCurve Offset(this PolyCurve curve, double offset, Vector normal = null, OffsetOptions options = null, double tolerance = Tolerance.Distance)
         {
 
             if (curve == null || curve.Length() < tolerance)
                 return null;
 
+            options = options ?? new OffsetOptions();
+            bool tangentExtensions = options.TangentExtensions;
+
             //if there are only Line segmensts switching to polyline method which is more reliable 
             if (curve.Curves.All(x => x is Line))
             {
-                Polyline polyline = ((Polyline)curve).Offset(offset, normal, tangentExtensions, tolerance);
+                Polyline polyline = ((Polyline)curve).Offset(offset, normal, options, tolerance);
                 if (polyline == null)
                     return null;
 
@@ -545,10 +420,10 @@ namespace BH.Engine.Geometry
             //Check if contains any circles, if so, handle them explicitly, and offset any potential leftovers by backcalling this method
             if (subParts.Any(x => x is Circle))
             {
-                IEnumerable<Circle> circles = subParts.Where(x => x is Circle).Cast<Circle>().Select(x => x.Offset(offset, normal, tangentExtensions, tolerance));
+                IEnumerable<Circle> circles = subParts.Where(x => x is Circle).Cast<Circle>().Select(x => x.Offset(offset, normal, options, tolerance));
                 PolyCurve nonCirclePolyCurve = new PolyCurve { Curves = curve.Curves.Where(x => !(x is Circle)).ToList() };
                 if (nonCirclePolyCurve.Curves.Count != 0)
-                    nonCirclePolyCurve = nonCirclePolyCurve.Offset(offset, normal, tangentExtensions, tolerance);
+                    nonCirclePolyCurve = nonCirclePolyCurve.Offset(offset, normal, options, tolerance);
 
                 nonCirclePolyCurve.Curves.AddRange(circles);
                 return nonCirclePolyCurve;
@@ -582,7 +457,7 @@ namespace BH.Engine.Geometry
             }
 
             if (offset > 0.05 * curve.Length())
-                return (curve.Offset(offset / 2, normal, tangentExtensions, tolerance))?.Offset(offset / 2, normal, tangentExtensions, tolerance);
+                return (curve.Offset(offset / 2, normal, options, tolerance))?.Offset(offset / 2, normal, options, tolerance);
 
             PolyCurve result = new PolyCurve();
 
@@ -591,8 +466,8 @@ namespace BH.Engine.Geometry
             //First - offseting each individual element
             List<ICurve> offsetCurves = new List<ICurve>();
             foreach (ICurve crv in subParts)
-                if (crv.IOffset(offset, normal, false, tolerance) != null)
-                    offsetCurves.Add(crv.IOffset(offset, normal, false, tolerance));
+                if (crv.IOffset(offset, normal, options, tolerance) != null)
+                    offsetCurves.Add(crv.IOffset(offset, normal, options, tolerance));
 
             int counter = 0;
             //removing curves that are on a wrong side of the main curve
@@ -637,7 +512,7 @@ namespace BH.Engine.Geometry
             if (offsetCurves.All(x => x is Line))
             {
                 Polyline polyline = new Polyline { ControlPoints = curve.DiscontinuityPoints() };
-                result.Curves.AddRange(polyline.Offset(offset, normal, tangentExtensions, tolerance).SubParts());
+                result.Curves.AddRange(polyline.Offset(offset, normal, options, tolerance).SubParts());
                 return result;
             }
 
@@ -772,15 +647,16 @@ namespace BH.Engine.Geometry
         /***  Public methods - Interfaces                ***/
         /***************************************************/
 
+        [PreviousVersion("7.2", "BH.Engine.Geometry.Modify.IOffset(BH.oM.Geometry.ICurve, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Creates an offset of a curve. Works only on planar curves")]
         [Input("curve", "Curve to offset")]
         [Input("offset", "Offset distance. Positive value offsets outside of a closed curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
         [Input("normal", "Normal of a plane for offset operation, not needed for closed curves")]
         [Input("tangentExtensions", "If true, arc segments of a PolyCurve will be extend by a tangent line, if false - by arc")]
         [Output("curve", "Resulting offset")]
-        public static ICurve IOffset(this ICurve curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
+        public static ICurve IOffset(this ICurve curve, double offset, Vector normal = null, OffsetOptions options = null, double tolerance = Tolerance.Distance)
         {
-            return Offset(curve as dynamic, offset, normal, tangentExtensions, tolerance);
+            return Offset(curve as dynamic, offset, normal, options, tolerance);
         }
 
 
@@ -788,7 +664,7 @@ namespace BH.Engine.Geometry
         /**** Private Fallback Methods                  ****/
         /***************************************************/
 
-        private static ICurve Offset(this ICurve curve, double offset, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
+        private static ICurve Offset(this ICurve curve, double offset, Vector normal = null, OffsetOptions options = null, double tolerance = Tolerance.Distance)
         {
             Base.Compute.RecordError($"Offset is not implemented for ICurves of type: {curve.GetType().Name}.");
             return null;
@@ -854,8 +730,6 @@ namespace BH.Engine.Geometry
                     vertices.RemoveAt(prev);
                     segments.RemoveAt(i);
                     segments.RemoveAt(prev);
-                    prev--;
-
                     removed++;
                 }
                 else
@@ -940,33 +814,32 @@ namespace BH.Engine.Geometry
             if (isClosed && i0 < 0)
                 i0 = segments.Count + i0;
 
-            Vector t0 = null;
+            Vector t0 = null;   //Tangent vector of the segment coming into the corner before the current vertex being evaluated. 
             List<int> beforeSegs = new List<int>() { prev };
 
             if (i0 >= 0)
             {
                 t0 = segments[i0].Item2;
 
-                while (t0.IsParallel(t1, angleTol) != 0)
+                while (t0.IsParallel(t1, angleTol) != 0)    //Ensure not parallel with segments going into the corner. If so, take the one before
                 {
                     beforeSegs.Add(i0);
                     i0--;
                     if (i0 < 0)
                     {
                         if (isClosed)
-                            i0 = segments.Count - 1;
+                            i0 = segments.Count - 1;    //Set index to last for closed curves when looping around the list
                         else
                         {
-                            t0 = null;
+                            t0 = null;  //No suitable vector exists
                             break;
                         }
                     }
-                    if (i0 == i)    //Looped all the way around, all segments parallel
+                    if (i0 == i)    //Looped all the way around, all segments are parallel
                     {
                         return false;
                     }
                     t0 = segments[i0].Item2;
-
                 }
             }
 
@@ -975,7 +848,7 @@ namespace BH.Engine.Geometry
             if (isClosed && i3 > segments.Count - 1)
                 i3 = i3 % segments.Count;
 
-            Vector t3 = null;
+            Vector t3 = null;   //Vector
             List<int> afterSegs = new List<int>() { i };
             if (i3 <= segments.Count - 1)
             {
@@ -995,7 +868,7 @@ namespace BH.Engine.Geometry
                             break;
                         }
                     }
-                    if (i3 == prev)    //Looped all the way around, all segments parallel
+                    if (i3 == prev)    //Looped all the way around, all segments are parallel
                     {
                         return false;
                     }
@@ -1011,7 +884,7 @@ namespace BH.Engine.Geometry
                 double l2 = afterSegs.Sum(x => segments[x].Item1);// segments[i].Item1;
                 double lengthDif = l1 - l2;
 
-
+                //Dot products used for sign, if dotproduct is positive, the vectors are pointing in roungly the same direction
                 double t0n1 = t0.DotProduct(segments[prev].Item3);
                 double t3n1 = t3.DotProduct(segments[prev].Item3);
 
@@ -1036,10 +909,12 @@ namespace BH.Engine.Geometry
             }
             else if (t3 != null)
             {
-                return t3.DotProduct(segments[prev].Item3) < 0;
+                //For case of no incoming vector (t0) the corner is outwards if the tangent of the next vector is pointing in the oposite direction to the orthogonal vector coing into the corner
+                return t3.DotProduct(segments[prev].Item3) < 0; 
             }
             else if (t0 != null)
             {
+                //For case of no outgoing vector (t3) the corner is outwards if the tangent of the incoming vector is pointing in the oposite direction to the orthogonal vector coing into the corner
                 return t0.DotProduct(segments[prev].Item3) < 0;
             }
 
