@@ -386,9 +386,9 @@ namespace BH.Engine.Geometry
                         //formed by offset vetor with correct length and dir.
                         double length = dir.SquareLength();
 
-                        if (options.HandleAdjacentParallelSegments && length < sinTol)    //equivalent to check that angle between two adjecent segements is less than angle tolerance
+                        if (options.HandleAdjacentParallelSegments && length < sinTol)    //Equivalent to check that angle between two adjecent segements is less than angle tolerance
                         {
-                            if (!HandleParalellAdjecentPolylinearSegments(segments, vertices, cornerComputes, segmentsComputes, normal, isClosed, firstIteration, distTol, i, prev)) 
+                            if (!HandleParalellAdjecentPolylinearSegments(segments, vertices, cornerComputes, segmentsComputes, normal, isClosed, firstIteration, distTol, i, prev, angleTol)) 
                             {
                                 Base.Compute.RecordWarning("Polyline reduced to nothing. Empty polyline returned.");
                                 return new Polyline();
@@ -414,25 +414,26 @@ namespace BH.Engine.Geometry
                     {
                         int i = segmentsComputes[0];
                         segmentsComputes.RemoveAt(0);
-                        double change;
+                        double change;  //Change length change given a unit offset (length 1)
                         if (!isClosed && i == 0)
-                            change = vertices[i + 1].Item3;
+                            change = vertices[i + 1].Item3; //For open curves, the first vertex has no impact
                         else if (!isClosed && i == segments.Count - 1)
-                            change = vertices[i].Item3;
+                            change = vertices[i].Item3;     //For open curves the last vertex has no impact
                         else
                         {
-                            change = vertices[i].Item3 + vertices[(i + 1) % vertices.Count].Item3;
+                            change = vertices[i].Item3 + vertices[(i + 1) % vertices.Count].Item3;  //For closed curves, as well as non-start points, both vertices impact
                         }
 
                         segments[i] = new Tuple<double, Vector, Vector, double>(segments[i].Item1, segments[i].Item2, segments[i].Item3, change);
                     }
 
-
+                    //Compute the maximum offset allowed for this main iteration.
+                    //The maximum offset is set to be the smaller of the remaining offset value and the minimum offset value required to make any segment get a length of 0
                     for (int i = 0; i < segments.Count; i++)
                     {
-                        double offsetScale = -segments[i].Item1 / segments[i].Item4;
-                        if (offsetScale > 0)
-                            maxOffset = Math.Min(maxOffset, offsetScale);
+                        double offsetScale = segments[i].Item1 / segments[i].Item4; //offset required for element length to become 0 length
+                        if (offsetScale < 0)    //Positive value means segments are getting longer, hence no limit
+                            maxOffset = Math.Min(maxOffset, -offsetScale);  //Set max offset to maxmimum of offset value and 
                     }
                 }
 
@@ -443,6 +444,7 @@ namespace BH.Engine.Geometry
                     vertices[i] = new Tuple<Point, Vector, double>(v.Item1 + v.Item2 * maxOffset, v.Item2 ,v.Item3);
                 }
 
+                //Reduce the remaining offset by amount used up in this iteration
                 offset -= maxOffset;
 
                 //If remaining offset, make adjustments (remove 0 length segments etc) for next iteration
@@ -460,19 +462,34 @@ namespace BH.Engine.Geometry
                         {
                             //If smaller than tolerance, remove from segment lists
                             segments.RemoveAt(i);
+
+                            //Set segments that are to be recomputed in terms of length reduction
+                            bool addSegCompute = false;
+                            if (segmentsComputes.Count > 0 && segmentsComputes[segmentsComputes.Count - 1] == i)
+                                segmentsComputes[segmentsComputes.Count - 1] = i % segments.Count;  //Case that happeneds if multiple adjecent segments are removed
+                            else
+                                addSegCompute = true;
+
                             if (i == 0)
                             {
                                 if (isClosed)
                                     recomputeLastSegment = true;
                             }
                             else
-                                segmentsComputes.Add(i - 1);
+                                segmentsComputes.Add(i - 1);    //Previous segment also to be recomputed
 
-                            segmentsComputes.Add(i % segments.Count);
+                            if(addSegCompute)
+                                segmentsComputes.Add(i % segments.Count);
 
                             //And from vertex lists
                             vertices.RemoveAt(i);
-                            cornerComputes.Add(i % vertices.Count);
+
+                            //Set corners that need to be recomputed in terms of translation vector as well as length reduction impact on segments
+                            if (cornerComputes.Count > 0 && cornerComputes[cornerComputes.Count - 1] == i)
+                                cornerComputes[cornerComputes.Count - 1] = i % vertices.Count;  //Case that happends if multiple adjecent segments are removed
+                            else
+                                cornerComputes.Add(i % vertices.Count);
+
                             i--;
                         }
                         else
@@ -782,55 +799,12 @@ namespace BH.Engine.Geometry
         /***  Private Methods                            ***/
         /***************************************************/
 
-        private static bool HandleParalellAdjecentPolylinearSegments(List<Tuple<double, Vector, Vector, double>> segments, List<Tuple<Point, Vector, double>> vertices, List<int> cornerComputes, List<int> segmentsComputes, Vector normal, bool isClosed, bool firstIteration, double distTol, int i, int prev)
+        private static bool HandleParalellAdjecentPolylinearSegments(List<Tuple<double, Vector, Vector, double>> segments, List<Tuple<Point, Vector, double>> vertices, List<int> cornerComputes, List<int> segmentsComputes, Vector normal, bool isClosed, bool firstIteration, double distTol, int i, int prev, double angleTol)
         {
             bool outwards = false;
-            if (firstIteration) //Only relevant to check for outwards for first iteration. Subsequent iterations can never end up in this case
-            {
-                //Checks whether the offset is "outwards" or "inwards" for the current corner
-                int i0 = i - 2;
-                if (isClosed && i0 < 0)
-                    i0 = segments.Count + i0;
-
-                int i3 = i + 1;
-                if (isClosed && i3 > segments.Count - 1)
-                    i3 = i3 % segments.Count;
-
-                if (i0 >= 0 && i3 <= segments.Count - 1)
-                {
-                    Vector t0 = segments[i0].Item2;
-                    Vector t1 = segments[prev].Item2;
-                    Vector t3 = segments[i3].Item2;
-
-                    double l1 = segments[prev].Item1;
-                    double l2 = segments[i].Item1;
-                    double lengthDif = l1 - l2;
-
-
-                    double t0n1 = t0.DotProduct(segments[prev].Item3);
-                    double t3n1 = t3.DotProduct(segments[prev].Item3);
-
-                    if (Math.Abs(lengthDif) < distTol)
-                    {
-                        if (t0n1 * t3n1 < 0)
-                        {
-                            //Same side
-                            if (t0n1 < 0)
-                                outwards = -t0.DotProduct(t1) > t3.DotProduct(t1);
-                            else
-                                outwards = -t0.DotProduct(t1) < t3.DotProduct(t1);
-                        }
-                        else
-                            outwards = t0n1 < 0;
-                    }
-                    else if (lengthDif < 0)
-                        outwards = t0n1 < 0;
-                    else
-                        outwards = t3n1 < 0;
-
-                }
-            }
-
+            if (firstIteration)
+                outwards = CheckAcuteCornerOutwards(segments, isClosed,i, prev, angleTol, distTol);
+            
             if (outwards)
             {
                 //For the case of outwards, an additional vertex and segment is inserted, creating a right angled corner from the acute corner angle
@@ -905,18 +879,50 @@ namespace BH.Engine.Geometry
                         cornerComputes[j] -= removed;
                 }
 
+                
                 int recomputeIndex = i - removed;
                 if (recomputeIndex > 0)
-                    cornerComputes.Add((recomputeIndex - 1) % vertices.Count);
-                else if (isClosed)
-                    cornerComputes.Add(vertices.Count - 1);
+                {
+                    cornerComputes.Add(recomputeIndex - 1);
+                    cornerComputes.Add(recomputeIndex);
+                    cornerComputes.Add((recomputeIndex + 1) % vertices.Count);
+                }
+                else if (recomputeIndex == 0)
+                {
+                    if (isClosed)
+                        cornerComputes.Add(vertices.Count - 1);
+                    cornerComputes.Add(recomputeIndex);
+                    cornerComputes.Add(recomputeIndex + 1);
+                }
+                else
+                {
+                    if (i == 0)
+                    {
+                        cornerComputes.Add(0);
+                        cornerComputes.Add(1);
+                        if (isClosed)
+                            cornerComputes.Add(vertices.Count - 1);
+                    }
+                    else
+                    {
+                        cornerComputes.Add(0);
+                        cornerComputes.Add(1);
+                        if (vertices.Count > 1)
+                            cornerComputes.Add(2);
+                    }
+                }
 
-                if (recomputeIndex >= 0)
-                    cornerComputes.Add((recomputeIndex) % vertices.Count);
-                else if (isClosed)
-                    cornerComputes.Add(vertices.Count - 1);
+                //if (recomputeIndex > 0)
+                //    cornerComputes.Add((recomputeIndex - 1) % vertices.Count);
+                //else if (isClosed)
+                //    cornerComputes.Add(vertices.Count - 1);
 
-                cornerComputes.Add((recomputeIndex + 1) % vertices.Count);
+                //if (recomputeIndex >= 0)
+                //    cornerComputes.Add((recomputeIndex) % vertices.Count);
+                //else if (isClosed)
+                //    cornerComputes.Add(vertices.Count - 1);
+
+                //cornerComputes.Add((recomputeIndex + 1) % vertices.Count);
 
                 for (int j = 0; j < segmentsComputes.Count; j++)
                 {
@@ -930,6 +936,118 @@ namespace BH.Engine.Geometry
             segmentsComputes.SortAndRemoveDuplicatesAndNegatives();
             return true;
         }
+
+        /***************************************************/
+
+        private static bool CheckAcuteCornerOutwards(List<Tuple<double, Vector, Vector, double>> segments, bool isClosed, int i, int prev, double angleTol, double distTol)
+        {
+
+            Vector t1 = segments[prev].Item2;
+
+            //Checks whether the offset is "outwards" or "inwards" for the current corner
+            int i0 = i - 2;
+
+            if (isClosed && i0 < 0)
+                i0 = segments.Count + i0;
+
+            Vector t0 = null;
+            List<int> beforeSegs = new List<int>() { prev };
+
+            if (i0 >= 0)
+            {
+                t0 = segments[i0].Item2;
+
+                while (t0.IsParallel(t1, angleTol) != 0)
+                {
+                    beforeSegs.Add(i0);
+                    i0--;
+                    if (i0 < 0)
+                    {
+                        if (isClosed)
+                            i0 = segments.Count - 1;
+                        else
+                        {
+                            t0 = null;
+                            break;
+                        }
+                    }
+                    t0 = segments[i0].Item2;
+
+                }
+            }
+
+
+            int i3 = i + 1;
+            if (isClosed && i3 > segments.Count - 1)
+                i3 = i3 % segments.Count;
+
+            Vector t3 = null;
+            List<int> afterSegs = new List<int>() { i };
+            if (i3 <= segments.Count - 1)
+            {
+                t3 = segments[i3].Item2;
+
+                while (t3.IsParallel(t1, angleTol) != 0)
+                {
+                    afterSegs.Add(i3);
+                    i3++;
+                    if (i3 > segments.Count - 1)
+                    {
+                        if (isClosed)
+                            i3 = 0;
+                        else
+                        {
+                            t3 = null;
+                            break;
+                        }
+                    }
+                    t3 = segments[i3].Item2;
+
+                }
+            }
+
+            if (t0 != null && t3 != null)
+            {
+                double l1 = beforeSegs.Sum(x => segments[x].Item1);// segments[prev].Item1;
+                double l2 = afterSegs.Sum(x => segments[x].Item1);// segments[i].Item1;
+                double lengthDif = l1 - l2;
+
+
+                double t0n1 = t0.DotProduct(segments[prev].Item3);
+                double t3n1 = t3.DotProduct(segments[prev].Item3);
+
+                if (Math.Abs(lengthDif) < distTol)
+                {
+                    if (t0n1 * t3n1 < 0)
+                    {
+                        //Same side
+                        if (t0n1 < 0)
+                            return -t0.DotProduct(t1) > t3.DotProduct(t1);
+                        else
+                            return -t0.DotProduct(t1) < t3.DotProduct(t1);
+                    }
+                    else
+                        return t0n1 < 0;
+                }
+                else if (lengthDif < 0)
+                    return t0n1 < 0;
+                else
+                    return t3n1 < 0;
+
+            }
+            else if (t3 != null)
+            {
+                return t3.DotProduct(segments[prev].Item3) < 0;
+            }
+            else if (t0 != null)
+            {
+                return t0.DotProduct(segments[prev].Item3) < 0;
+            }
+
+            return false;
+        }
+
+        /***************************************************/
 
         private static void SortAndRemoveDuplicatesAndNegatives(this List<int> list) 
         {
