@@ -421,7 +421,7 @@ namespace BH.Engine.Geometry
                             change = vertices[i].Item3;
                         else
                         {
-                            change = vertices[i].Item3 + vertices[(i + 1) % (vertices.Count - 1)].Item3;
+                            change = vertices[i].Item3 + vertices[(i + 1) % vertices.Count].Item3;
                         }
 
                         segments[i] = new Tuple<double, Vector, Vector, double>(segments[i].Item1, segments[i].Item2, segments[i].Item3, change);
@@ -855,7 +855,6 @@ namespace BH.Engine.Geometry
                 segmentsComputes.Add(prev);
                 segmentsComputes.Add(i);
                 segmentsComputes.Add((i + 1) % segments.Count);
-                segmentsComputes = segmentsComputes.Distinct().OrderBy(x => x).ToList();
 
                 //Same for vertecies requiring re-computation
                 cornerComputes.Insert(0, i + 1);
@@ -874,15 +873,13 @@ namespace BH.Engine.Geometry
                 if (prev > i)
                     prev--;
 
-                if (isClosed && i > vertices.Count - 1)
-                    i = 0;
-
-                if (vertices[prev].Item1.Distance(vertices[i].Item1) < distTol)
+                if (vertices[prev].Item1.Distance(vertices[i % vertices.Count].Item1) < distTol)
                 {
                     //If the corner removed leads to the previous and next points being adjecent, remove one of them as well as the two segments leading up to the removed vertex
-                    vertices.RemoveAt(i);
+                    vertices.RemoveAt(prev);
                     segments.RemoveAt(i);
                     segments.RemoveAt(prev);
+                    prev--;
 
                     removed++;
                 }
@@ -892,7 +889,7 @@ namespace BH.Engine.Geometry
                     segments.RemoveAt(i);
 
                     //And recompute the new direction for the other
-                    Vector tan = vertices[i].Item1 - vertices[prev].Item1;
+                    Vector tan = vertices[i % vertices.Count].Item1 - vertices[prev].Item1;
                     double lengthNew = tan.Length();
                     tan = tan * (1 / lengthNew);
                     segments[prev] = new Tuple<double, Vector, Vector, double>(lengthNew, tan, tan.CrossProduct(normal).Normalise(), 0);
@@ -908,19 +905,29 @@ namespace BH.Engine.Geometry
                         cornerComputes[j] -= removed;
                 }
 
-                cornerComputes.Insert(0, i);
-                cornerComputes.Insert(0, prev);
-                cornerComputes.SortAndRemoveDuplicatesAndNegatives();
+                int recomputeIndex = i - removed;
+                if (recomputeIndex > 0)
+                    cornerComputes.Add((recomputeIndex - 1) % vertices.Count);
+                else if (isClosed)
+                    cornerComputes.Add(vertices.Count - 1);
+
+                if (recomputeIndex >= 0)
+                    cornerComputes.Add((recomputeIndex) % vertices.Count);
+                else if (isClosed)
+                    cornerComputes.Add(vertices.Count - 1);
+
+                cornerComputes.Add((recomputeIndex + 1) % vertices.Count);
 
                 for (int j = 0; j < segmentsComputes.Count; j++)
                 {
-                    if (segmentsComputes[j] > i - 1)
+                    if (segmentsComputes[j] > i - removed)
                         segmentsComputes[j] -= removed;
                 }
 
-                segmentsComputes.SortAndRemoveDuplicatesAndNegatives();
-
             }
+
+            cornerComputes.SortAndRemoveDuplicatesAndNegatives();
+            segmentsComputes.SortAndRemoveDuplicatesAndNegatives();
             return true;
         }
 
@@ -941,13 +948,10 @@ namespace BH.Engine.Geometry
             {
                 if (list[index] == list[index - 1])
                 {
-                    if (index < list.Count - 1)
-                        (list[index], list[list.Count - 1]) = (list[list.Count - 1], list[index]);
-                    list.RemoveAt(list.Count - 1);
-                    index--;
+                    list.RemoveAt(index);
                 }
-                else
-                    index--;
+
+                index--;
             }
         }
 
