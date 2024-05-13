@@ -215,7 +215,9 @@ namespace BH.Engine.Geometry
             // - Position of the vertex
             // - Offset direction for the vertex as a vector with a vector scaled to an offset of magnitude equal to 1
             // - Length change for adjecent segments for an offset with a magnitude equal to 1
-            List<Tuple<Point, Vector, double>> vertices = cPts.Select(x => new Tuple<Point, Vector, double>(x, null, 0)).ToList();
+            // - Maxmimum allowed offset until the vertex hits a segment
+            // - Segment hit after maximum offset
+            List<Tuple<Point, Vector, double, double, int>> vertices = cPts.Select(x => new Tuple<Point, Vector, double, double, int>(x, null, 0, double.MaxValue, -1)).ToList();
 
             //Tolerance used for checking if two adjecent segments are anti-parallel and hence creating a acute corner
             double sinTol = Math.Pow(Math.Sin(angleTol / 2), 2);
@@ -224,6 +226,12 @@ namespace BH.Engine.Geometry
             //For firt iteration is is all of the,
             List<int> cornerComputes = new List<int>(Enumerable.Range(0, vertices.Count));
             List<int> segmentsComputes = new List<int>(Enumerable.Range(0, segments.Count));
+
+            List<int> cornerIntersectionComputes;
+            if (options.HandleGeneralCreatedSelfIntersections)
+                cornerIntersectionComputes = new List<int>(Enumerable.Range(0, vertices.Count));
+            else
+                cornerIntersectionComputes = new List<int>();
 
             bool firstIteration = true;
 
@@ -238,11 +246,11 @@ namespace BH.Engine.Geometry
                     //De-queue top corner to be computed
                     int i = cornerComputes[0];
                     cornerComputes.RemoveAt(0);
-
+                    Tuple<Point, Vector, double, double, int> v = vertices[i];
                     if (!isClosed && i == 0)    //Start point vector for open curves will simply be the orthogonal vector of the first segment
-                        vertices[i] = new Tuple<Point, Vector, double>(vertices[i].Item1, segments[i].Item3, 0);
+                        vertices[i] = new Tuple<Point, Vector, double, double, int>(v.Item1, segments[i].Item3, 0, v.Item4, v.Item5);
                     else if (!isClosed && i == vertices.Count - 1)  //Similar to start
-                        vertices[i] = new Tuple<Point, Vector, double>(vertices[i].Item1, segments[i - 1].Item3, 0);
+                        vertices[i] = new Tuple<Point, Vector, double, double, int>(v.Item1, segments[i - 1].Item3, 0, v.Item4, v.Item5);
                     else
                     {
                         int prev = i == 0 ? segments.Count - 1 : i - 1;
@@ -259,7 +267,7 @@ namespace BH.Engine.Geometry
 
                         if (options.HandleAdjacentParallelSegments && length < sinTol)    //Equivalent to check that angle between two adjecent segements is less than angle tolerance
                         {
-                            if (!HandleParalellAdjecentPolylinearSegments(segments, vertices, cornerComputes, segmentsComputes, normal, isClosed, firstIteration, distTol, i, prev, angleTol)) 
+                            if (!HandleParalellAdjecentPolylinearSegments(segments, vertices, cornerComputes, segmentsComputes, normal, isClosed, firstIteration, distTol, i, prev, angleTol))
                             {
                                 Base.Compute.RecordWarning("Polyline reduced to nothing. Empty polyline returned.");
                                 return new Polyline();
@@ -269,7 +277,7 @@ namespace BH.Engine.Geometry
                         {
                             Vector trans = dir * (1 / length);
                             double vertLengthChange = seg1.Item2.DotProduct(trans);
-                            vertices[i] = new Tuple<Point, Vector, double>(vertices[i].Item1, trans, vertLengthChange);
+                            vertices[i] = new Tuple<Point, Vector, double, double, int>(v.Item1, trans, vertLengthChange, v.Item4, v.Item5);
                         }
                     }
                 }
@@ -277,7 +285,7 @@ namespace BH.Engine.Geometry
                 //Find maximum offset possible
                 double maxOffset = offset;
 
-                if (options.HandleCreatedLocalSelfIntersections)
+                if (options.HandleCreatedLocalSelfIntersections || options.HandleGeneralCreatedSelfIntersections)
                 {
                     //Compute how much the length of each segment is affected by a unit offset (length 1)
                     //First whileloop iteration runs though all segemnts, later loop iterations only recomputes for segments that have seen a change
@@ -308,11 +316,13 @@ namespace BH.Engine.Geometry
                     }
                 }
 
+                offset = ComputeMaxOffsetUntilIntersection(segments, vertices, cornerIntersectionComputes, offset, isClosed);
+
                 //Offset the points
                 for (int i = 0; i < vertices.Count; i++)
                 {
                     var v = vertices[i];
-                    vertices[i] = new Tuple<Point, Vector, double>(v.Item1 + v.Item2 * maxOffset, v.Item2 ,v.Item3);
+                    vertices[i] = new Tuple<Point, Vector, double, double, int>(v.Item1 + v.Item2 * maxOffset, v.Item2, v.Item3, v.Item4, v.Item5);
                 }
 
                 //Reduce the remaining offset by amount used up in this iteration
@@ -347,7 +357,7 @@ namespace BH.Engine.Geometry
                             else
                                 segmentsComputes.Add(i - 1);    //Previous segment also to be recomputed
 
-                            if(addSegCompute)
+                            if (addSegCompute)
                                 segmentsComputes.Add(i % segments.Count);
 
                             //And from vertex lists
@@ -676,7 +686,83 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Support method for Polyline offsets for the case of two adjecent polyline segments creating a acute angle within provided tolerance. This case is handled either by vertex and segment removal, or introduction of additional vertices.")]
-        private static bool HandleParalellAdjecentPolylinearSegments(List<Tuple<double, Vector, Vector, double>> segments, List<Tuple<Point, Vector, double>> vertices, List<int> cornerComputes, List<int> segmentsComputes, Vector normal, bool isClosed, bool firstIteration, double distTol, int i, int prev, double angleTol)
+        private static double ComputeMaxOffsetUntilIntersection(List<Tuple<double, Vector, Vector, double>> segments, List<Tuple<Point, Vector, double, double, int>> vertices, List<int> cornerIntersectionComputes, double offset, bool isClosed)
+        {
+            double overallMaxOffset = offset;
+            while (cornerIntersectionComputes.Count > 0)
+            {
+                int i = cornerIntersectionComputes[0];
+                cornerIntersectionComputes.RemoveAt(0);
+
+                if (!isClosed)  //Will never happen for end vertices of open curves
+                {
+                    if (i == 0 || i == vertices.Count - 1)
+                        continue;
+                }
+                Tuple<Point, Vector, double, double, int> vertex = vertices[i];
+                Vector trans = vertex.Item2;
+                double maxOffset = offset;
+                int segmentIntersected = -1;
+
+                for (int j = 0; j < segments.Count; j++)
+                {
+                    //Skip segments adjecent
+                    if (i == j)
+                        continue;
+
+                    if (i == 0)
+                    {
+                        if (j == segments.Count - 1)
+                            continue;
+                    }
+                    else if (j == i - 1)
+                        continue;
+
+                    Tuple<double, Vector, Vector, double> segment = segments[j];
+                    Vector segOrtho = segment.Item3;
+                    var startVertex = vertices[j];
+                    Point segStart = startVertex.Item1;
+
+                    double dot1 = segOrtho.DotProduct(segStart - vertex.Item1);
+
+                    if (dot1 <= 0)  //Translation vector pointing away from the segment -> no intersection
+                        continue;
+
+                    double dot2 = segOrtho.DotProduct(trans);
+                    double reqOffset = dot1 / (dot2 - 1); //Required offset for the vertex to end up on the segment-plane after it has been offset
+
+                    if (reqOffset < maxOffset)  //Offset samller than previous max.
+                    {
+                        //Check if the point ends up on the finite segment
+                        Point vOff = vertex.Item1 + reqOffset * trans;  //Point translated with offset
+                        Point stOff = startVertex.Item1 + reqOffset * startVertex.Item2;
+                        var enVertex = vertices[(j + 1) % vertices.Count];
+                        Point enOff = enVertex.Item1 + reqOffset * enVertex.Item2;
+
+                        double sqLen = stOff.SquareDistance(enOff);
+
+                        if (vOff.SquareDistance(stOff) < sqLen && vOff.SquareDistance(enOff) < sqLen)   //Point ends on line
+                        {
+                            maxOffset = reqOffset;
+                            segmentIntersected = j;
+                        }
+                    }
+
+                }
+
+                if (segmentIntersected != -1)
+                {
+                    overallMaxOffset = Math.Min(overallMaxOffset, maxOffset);
+                    vertices[i] = new Tuple<Point, Vector, double, double, int>(vertex.Item1, vertex.Item2, vertex.Item3, maxOffset, segmentIntersected);
+                }
+            }
+            return overallMaxOffset;
+        }
+
+        /***************************************************/
+
+        [Description("Support method for Polyline offsets for the case of two adjecent polyline segments creating a acute angle within provided tolerance. This case is handled either by vertex and segment removal, or introduction of additional vertices.")]
+        private static bool HandleParalellAdjecentPolylinearSegments(List<Tuple<double, Vector, Vector, double>> segments, List<Tuple<Point, Vector, double, double, int>> vertices, List<int> cornerComputes, List<int> segmentsComputes, Vector normal, bool isClosed, bool firstIteration, double distTol, int i, int prev, double angleTol)
         {
             bool outwards = false;
             if (firstIteration) //Only need to check if "Inwards" or "Outwards" for first iteration, as subsequent iterations all can be assumed to be inwards (vanishing)
@@ -685,7 +771,7 @@ namespace BH.Engine.Geometry
             if (outwards)
             {
                 //For the case of outwards, an additional vertex and segment is inserted, creating a right angled corner from the acute corner angle
-                vertices.Insert(i, new Tuple<Point, Vector, double>(vertices[i].Item1, null, 0));
+                vertices.Insert(i, new Tuple<Point, Vector, double, double, int>(vertices[i].Item1, null, 0, double.MaxValue, -1));
                 Vector tanNew = (segments[i].Item3 - segments[prev].Item3).Normalise();
                 segments.Insert(i, new Tuple<double, Vector, Vector, double>(0, tanNew, tanNew.CrossProduct(normal).Normalise(), 0));
 
