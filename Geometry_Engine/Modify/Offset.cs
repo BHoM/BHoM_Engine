@@ -316,7 +316,8 @@ namespace BH.Engine.Geometry
                     }
                 }
 
-                offset = ComputeMaxOffsetUntilIntersection(segments, vertices, cornerIntersectionComputes, offset, isClosed);
+                if(options.HandleGeneralCreatedSelfIntersections)
+                    maxOffset = ComputeMaxOffsetUntilIntersection(segments, vertices, cornerIntersectionComputes, offset, isClosed);
 
                 //Offset the points
                 for (int i = 0; i < vertices.Count; i++)
@@ -332,6 +333,11 @@ namespace BH.Engine.Geometry
                 if (offset > 0)
                 {
                     bool recomputeLastSegment = false;
+
+                    if (options.HandleGeneralCreatedSelfIntersections)
+                    {
+                        CheckIntersectionAndCullSegments(ref segments, ref vertices, cornerComputes, segmentsComputes, cornerIntersectionComputes, normal, isClosed, maxOffset, distTol);
+                    }
 
                     for (int i = 0; i < segments.Count; i++)
                     {
@@ -688,7 +694,6 @@ namespace BH.Engine.Geometry
         [Description("Support method for Polyline offsets for the case of two adjecent polyline segments creating a acute angle within provided tolerance. This case is handled either by vertex and segment removal, or introduction of additional vertices.")]
         private static double ComputeMaxOffsetUntilIntersection(List<Tuple<double, Vector, Vector, double>> segments, List<Tuple<Point, Vector, double, double, int>> vertices, List<int> cornerIntersectionComputes, double offset, bool isClosed)
         {
-            double overallMaxOffset = offset;
             while (cornerIntersectionComputes.Count > 0)
             {
                 int i = cornerIntersectionComputes[0];
@@ -724,14 +729,10 @@ namespace BH.Engine.Geometry
                     Point segStart = startVertex.Item1;
 
                     double dot1 = segOrtho.DotProduct(segStart - vertex.Item1);
-
-                    if (dot1 <= 0)  //Translation vector pointing away from the segment -> no intersection
-                        continue;
-
                     double dot2 = segOrtho.DotProduct(trans);
                     double reqOffset = dot1 / (dot2 - 1); //Required offset for the vertex to end up on the segment-plane after it has been offset
 
-                    if (reqOffset < maxOffset)  //Offset samller than previous max.
+                    if (reqOffset > 0 && reqOffset < maxOffset)  //Offset in the correct direction and samller than previous max.
                     {
                         //Check if the point ends up on the finite segment
                         Point vOff = vertex.Item1 + reqOffset * trans;  //Point translated with offset
@@ -747,16 +748,182 @@ namespace BH.Engine.Geometry
                             segmentIntersected = j;
                         }
                     }
-
                 }
 
                 if (segmentIntersected != -1)
                 {
-                    overallMaxOffset = Math.Min(overallMaxOffset, maxOffset);
                     vertices[i] = new Tuple<Point, Vector, double, double, int>(vertex.Item1, vertex.Item2, vertex.Item3, maxOffset, segmentIntersected);
                 }
+                else if (vertex.Item5 != -1)
+                {
+                    vertices[i] = new Tuple<Point, Vector, double, double, int>(vertex.Item1, vertex.Item2, vertex.Item3, double.MaxValue, -1);
+                }
+            }
+            double overallMaxOffset = offset;
+            foreach (var vertex in vertices)
+            {
+                if (vertex.Item5 != -1)
+                    overallMaxOffset = Math.Min(vertex.Item4, overallMaxOffset);
             }
             return overallMaxOffset;
+        }
+
+        /***************************************************/
+
+        private static void CheckIntersectionAndCullSegments(ref List<Tuple<double, Vector, Vector, double>> segments, ref List<Tuple<Point, Vector, double, double, int>> vertices, List<int> cornerComputes, List<int> segmentsComputes, List<int> cornerIntersectionComputes, Vector normal, bool isClosed, double maxOffset, double distTol)
+        {
+            if (isClosed)
+            {
+                List<Tuple<int, int>> ranges = new List<Tuple<int, int>>();
+                for (int i = 1; i < vertices.Count - 1; i++)
+                {
+                    var v = vertices[i];
+                    if (v.Item5 != -1)
+                    {
+                        double remOffset = vertices[i].Item4 - maxOffset;
+                        if (remOffset < distTol)    //Intersection between vertex and another segment
+                        {
+                            int endIndex = v.Item5; //Index of segment intersected
+
+                            ranges.Add(new Tuple<int, int>(i, endIndex));
+                            ranges.Add(new Tuple<int, int>(endIndex + 1, i));
+                        }
+                        else
+                            vertices[i] = new Tuple<Point, Vector, double, double, int>(v.Item1, v.Item2, v.Item3, remOffset, v.Item5);
+                    }
+                }
+                if (ranges.Count > 0)
+                {
+                    List<List<int>> vertexLoops = new List<List<int>>();
+                    if (ranges.Count == 2)
+                    {
+                        foreach (var range in ranges)
+                        {
+                            int index = range.Item1;
+                            List<int> loop = new List<int>();
+                            while (index != range.Item2 + 1)
+                            {
+                                loop.Add(index);
+                                index++;
+                                if (index >= vertices.Count)
+                                    index = 0;
+                            }
+                            vertexLoops.Add(loop);
+                        }
+                    }
+                    else
+                    { }
+
+                    List<int> largestLoop = LargestAreaLoop(vertexLoops, vertices, normal);
+
+                    List<Tuple<Point, Vector, double, double, int>> verticesToKeep = new List<Tuple<Point, Vector, double, double, int>>();
+                    List<Tuple<double, Vector, Vector, double>> segmentsToKeep = new List<Tuple<double, Vector, Vector, double>>();
+                    for (int i = 0; i < largestLoop.Count; i++)
+                    {
+                        verticesToKeep.Add(vertices[largestLoop[i]]);
+                        segmentsToKeep.Add(segments[largestLoop[i]]);
+                    }
+                    segments = segmentsToKeep;
+                    vertices = verticesToKeep;
+                }
+            }
+            else
+            {
+                for (int i = 1; i < vertices.Count - 1; i++)
+                {
+                    var v = vertices[i];
+                    if (v.Item5 != -1)
+                    {
+                        double remOffset = vertices[i].Item4 - maxOffset;
+                        if (remOffset < distTol)    //Intersection between vertex and another segment
+                        {
+                            int endIndex = v.Item5; //Index of segment intersected
+                            int startRem, endRem;
+                            if (endIndex > i)
+                            {
+                                startRem = i;
+                                endRem = endIndex;
+                            }
+                            else
+                            {
+                                startRem = endIndex;
+                                endRem = i;
+                                i -= (endRem - startRem);
+                            }
+
+                            int partsToRemove = endRem - startRem;
+                            while (partsToRemove > 0)
+                            {
+                                segments.RemoveAt(startRem);
+                                vertices.RemoveAt(startRem + 1);
+                                partsToRemove--;
+                            }
+                            var interSeg = segments[startRem + 1];
+                            segments[startRem + 1] = new Tuple<double, Vector, Vector, double>(v.Item1.Distance(vertices[startRem + 1].Item1), interSeg.Item2, interSeg.Item3, 0);
+
+                            cornerComputes.Add(startRem);
+                            cornerIntersectionComputes.Add(startRem);
+                            segmentsComputes.Add(startRem);
+
+
+
+                        }
+                        else
+                            vertices[i] = new Tuple<Point, Vector, double, double, int>(v.Item1, v.Item2, v.Item3, remOffset, v.Item5);
+                    }
+                }
+            }
+
+            for (int j = 0; j < vertices.Count; j++)
+            {
+                if (vertices[j].Item5 != -1)
+                    cornerIntersectionComputes.Add(j);
+            }
+        }
+
+        /***************************************************/
+
+        private static List<int> LargestAreaLoop(List<List<int>> loops, List<Tuple<Point, Vector, double, double, int>> vertices, Vector normal)
+        {
+            double maxArea = double.MinValue;
+            List<int> maxLoop = null;
+            foreach (var loop in loops)
+            {
+                double area = LoopArea(loop, vertices, normal);
+                if (area > maxArea)
+                {
+                    maxArea = area; 
+                    maxLoop = loop;
+                }
+            }
+            return maxLoop;
+        }
+
+        /***************************************************/
+
+        private static double LoopArea(List<int> loop, List<Tuple<Point, Vector, double, double, int>> vertices, Vector normal)
+        {
+            if (loop.Count < 3)
+                return 0;
+
+            List<Point> pts = new List<Point>();
+            for (int i = 0; i < loop.Count; i++)
+            {
+                pts.Add(vertices[loop[i]].Item1);
+            }
+
+            Point avg = pts.Average();
+            double x = 0, y = 0, z = 0;
+            for (int i = 0; i < pts.Count; i++)
+            {
+                int j = (i + 1) % pts.Count;
+                Vector prod = Query.CrossProduct(pts[i] - avg, pts[j] - avg);
+                x += prod.X;
+                y += prod.Y;
+                z += prod.Z;
+            }
+
+            return Math.Abs((new Vector { X = x, Y = y, Z = z } * normal) * 0.5);
         }
 
         /***************************************************/
