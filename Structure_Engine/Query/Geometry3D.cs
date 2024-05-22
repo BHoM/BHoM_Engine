@@ -30,6 +30,7 @@ using BH.oM.Structure.Elements;
 using BH.Engine.Structure;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
+using BH.Engine.Base;
 
 namespace BH.Engine.Structure
 {
@@ -99,7 +100,58 @@ namespace BH.Engine.Structure
                 compositeGeometry.Elements.AddRange(externalEdgesExtrusions);
 
                 return compositeGeometry;
+
             }
+        }
+
+        /***************************************************/
+
+        [Description("Gets the BH.oM.Geometry.Extrusion out of the Pile as its Geometry3D.")]
+        [Input("bar", "The input Pile to get the Geometry3D out of, i.e.its extrusion with its cross section along its centreline.")]
+        public static IGeometry Geometry3D(this Pile pile)
+        {
+            return Create.Bar((Line)pile.Geometry(), pile.Section, pile.OrientationAngle).Geometry3D();
+        }
+
+        /***************************************************/
+
+        [Description("Gets a CompositeGeometry made of the boundary surfaces of the PadFoundation, or only its central Surface.")]
+        [Input("panel", "The input panel to get the Geometry3D out of.")]
+        public static IGeometry Geometry3D(this PadFoundation pad)
+        {
+            if (pad.IsNull() || !pad.IsPlanar())
+                return null;
+
+            PlanarSurface top = Engine.Geometry.Create.PlanarSurface(pad.TopOutline);
+
+            CompositeGeometry compositeGeometry = new CompositeGeometry();
+
+            double thickness = pad.Property.IVolumePerArea();
+            Vector translateVect = -top.Normal() * pad.Property.ITotalThickness(); // negative because the pad contains a top outline
+
+            PlanarSurface bot = top.ITranslate(translateVect) as PlanarSurface;
+
+            IEnumerable<Extrusion> externalEdgesExtrusions = pad.TopOutline.SubParts().Select(c => Engine.Geometry.Create.Extrusion(c, translateVect));
+
+            compositeGeometry.Elements.Add(top);
+            compositeGeometry.Elements.Add(bot);
+            compositeGeometry.Elements.AddRange(externalEdgesExtrusions);
+
+            return compositeGeometry;
+        }
+
+        [Description("Gets a CompositeGeometry made of the pile cap and piles of a PadFoundation.")]
+        [Input("panel", "The input panel to get the Geometry3D out of.")]
+        public static IGeometry Geometry3D(this PileFoundation pileFoundation)
+        {
+            if (pileFoundation.IsNull())
+                return null;
+
+            CompositeGeometry compositeGeometry = new CompositeGeometry();
+            compositeGeometry.Elements.Add(pileFoundation.PileCap.Geometry3D());
+            compositeGeometry.Elements.AddRange(pileFoundation.Piles.Select(x => x.Geometry3D()));
+
+            return compositeGeometry;
         }
     }
 }
