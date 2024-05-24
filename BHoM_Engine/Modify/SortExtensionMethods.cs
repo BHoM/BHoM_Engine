@@ -110,6 +110,10 @@ namespace BH.Engine.Base
 
         private static int InheritanceLevel(this List<List<Type>> hierarchy, Type type)
         {
+            // If target type of the extension method is object, return max inheritance level (to be treated as last resort)
+            if (type == typeof(object))
+                return int.MaxValue;
+
             for (int i = 0; i < hierarchy.Count; i++)
             {
                 if (!type.IsGenericType)
