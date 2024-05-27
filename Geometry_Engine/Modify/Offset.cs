@@ -1336,32 +1336,6 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        private static void SortAndRemoveDuplicatesAndNegatives(this List<int> list) 
-        {
-            list.Sort();
-
-            while (list.Count > 0)
-            {
-                if (list[0] < 0)
-                    list.RemoveAt(0);
-                else
-                    break;
-            }
-
-            int index = list.Count - 1;
-            while (index > 0)
-            {
-                if (list[index] == list[index - 1])
-                {
-                    list.RemoveAt(index);
-                }
-
-                index--;
-            }
-        }
-
-        /***************************************************/
-
         private static List<ICurve> ExtendToPoint(this ICurve curve, Point startPoint, Point endPoint, bool tangentExtension, double tolerance)
         {
             //TODO:
