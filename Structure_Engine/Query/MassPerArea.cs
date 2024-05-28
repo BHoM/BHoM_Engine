@@ -185,6 +185,26 @@ namespace BH.Engine.Structure
                    volPerAreaRibZone * (property.RibMaterial ?? property.Material).Density;
         }
 
+        /***************************************************/
+
+        [Description("Gets the mass per area for a BuiltUpRibbed.")]
+        [Input("property", "The BuiltUpRibbed property to calculate the mass per area for.")]
+        [Output("massPerArea", "The mass per area for the property.", typeof(MassPerUnitArea))]
+        public static double MassPerArea(this BuiltUpDoubleRibbed property)
+        {
+            if (property.IsNull() || property.Material.IsNull())
+                return double.NaN;
+
+            if (property.RibThickness <= 0 || property.RibSpacing < property.RibThickness * 2)
+            {
+                Base.Compute.RecordError($"The {nameof(BuiltUpDoubleRibbed.RibThickness)} is 0 or {nameof(BuiltUpDoubleRibbed.RibSpacing)} smaller than twice the {nameof(BuiltUpDoubleRibbed.RibThickness)}. The {nameof(BuiltUpDoubleRibbed)} is invalid and mass per area cannot be computed.");
+                return double.NaN;
+            }
+
+            double volPerAreaRibZone = property.RibHeight * (property.RibThickness * 2 / property.RibSpacing);
+            return property.TopThickness * property.Material.Density +
+                   volPerAreaRibZone * (property.RibMaterial ?? property.Material).Density;
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
