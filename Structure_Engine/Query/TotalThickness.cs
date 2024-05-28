@@ -198,6 +198,18 @@ namespace BH.Engine.Structure
             return property.TopThickness + property.RibHeight;
         }
 
+        /***************************************************/
+
+        [Description("Gets the total thickness of the surface property.")]
+        [Input("property", "The property to evaluate.")]
+        [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
+        public static double TotalThickness(this BuiltUpDoubleRibbed property)
+        {
+            if (property.IsNull())
+                return 0;
+
+            return property.TopThickness + property.RibHeight;
+        }
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
