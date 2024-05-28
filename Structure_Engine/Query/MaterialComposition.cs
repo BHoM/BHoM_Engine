@@ -308,6 +308,38 @@ namespace BH.Engine.Structure
             new List<double> { property.TopThickness, volPerAreaRibZone });
         }
 
+        /***************************************************/
+
+        [Description("Returns a SurfaceProperty's MaterialComposition.")]
+        [Input("property", "The SurfaceProperty to query.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
+        [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
+        public static MaterialComposition MaterialComposition(this BuiltUpDoubleRibbed property, ReinforcementDensity reinforcementDensity = null)
+        {
+            if (property.IsNull() || property.Material.IsNull())
+                return null;
+
+            //If only main material provided, use it for all parts
+            if (property.RibMaterial == null)
+                return property.Material.MaterialComposition(reinforcementDensity);
+
+            IMaterialFragment topMat = property.Material;
+            IMaterialFragment ribMat = property.RibMaterial ?? property.Material;
+
+            bool ribIsConcrete = ribMat is Concrete;
+            bool topIsConcrete = topMat is Concrete;
+
+            bool reinfToRib = ribIsConcrete || ribIsConcrete == topIsConcrete;  //Add reinforcement to ribs if they are of concrete material type or if non is concrete
+            bool reinfToSlab = topIsConcrete || ribIsConcrete == topIsConcrete; //Add reinforcement to slabs if it is of concrete material type or if non is concrete
+
+            double volPerAreaRibZone = property.RibHeight * (property.RibThickness * 2 / property.RibSpacing);
+            return Matter.Compute.AggregateMaterialComposition(new List<MaterialComposition>
+            {
+                topMat.MaterialComposition(reinfToSlab ? reinforcementDensity : null),
+                ribMat.MaterialComposition(reinfToRib ? reinforcementDensity : null)
+            },
+            new List<double> { property.TopThickness, volPerAreaRibZone });
+        }
 
         /***************************************************/
 
