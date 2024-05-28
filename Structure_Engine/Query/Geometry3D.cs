@@ -43,6 +43,7 @@ namespace BH.Engine.Structure
         [Description("Gets the BH.oM.Geometry.Extrusion out of the Bar as its Geometry3D.")]
         [Input("bar", "The input Bar to get the Geometry3D out of, i.e.its extrusion with its cross section along its centreline.")]
         [Input("onlyOuterExtrusion", "If true, and if the cross-section of the Bar is composed by multiple edges (e.g. a Circular Hollow Section), only return the extrusion of the outermost edge.")]
+        [Output("Mesh", "The mesh defining the 3D geometry of the Bar.")]
         public static IGeometry Geometry3D(this Bar bar, bool onlyOuterExtrusion = true)
         {
             if (bar.IsNull())
@@ -63,6 +64,7 @@ namespace BH.Engine.Structure
         [Description("Gets a CompositeGeometry made of the boundary surfaces of the Panel, or only its central Surface.")]
         [Input("panel", "The input panel to get the Geometry3D out of.")]
         [Input("onlyCentralSurface", "If true, the returned geometry is only the central (middle) surface of the panel. Otherwise, the whole external solid is returned as a CompositeGeometry of many surfaces.")]
+        [Output("Mesh", "The mesh defining the 3D geometry of the PadFoundation.")]
         public static IGeometry Geometry3D(this Panel panel, bool onlyCentralSurface = false)
         {
             if (panel.IsNull())
@@ -108,6 +110,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the BH.oM.Geometry.Extrusion out of the Pile as its Geometry3D.")]
         [Input("pile", "The input Pile to get the Geometry3D out of, i.e.its extrusion with its cross section along its centreline.")]
+        [Output("Mesh", "The mesh defining the 3D geometry of the Pile.")]
         public static IGeometry Geometry3D(this Pile pile)
         {
             return Create.Bar((Line)pile.Geometry(), pile.Section, pile.OrientationAngle).Geometry3D();
@@ -117,6 +120,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets a CompositeGeometry made of the boundary surfaces of the PadFoundation, or only its central Surface.")]
         [Input("pad", "The input panel to get the Geometry3D out of.")]
+        [Output("Mesh", "The mesh defining the 3D geometry of the Pad.")]
         public static IGeometry Geometry3D(this PadFoundation pad)
         {
             if (pad.IsNull() || !pad.IsPlanar())
@@ -142,6 +146,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets a CompositeGeometry made of the pile cap and piles of a PadFoundation.")]
         [Input("pileFoundation", "The input panel to get the Geometry3D out of.")]
+        [Output("Mesh", "The mesh defining the 3D geometry of the PileFoundation.")]
         public static IGeometry Geometry3D(this PileFoundation pileFoundation)
         {
             if (pileFoundation.IsNull())
