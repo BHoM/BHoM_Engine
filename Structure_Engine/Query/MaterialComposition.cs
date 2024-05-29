@@ -337,18 +337,18 @@ namespace BH.Engine.Structure
                 else if (ribIsConcrete) //Only rib concrete
                 {
                     reinfToRib = true;
-                    Base.Compute.RecordNote($"Only the Ribbs in the in the {nameof(BuiltUpDoubleRibbed)} is made up of a concrete material. Provided reinforcement density is only applied to the Ribbs.");
+                    Base.Compute.RecordNote($"Only the Ribbs in the in the {nameof(BuiltUpDoubleRibbed)} is made up of a concrete material. Provided {nameof(ReinforcementDensity)} is only applied to the Ribbs.");
                 }
                 else if (topIsConcrete) //Only slab concrete
                 {
                     reinfToRib = true;
-                    Base.Compute.RecordNote($"Only the Slab in the in the {nameof(BuiltUpDoubleRibbed)} is made up of a concrete material. Provided reinforcement density is only applied to the Slab.");
+                    Base.Compute.RecordNote($"Only the Slab in the in the {nameof(BuiltUpDoubleRibbed)} is made up of a concrete material. Provided {nameof(ReinforcementDensity)} is only applied to the Slab.");
                 }
                 else    //Neither is concrete. Add to both and record a note
                 {
                     reinfToSlab = true;
                     reinfToRib = true;
-                    Base.Compute.RecordNote($"Neither Ribbs or Slab in the {nameof(BuiltUpDoubleRibbed)} is made up of a concrete material. Provided reinforcement density is applied to both.");
+                    Base.Compute.RecordNote($"Neither Ribbs or Slab in the {nameof(BuiltUpDoubleRibbed)} is made up of a concrete material. Provided {nameof(ReinforcementDensity)} is applied to both.");
 
                 }
             }
