@@ -200,7 +200,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the total thickness of the surface property.")]
+        [Description("Gets the total thickness of the SurfaceProperty.")]
         [Input("property", "The property to evaluate.")]
         [Output("TotalThickness", "The total thickness, including any ribs or waffling.", typeof(Length))]
         public static double TotalThickness(this BuiltUpDoubleRibbed property)
