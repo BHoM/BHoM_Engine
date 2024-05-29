@@ -326,11 +326,36 @@ namespace BH.Engine.Structure
             IMaterialFragment topMat = property.Material;
             IMaterialFragment ribMat = property.RibMaterial ?? property.Material;
 
-            bool ribIsConcrete = ribMat is Concrete;
-            bool topIsConcrete = topMat is Concrete;
+            bool reinfToSlab = false;
+            bool reinfToRib = false;
+            if (reinforcementDensity != null)
+            {
+                bool ribIsConcrete = ribMat is Concrete;
+                bool topIsConcrete = topMat is Concrete;
 
-            bool reinfToRib = ribIsConcrete || ribIsConcrete == topIsConcrete;  //Add reinforcement to ribs if they are of concrete material type or if non is concrete
-            bool reinfToSlab = topIsConcrete || ribIsConcrete == topIsConcrete; //Add reinforcement to slabs if it is of concrete material type or if non is concrete
+                if (ribIsConcrete && topIsConcrete) //Both concrete
+                {
+                    reinfToSlab = true;
+                    reinfToRib = true;
+                }
+                else if (ribIsConcrete) //Only rib concrete
+                {
+                    reinfToRib = true;
+                    Base.Compute.RecordNote($"Only the Ribbs in the in the {nameof(BuiltUpDoubleRibbed)} is made up of a concrete material. Provided reinforcement density is only applied to the Ribbs.");
+                }
+                else if (topIsConcrete) //Only slab concrete
+                {
+                    reinfToRib = true;
+                    Base.Compute.RecordNote($"Only the Slab in the in the {nameof(BuiltUpDoubleRibbed)} is made up of a concrete material. Provided reinforcement density is only applied to the Slab.");
+                }
+                else    //Neither is concrete. Add to both and record a note
+                {
+                    reinfToSlab = true;
+                    reinfToRib = true;
+                    Base.Compute.RecordNote($"Neither Ribbs or Slab in the {nameof(BuiltUpDoubleRibbed)} is made up of a concrete material. Provided reinforcement density is applied to both.");
+
+                }
+            }
 
             double volPerAreaRibZone = property.RibHeight * (property.RibThickness * 2 / property.RibSpacing);
             return Matter.Compute.AggregateMaterialComposition(new List<MaterialComposition>
