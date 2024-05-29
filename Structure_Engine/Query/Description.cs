@@ -372,6 +372,19 @@ namespace BH.Engine.Structure
         [Description("Generates a default description for the SurfaceProperty.")]
         [Input("property", "The SurfaceProperty to get a default description for.")]
         [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
+        public static string Description(this BuiltUpDoubleRibbed property)
+        {
+            if (property == null)
+                return "null property";
+
+            return $"Ribbed: {property.TopThickness:G3} THK slab {CheckGetMaterialName(property.Material)} on double {property.RibHeight:G3}x{property.RibThickness:G3} ribs {CheckGetMaterialName(property.RibMaterial ?? property.Material)} spaced {property.RibSpacing:G3}";
+        }
+
+        /***************************************************/
+
+        [Description("Generates a default description for the SurfaceProperty.")]
+        [Input("property", "The SurfaceProperty to get a default description for.")]
+        [Output("desc", "The generated description for the property based on its dimensions, material and type.")]
         public static string Description(this Cassette property)
         {
             if (property == null)

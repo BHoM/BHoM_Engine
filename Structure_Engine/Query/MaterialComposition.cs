@@ -145,7 +145,7 @@ namespace BH.Engine.Structure
 
         [Description("Returns a SurfaceProperty's MaterialComposition.")]
         [Input("property", "The SurfaceProperty to query.")]
-        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the Panel.")]
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         public static MaterialComposition MaterialComposition(this Layered property, ReinforcementDensity reinforcementDensity = null)
         {
@@ -172,7 +172,7 @@ namespace BH.Engine.Structure
 
         [Description("Returns a SurfaceProperty's MaterialComposition.")]
         [Input("property", "The SurfaceProperty to query.")]
-        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the Panel.")]
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         public static MaterialComposition MaterialComposition(this CorrugatedDeck property, ReinforcementDensity reinforcementDensity = null)
         {
@@ -189,7 +189,7 @@ namespace BH.Engine.Structure
 
         [Description("Returns a SurfaceProperty's MaterialComposition.")]
         [Input("property", "The SurfaceProperty to query.")]
-        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the Panel.")]
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         public static MaterialComposition MaterialComposition(this ToppedSlab property, ReinforcementDensity reinforcementDensity = null)
         {
@@ -215,7 +215,7 @@ namespace BH.Engine.Structure
 
         [Description("Returns a SurfaceProperty's MaterialComposition.")]
         [Input("property", "The SurfaceProperty to query.")]
-        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the Panel.")]
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         public static MaterialComposition MaterialComposition(this SlabOnDeck property, ReinforcementDensity reinforcementDensity = null)
         {
@@ -257,7 +257,7 @@ namespace BH.Engine.Structure
 
         [Description("Returns a SurfaceProperty's MaterialComposition.")]
         [Input("property", "The SurfaceProperty to query.")]
-        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the Panel.")]
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         public static MaterialComposition MaterialComposition(this Cassette property, ReinforcementDensity reinforcementDensity = null)
         {
@@ -286,7 +286,7 @@ namespace BH.Engine.Structure
 
         [Description("Returns a SurfaceProperty's MaterialComposition.")]
         [Input("property", "The SurfaceProperty to query.")]
-        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the Panel.")]
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         public static MaterialComposition MaterialComposition(this BuiltUpRibbed property, ReinforcementDensity reinforcementDensity = null)
         {
@@ -308,6 +308,63 @@ namespace BH.Engine.Structure
             new List<double> { property.TopThickness, volPerAreaRibZone });
         }
 
+        /***************************************************/
+
+        [Description("Returns a SurfaceProperty's MaterialComposition.")]
+        [Input("property", "The SurfaceProperty to query.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the Panel.")]
+        [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
+        public static MaterialComposition MaterialComposition(this BuiltUpDoubleRibbed property, ReinforcementDensity reinforcementDensity = null)
+        {
+            if (property.IsNull() || property.Material.IsNull())
+                return null;
+
+            IMaterialFragment topMat = property.Material;
+            IMaterialFragment ribMat = property.RibMaterial ?? property.Material;
+
+            bool reinfToSlab = false;
+            bool reinfToRib = false;
+            if (reinforcementDensity != null)
+            {
+                bool ribIsConcrete = ribMat is Concrete;
+                bool topIsConcrete = topMat is Concrete;
+
+                if (ribIsConcrete && topIsConcrete) //Both concrete
+                {
+                    reinfToSlab = true;
+                    reinfToRib = true;
+                }
+                else if (ribIsConcrete) //Only rib concrete
+                {
+                    reinfToRib = true;
+                    Base.Compute.RecordNote($"Only the ribs in the in the {nameof(BuiltUpDoubleRibbed)} is Concrete. Provided {nameof(ReinforcementDensity)} is only applied to the ribs.");
+                }
+                else if (topIsConcrete) //Only slab concrete
+                {
+                    reinfToRib = true;
+                    Base.Compute.RecordNote($"Only the slab in the in the {nameof(BuiltUpDoubleRibbed)} is Concrete. Provided {nameof(ReinforcementDensity)} is only applied to the slab.");
+                }
+                else    //Neither is concrete. Add to both and record a note
+                {
+                    reinfToSlab = true;
+                    reinfToRib = true;
+                    Base.Compute.RecordNote($"Neither ribs or slab in the {nameof(BuiltUpDoubleRibbed)} is Concrete. Provided {nameof(ReinforcementDensity)} is applied to both.");
+
+                }
+            }
+
+            //If only main material provided, use it for all parts
+            if (property.RibMaterial == null)
+                return property.Material.MaterialComposition(reinforcementDensity);
+
+            double volPerAreaRibZone = property.RibHeight * (property.RibThickness * 2 / property.RibSpacing);
+            return Matter.Compute.AggregateMaterialComposition(new List<MaterialComposition>
+            {
+                topMat.MaterialComposition(reinfToSlab ? reinforcementDensity : null),
+                ribMat.MaterialComposition(reinfToRib ? reinforcementDensity : null)
+            },
+            new List<double> { property.TopThickness, volPerAreaRibZone });
+        }
 
         /***************************************************/
 
@@ -388,7 +445,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the MaterialComposition for homogenous SurfaceProperties. Multi-material properties will not be reported correctly.")]
         [Input("property", "The SurfaceProperty to query.")]
-        [Input("reinforcementDensity", "ReinforcementDensity assigned to the panel.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the Panel.")]
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         private static MaterialComposition MaterialComposition(this ISurfaceProperty property, ReinforcementDensity reinforcementDensity = null)
         {
