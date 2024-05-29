@@ -319,10 +319,6 @@ namespace BH.Engine.Structure
             if (property.IsNull() || property.Material.IsNull())
                 return null;
 
-            //If only main material provided, use it for all parts
-            if (property.RibMaterial == null)
-                return property.Material.MaterialComposition(reinforcementDensity);
-
             IMaterialFragment topMat = property.Material;
             IMaterialFragment ribMat = property.RibMaterial ?? property.Material;
 
@@ -356,6 +352,10 @@ namespace BH.Engine.Structure
 
                 }
             }
+
+            //If only main material provided, use it for all parts
+            if (property.RibMaterial == null)
+                return property.Material.MaterialComposition(reinforcementDensity);
 
             double volPerAreaRibZone = property.RibHeight * (property.RibThickness * 2 / property.RibSpacing);
             return Matter.Compute.AggregateMaterialComposition(new List<MaterialComposition>
