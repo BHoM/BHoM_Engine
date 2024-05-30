@@ -181,9 +181,11 @@ namespace BH.Engine.Geometry
                     //Compute corner offset vectors. First whileloop iteration computes for all corners
                     //Subsequent iteration only updates corners that have seen a change
                     bool recheckTranlsations = false;
+                    int recomputeCount = 0;
                     do
                     {
                         recheckTranlsations = false;
+                        recomputeCount++;
                         for (int i = 0; i < vertices.Count; i++)
                         {
                             OffsetVertex v = vertices[i];
@@ -277,6 +279,12 @@ namespace BH.Engine.Geometry
                     if (options.HandleGeneralCreatedSelfIntersections)
                         maxOffset = Math.Min(maxOffset, ComputeMaxOffsetUntilIntersection(segments, vertices, totalOffset, isClosed, distTol));
 
+                    bool firstIterForceOffset = false;
+                    if (firstIteration && maxOffset == 0 && recomputeCount > 1)
+                    {
+                        firstIterForceOffset = true;
+                        maxOffset = distTol * 1.5;
+                    }
                     //Offset the points
                     for (int i = 0; i < vertices.Count; i++)
                     {
@@ -288,7 +296,25 @@ namespace BH.Engine.Geometry
                     offset -= maxOffset;
 
                     //If remaining offset, make adjustments (remove 0 length segments etc) for next iteration
-                    if (offset > 0)
+                    if (firstIterForceOffset)
+                    {
+                        if (options.HandleCreatedLocalSelfIntersections)
+                        {
+                            foreach (var segment in segments)
+                            {
+                                segment.Length += segment.SegmentLengthChange * maxOffset;
+                            }
+                        }
+                        if (options.HandleGeneralCreatedSelfIntersections)
+                        {
+                            foreach (OffsetVertex vertex in vertices)
+                            {
+                                if (vertex.AnySegmentInRangeForIntersection)
+                                    vertex.ComputeIntersection = true;
+                            }
+                        }
+                    }
+                    else if (offset > 0)
                     {
                         if (!isClosed && vertices[0].Position.SquareDistance(vertices[vertices.Count - 1].Position) < distTol * distTol)
                         {
@@ -361,7 +387,7 @@ namespace BH.Engine.Geometry
                             }
                         }
                     }
-                    else if (offsets.Count > 0)
+                    else
                     {
                         if (options.HandleCreatedLocalSelfIntersections)
                         {
