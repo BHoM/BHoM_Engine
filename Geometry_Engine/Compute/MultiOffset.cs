@@ -290,47 +290,73 @@ namespace BH.Engine.Geometry
                     //If remaining offset, make adjustments (remove 0 length segments etc) for next iteration
                     if (offset > 0)
                     {
-                        List<int> toBeRemoved = new List<int>();
-                        if (options.HandleCreatedLocalSelfIntersections)
+                        if (!isClosed && vertices[0].Position.SquareDistance(vertices[vertices.Count - 1].Position) < distTol * distTol)
                         {
-                            for (int i = 0; i < segments.Count; i++)
+                            isClosed = true;
+                            vertices.RemoveAt(vertices.Count - 1);
+                            vertices[0].ComputeTranlation = true;
+                            vertices[0].ComputeIntersection = true;
+
+                            if (options.HandleCreatedLocalSelfIntersections)
                             {
-                                var seg = segments[i];
-                                double l = seg.Length + seg.SegmentLengthChange * maxOffset;   //new length of segment
-                                if (l < distTol)    //Segment vansihes -> to be removed
+                                foreach (var segment in segments)
                                 {
-                                    //If smaller than tolerance, add to be removed from segment and vertex lists
-                                    toBeRemoved.Add(i);
-
-                                    //Set vertices and segments that are to be recomputed in terms of translation vectors
-                                    vertices[(i + 1) % vertices.Count].ComputeTranlation = true;
+                                    segment.Length += segment.SegmentLengthChange * maxOffset;
                                 }
-                                else
-                                    segments[i].Length = l;
                             }
-
-                            foreach (int i in toBeRemoved.OrderByDescending(x => x))
-                            {
-                                vertices.RemoveAt(i);
-                                segments.RemoveAt(i);
-                            }
-
-                        }
-                        if (options.HandleGeneralCreatedSelfIntersections)
-                        {
-                            if (toBeRemoved.Count == 0)
-                            {
-                                offsets.Insert(0, offset);
-                                finalVertices.AddRange(CheckIntersectionAndCullSegments(segments, vertices, offsets, maxOffset, normal, isClosed, options, onlyLargestPerStep, distTol, angleTol));
-                                return finalVertices;
-                            }
-                            else
+                            if (options.HandleGeneralCreatedSelfIntersections)
                             {
                                 foreach (OffsetVertex vertex in vertices)
                                 {
-                                    if (vertex.AnySegmentInRangeForIntersection)
-                                        vertex.ComputeIntersection = true;
+                                    if (vertex.SegmentIntersected != -1)
+                                        vertex.OffsetUntilIntersection -= maxOffset;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            List<int> toBeRemoved = new List<int>();
+                            if (options.HandleCreatedLocalSelfIntersections)
+                            {
+                                for (int i = 0; i < segments.Count; i++)
+                                {
+                                    var seg = segments[i];
+                                    double l = seg.Length + seg.SegmentLengthChange * maxOffset;   //new length of segment
+                                    if (l < distTol)    //Segment vansihes -> to be removed
+                                    {
+                                        //If smaller than tolerance, add to be removed from segment and vertex lists
+                                        toBeRemoved.Add(i);
 
+                                        //Set vertices and segments that are to be recomputed in terms of translation vectors
+                                        vertices[(i + 1) % vertices.Count].ComputeTranlation = true;
+                                    }
+                                    else
+                                        segments[i].Length = l;
+                                }
+
+                                foreach (int i in toBeRemoved.OrderByDescending(x => x))
+                                {
+                                    vertices.RemoveAt(i);
+                                    segments.RemoveAt(i);
+                                }
+
+                            }
+                            if (options.HandleGeneralCreatedSelfIntersections)
+                            {
+                                if (toBeRemoved.Count == 0)
+                                {
+                                    offsets.Insert(0, offset);
+                                    finalVertices.AddRange(CheckIntersectionAndCullSegments(segments, vertices, offsets, maxOffset, normal, isClosed, options, onlyLargestPerStep, distTol, angleTol));
+                                    return finalVertices;
+                                }
+                                else
+                                {
+                                    foreach (OffsetVertex vertex in vertices)
+                                    {
+                                        if (vertex.AnySegmentInRangeForIntersection)
+                                            vertex.ComputeIntersection = true;
+
+                                    }
                                 }
                             }
                         }
@@ -354,6 +380,7 @@ namespace BH.Engine.Geometry
                         }
                     }
 
+
                     if (vertices.Count < 2 || (isClosed ? segments.Count < 2 : segments.Count < 1)) //Nothing left - exit
                         return finalVertices;
 
@@ -362,11 +389,13 @@ namespace BH.Engine.Geometry
                 if (vertices.Count >= 2)
                 {
                     List<OffsetVertex> finalpLine = vertices.Select(x => x.Clone()).ToList();
-                    if(isClosed)
+                    if (isClosed)
                         finalpLine.Add(finalpLine[0]);
 
                     finalVertices.Add(finalpLine);
                 }
+                else
+                    return finalVertices;
             }
 
             return finalVertices;
