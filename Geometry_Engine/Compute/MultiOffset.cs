@@ -487,239 +487,231 @@ namespace BH.Engine.Geometry
 
         private static List<List<OffsetVertex>> CheckIntersectionAndCullSegments(List<OffsetSegment> segments, List<OffsetVertex> vertices, List<double> offsets, double currentOfsetStep, Vector normal, bool isClosed, OffsetOptions options, bool onlyLargestPerStep, double distTol, double angleTol)
         {
-            if (isClosed)
+
+            List<Tuple<int, int>> vertSegInter = new List<Tuple<int, int>>();
+            for (int i = 0; i < vertices.Count; i++)
             {
-                List<Tuple<int, int>> vertSegInter = new List<Tuple<int, int>>();
-                List<Tuple<List<int>, bool>> vertexLoops = new List<Tuple<List<int>, bool>>();
-                for (int i = 0; i < vertices.Count; i++)
+                var v = vertices[i];
+                if (v.SegmentIntersected != -1)
                 {
-                    var v = vertices[i];
-                    if (v.SegmentIntersected != -1)
+                    double remOffset = vertices[i].OffsetUntilIntersection - currentOfsetStep;
+                    if (remOffset < distTol)    //Intersection between vertex and another segment
                     {
-                        double remOffset = vertices[i].OffsetUntilIntersection - currentOfsetStep;
-                        if (remOffset < distTol)    //Intersection between vertex and another segment
-                        {
-                            vertSegInter.Add(new Tuple<int, int>(i, v.SegmentIntersected));
-                            v.ComputeTranlation = true;
-                            v.ComputeIntersection = true;
-                            segments[v.SegmentIntersected].RecomputeLength = true;
-                        }
-                        else
-                            vertices[i].OffsetUntilIntersection = remOffset;
+                        vertSegInter.Add(new Tuple<int, int>(i, v.SegmentIntersected));
+                        v.ComputeTranlation = true;
+                        v.ComputeIntersection = true;
+                        segments[v.SegmentIntersected].RecomputeLength = true;
                     }
+                    else
+                        vertices[i].OffsetUntilIntersection = remOffset;
                 }
-                if (vertSegInter.Count > 0)
+            }
+
+            if (vertSegInter.Count > 0)
+            {
+                List<List<int>> vertexLoops;
+                List<List<int>> segmentLoops;
+                GenerateLoops(vertSegInter, vertices.Count, out vertexLoops, out segmentLoops);
+
+                if (!isClosed)
                 {
-                    List<int> toRemove = new List<int>();
-                    bool decreseSegRemovalIndex = false;
+                    List<int> lastLoop = segmentLoops.Last();
+                    lastLoop.RemoveAt(lastLoop.Count - 1);
+                }
 
-                    if (vertSegInter.Count > 0)
+                if (onlyLargestPerStep)
+                {
+                    List<int> largestVertexLoop = new List<int>();
+                    List<int> largestSegmentLoop = new List<int>();
+                    if (isClosed)
                     {
-                        List<Tuple<int, int>> transfers = GenerateTransfers(vertSegInter, vertices.Count);
-
-                        var loops = new List<List<int>>();
-
-                        for (int i = 0; i < vertSegInter.Count; i++)
-                        {
-                            loops.Add(GenerateLoop(vertSegInter[i].Item1, vertSegInter[i].Item2, vertices.Count, transfers));
-                            loops.Add(GenerateLoop(vertSegInter[i].Item2 + 1, vertSegInter[i].Item1, vertices.Count, transfers));
-                        }
-
-                        //Cull dupliacte loops
-                        for (int i = 0; i < loops.Count; i++)
-                        {
-                            for (int j = i + 1; j < loops.Count; j++)
-                            {
-                                if (loops[i].Count == loops[j].Count)
-                                {
-                                    if (loops[j].Contains(loops[i][0]) && loops[j].Contains(loops[i][loops[i].Count - 1]))
-                                    {
-                                        loops.RemoveAt(j);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-                        if (!onlyLargestPerStep)
-                        {
-                            List<List<OffsetVertex>> offsetVertices = new List<List<OffsetVertex>>();
-
-                            foreach (var loop in loops)
-                            {
-                                List<OffsetVertex> loppVertices = loop.Select(i => vertices[i].Clone()).ToList();
-                                List<OffsetSegment> loopSegs = new List<OffsetSegment>();
-                                for (int i = 0; i < loppVertices.Count; i++)
-                                {
-                                    OffsetVertex v0 = loppVertices[i];
-                                    OffsetVertex v1 = loppVertices[(i + 1) % loppVertices.Count];
-                                    Vector tan = v1.Position - v0.Position;
-                                    double length = tan.Length();
-                                    tan *= 1 / length;
-
-                                    loopSegs.Add(new OffsetSegment
-                                    {
-                                        Tangent = tan,
-                                        Length = length,
-                                        ComputeLengthChange = true,
-                                        Orthogonal = tan.CrossProduct(normal),
-                                        RecomputeLength = false
-                                    });
-                                }
-                                offsetVertices.AddRange(Iterate(loopSegs, loppVertices, offsets.ToList(), normal, isClosed, options, onlyLargestPerStep, distTol, angleTol, false));
-                            }
-                            return offsetVertices;
-                        }
-
-
-                        List<int> largestLoop = new List<int>();
                         double maxArea = double.MinValue;
 
-                        for (int i = 0; i < loops.Count; i++)
+                        for (int i = 0; i < vertexLoops.Count; i++)
                         {
-                            double area = LoopArea(loops[i], vertices, normal);
+                            double area = LoopArea(vertexLoops[i], vertices, normal);
                             if (area > maxArea)
                             {
                                 maxArea = area;
-                                largestLoop = loops[i];
+                                largestVertexLoop = vertexLoops[i];
+                                largestSegmentLoop = segmentLoops[i];
                             }
                         }
-                        bool shiftList = false;
-                        List<int> segmentLoop = largestLoop.ToList();
-                        Tuple<int, int> finalInter = vertSegInter.First(x => x.Item1 == segmentLoop[segmentLoop.Count - 1]);
-                        shiftList = finalInter.Item2 < finalInter.Item1;
-                        segmentLoop[segmentLoop.Count - 1] = finalInter.Item2;
-
-                        vertices[largestLoop.First()].ComputeTranlation = true;
-                        vertices[largestLoop.Last()].ComputeTranlation = true;
-
-                        List<int> vertToRemove = Enumerable.Range(0, vertices.Count).Except(largestLoop).OrderByDescending(x => x).ToList();
-                        List<int> segToRemove = Enumerable.Range(0, segments.Count).Except(segmentLoop).OrderByDescending(x => x).ToList();
-
-
-
-                        foreach (int i in vertToRemove)
-                            vertices.RemoveAt(i);
-
-                        foreach (int i in segToRemove)
-                            segments.RemoveAt(i);
-
-                        if (shiftList)
-                        {
-                            var temp = segments[0];
-                            segments.RemoveAt(0);
-                            segments.Add(temp);
-                        }
-
                     }
                     else
                     {
-                        int vIndex = vertSegInter[0].Item1;
-                        int sIndex = vertSegInter[0].Item2;
-
-                        List<int> loop1 = GenerateLoop(vIndex, sIndex, vertices.Count);
-                        List<int> loop2 = GenerateLoop((sIndex + 1) % vertices.Count, vIndex, vertices.Count);
-
-                        double area1 = LoopArea(loop1, vertices, normal);
-                        double area2 = LoopArea(loop2, vertices, normal);
-
-                        List<int> vertLoop;
-
-                        if (area1 > area2)
-                        {
-                            vertLoop = loop1;
-                            decreseSegRemovalIndex = false;
-                        }
-                        else
-                        {
-                            vertLoop = loop2;
-                            decreseSegRemovalIndex = true;
-                        }
-
-                        segments[sIndex].Length = vertices[vertLoop.First()].Position.Distance(vertices[vertLoop.Last()].Position);
-                        toRemove = Enumerable.Range(0, vertices.Count).Except(vertLoop).OrderByDescending(x => x).ToList();
-
-
-                        foreach (int rem in toRemove)
-                        {
-                            vertices.RemoveAt(rem);
-                            int segRem = decreseSegRemovalIndex ? rem - 1 : rem;
-                            if (segRem < 0)
-                            {
-                                segments.RemoveAt(segments.Count - 1);
-                                var temp = segments[0];
-                                segments.RemoveAt(0);
-                                segments.Add(temp);
-                            }
-                            else
-                                segments.RemoveAt(segRem);
-
-                        }
+                        largestVertexLoop = vertexLoops[0];
+                        largestSegmentLoop = segmentLoops[0];
                     }
 
-
-                    for (int i = 0; i < segments.Count; i++)
+                    List<OffsetVertex> largeVertices;
+                    List<OffsetSegment> largeSegements;
+                    ItemsFromLoops(vertices, segments, largestVertexLoop, largestSegmentLoop, false, out largeVertices, out largeSegements);
+                    return Iterate(largeSegements, largeVertices, offsets, normal, isClosed, options, onlyLargestPerStep, distTol, angleTol, false);
+                }
+                else
+                {
+                    List<List<OffsetVertex>> finalVertices = new List<List<OffsetVertex>>();
+                    for (int i = 0; i < vertexLoops.Count; i++)
                     {
-                        if (segments[i].RecomputeLength)
+                        if (vertexLoops[i].Count <= 2)  //Skip loops with 2 or less vertices, except for open curves if it is the first segment
                         {
-                            OffsetVertex prev = vertices[i];
-                            OffsetVertex next = vertices[(i + 1) % segments.Count];
-                            segments[i].Length = prev.Position.Distance(next.Position);
+                            if (isClosed)
+                                continue;
+                            else if (i != 0)
+                                continue;
                         }
+                        List<OffsetVertex> loopVs;
+                        List<OffsetSegment> loopSegs;
+                        ItemsFromLoops(vertices, segments, vertexLoops[i], segmentLoops[i], true, out loopVs, out loopSegs);
+                        finalVertices.AddRange(Iterate(loopSegs, loopVs, offsets.ToList(), normal, isClosed, options, onlyLargestPerStep, distTol, angleTol, false));
                     }
+                    return finalVertices;
                 }
             }
             else
+                return Iterate(segments, vertices, offsets, normal, isClosed, options, onlyLargestPerStep, distTol, angleTol, false);
+            
+        }
+
+        /***************************************************/
+
+        private static void ItemsFromLoops(List<OffsetVertex> vertices, List<OffsetSegment> segments, List<int> vertexLoop, List<int> segmentLoop, bool clone, out List<OffsetVertex> loopVs, out List<OffsetSegment> loopSegs)
+        {
+            if (clone)
             {
-                for (int i = 1; i < vertices.Count - 1; i++)
+                loopVs = vertexLoop.Select(i => vertices[i].Clone()).ToList();
+                loopSegs = segmentLoop.Select(i => segments[i].Clone(false)).ToList();
+            }
+            else
+            {
+                loopVs = vertexLoop.Select(i => vertices[i]).ToList();
+                loopSegs = segmentLoop.Select(i => segments[i]).ToList();
+            }
+
+            if (segmentLoop[0] < vertexLoop[0])
+            {
+                var temp = loopSegs[0];
+                loopSegs.RemoveAt(0);
+                loopSegs.Add(temp);
+            }
+
+            for (int i = 0; i < loopSegs.Count; i++)
+            {
+                if (loopSegs[i].RecomputeLength)
+                    loopSegs[i].Length = loopVs[i].Position.Distance(loopVs[(i + 1) % loopVs.Count].Position);
+            }
+
+            foreach (var vertex in loopVs)
+            {
+                if (vertex.AnySegmentInRangeForIntersection)
+                    vertex.ComputeIntersection = true;
+            }
+        }
+
+        /***************************************************/
+
+        private static void GenerateLoops(List<Tuple<int, int>> vertSegInter, int count, out List<List<int>> verticeLoops, out List<List<int>> segmentLoops)
+        {
+            List<Tuple<int, int>> vertSegInterUsed = new List<Tuple<int, int>>();
+
+            Dictionary<int, List<int>> vertLoopDict = new Dictionary<int, List<int>>();
+            Dictionary<int, List<int>> segLoopDict = new Dictionary<int, List<int>>();
+
+            int k = 0;
+            vertLoopDict[k] = new List<int>();
+            segLoopDict[k] = new List<int>();
+            List<int> segIntersected = new List<int>();
+            for (int i = 0; i < count; i++)
+            {
+                bool intersected = false;
+
+                if (vertSegInterUsed.Any())
                 {
-                    var v = vertices[i];
-                    if (v.SegmentIntersected != -1)
+
+                    if (vertSegInterUsed.Last().Item1 == i)
                     {
-                        double remOffset = vertices[i].OffsetUntilIntersection - currentOfsetStep;
-                        if (remOffset < distTol)    //Intersection between vertex and another segment
-                        {
-                            int endIndex = v.SegmentIntersected; //Index of segment intersected
-                            int startRem, endRem;
-                            if (endIndex > i)
-                            {
-                                startRem = i;
-                                endRem = endIndex;
-                            }
-                            else
-                            {
-                                startRem = endIndex;
-                                endRem = i;
-                                i -= (endRem - startRem);
-                            }
-
-                            int partsToRemove = endRem - startRem;
-                            while (partsToRemove > 0)
-                            {
-                                segments.RemoveAt(startRem);
-                                vertices.RemoveAt(startRem + 1);
-                                partsToRemove--;
-                            }
-
-                            segments[startRem + 1].Length = v.Position.Distance(vertices[startRem + 1].Position);
-
-                            vertices[startRem].ComputeIntersection = true;
-                            vertices[startRem].ComputeTranlation = true;
-                            segments[startRem].ComputeLengthChange = true;
-                        }
-                        else
-                            vertices[i].OffsetUntilIntersection = remOffset;
+                        vertLoopDict[k].Add(i);
+                        k -= IncKey(vertSegInterUsed.Last().Item1, count);
+                        vertLoopDict[k].Add(i);
+                        segLoopDict[k].Add(i);
+                        vertSegInterUsed.RemoveAt(vertSegInterUsed.Count - 1);
+                        intersected = true;
                     }
+
+                    if (vertSegInterUsed.Any() && vertSegInterUsed.Last().Item2 == i)
+                    {
+                        vertLoopDict[k].Add(i);
+                        segLoopDict[k].Add(i);
+                        while (vertSegInterUsed.Any() && vertSegInterUsed.Last().Item2 == i)
+                        {
+                            k -= IncKey(vertSegInterUsed.Last().Item1, count);
+                            segLoopDict[k].Add(i);
+                            vertSegInterUsed.RemoveAt(vertSegInterUsed.Count - 1);
+                        }
+
+                        intersected = true;
+                    }
+                }
+
+                int ind = vertSegInter.FindIndex(x => x.Item1 == i);
+                if (ind != -1)
+                {
+                    vertLoopDict[k].Add(i);
+                    k += IncKey(vertSegInter[ind].Item1, count);
+
+                    segIntersected.Add(vertSegInter[ind].Item2);
+                    vertLoopDict[k] = new List<int>();
+                    segLoopDict[k] = new List<int>();
+
+                    vertLoopDict[k].Add(i);
+                    segLoopDict[k].Add(i);
+                    vertSegInterUsed.Add(vertSegInter[ind]);
+                    vertSegInter.RemoveAt(ind);
+
+                    intersected = true;
+                }
+
+                var segInters = vertSegInter.Where(x => x.Item2 == i).OrderByDescending(x => x.Item1);
+                if (segInters.Any())
+                {
+                    if (!segIntersected.Contains(i))
+                    {
+                        vertLoopDict[k].Add(i);
+                        segLoopDict[k].Add(i);
+                    }
+                    foreach (var segInter in segInters)
+                    {
+                        k += IncKey(segInter.Item1, count);
+
+                        vertLoopDict[k] = new List<int>();
+                        segLoopDict[k] = new List<int>();
+
+                        segLoopDict[k].Add(i);
+                        vertSegInterUsed.Add(segInter);
+                        vertSegInter.Remove(segInter);
+                    }
+                    intersected = true;
+                }
+
+                if (!intersected)
+                {
+                    vertLoopDict[k].Add(i);
+                    segLoopDict[k].Add(i);
                 }
             }
 
-            for (int j = 0; j < vertices.Count; j++)
-            {
-                if (vertices[j].SegmentIntersected != -1)
-                    vertices[j].ComputeIntersection = true;
-            }
+            verticeLoops = vertLoopDict.Values.ToList();
+            segmentLoops = segLoopDict.Values.ToList();
 
-            return Iterate(segments, vertices, offsets, normal, isClosed, options, onlyLargestPerStep, distTol, angleTol, false);
+        }
+
+        /***************************************************/
+
+        private static int IncKey(int i, int count)
+        {
+            int key = (i + count) * 3;
+            return key;
         }
 
         /***************************************************/
