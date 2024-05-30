@@ -276,7 +276,7 @@ namespace BH.Engine.Geometry
                     }
 
                     if (options.HandleGeneralCreatedSelfIntersections)
-                        maxOffset = Math.Min(maxOffset, ComputeMaxOffsetUntilIntersection(segments, vertices, totalOffset, isClosed));
+                        maxOffset = Math.Min(maxOffset, ComputeMaxOffsetUntilIntersection(segments, vertices, totalOffset, isClosed, distTol));
 
                     //Offset the points
                     for (int i = 0; i < vertices.Count; i++)
@@ -400,8 +400,9 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Support method for Polyline offsets for the case of two adjecent polyline segments creating a acute angle within provided tolerance. This case is handled either by vertex and segment removal, or introduction of additional vertices.")]
-        private static double ComputeMaxOffsetUntilIntersection(List<OffsetSegment> segments, List<OffsetVertex> vertices, double offset, bool isClosed)
+        private static double ComputeMaxOffsetUntilIntersection(List<OffsetSegment> segments, List<OffsetVertex> vertices, double offset, bool isClosed, double distTol)
         {
+            double sqTol = distTol * distTol;
             double overallMaxOffset = offset;
             for (int i = 0; i < segments.Count; i++)
             {
@@ -453,9 +454,22 @@ namespace BH.Engine.Geometry
                         var enVertex = vertices[(j + 1) % vertices.Count];
                         Point enOff = enVertex.Position + reqOffset * enVertex.Translation;
 
-                        double sqLen = stOff.SquareDistance(enOff);
 
-                        if (vOff.SquareDistance(stOff) < sqLen && vOff.SquareDistance(enOff) < sqLen)   //Point ends on line
+                        double stSqDist = vOff.SquareDistance(stOff);
+
+                        bool inRange = stSqDist < sqTol;    //On start point within tolerance
+                        if (!inRange)
+                        {
+                            double enSqDist = vOff.SquareDistance(enOff);
+                            inRange = enSqDist < sqTol; //On end point within tolerance
+                            if (!inRange)
+                            {
+                                double sqLength = stOff.Distance(enOff);
+                                inRange = stSqDist < sqLength && enSqDist < sqLength;   //On line
+                            }
+                        }
+
+                        if (inRange)   //Point ends on line
                         {
                             maxOffset = reqOffset;
                             segmentIntersected = j;
