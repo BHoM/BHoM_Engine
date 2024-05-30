@@ -354,6 +354,9 @@ namespace BH.Engine.Geometry
                         }
                     }
 
+                    if (vertices.Count < 2 || (isClosed ? segments.Count < 2 : segments.Count < 1)) //Nothing left - exit
+                        return finalVertices;
+
                     firstIteration = false;
                 }
                 if (vertices.Count >= 2)
