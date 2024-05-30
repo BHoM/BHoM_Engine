@@ -147,14 +147,7 @@ namespace BH.Engine.Geometry
 
             foreach (var offsetVert in offsetVertices)
             {
-                List<Point> pts = offsetVert.Select(x => x.Position).ToList();
-                if (pts.Count >= 2)
-                {
-                    if (isClosed)
-                        pts.Add(pts[0]);
-                    pLines.Add(new Polyline { ControlPoints = pts });
-                }
-
+                pLines.Add(new Polyline { ControlPoints = offsetVert.Select(x => x.Position).ToList() });
             }
 
             return pLines;
@@ -199,9 +192,15 @@ namespace BH.Engine.Geometry
 
                             v.ComputeTranlation = false;
                             if (!isClosed && i == 0)    //Start point vector for open curves will simply be the orthogonal vector of the first segment
+                            {
                                 v.Translation = segments[i].Orthogonal;
+                                segments[i].ComputeLengthChange = options.HandleCreatedLocalSelfIntersections;
+                            }
                             else if (!isClosed && i == vertices.Count - 1)  //Similar to start
+                            {
                                 v.Translation = segments[i - 1].Orthogonal;
+                                segments[i - 1].ComputeLengthChange = options.HandleCreatedLocalSelfIntersections;
+                            }
                             else
                             {
                                 int prev = i == 0 ? segments.Count - 1 : i - 1;
@@ -357,9 +356,14 @@ namespace BH.Engine.Geometry
 
                     firstIteration = false;
                 }
-                finalVertices.Add(vertices);
+                if (vertices.Count >= 2)
+                {
+                    List<OffsetVertex> finalpLine = vertices.Select(x => x.Clone()).ToList();
+                    if(isClosed)
+                        finalpLine.Add(finalpLine[0]);
 
-                vertices = vertices.Select(x => x.Clone()).ToList();
+                    finalVertices.Add(finalpLine);
+                }
             }
 
             return finalVertices;
@@ -404,13 +408,8 @@ namespace BH.Engine.Geometry
         {
             double sqTol = distTol * distTol;
             double overallMaxOffset = offset;
-            for (int i = 0; i < segments.Count; i++)
+            for (int i = 0; i < vertices.Count; i++)
             {
-                if (!isClosed)  //Will never happen for end vertices of open curves
-                {
-                    if (i == 0 || i == vertices.Count - 1)
-                        continue;
-                }
                 OffsetVertex vertex = vertices[i];
                 if (!vertex.ComputeIntersection)    //Intersection check does not need to be recomputed
                     continue;
@@ -428,7 +427,7 @@ namespace BH.Engine.Geometry
                     if (i == j)
                         continue;
 
-                    if (i == 0)
+                    if (i == 0 && isClosed)
                     {
                         if (j == segments.Count - 1)
                             continue;
@@ -445,8 +444,10 @@ namespace BH.Engine.Geometry
                     double dot2 = segOrtho.DotProduct(trans);
                     double reqOffset = dot1 / (dot2 - 1); //Required offset for the vertex to end up on the segment-plane after it has been offset
 
-                    if (reqOffset > 0 && reqOffset < maxOffset)  //Offset in the correct direction and samller than previous max.
+                    if (reqOffset > -distTol && reqOffset < maxOffset)  //Offset in the correct direction and samller than previous max.
                     {
+                        if (reqOffset < 0)
+                            reqOffset = 0;
                         vertex.AnySegmentInRangeForIntersection = true;
                         //Check if the point ends up on the finite segment
                         Point vOff = vertex.Position + reqOffset * trans;  //Point translated with offset
@@ -464,7 +465,7 @@ namespace BH.Engine.Geometry
                             inRange = enSqDist < sqTol; //On end point within tolerance
                             if (!inRange)
                             {
-                                double sqLength = stOff.Distance(enOff);
+                                double sqLength = stOff.SquareDistance(enOff);
                                 inRange = stSqDist < sqLength && enSqDist < sqLength;   //On line
                             }
                         }
@@ -529,8 +530,8 @@ namespace BH.Engine.Geometry
 
                 if (!isClosed)
                 {
-                    List<int> lastLoop = segmentLoops.Last();
-                    lastLoop.RemoveAt(lastLoop.Count - 1);
+                    List<int> firstLoop = segmentLoops.First();
+                    firstLoop.RemoveAt(firstLoop.Count - 1);
                 }
 
                 if (onlyLargestPerStep)
@@ -578,7 +579,7 @@ namespace BH.Engine.Geometry
                         List<OffsetVertex> loopVs;
                         List<OffsetSegment> loopSegs;
                         ItemsFromLoops(vertices, segments, vertexLoops[i], segmentLoops[i], true, out loopVs, out loopSegs);
-                        finalVertices.AddRange(Iterate(loopSegs, loopVs, offsets.ToList(), normal, isClosed, options, onlyLargestPerStep, distTol, angleTol, false));
+                        finalVertices.AddRange(Iterate(loopSegs, loopVs, offsets.ToList(), normal, isClosed || i > 0, options, onlyLargestPerStep, distTol, angleTol, false));
                     }
                     return finalVertices;
                 }
