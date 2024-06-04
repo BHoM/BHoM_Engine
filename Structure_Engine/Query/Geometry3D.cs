@@ -119,8 +119,8 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets a CompositeGeometry made of the boundary surfaces of the PadFoundation, or only its central Surface.")]
-        [Input("pad", "The input panel to get the Geometry3D out of.")]
-        [Output("Mesh", "The mesh defining the 3D geometry of the Pad.")]
+        [Input("pad", "The input Panel to get the Geometry3D out of.")]
+        [Output("3d", "Three-dimensional geometry of the PadFoundation.")]
         public static IGeometry Geometry3D(this PadFoundation pad)
         {
             if (pad.IsNull() || !pad.IsPlanar())
