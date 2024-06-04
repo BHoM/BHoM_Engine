@@ -43,7 +43,7 @@ namespace BH.Engine.Structure
         [Description("Gets the BH.oM.Geometry.Extrusion out of the Bar as its Geometry3D.")]
         [Input("bar", "The input Bar to get the Geometry3D out of, i.e.its extrusion with its cross section along its centreline.")]
         [Input("onlyOuterExtrusion", "If true, and if the cross-section of the Bar is composed by multiple edges (e.g. a Circular Hollow Section), only return the extrusion of the outermost edge.")]
-        [Output("Mesh", "The mesh defining the 3D geometry of the Bar.")]
+        [Output("3d", "Three-dimensional geometry of the Bar.")]
         public static IGeometry Geometry3D(this Bar bar, bool onlyOuterExtrusion = true)
         {
             if (bar.IsNull())
