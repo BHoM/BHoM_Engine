@@ -491,6 +491,8 @@ namespace BH.Engine.Geometry
                 double maxOffset = offset;
                 int segmentIntersected = -1;
 
+                List<Tuple<int, double>> segmentPerpDistance = new List<Tuple<int, double>>();
+
                 for (int j = 0; j < segments.Count; j++)
                 {
                     //Skip segments adjecent
@@ -514,37 +516,49 @@ namespace BH.Engine.Geometry
                     double dot2 = segOrtho.DotProduct(trans);
                     double reqOffset = dot1 / (dot2 - 1); //Required offset for the vertex to end up on the segment-plane after it has been offset
 
-                    if (reqOffset > -distTol && reqOffset < maxOffset)  //Offset in the correct direction and samller than previous max.
+                    if (reqOffset > -distTol && reqOffset < offset)  //Offset in the correct direction and samller than previous max.
                     {
                         if (reqOffset < 0)
                             reqOffset = 0;
                         vertex.AnySegmentInRangeForIntersection = true;
-                        //Check if the point ends up on the finite segment
-                        Point vOff = vertex.Position + reqOffset * trans;  //Point translated with offset
-                        Point stOff = startVertex.Position + reqOffset * startVertex.Translation;
-                        var enVertex = vertices[(j + 1) % vertices.Count];
-                        Point enOff = enVertex.Position + reqOffset * enVertex.Translation;
+                        segmentPerpDistance.Add(new Tuple<int, double>(j, reqOffset));
+                    }
+                }
+
+                segmentPerpDistance = segmentPerpDistance.OrderBy(x => x.Item2).ToList();
+
+                foreach (var segmentPerpDist in segmentPerpDistance)
+                {
+                    double reqOffset = segmentPerpDist.Item2;
+                    int j = segmentPerpDist.Item1;
+
+                    //Check if the point ends up on the finite segment
+                    Point vOff = vertex.Position + reqOffset * trans;  //Point translated with offset
+                    var startVertex = vertices[j];
+                    Point stOff = startVertex.Position + reqOffset * startVertex.Translation;
+                    var enVertex = vertices[(j + 1) % vertices.Count];
+                    Point enOff = enVertex.Position + reqOffset * enVertex.Translation;
 
 
-                        double stSqDist = vOff.SquareDistance(stOff);
+                    double stSqDist = vOff.SquareDistance(stOff);
 
-                        bool inRange = stSqDist < sqTol;    //On start point within tolerance
+                    bool inRange = stSqDist < sqTol;    //On start point within tolerance
+                    if (!inRange)
+                    {
+                        double enSqDist = vOff.SquareDistance(enOff);
+                        inRange = enSqDist < sqTol; //On end point within tolerance
                         if (!inRange)
                         {
-                            double enSqDist = vOff.SquareDistance(enOff);
-                            inRange = enSqDist < sqTol; //On end point within tolerance
-                            if (!inRange)
-                            {
-                                double sqLength = stOff.SquareDistance(enOff);
-                                inRange = stSqDist < sqLength && enSqDist < sqLength;   //On line
-                            }
+                            double sqLength = stOff.SquareDistance(enOff);
+                            inRange = stSqDist < sqLength && enSqDist < sqLength;   //On line
                         }
+                    }
 
-                        if (inRange)   //Point ends on line
-                        {
-                            maxOffset = reqOffset;
-                            segmentIntersected = j;
-                        }
+                    if (inRange)   //Point ends on line
+                    {
+                        maxOffset = reqOffset;
+                        segmentIntersected = j;
+                        break;
                     }
                 }
 
