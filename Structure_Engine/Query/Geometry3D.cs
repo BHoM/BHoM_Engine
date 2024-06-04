@@ -110,7 +110,7 @@ namespace BH.Engine.Structure
 
         [Description("Gets the BH.oM.Geometry.Extrusion out of the Pile as its Geometry3D.")]
         [Input("pile", "The input Pile to get the Geometry3D out of, i.e.its extrusion with its cross section along its centreline.")]
-        [Output("Mesh", "The mesh defining the 3D geometry of the Pile.")]
+        [Output("3d", "Three-dimensional geometry of the Pile.")]
         public static IGeometry Geometry3D(this Pile pile)
         {
             return Create.Bar((Line)pile.Geometry(), pile.Section, pile.OrientationAngle).Geometry3D();
