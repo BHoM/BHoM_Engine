@@ -144,9 +144,9 @@ namespace BH.Engine.Structure
             return compositeGeometry;
         }
 
-        [Description("Gets a CompositeGeometry made of the pile cap and piles of a PadFoundation.")]
-        [Input("pileFoundation", "The input panel to get the Geometry3D out of.")]
-        [Output("Mesh", "The mesh defining the 3D geometry of the PileFoundation.")]
+        [Description("Gets a CompositeGeometry made of the PileCap and Piles of a PileFoundation.")]
+        [Input("pileFoundation", "The input PileFoundation to get the Geometry3D out of.")]
+        [Output("3d", "Three-dimensional geometry of the PileFoundation.")]
         public static IGeometry Geometry3D(this PileFoundation pileFoundation)
         {
             if (pileFoundation.IsNull())
