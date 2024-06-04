@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
@@ -57,6 +58,17 @@ namespace BH.Engine.Geometry
             }
 
             options = options ?? new OffsetOptions();   //Initialise to default values if nothing is provided
+
+            if (options.HandleGeneralCreatedSelfIntersections)
+            {
+                if (!options.HandleCreatedLocalSelfIntersections)
+                {
+                    options = options.ShallowClone();
+                    options.HandleCreatedLocalSelfIntersections = true;
+                    Base.Compute.RecordNote($"{nameof(options.HandleCreatedLocalSelfIntersections)} has been set to true due to {nameof(options.HandleGeneralCreatedSelfIntersections)} being true.");
+                }
+            }
+
             bool isClosed = curve.IsClosed(distTol);
 
             List<Point> cPts = new List<Point>(curve.ControlPoints);
