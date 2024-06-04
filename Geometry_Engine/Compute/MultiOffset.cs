@@ -128,7 +128,7 @@ namespace BH.Engine.Geometry
             // - Length change for adjecent segments for an offset with a magnitude equal to 1
             // - Maxmimum allowed offset until the vertex hits a segment
             // - Segment hit after maximum offset
-            List<OffsetVertex> vertices = cPts.Select(x => new OffsetVertex() { Position = x, ComputeTranlation = true, ComputeIntersection = options.HandleGeneralCreatedSelfIntersections }).ToList();
+            List<OffsetVertex> vertices = cPts.Select(x => new OffsetVertex() { Position = x, ComputeTranslation = true, ComputeIntersection = options.HandleGeneralCreatedSelfIntersections }).ToList();
 
             List<Polyline> pLines = new List<Polyline>();
             if (offsets.Any(x => x == 0))
@@ -201,10 +201,10 @@ namespace BH.Engine.Geometry
                         for (int i = 0; i < vertices.Count; i++)
                         {
                             OffsetVertex v = vertices[i];
-                            if (!v.ComputeTranlation)
+                            if (!v.ComputeTranslation)
                                 continue;
 
-                            v.ComputeTranlation = false;
+                            v.ComputeTranslation = false;
                             if (!isClosed && i == 0)    //Start point vector for open curves will simply be the orthogonal vector of the first segment
                             {
                                 v.Translation = segments[i].Orthogonal;
@@ -332,7 +332,7 @@ namespace BH.Engine.Geometry
                         {
                             isClosed = true;
                             vertices.RemoveAt(vertices.Count - 1);
-                            vertices[0].ComputeTranlation = true;
+                            vertices[0].ComputeTranslation = true;
                             vertices[0].ComputeIntersection = true;
 
                             if (options.HandleCreatedLocalSelfIntersections)
@@ -366,7 +366,7 @@ namespace BH.Engine.Geometry
                                         toBeRemoved.Add(i);
 
                                         //Set vertices and segments that are to be recomputed in terms of translation vectors
-                                        vertices[(i + 1) % vertices.Count].ComputeTranlation = true;
+                                        vertices[(i + 1) % vertices.Count].ComputeTranslation = true;
                                     }
                                     else
                                         segments[i].Length = l;
@@ -449,7 +449,7 @@ namespace BH.Engine.Geometry
                 AdjacentSegmentLengthChange = v.AdjacentSegmentLengthChange,
                 AnySegmentInRangeForIntersection = v.AnySegmentInRangeForIntersection,
                 ComputeIntersection = v.ComputeIntersection,
-                ComputeTranlation = v.ComputeTranlation,
+                ComputeTranslation = v.ComputeTranslation,
                 OffsetUntilIntersection = v.OffsetUntilIntersection,
                 SegmentIntersected = v.SegmentIntersected,
                 Translation = v.Translation,
@@ -583,7 +583,7 @@ namespace BH.Engine.Geometry
                     if (remOffset < distTol)    //Intersection between vertex and another segment
                     {
                         vertSegInter.Add(new Tuple<int, int>(i, v.SegmentIntersected));
-                        v.ComputeTranlation = true;
+                        v.ComputeTranslation = true;
                         v.ComputeIntersection = true;
                         segments[v.SegmentIntersected].RecomputeLength = true;
                     }
@@ -839,7 +839,7 @@ namespace BH.Engine.Geometry
             if (outwards)
             {
                 //For the case of outwards, an additional vertex and segment is inserted, creating a right angled corner from the acute corner angle
-                vertices.Insert(i, new OffsetVertex() { Position = vertices[i].Position, ComputeTranlation = true });
+                vertices.Insert(i, new OffsetVertex() { Position = vertices[i].Position, ComputeTranslation = true });
                 Vector tanNew = (segments[i].Orthogonal - segments[prev].Orthogonal).Normalise();
                 segments.Insert(i, new OffsetSegment() { Length = 0, Tangent = tanNew, Orthogonal = tanNew.CrossProduct(normal).Normalise(), SegmentLengthChange = 0, ComputeLengthChange = true });
 
@@ -850,7 +850,7 @@ namespace BH.Engine.Geometry
                 segments[(i + 1) % segments.Count].ComputeLengthChange = true;
 
                 //Same for vertecies requiring re-computation
-                vertices[(i + 1) % vertices.Count].ComputeTranlation = true;
+                vertices[(i + 1) % vertices.Count].ComputeTranslation = true;
 
             }
             else
@@ -859,7 +859,7 @@ namespace BH.Engine.Geometry
                 {
                     //If the corner removed leads to the previous and next points being adjecent, remove two verticesm as well as the two segments leading up to the removed vertex
 
-                    vertices[(i + 1) % vertices.Count].ComputeTranlation = true;    //Kept vertex needs recomputation of translation vector
+                    vertices[(i + 1) % vertices.Count].ComputeTranslation = true;    //Kept vertex needs recomputation of translation vector
 
                     vertices.RemoveAt(i);
                     segments.RemoveAt(i);
@@ -902,8 +902,8 @@ namespace BH.Engine.Geometry
                     tan = tan * (1 / lengthNew);
                     segments[prev] = new OffsetSegment() { Length = lengthNew, Tangent = tan, Orthogonal = tan.CrossProduct(normal).Normalise(), SegmentLengthChange = 0, ComputeLengthChange = true };
 
-                    vertices[prev].ComputeTranlation = true;
-                    vertices[i % vertices.Count].ComputeTranlation = true;
+                    vertices[prev].ComputeTranslation = true;
+                    vertices[i % vertices.Count].ComputeTranslation = true;
                     segments[i % segments.Count].ComputeLengthChange = true;
 
                 }
