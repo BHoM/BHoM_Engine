@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Base;
 using Humanizer;
 using MongoDB.Bson;
@@ -145,9 +146,9 @@ namespace BH.Engine.Serialiser
             Type type = null;
             if (fullName == "T")
                 return null;
-            if (fullName.StartsWith("BH.oM"))
-                type = Base.Create.Type(fullName, true);
-            else if (fullName.StartsWith("BH.Engine"))
+            if (fullName.IsOmNamespace())
+                type = Base.Create.Type(fullName, true, true);
+            else if (fullName.IsEngineNamespace())
                 type = Base.Create.EngineType(fullName, true);
             else
                 type = Type.GetType(fullName);
@@ -156,7 +157,7 @@ namespace BH.Engine.Serialiser
             {
                 List<Type> types = Base.Create.AllTypes(fullName, true);
                 if (types.Count > 0)
-                    type = types.First();
+                    type = types.OrderBy(x => x.Assembly.FullName).First();
             }
 
             return type;

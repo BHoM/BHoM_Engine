@@ -83,32 +83,71 @@ namespace BH.Engine.Versioning
             // Get the list of upgraders to call
             List<string> versions = Query.UpgradersToCall(version);
 
+            bool versionWithPipes = false;
+
             lock (m_versioningLock)
             {
-                // Call all the upgraders in sequence
-                for (int i = 0; i < versions.Count; i++)
+                if (versionWithPipes)
                 {
-                    // Create a connection with the upgrader
-                    NamedPipeServerStream pipe = GetPipe(versions[i]);
-                    if (pipe == null)
-                        return document;
-
-                    // Send the document
-                    SendDocument(document, pipe);
-
-                    // Get the new version back
-                    BsonDocument result = ReadDocument(pipe);
-                    if (result != null)
+                    // Call all the upgraders in sequence
+                    for (int i = 0; i < versions.Count; i++)
                     {
-                        if (result.Contains("_t") && result["_t"] == "NoUpdate")
+                        // Create a connection with the upgrader
+                        NamedPipeServerStream pipe = GetPipe(versions[i]);
+                        if (pipe == null)
+                            return document;
+
+                        // Send the document
+                        SendDocument(document, pipe);
+
+                        // Get the new version back
+                        BsonDocument result = ReadDocument(pipe);
+                        if (result != null)
                         {
-                            if (result.Contains("Message"))
+                            if (result.Contains("_t") && result["_t"] == "NoUpdate")
                             {
-                                noUpdateMessage = result["Message"].ToString();
-                                Engine.Base.Compute.RecordError(noUpdateMessage);
+                                if (result.Contains("Message"))
+                                {
+                                    noUpdateMessage = result["Message"].ToString();
+                                    Engine.Base.Compute.RecordError(noUpdateMessage);
+                                }
+                            }
+                            else if (document != result)
+                            {
+                                wasUpdated = true;
+                                document = result;
                             }
                         }
-                        else if (document != result)
+                    }
+                }
+                else
+                {
+                    // Call all the upgraders in sequence
+                    for (int i = 0; i < versions.Count; i++)
+                    {
+                        BsonDocument result = null;
+                        try
+                        {
+                            //Get pre-compiled upgrader method for the version
+                            Func<BsonDocument, BsonDocument> upgrader = GetUpgraderMethod(versions[i]);
+                            if (upgrader != null)
+                                result = upgrader(document);    //Upgrade
+                        }
+                        catch (Exception e)
+                        {
+                            if (e.GetType().Name == "NoUpdateException")
+                            {
+                                Engine.Base.Compute.RecordError(e.Message);
+                                noUpdateMessage = e.Message;
+                                result = null;
+                            }
+                            else
+                            {
+                                Engine.Base.Compute.RecordError(e, "BHoMUpgrader exception:");
+                            }
+                        }
+
+                        if (result != null && document != result)
                         {
                             wasUpdated = true;
                             document = result;
@@ -117,7 +156,6 @@ namespace BH.Engine.Versioning
                 }
             }
 
-            // Record the fact that a document needed to be upgraded
             if (wasUpdated || noUpdateMessage != null)
             {
                 string newDocument = noUpdateMessage != null ? null : Compute.VersioningKey(document);
@@ -134,7 +172,6 @@ namespace BH.Engine.Versioning
                     Message = message
                 });
             }
-            
             return document;
         }
 
@@ -167,7 +204,7 @@ namespace BH.Engine.Versioning
 
             // Find the upgrader file
             string upgraderName = "BHoMUpgrader" + version.Replace(".", "");
-            string processFile =  upgraderName + "\\" + upgraderName + ".exe";
+            string processFile = upgraderName + "\\" + upgraderName + ".exe";
             if (!File.Exists(processFile))
             {
                 processFile = Path.Combine(BH.Engine.Base.Query.BHoMFolderUpgrades(), processFile);
@@ -184,11 +221,11 @@ namespace BH.Engine.Versioning
             process.StartInfo = new ProcessStartInfo(processFile, pipeName);
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.CreateNoWindow = true;
-            bool ok = process.Start();                
+            bool ok = process.Start();
 
             // Waiting for pipe to connect
             pipe.WaitForConnection();
-            
+
             // Store the pipe 
             m_Pipes[version] = pipe;
 
@@ -229,6 +266,79 @@ namespace BH.Engine.Versioning
             return BsonSerializer.Deserialize(content, typeof(BsonDocument)) as BsonDocument;
         }
 
+        /***************************************************/
+
+        private static string FindFile(string path)
+        {
+            if (!File.Exists(path))
+            {
+                path = Path.Combine(BH.Engine.Base.Query.BHoMFolderUpgrades(), path);
+
+                if (!File.Exists(path))
+                {
+                    Base.Compute.RecordWarning(path.Split(new char[] { '\\' }).Last() + " is missing. The object will not be upgraded");
+                    return null;
+                }
+            }
+            return path;
+        }
+
+        /***************************************************/
+
+        private static Func<BsonDocument, BsonDocument> GetUpgraderMethod(string version)
+        {
+            // Return the pipe if already exists
+            if (m_CompiledUpgraders.ContainsKey(version))
+                return m_CompiledUpgraders[version];
+
+
+            // Find the upgrader file
+            string upgraderName = "BHoMUpgrader" + version.Replace(".", "");
+            string processFile = FindFile(upgraderName + "\\" + upgraderName + ".exe");
+            if (processFile == null)
+                return null;
+
+            Assembly converterAssembly = Assembly.LoadFrom(processFile);
+
+            if (m_BaseConverter == null)
+            {
+                Assembly upgraderAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name == "BHoMUpgrader");
+                if (upgraderAssembly == null)
+                {
+                    string baseUpgraderName = "BHoMUpgrader" + version.Replace(".", "");
+                    string baseProcessFile = FindFile(upgraderName + "\\" + "BHoMUpgrader" + ".dll");
+                    if (baseUpgraderName == null)
+                        return null;
+                    upgraderAssembly = Assembly.LoadFrom(baseProcessFile);
+                }
+                Type upgraderType = upgraderAssembly.GetTypes().First(x => x.Name == "Upgrader");
+                m_Upgrader = Activator.CreateInstance(upgraderType);
+                try
+                {
+                    (m_Upgrader as dynamic).LogToConsole = false;
+                }
+                catch (Exception ex) { }
+                m_UpgraderMethod = upgraderType.GetMethod("Upgrade", BindingFlags.NonPublic | BindingFlags.Instance);
+
+                Type baseConverterType = upgraderAssembly.GetTypes().First(x => x.Name == "Converter");
+                m_BaseConverter = Activator.CreateInstance(baseConverterType);
+            }
+
+            Type converterType = converterAssembly.GetTypes().First(x => m_BaseConverter.GetType().IsAssignableFrom(x));
+            dynamic converter = Activator.CreateInstance(converterType);
+
+            Func<BsonDocument, BsonDocument> func = CreateUpgradeFunction(converter as dynamic, m_BaseConverter as dynamic);
+            m_CompiledUpgraders[version] = func;
+            return func;
+        }
+
+        /***************************************************/
+
+        private static Func<BsonDocument, BsonDocument> CreateUpgradeFunction<T, TBase>(T converter, TBase baseConverter) where T : class where TBase : class
+        {
+            Func<BsonDocument, TBase, BsonDocument> initFunc = (Func<BsonDocument, TBase, BsonDocument>)Delegate.CreateDelegate(typeof(Func<BsonDocument, TBase, BsonDocument>), m_Upgrader, m_UpgraderMethod);
+            return x => initFunc(x, converter as TBase);
+        }
 
         /***************************************************/
         /**** Private Fields                            ****/
@@ -237,6 +347,16 @@ namespace BH.Engine.Versioning
         private static Dictionary<string, NamedPipeServerStream> m_Pipes = new Dictionary<string, NamedPipeServerStream>();
 
         private static object m_versioningLock = new object();
+
+        /***************************************************/
+
+        private static Dictionary<string, Func<BsonDocument, BsonDocument>> m_CompiledUpgraders = new Dictionary<string, Func<BsonDocument, BsonDocument>>();
+
+        private static object m_Upgrader = null;
+
+        private static dynamic m_BaseConverter = null;
+
+        private static MethodInfo m_UpgraderMethod = null;
 
         /***************************************************/
     }

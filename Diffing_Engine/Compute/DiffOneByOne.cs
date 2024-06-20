@@ -82,7 +82,7 @@ namespace BH.Engine.Diffing
             {
                 ObjectDifferences objectDifferences = Query.ObjectDifferences(pastObjects_cloned[i], currentObjects_cloned[i], diffConfigCopy.ComparisonConfig);
 
-                if (objectDifferences != null && (objectDifferences.Differences?.Any() ?? false))
+                if (objectDifferences.Differences?.Any() ?? false)
                 {
                     modifiedObjects.Add(currentObjects_cloned[i]);
                     anyChangeDetected = true;

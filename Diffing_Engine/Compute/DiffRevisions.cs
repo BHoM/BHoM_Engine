@@ -174,7 +174,7 @@ namespace BH.Engine.Diffing
                         // To compute differentProps in a Revision-Diffing, make sure we remove the RevisionFragment. We don't want to consider that.
                         ObjectDifferences objectDifferences = Query.ObjectDifferences(oldBhomObj.RemoveFragment(typeof(RevisionFragment)), bhomObj.RemoveFragment(typeof(RevisionFragment)), dc.ComparisonConfig);
 
-                        if (objectDifferences != null)
+                        if (objectDifferences.Differences.Any())
                             modifiedObjectDifferences.Add(objectDifferences);
                     }
                 }

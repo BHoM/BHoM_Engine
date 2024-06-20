@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.Engine.Versioning;
 using BH.oM.Base;
 using MongoDB.Bson.IO;
@@ -88,7 +89,7 @@ namespace BH.Engine.Serialiser
                         writer.WriteEndArray();
                     }
                 }
-                else if (value.Namespace.StartsWith("BH.oM"))
+                else if (value.Namespace.IsOmNamespace())
                     writer.WriteString(value.FullName);
                 else if (value.AssemblyQualifiedName != null)
                     writer.WriteString(value.AssemblyQualifiedName);

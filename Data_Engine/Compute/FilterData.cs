@@ -34,7 +34,6 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("7.1", "BH.Engine.Data.Query.Filter(System.Collections.Generic.IEnumerable<BH.oM.Base.IBHoMObject>, BH.oM.Data.Requests.FilterRequest)")]
         public static IEnumerable<IBHoMObject> FilterData(this FilterRequest request, IEnumerable<IBHoMObject> objects)
         {
             if(request == null)

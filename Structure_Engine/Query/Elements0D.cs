@@ -27,7 +27,7 @@ using BH.oM.Structure.Elements;
 using System.ComponentModel;
 using BH.Engine.Structure;
 
-namespace BH.Engine.Analytical
+namespace BH.Engine.Structure
 {
     public static partial class Query
     {
@@ -35,6 +35,7 @@ namespace BH.Engine.Analytical
         /****            IElement1D            ****/
         /******************************************/
 
+        [PreviousVersion("7.2", "BH.Engine.Analytical.Query.Elements0D(BH.oM.Structure.Elements.Pile)")]
         [Description("Gets the Element0Ds of a Pile, which for the case of a Pile means getting the StartNode and EndNode. Method necessary for IElement pattern.")]
         [Input("pile", "The Pile to extract IElement0ds from.")]
         [Output("element0Ds", "The list of Elements0D of the Pile, i.e. the StartNode and EndNode.")]

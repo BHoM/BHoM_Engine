@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyVersion>7.0.0.0</AssemblyVersion>
@@ -8,18 +7,15 @@
     <Authors>BHoM</Authors>
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
     <RootNamespace>BH.Engine.Architecture</RootNamespace>
-    <FileVersion>7.1.0.0</FileVersion>
+    <FileVersion>7.2.0.0</FileVersion>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <OutputPath>..\Build\</OutputPath>
   </PropertyGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
   </Target>
-
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj" />
@@ -27,7 +23,6 @@
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
     <ProjectReference Include="..\Spatial_Engine\Spatial_Engine.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="Architecture_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Architecture_oM.dll</HintPath>
@@ -65,5 +60,4 @@
       <SpecificVersion>false</SpecificVersion>
     </Reference>
   </ItemGroup>
-
 </Project>

@@ -30,6 +30,7 @@ using System.Linq;
 using System.ComponentModel;
 using BH.Engine.Analytical;
 using BH.Engine.Structure;
+using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure
 {
@@ -51,7 +52,7 @@ namespace BH.Engine.Structure
             List<Point> points = new List<Point>();
             List<Edge> edges = panel.ExternalEdges;
             List<Face> faces = new List<Face>();
-            if (!panel.Geometry().IsPlanar(Tolerance.MacroDistance))
+            if (!panel.IsPlanar(true, Tolerance.MacroDistance))
             {
                 Base.Compute.RecordError("Panel is not planar and therefore cannot be converted to an FEMesh.");
                 return null;

@@ -1,6 +1,0 @@
-{
-  "MessageForDeleted": {
-    "BH.Engine.Reflection.Query.IsReleased(System.Reflection.MethodBase)": "This method has been removed as a part of legacy cleanup. Please contact developers in case you still need it.",
-    "BH.Engine.Reflection.Query.IsReleased(System.Type)": "This method has been removed as a part of legacy cleanup. Please contact developers in case you still need it."
-  }
-}
