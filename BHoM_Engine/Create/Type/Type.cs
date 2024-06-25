@@ -36,7 +36,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("7.2", "BH.Engine.Base.Create.Type(System.String, System.Boolean)")]
         [Description("Creates a BHoM type that matches the given name.")]
         [Input("name", "Name to be searched for among all BHoM types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
