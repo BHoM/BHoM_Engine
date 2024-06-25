@@ -49,7 +49,6 @@ namespace BH.Engine.Matter
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("7.2", "BH.Engine.Matter.Compute.AggregateMaterialComposition(System.Collections.Generic.IEnumerable<BH.oM.Dimensional.IElementM>)")]
         [Description("Calculates an aggregate MaterialComposition from a collection of elements.")]
         [Input("elements", "The elements to iterate over in generation of the MaterialCombination.")]
         [Output("materialComposition", "A MaterialComposition containing the unique materials across all elements and their relative proportions.")]
@@ -60,7 +59,6 @@ namespace BH.Engine.Matter
 
         /***************************************************/
 
-        [PreviousVersion("7.2", "BH.Engine.Matter.Compute.AggregateMaterialComposition(System.Collections.Generic.IEnumerable<BH.oM.Physical.Materials.MaterialComposition>, System.Collections.Generic.IEnumerable<System.Double>)")]
         [Description("Calculates an aggregate MaterialComposition from a collection individual MaterialCompositions and their relative ratios.")]
         [Input("materialCompositions", "The individual MaterialCompositions to aggregate together.")]
         [Input("ratios", "The relative volumetric based ratios of each MaterialComposition. The number of ratios must match the number of MaterialCompositions.", typeof(Ratio))]
