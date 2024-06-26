@@ -26,10 +26,7 @@ using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
 using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
-using BH.Engine.Analytical;
-using BH.Engine.Structure;
 using BH.Engine.Spatial;
 
 namespace BH.Engine.Structure
@@ -39,20 +36,17 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Converts a Panel with three or four control points to a femesh with a single Face. This is not a method to discretise a Panel, it simply converts a simple Panel to an identical feMesh.")]
-        [Input("panel", "Panel to be converted to a feMesh.")]
-        [Output("feMesh", "feMesh converted from a Panel.")]
+        [Description("Converts a Panel with three or four control points to a FEMesh with a single Face. This is not a method to discretise a Panel, it simply converts a simple Panel to an identical feMesh.")]
+        [Input("panel", "Panel to be converted to a FEMesh.")]
+        [Output("feMesh", "FEMesh converted from a Panel.")]
 
-        public static FEMesh PanelToFEMesh(this Panel panel)
+        public static FEMesh PanelToFEMesh(this Panel panel, double tolerance = Tolerance.MacroDistance)
         {
             if (panel.IsNull())
             {
                 return null;
             }
-            List<Point> points = new List<Point>();
-            List<Edge> edges = panel.ExternalEdges;
-            List<Face> faces = new List<Face>();
-            if (!panel.IsPlanar(true, Tolerance.MacroDistance))
+            if (!panel.IsPlanar(true, tolerance))
             {
                 Base.Compute.RecordError("Panel is not planar and therefore cannot be converted to an FEMesh.");
                 return null;
@@ -62,17 +56,27 @@ namespace BH.Engine.Structure
                 Base.Compute.RecordError("This method does not support Panels with Openings");
                 return null;
             }
+
+            List<Edge> edges = panel.ExternalEdges;
             if (edges.Count > 4)
             {
                 Base.Compute.RecordError("Panel contains more than 4 Edges");
                 return null;
             }
+
+            List<Point> points = new List<Point>();
+            List<ICurve> curves = new List<ICurve>();
             foreach (Edge edge in edges)
             {
                 ICurve curve = edge.Curve;
-                points.AddRange(Geometry.Convert.IToPolyline(curve).ControlPoints);
+                points.AddRange(curve.ControlPoints());
+                curves.Add(curve);
             }
-            int count = points.Distinct().Count();
+
+            points = points.CullDuplicates(tolerance);
+            int count = points.Count;
+            points = points.ISortAlongCurve(Geometry.Compute.IJoin(curves)[0]);
+
             Face face = new Face();
             if (count > 4)
             {
@@ -87,10 +91,13 @@ namespace BH.Engine.Structure
             {
                 face = Geometry.Create.Face(0, 1, 2);
             }
-            faces.Add(face);
-            Mesh mesh = Geometry.Create.Mesh(points.Distinct(), faces);
+
+            List<Face> faces = new List<Face>() { face };
+
+            Mesh mesh = Geometry.Create.Mesh(points, faces);
             FEMesh feMesh = new FEMesh();
             feMesh = Create.FEMesh(mesh, null, null, panel.Name);
+            
             if (panel.Property != null)
             {
                 feMesh.Property = panel.Property;
@@ -99,6 +106,7 @@ namespace BH.Engine.Structure
             {
                 feMesh.Tags = panel.Tags;
             }
+
             return feMesh;
 
         }
