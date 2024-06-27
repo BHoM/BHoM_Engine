@@ -127,7 +127,7 @@ namespace BH.Engine.Geometry
             }
 
             if (!closed)
-                result.Add(curve.EndPoint());
+                result.Add(curve.IEndPoint());
 
             return result;
         }
