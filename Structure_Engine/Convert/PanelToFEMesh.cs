@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using BH.Engine.Spatial;
 using BH.Engine.Analytical;
+using System.Linq;
 
 namespace BH.Engine.Structure
 {
@@ -37,7 +38,7 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Converts a Panel with three or four control points to a FEMesh with a single Face. This is not a method to discretise a Panel, it simply converts a simple Panel to an identical feMesh.")]
+        [Description("Converts a Panel with three or four control points to a FEMesh with a single Face. This is not a method to discretise a Panel, it simply converts a simple Panel to an identical FEMesh.")]
         [Input("panel", "Panel to be converted to a FEMesh.")]
         [Output("feMesh", "FEMesh converted from a Panel.")]
 
@@ -74,7 +75,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            PolyCurve outline = panel.OutlineCurve();
+            PolyCurve outline = panel.OutlineCurve().Curves.IJoin()[0];
             List<Point> points = outline.DiscontinuityPoints();
             points = points.CullDuplicates(tolerance).ISortAlongCurve(outline);
 
