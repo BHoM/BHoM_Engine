@@ -28,6 +28,7 @@ using BH.oM.Base.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.Engine.Spatial;
+using BH.Engine.Analytical;
 
 namespace BH.Engine.Structure
 {
@@ -42,6 +43,7 @@ namespace BH.Engine.Structure
 
         public static FEMesh PanelToFEMesh(this Panel panel, double tolerance = Tolerance.MacroDistance)
         {
+            // Null and invalid checks
             if (panel.IsNull())
             {
                 return null;
@@ -53,51 +55,35 @@ namespace BH.Engine.Structure
             }
             if (panel.Openings.Count > 0)
             {
-                Base.Compute.RecordError("This method does not support Panels with Openings");
+                Base.Compute.RecordError("This method does not support Panels with Openings.");
                 return null;
             }
-
-            List<Edge> edges = panel.ExternalEdges;
-            if (edges.Count > 4)
-            {
-                Base.Compute.RecordError("Panel contains more than 4 Edges");
-                return null;
-            }
-
-            List<Point> points = new List<Point>();
-            List<ICurve> curves = new List<ICurve>();
-            foreach (Edge edge in edges)
-            {
-                ICurve curve = edge.Curve;
-                points.AddRange(curve.ControlPoints());
-                curves.Add(curve);
-            }
-
-            points = points.CullDuplicates(tolerance);
-            int count = points.Count;
-            points = points.ISortAlongCurve(Geometry.Compute.IJoin(curves)[0]);
 
             Face face = new Face();
-            if (count > 4)
-            {
-                Base.Compute.RecordError("Panel contains more than four control points.");
-                return null;
-            }
-            if (count == 4)
+            if (panel.IsOutlineQuad())
             {
                 face = Geometry.Create.Face(0, 1, 2, 3);
             }
-            else if (count == 3)
+            else if (panel.IsOutlineTriangular())
             {
                 face = Geometry.Create.Face(0, 1, 2);
             }
+            else
+            {
+                Base.Compute.RecordError("Panel is not a planar quadilateral or triangular.");
+                return null;
+            }
+
+            PolyCurve outline = panel.OutlineCurve();
+            List<Point> points = outline.DiscontinuityPoints();
+            points = points.CullDuplicates(tolerance).ISortAlongCurve(outline);
 
             List<Face> faces = new List<Face>() { face };
 
             Mesh mesh = Geometry.Create.Mesh(points, faces);
             FEMesh feMesh = new FEMesh();
             feMesh = Create.FEMesh(mesh, null, null, panel.Name);
-            
+
             if (panel.Property != null)
             {
                 feMesh.Property = panel.Property;
