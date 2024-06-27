@@ -40,8 +40,9 @@ namespace BH.Engine.Structure
         /***************************************************/
         [Description("Converts a Panel with three or four control points to a FEMesh with a single Face. This is not a method to discretise a Panel, it simply converts a simple Panel to an identical FEMesh.")]
         [Input("panel", "Panel to be converted to a FEMesh.")]
+        [Input("tolerance", "Tolerance used to cull duplicates from the control points of the Panel outline.")]
         [Output("feMesh", "FEMesh converted from a Panel.")]
-
+        [PreviousVersion("7.3", "BH.Engine.Structure.Convert.PanelToFEMesh(BH.oM.Structure.Elements.Panel)")]
         public static FEMesh PanelToFEMesh(this Panel panel, double tolerance = Tolerance.MacroDistance)
         {
             // Null and invalid checks
