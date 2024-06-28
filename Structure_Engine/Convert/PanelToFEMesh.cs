@@ -61,12 +61,22 @@ namespace BH.Engine.Structure
                 return null;
             }
 
+            PolyCurve outline = panel.OutlineCurve().Curves.IJoin()[0];
+            if (outline.SubParts().Any(x => !x.IIsLinear()))
+            {
+                Base.Compute.RecordError("Panel contains non-linear edges.");
+                return null;
+            }
+
+            List<Point> points = outline.DiscontinuityPoints();
+            points = points.CullDuplicates(tolerance).ISortAlongCurve(outline);
+
             Face face = new Face();
-            if (panel.IsOutlineQuad())
+            if (points.Count == 4)
             {
                 face = Geometry.Create.Face(0, 1, 2, 3);
             }
-            else if (panel.IsOutlineTriangular())
+            else if (points.Count == 3)
             {
                 face = Geometry.Create.Face(0, 1, 2);
             }
@@ -76,20 +86,12 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            PolyCurve outline = panel.OutlineCurve().Curves.IJoin()[0];
-            List<Point> points = outline.DiscontinuityPoints();
-            points = points.CullDuplicates(tolerance).ISortAlongCurve(outline);
-
             List<Face> faces = new List<Face>() { face };
 
             Mesh mesh = Geometry.Create.Mesh(points, faces);
             FEMesh feMesh = new FEMesh();
-            feMesh = Create.FEMesh(mesh, null, null, panel.Name);
+            feMesh = Create.FEMesh(mesh, panel.Property, null, panel.Name);
 
-            if (panel.Property != null)
-            {
-                feMesh.Property = panel.Property;
-            }
             if (panel.Tags.Count > 0)
             {
                 feMesh.Tags = panel.Tags;
@@ -98,6 +100,7 @@ namespace BH.Engine.Structure
             return feMesh;
 
         }
+
         /***************************************************/
 
     }
