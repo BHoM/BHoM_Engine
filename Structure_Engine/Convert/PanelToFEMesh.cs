@@ -26,11 +26,10 @@ using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
 using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
-using BH.Engine.Analytical;
-using BH.Engine.Structure;
 using BH.Engine.Spatial;
+using BH.Engine.Analytical;
+using System.Linq;
 
 namespace BH.Engine.Structure
 {
@@ -39,74 +38,72 @@ namespace BH.Engine.Structure
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Converts a Panel with three or four control points to a femesh with a single Face. This is not a method to discretise a Panel, it simply converts a simple Panel to an identical feMesh.")]
-        [Input("panel", "Panel to be converted to a feMesh.")]
-        [Output("feMesh", "feMesh converted from a Panel.")]
-
-        public static FEMesh PanelToFEMesh(this Panel panel)
+        [Description("Converts a Panel with three or four control points to a FEMesh with a single Face. This is not a method to discretise a Panel, it simply converts a simple Panel to an identical FEMesh.")]
+        [Input("panel", "Panel to be converted to a FEMesh.")]
+        [Input("tolerance", "Tolerance used to cull duplicates from the control points of the Panel outline.")]
+        [Output("feMesh", "FEMesh converted from a Panel.")]
+        [PreviousVersion("7.3", "BH.Engine.Structure.Convert.PanelToFEMesh(BH.oM.Structure.Elements.Panel)")]
+        public static FEMesh PanelToFEMesh(this Panel panel, double tolerance = Tolerance.MacroDistance)
         {
+            // Null and invalid checks
             if (panel.IsNull())
             {
                 return null;
             }
-            List<Point> points = new List<Point>();
-            List<Edge> edges = panel.ExternalEdges;
-            List<Face> faces = new List<Face>();
-            if (!panel.IsPlanar(true, Tolerance.MacroDistance))
+            if (!panel.IsPlanar(true, tolerance))
             {
                 Base.Compute.RecordError("Panel is not planar and therefore cannot be converted to an FEMesh.");
                 return null;
             }
             if (panel.Openings.Count > 0)
             {
-                Base.Compute.RecordError("This method does not support Panels with Openings");
+                Base.Compute.RecordError("This method does not support Panels with Openings.");
                 return null;
             }
-            if (edges.Count > 4)
+
+            // Get outline as single curve and check subparts are linear
+            PolyCurve outline = panel.OutlineCurve().Curves.IJoin()[0];
+            if (outline.SubParts().Any(x => !x.IIsLinear()))
             {
-                Base.Compute.RecordError("Panel contains more than 4 Edges");
+                Base.Compute.RecordError("Panel contains non-linear edges.");
                 return null;
             }
-            foreach (Edge edge in edges)
-            {
-                ICurve curve = edge.Curve;
-                points.AddRange(Geometry.Convert.IToPolyline(curve).ControlPoints);
-            }
-            int count = points.Distinct().Count();
+
+            // Get discontinuity points and create Face based on number of points
+            List<Point> points = outline.DiscontinuityPoints();
+            points = points.CullDuplicates(tolerance).ISortAlongCurve(outline);
+
             Face face = new Face();
-            if (count > 4)
-            {
-                Base.Compute.RecordError("Panel contains more than four control points.");
-                return null;
-            }
-            if (count == 4)
+            if (points.Count == 4)
             {
                 face = Geometry.Create.Face(0, 1, 2, 3);
             }
-            else if (count == 3)
+            else if (points.Count == 3)
             {
                 face = Geometry.Create.Face(0, 1, 2);
             }
-            faces.Add(face);
-            Mesh mesh = Geometry.Create.Mesh(points.Distinct(), faces);
-            FEMesh feMesh = new FEMesh();
-            feMesh = Create.FEMesh(mesh, null, null, panel.Name);
-            if (panel.Property != null)
+            else
             {
-                feMesh.Property = panel.Property;
+                Base.Compute.RecordError("Panel is not a planar quadilateral or triangular.");
+                return null;
             }
+
+            // Create FEMesh
+            List<Face> faces = new List<Face>() { face };
+            Mesh mesh = Geometry.Create.Mesh(points, faces);
+            FEMesh feMesh = new FEMesh();
+            feMesh = Create.FEMesh(mesh, panel.Property, null, panel.Name);
+
             if (panel.Tags.Count > 0)
             {
                 feMesh.Tags = panel.Tags;
             }
+
             return feMesh;
 
         }
+
         /***************************************************/
 
     }
 }
-
-
-
-
