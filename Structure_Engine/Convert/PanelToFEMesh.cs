@@ -61,6 +61,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
+            // Get outline as single curve and check subparts are linear
             PolyCurve outline = panel.OutlineCurve().Curves.IJoin()[0];
             if (outline.SubParts().Any(x => !x.IIsLinear()))
             {
@@ -68,6 +69,7 @@ namespace BH.Engine.Structure
                 return null;
             }
 
+            // Get discontinuity points and create Face based on number of points
             List<Point> points = outline.DiscontinuityPoints();
             points = points.CullDuplicates(tolerance).ISortAlongCurve(outline);
 
@@ -86,8 +88,8 @@ namespace BH.Engine.Structure
                 return null;
             }
 
+            // Create FEMesh
             List<Face> faces = new List<Face>() { face };
-
             Mesh mesh = Geometry.Create.Mesh(points, faces);
             FEMesh feMesh = new FEMesh();
             feMesh = Create.FEMesh(mesh, panel.Property, null, panel.Name);
@@ -105,7 +107,3 @@ namespace BH.Engine.Structure
 
     }
 }
-
-
-
-
