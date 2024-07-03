@@ -638,6 +638,97 @@ namespace BH.Engine.Structure
 
             return false;
         }
+        
+        [Description("Checks if a Stem is null and outputs relevant error message.")]
+        [Input("stem", "The Stem to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the PileFoundation is null.")]
+        public static bool IsNull(this Stem stem, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (stem == null)
+            {
+                ErrorMessage(methodName, "PadFoundation", msg);
+                return true;
+            }
+            else if (stem.Location == null)
+            {
+                ErrorMessage(methodName, " Edges", msg);
+                return true;
+            }
+            else if (stem.Location.IsNull())
+                return true;
+
+            return false;
+        }
+
+        [Description("Checks if a BaseToe is null and outputs relevant error message.")]
+        [Input("baseToe", "The BaseToe to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the PileFoundation is null.")]
+        public static bool IsNull(this BaseToe baseToe, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (baseToe == null)
+            {
+                ErrorMessage(methodName, "PadFoundation", msg);
+                return true;
+            }
+            else if (baseToe.Location == null)
+            {
+                ErrorMessage(methodName, " Edges", msg);
+                return true;
+            }
+            else if (baseToe.Location.IsNull())
+                return true;
+
+            return false;
+        }
+
+        [Description("Checks if a BaseHeel is null and outputs relevant error message.")]
+        [Input("baseHeel", "The BaseHeel to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the PileFoundation is null.")]
+        public static bool IsNull(this BaseHeel baseHeel, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (baseHeel == null)
+            {
+                ErrorMessage(methodName, "PadFoundation", msg);
+                return true;
+            }
+            else if (baseHeel.Location == null)
+            {
+                ErrorMessage(methodName, " Edges", msg);
+                return true;
+            }
+            else if (baseHeel.Location.IsNull())
+                return true;
+
+            return false;
+        }
+
+        [Description("Checks if a RetainingWall is null and outputs relevant error message.")]
+        [Input("retainingWall", "The RetainingWall to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the PileFoundation is null.")]
+        public static bool IsNull(this RetainingWall retainingWall, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (retainingWall == null)
+            {
+                ErrorMessage(methodName, "PadFoundation", msg);
+                return true;
+            }
+            else if (retainingWall.Stem.IsNull())
+                return true;
+            else if (retainingWall.BaseHeel.IsNull())
+                return true;
+            else if (retainingWall.BaseToe.IsNull())
+                return true;
+
+            return false;
+        }
 
         /***************************************************/
         /**** Public Methods - Interface                ****/
