@@ -121,6 +121,52 @@ namespace BH.Engine.Structure
             return Engine.Geometry.Create.CompositeGeometry(geometry);
         }
 
+        /***************************************************/
+
+        [Description("Gets the geometry of a Stem. Method required for automatic display in UI packages.")]
+        [Input("stem", "Stem to get the surface geometry from.")]
+        [Output("surface", "The geometry defining the Stem.")]
+        public static IGeometry Geometry(this Stem stem)
+        {
+            return stem.IsNull() ? null : stem.Location;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the geometry of a Stem. Method required for automatic display in UI packages.")]
+        [Input("stem", "Stem to get the surface geometry from.")]
+        [Output("surface", "The geometry defining the Stem.")]
+        public static IGeometry Geometry(this BaseHeel baseHeel)
+        {
+            return baseHeel.IsNull() ? null : baseHeel.Location;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the geometry of a Stem. Method required for automatic display in UI packages.")]
+        [Input("stem", "Stem to get the surface geometry from.")]
+        [Output("surface", "The geometry defining the Stem.")]
+        public static IGeometry Geometry(this BaseToe baseToe)
+        {
+            return baseToe.IsNull() ? null : baseToe.Location;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the geometry of a Stem. Method required for automatic display in UI packages.")]
+        [Input("stem", "Stem to get the surface geometry from.")]
+        [Output("surface", "The geometry defining the Stem.")]
+        public static IGeometry Geometry(this RetainingWall retainingWall)
+        {
+            List<IGeometry> geometry = new List<IGeometry>
+            {
+                retainingWall.Stem.Geometry(),
+                retainingWall.BaseHeel.Geometry(),
+                retainingWall.BaseToe.Geometry()
+            };
+
+            return Engine.Geometry.Create.CompositeGeometry(geometry);
+        }
 
         /***************************************************/
         /**** Public Methods - Interface                ****/
