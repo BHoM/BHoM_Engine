@@ -51,7 +51,7 @@ namespace BH.Engine.Ground
         {
             if (string.IsNullOrWhiteSpace(id))
             {
-                Compute.RecordError("The id is null or whitespace.");
+                Base.Compute.RecordError("The id is null or whitespace.");
                 return null;
             }
 
