@@ -128,7 +128,7 @@ namespace BH.Engine.Structure
         [Output("surface", "The geometry defining the Stem.")]
         public static IGeometry Geometry(this Stem stem)
         {
-            return stem.IsNull() ? null : stem.Outline;
+            return stem.IsNull() ? null : new PlanarSurface(stem.Outline, null);
         }
 
         /***************************************************/
@@ -138,7 +138,7 @@ namespace BH.Engine.Structure
         [Output("surface", "The geometry defining the Stem.")]
         public static IGeometry Geometry(this BaseHeel baseHeel)
         {
-            return baseHeel.IsNull() ? null : baseHeel.Outline;
+            return baseHeel.IsNull() ? null : new PlanarSurface(baseHeel.Outline, null);
         }
 
         /***************************************************/
@@ -148,7 +148,7 @@ namespace BH.Engine.Structure
         [Output("surface", "The geometry defining the Stem.")]
         public static IGeometry Geometry(this BaseToe baseToe)
         {
-            return baseToe.IsNull() ? null : baseToe.Outline;
+            return baseToe.IsNull() ? null : new PlanarSurface(baseToe.Outline, null);
         }
 
         /***************************************************/
