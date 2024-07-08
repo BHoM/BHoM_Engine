@@ -35,6 +35,7 @@ using BH.Engine.Spatial;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Spatial.ShapeProfiles;
 using static System.Collections.Specialized.BitVector32;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Structure
 {
@@ -107,6 +108,43 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        //TODO Add descriptions and error messages to retaining wall functions below. 
+
+        [Description("")]
+        [Input("baseToe", "")]
+        [Output("volume", "The baseToe solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this BaseToe baseToe)
+        {
+            //Feels like double work since the public static double SolidVolume(this IAreaElement areaElement) does exist. But that would not work with the diff. thicknesses along the base and stem. 
+            return SolidVolume(baseToe.Outline.Area(), baseToe.ThicknessStem, baseToe.ThicknessToe);
+        }
+
+        [Description("")]
+        [Input("baseHeel", "")]
+        [Output("volume", "The baseHeel solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this BaseHeel baseHeel)
+        {
+            return SolidVolume(baseHeel.Outline.Area(), baseHeel.ThicknessStem, baseHeel.ThicknessHeel);
+        }
+
+        [Description("")]
+        [Input("stem", "")]
+        [Output("volume", "The stem solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this Stem stem)
+        {
+            return SolidVolume(stem.Outline.Area(), stem.ThicknessBottom, stem.ThicknessTop);
+        }
+
+        [Description("")]
+        [Input("retainingWall", "")]
+        [Output("volume", "The retainingWall solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this RetainingWall retainingWall)
+        {
+            return SolidVolume(retainingWall.BaseHeel) + SolidVolume(retainingWall.BaseToe) + SolidVolume(retainingWall.Stem);
+        }
+
+        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
@@ -156,6 +194,11 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        private static double SolidVolume(double area, double thickness_0, double thickness_1)
+        {
+            return area * (thickness_0 + thickness_1)/2;
+        }
     }
 }
 

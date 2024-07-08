@@ -158,6 +158,19 @@ namespace BH.Engine.Structure
 
             return compositeGeometry;
         }
+
+        [Description("Gets a CompositeGeometry made of the PileCap and Piles of a PileFoundation.")]
+        [Input("pileFoundation", "The input PileFoundation to get the Geometry3D out of.")]
+        [Output("3d", "Three-dimensional geometry of the PileFoundation.")]
+        public static IGeometry Geometry3D(this RetainingWall retainingWall)
+        {
+            if (retainingWall.IsNull())
+                return null;
+
+            CompositeGeometry compositeGeometry = new CompositeGeometry();
+
+            return compositeGeometry;
+        }
     }
 }
 
