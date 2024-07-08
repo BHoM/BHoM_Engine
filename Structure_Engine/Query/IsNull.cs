@@ -651,12 +651,12 @@ namespace BH.Engine.Structure
                 ErrorMessage(methodName, "PadFoundation", msg);
                 return true;
             }
-            else if (stem.Location == null)
+            else if (stem.Outline == null)
             {
                 ErrorMessage(methodName, " Edges", msg);
                 return true;
             }
-            else if (stem.Location.IsNull())
+            else if (stem.Outline.IsNull())
                 return true;
 
             return false;
@@ -674,12 +674,12 @@ namespace BH.Engine.Structure
                 ErrorMessage(methodName, "PadFoundation", msg);
                 return true;
             }
-            else if (baseToe.Location == null)
+            else if (baseToe.Outline == null)
             {
                 ErrorMessage(methodName, " Edges", msg);
                 return true;
             }
-            else if (baseToe.Location.IsNull())
+            else if (baseToe.Outline.IsNull())
                 return true;
 
             return false;
@@ -697,12 +697,12 @@ namespace BH.Engine.Structure
                 ErrorMessage(methodName, "PadFoundation", msg);
                 return true;
             }
-            else if (baseHeel.Location == null)
+            else if (baseHeel.Outline == null)
             {
                 ErrorMessage(methodName, " Edges", msg);
                 return true;
             }
-            else if (baseHeel.Location.IsNull())
+            else if (baseHeel.Outline.IsNull())
                 return true;
 
             return false;
