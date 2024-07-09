@@ -27,6 +27,9 @@ using System.ComponentModel;
 using BH.Engine.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Ground;
+using System.Transactions;
+using System.Reflection;
+using ICSharpCode.Decompiler.CSharp.Syntax;
 
 namespace BH.Engine.Ground
 {
@@ -40,48 +43,26 @@ namespace BH.Engine.Ground
         [Output("b", "The consolidated borehole.")]
         public static Borehole ConsolidateStrata(Borehole borehole, string propertyCompare)
         {
-            if (!borehole.IsValid())
+            if (borehole.IsValid())
                 return null;
 
-            Borehole consolidatedBorehole = borehole;
+            Borehole consolidatedBorehole = borehole.ShallowClone();
 
             List<Stratum> strata = consolidatedBorehole.Strata;
-            List<Stratum> consolidatedStrata = new List<Stratum>() { strata[0] };
+            List<Stratum> consolidatedStrata = new List<Stratum>() { strata[0].RangeProperties(null, propertyCompare, true)};
 
             for (int i = 1; i < strata.Count; i++)
             {
                 Stratum consolidatedStratum = consolidatedStrata.Last();
                 Stratum stratum = strata[i];
-                if (Base.Query.PropertyValue(strata[i], propertyCompare) == Base.Query.PropertyValue(consolidatedStratum, propertyCompare))
+                if (string.Equals(Base.Query.PropertyValue(stratum, propertyCompare),Base.Query.PropertyValue(strata[i-1], propertyCompare)))
                 {
-                    consolidatedStratum.Bottom = stratum.Bottom;
-                    consolidatedStratum.LogDescription = $"{consolidatedStratum.LogDescription} \n {stratum.Top}m  - {stratum.Bottom}m: {stratum.LogDescription}";
-                    consolidatedStratum.Legend = $"{consolidatedStratum.Legend} \n {stratum.Top}m  - {stratum.Bottom}m: {stratum.Legend}";
-                    consolidatedStratum.ObservedGeology = $"{consolidatedStratum.ObservedGeology} \n {stratum.Top}m  - {stratum.Bottom}m: {stratum.ObservedGeology}";
-                    consolidatedStratum.InterpretedGeology = $"{consolidatedStratum.InterpretedGeology} \n {stratum.Top}m  - {stratum.Bottom}m: {stratum.InterpretedGeology}";
-
-                    if(!stratum.Properties.IsNullOrEmpty())
-                    {
-                        List<IStratumProperty> properties = new List<IStratumProperty>();
-                        for(int j = 0; i < stratum.Properties.Count; j++)
-                        {
-                            IStratumProperty property = stratum.Properties[j];
-                            if(property is StratumReference)
-                            {
-                                StratumReference consolidatedReference = consolidatedStratum.Properties.OfType<StratumReference>().ToList()[0];
-                                StratumReference reference = (StratumReference)property;
-                                consolidatedReference.Remarks = $"{consolidatedReference.Remarks} \n {stratum.Top}m  - {stratum.Bottom}m: {reference.Remarks}";
-                                consolidatedReference.LexiconCode = $"{consolidatedReference.LexiconCode} \n {stratum.Top}m  - {stratum.Bottom}m: {reference.LexiconCode}";
-                                properties.Add(consolidatedReference);
-                            }
-                        }
-
-                        consolidatedStratum.Properties = properties;
-                    }
+                    consolidatedStratum = RangeProperties(stratum, consolidatedStratum, propertyCompare, false);
+                    consolidatedStrata[consolidatedStrata.Count - 1] = consolidatedStratum;
                 }
                 else
                 {
-                    consolidatedStrata.Add(strata[i]);
+                    consolidatedStrata.Add(strata[i].RangeProperties(null, propertyCompare, true));
                 }
             }
 
@@ -93,6 +74,65 @@ namespace BH.Engine.Ground
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
+
+        private static Stratum RangeProperties(this Stratum stratum, Stratum consolidatedStratum, string propName, bool initial)
+        {
+            Stratum updatedStratum = stratum.ShallowClone();
+            double top = stratum.Top;
+            double bottom = stratum.Bottom;
+            List<string> skipProp = new List<string>() { "Id", "Top", "Bottom", "Properties", "BHoM_Guid", "Name", "Fragments", "Tags", "CustomData" };
+            skipProp.Add(propName);
+            if(!initial)
+            {
+                updatedStratum.Top = consolidatedStratum.Top;
+                updatedStratum.Bottom = stratum.Bottom;
+            }
+
+            foreach (PropertyInfo property in typeof(Stratum).GetProperties())
+            {
+                if (!skipProp.Any(x => x.Equals(property.Name)))
+                {
+                    string summary = "";
+                    if(initial)
+                        summary = $"{top}m  - {bottom}m: {stratum.PropertyValue(property.Name)}";
+                    else
+                       summary = $"{consolidatedStratum.PropertyValue(property.Name)}\n {top}m  - {bottom}m: {stratum.PropertyValue(property.Name)}";
+
+                    updatedStratum.SetPropertyValue(property.Name, summary);
+                }
+            }
+
+            if (!stratum.Properties.IsNullOrEmpty())
+            {
+                List<IStratumProperty> properties = new List<IStratumProperty>();
+                for (int i = 0; i < stratum.Properties.Count; i++)
+                {
+                    IStratumProperty property = stratum.Properties[i];
+                    if (property is StratumReference)
+                    {
+                        StratumReference consolidatedReference = stratum.Properties.OfType<StratumReference>().ToList()[0];
+                        foreach (PropertyInfo prop in typeof(StratumReference).GetProperties())
+                        {
+                            if (!skipProp.Any(x => x.Equals(prop.Name)))
+                            {
+                                string summary = "";
+                                if (initial)
+                                    summary = $"{top}m  - {bottom}m: {stratum.PropertyValue(property.Name)}";
+                                else
+                                    summary = $"{consolidatedStratum.PropertyValue(property.Name)}\n {top}m  - {bottom}m: {stratum.PropertyValue(property.Name)}";
+
+                                consolidatedReference.SetPropertyValue(prop.Name, summary);
+                            }
+                        }
+                        properties.Add(consolidatedReference);
+                    }
+                }
+
+                updatedStratum.Properties = properties;
+            }
+
+            return updatedStratum;
+        }
 
         /***************************************************/
 
