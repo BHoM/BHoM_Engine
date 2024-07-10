@@ -403,6 +403,71 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Returns a BaseToe's homogeneous MaterialComposition.")]
+        [Input("baseToe", "The BaseToe to get material from.")]
+        [Output("materialComposition", "The kind of matter the BaseToe is composed of.")]
+        public static MaterialComposition MaterialComposition(this BaseToe baseToe)
+        {
+            if (baseToe.IsNull() || baseToe.Material.IsNull())
+                return null;
+
+            ReinforcementDensity reinfDensity = baseToe.FindFragment<ReinforcementDensity>();
+            
+            return MaterialComposition(baseToe.Material, reinfDensity);       
+        }
+
+        /***************************************************/
+
+        [Description("Returns a BaseHeel's homogeneous MaterialComposition.")]
+        [Input("baseHeel", "The BaseHeel to get material from.")]
+        [Output("materialComposition", "The kind of matter the BaseHeel is composed of.")]
+        public static MaterialComposition MaterialComposition(this BaseHeel baseHeel)
+        {
+            if (baseHeel.IsNull() || baseHeel.Material.IsNull())
+                return null;
+
+            ReinforcementDensity reinfDensity = baseHeel.FindFragment<ReinforcementDensity>();
+
+            return MaterialComposition(baseHeel.Material, reinfDensity);
+        }
+
+        /***************************************************/
+
+        [Description("Returns a Stem's homogeneous MaterialComposition.")]
+        [Input("stem", "The Stem to get material from.")]
+        [Output("materialComposition", "The kind of matter the Stem is composed of.")]
+        public static MaterialComposition MaterialComposition(this Stem stem)
+        {
+            if (stem.IsNull() || stem.Material.IsNull())
+                return null;
+
+            ReinforcementDensity reinfDensity = stem.FindFragment<ReinforcementDensity>();
+
+            return MaterialComposition(stem.Material, reinfDensity);
+        }
+
+        /***************************************************/
+
+        [Description("Returns a RetainingWall's homogeneous MaterialComposition.")]
+        [Input("retainingWall", "The RetainingWall to get material from.")]
+        [Output("materialComposition", "The kind of matter the RetainingWall is composed of.")]
+        public static MaterialComposition MaterialComposition(this RetainingWall retainingWall)
+        {
+            if (retainingWall.IsNull() || retainingWall.Stem.IsNull() || retainingWall.BaseHeel.IsNull() || retainingWall.BaseToe.IsNull())
+                return null;
+
+            List<IElementM> elements = new List<IElementM>
+            {
+                retainingWall.Stem,
+                retainingWall.BaseToe,
+                retainingWall.BaseHeel
+            };
+
+            return Matter.Compute.AggregateMaterialComposition(elements);
+        }
+
+        /***************************************************/
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
