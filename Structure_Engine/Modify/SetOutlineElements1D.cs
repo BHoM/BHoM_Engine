@@ -64,7 +64,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-
         [Description("Sets the Outline Element1Ds of a Stem, i.e. the ExternalBoundary. Method required for all IElement2Ds.\n" +
                      "The provided edges all need to be ICurves and should form a closed loop. No checking for planarity is made by the method.\n" +
                      "The Method will return a new Stem with the provided edges as the Outline.")]
