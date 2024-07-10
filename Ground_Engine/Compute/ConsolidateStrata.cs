@@ -30,6 +30,8 @@ using BH.oM.Ground;
 using System.Transactions;
 using System.Reflection;
 using ICSharpCode.Decompiler.CSharp.Syntax;
+using System.Globalization;
+using System.Data;
 
 namespace BH.Engine.Ground
 {
@@ -38,31 +40,38 @@ namespace BH.Engine.Ground
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description(".")]
+        [Description("A method that takes a Borehole, and consolidates the Strata sequentially by combining them based on a specific property.")]
         [Input("borehole", "The Borehole to consolidate the strata for.")]
-        [Output("b", "The consolidated borehole.")]
-        public static Borehole ConsolidateStrata(Borehole borehole, string propertyCompare)
+        [Input("propertyCompare", "The property of the Strata to consolidate such as ObservedGeology, InterpretedGeology or Legend.")]
+        [Input("decimals", "The number of decimals to display the depth ranges.")]
+        [Output("b", "The consolidated Borehole.")]
+        public static Borehole ConsolidateStrata(Borehole borehole, string propertyCompare, int decimals)
         {
             if (borehole.IsValid())
                 return null;
 
+            
             Borehole consolidatedBorehole = borehole.ShallowClone();
 
             List<Stratum> strata = consolidatedBorehole.Strata;
-            List<Stratum> consolidatedStrata = new List<Stratum>() { strata[0].RangeProperties(null, propertyCompare, true)};
+            // Add first strata so the strings are formatted the same as the consolidated borehole
+            List<Stratum> consolidatedStrata = new List<Stratum>() { strata[0].RangeProperties(null, propertyCompare, true, decimals)};
 
             for (int i = 1; i < strata.Count; i++)
             {
                 Stratum consolidatedStratum = consolidatedStrata.Last();
                 Stratum stratum = strata[i];
+                // Check whether the strings are equal based on the propertyCompare
                 if (string.Equals(Base.Query.PropertyValue(stratum, propertyCompare),Base.Query.PropertyValue(strata[i-1], propertyCompare)))
                 {
-                    consolidatedStratum = RangeProperties(stratum, consolidatedStratum, propertyCompare, false);
+                    // Update ConsolidatedStratum to include next stratum
+                    consolidatedStratum = RangeProperties(stratum, consolidatedStratum, propertyCompare, false, decimals);
                     consolidatedStrata[consolidatedStrata.Count - 1] = consolidatedStratum;
                 }
                 else
                 {
-                    consolidatedStrata.Add(strata[i].RangeProperties(null, propertyCompare, true));
+                    // Add new line
+                    consolidatedStrata.Add(strata[i].RangeProperties(null, propertyCompare, true, decimals));
                 }
             }
 
@@ -75,30 +84,35 @@ namespace BH.Engine.Ground
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static Stratum RangeProperties(this Stratum stratum, Stratum consolidatedStratum, string propName, bool initial)
+        private static Stratum RangeProperties(this Stratum stratum, Stratum consolidatedStratum, string propName, bool initial, int decimals)
         {
             Stratum updatedStratum = stratum.ShallowClone();
             double top = stratum.Top;
             double bottom = stratum.Bottom;
+
+            // Properties to skip over
             List<string> skipProp = new List<string>() { "Id", "Top", "Bottom", "Properties", "BHoM_Guid", "Name", "Fragments", "Tags", "CustomData" };
             skipProp.Add(propName);
+
             if(!initial)
             {
                 updatedStratum.Top = consolidatedStratum.Top;
                 updatedStratum.Bottom = stratum.Bottom;
             }
 
+            string topRounded = top.ToString($"N{decimals}", CultureInfo.InvariantCulture);
+            string bottomRounded = bottom.ToString($"N{decimals}", CultureInfo.InvariantCulture);
+
             foreach (PropertyInfo property in typeof(Stratum).GetProperties())
             {
                 if (!skipProp.Any(x => x.Equals(property.Name)))
                 {
                     string summary = "";
-                    // Add to two dp
                     if(initial)
-                        summary = $"{top}m  - {bottom}m: {stratum.PropertyValue(property.Name)}";
+                        summary = $"{topRounded}m  - {bottomRounded}m: {stratum.PropertyValue(property.Name)}";
                     else
                        summary = $"{consolidatedStratum.PropertyValue(property.Name)}\n" +
-                            $"{top}m  - {bottom}m: {stratum.PropertyValue(property.Name)}";
+                            $"{topRounded}m  - {bottomRounded}m: {stratum.PropertyValue(property.Name)}";
 
                     updatedStratum.SetPropertyValue(property.Name, summary);
                 }
@@ -115,17 +129,17 @@ namespace BH.Engine.Ground
                         StratumReference consolidatedReference = null;
                         if(!initial)
                             consolidatedReference = consolidatedStratum.Properties.OfType<StratumReference>().First();
-                        StratumReference updatedReference = (StratumReference)property;
+                        StratumReference updatedReference = (StratumReference)property.ShallowClone();
                         foreach (PropertyInfo prop in typeof(StratumReference).GetProperties())
                         {
                             if (!skipProp.Any(x => x.Equals(prop.Name)))
                             {
                                 string summary = "";
                                 if (initial)
-                                    summary = $"{top}m  - {bottom}m: {updatedReference.PropertyValue(prop.Name)}";
+                                    summary = $"{topRounded}m  - {bottomRounded}m: {updatedReference.PropertyValue(prop.Name)}";
                                 else
                                     summary = $"{consolidatedReference.PropertyValue(prop.Name)}\n" +
-                                        $"{top}m  - {bottom}m: {updatedReference.PropertyValue(prop.Name)}";
+                                        $"{topRounded}m  - {bottomRounded}m: {updatedReference.PropertyValue(prop.Name)}";
 
                                 updatedReference.SetPropertyValue(prop.Name, summary);
                             }
