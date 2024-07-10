@@ -93,38 +93,44 @@ namespace BH.Engine.Ground
                 if (!skipProp.Any(x => x.Equals(property.Name)))
                 {
                     string summary = "";
+                    // Add to two dp
                     if(initial)
                         summary = $"{top}m  - {bottom}m: {stratum.PropertyValue(property.Name)}";
                     else
-                       summary = $"{consolidatedStratum.PropertyValue(property.Name)}\n {top}m  - {bottom}m: {stratum.PropertyValue(property.Name)}";
+                       summary = $"{consolidatedStratum.PropertyValue(property.Name)}\n" +
+                            $"{top}m  - {bottom}m: {stratum.PropertyValue(property.Name)}";
 
                     updatedStratum.SetPropertyValue(property.Name, summary);
                 }
             }
 
-            if (!stratum.Properties.IsNullOrEmpty())
+            if (!updatedStratum.Properties.IsNullOrEmpty())
             {
                 List<IStratumProperty> properties = new List<IStratumProperty>();
                 for (int i = 0; i < stratum.Properties.Count; i++)
                 {
-                    IStratumProperty property = stratum.Properties[i];
+                    IStratumProperty property = updatedStratum.Properties[i];
                     if (property is StratumReference)
                     {
-                        StratumReference consolidatedReference = stratum.Properties.OfType<StratumReference>().ToList()[0];
+                        StratumReference consolidatedReference = null;
+                        if(!initial)
+                            consolidatedReference = consolidatedStratum.Properties.OfType<StratumReference>().First();
+                        StratumReference updatedReference = (StratumReference)property;
                         foreach (PropertyInfo prop in typeof(StratumReference).GetProperties())
                         {
                             if (!skipProp.Any(x => x.Equals(prop.Name)))
                             {
                                 string summary = "";
                                 if (initial)
-                                    summary = $"{top}m  - {bottom}m: {stratum.PropertyValue(property.Name)}";
+                                    summary = $"{top}m  - {bottom}m: {updatedReference.PropertyValue(prop.Name)}";
                                 else
-                                    summary = $"{consolidatedStratum.PropertyValue(property.Name)}\n {top}m  - {bottom}m: {stratum.PropertyValue(property.Name)}";
+                                    summary = $"{consolidatedReference.PropertyValue(prop.Name)}\n" +
+                                        $"{top}m  - {bottom}m: {updatedReference.PropertyValue(prop.Name)}";
 
-                                consolidatedReference.SetPropertyValue(prop.Name, summary);
+                                updatedReference.SetPropertyValue(prop.Name, summary);
                             }
                         }
-                        properties.Add(consolidatedReference);
+                        properties.Add(updatedReference);
                     }
                 }
 
