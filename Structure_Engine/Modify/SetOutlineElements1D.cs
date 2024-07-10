@@ -64,6 +64,76 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("")]
+        [Input("BaseHeel", "")]
+        [Input("curves", "A list of IElement1Ds which all should be of a type of ICurve.")]
+        [Output("baseHeel", "A new BaseHeel...")]
+        public static BaseHeel SetOutlineElements1D(this BaseHeel baseHeel, IEnumerable<IElement1D> curves)
+        {
+            if (baseHeel.IsNull())
+                return baseHeel;
+
+            if (curves.IsNullOrEmpty())
+            {
+                Base.Compute.RecordError("The list of IElement1D is null or empty.");
+                return baseHeel;
+            }
+
+            PolyCurve curve = Geometry.Compute.IJoin(curves.Cast<ICurve>().ToList())[0];
+
+            baseHeel.Outline = curve; // While there is no create method. 
+
+            return baseHeel;
+        }
+
+        /***************************************************/
+
+        [Description("")]
+        [Input("BaseToe", "")]
+        [Input("curves", "A list of IElement1Ds which all should be of a type of ICurve.")]
+        [Output("baseToe", "A new BaseToe...")]
+        public static BaseToe SetOutlineElements1D(this BaseToe baseToe, IEnumerable<IElement1D> curves)
+        {
+            if (baseToe.IsNull())
+                return baseToe;
+
+            if (curves.IsNullOrEmpty())
+            {
+                Base.Compute.RecordError("The list of IElement1D is null or empty.");
+                return baseToe;
+            }
+
+            PolyCurve curve = Geometry.Compute.IJoin(curves.Cast<ICurve>().ToList())[0];
+
+            baseToe.Outline = curve; // While there is no create method. 
+
+            return baseToe;
+        }
+
+        /***************************************************/
+
+        [Description("")]
+        [Input("Stem", "")]
+        [Input("curves", "A list of IElement1Ds which all should be of a type of ICurve.")]
+        [Output("stem", "A new Stem...")]
+        public static Stem SetOutlineElements1D(this Stem stem, IEnumerable<IElement1D> curves)
+        {
+            if (stem.IsNull())
+                return stem;
+
+            if (curves.IsNullOrEmpty())
+            {
+                Base.Compute.RecordError("The list of IElement1D is null or empty.");
+                return stem;
+            }
+
+            PolyCurve curve = Geometry.Compute.IJoin(curves.Cast<ICurve>().ToList())[0];
+
+            stem.Outline = curve; // While there is no create method. 
+
+            return stem;
+        }
+
     }
 }
 
