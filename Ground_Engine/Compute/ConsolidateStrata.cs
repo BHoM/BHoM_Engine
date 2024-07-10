@@ -50,19 +50,19 @@ namespace BH.Engine.Ground
             if (borehole.IsValid())
                 return null;
 
-            
+
             Borehole consolidatedBorehole = borehole.ShallowClone();
 
             List<Stratum> strata = consolidatedBorehole.Strata;
             // Add first strata so the strings are formatted the same as the consolidated borehole
-            List<Stratum> consolidatedStrata = new List<Stratum>() { strata[0].RangeProperties(null, propertyCompare, true, decimals)};
+            List<Stratum> consolidatedStrata = new List<Stratum>() { strata[0].RangeProperties(null, propertyCompare, true, decimals) };
 
             for (int i = 1; i < strata.Count; i++)
             {
                 Stratum consolidatedStratum = consolidatedStrata.Last();
                 Stratum stratum = strata[i];
                 // Check whether the strings are equal based on the propertyCompare
-                if (string.Equals(Base.Query.PropertyValue(stratum, propertyCompare),Base.Query.PropertyValue(strata[i-1], propertyCompare)))
+                if (string.Equals(Base.Query.PropertyValue(stratum, propertyCompare), Base.Query.PropertyValue(strata[i - 1], propertyCompare)))
                 {
                     // Update ConsolidatedStratum to include next stratum
                     consolidatedStratum = RangeProperties(stratum, consolidatedStratum, propertyCompare, false, decimals);
@@ -94,7 +94,7 @@ namespace BH.Engine.Ground
             List<string> skipProp = new List<string>() { "Id", "Top", "Bottom", "Properties", "BHoM_Guid", "Name", "Fragments", "Tags", "CustomData" };
             skipProp.Add(propName);
 
-            if(!initial)
+            if (!initial)
             {
                 updatedStratum.Top = consolidatedStratum.Top;
                 updatedStratum.Bottom = stratum.Bottom;
@@ -108,11 +108,11 @@ namespace BH.Engine.Ground
                 if (!skipProp.Any(x => x.Equals(property.Name)))
                 {
                     string summary = "";
-                    if(initial)
+                    if (initial)
                         summary = $"{topRounded}m  - {bottomRounded}m: {stratum.PropertyValue(property.Name)}";
                     else
-                       summary = $"{consolidatedStratum.PropertyValue(property.Name)}\n" +
-                            $"{topRounded}m  - {bottomRounded}m: {stratum.PropertyValue(property.Name)}";
+                        summary = $"{consolidatedStratum.PropertyValue(property.Name)}\n" +
+                             $"{topRounded}m  - {bottomRounded}m: {stratum.PropertyValue(property.Name)}";
 
                     updatedStratum.SetPropertyValue(property.Name, summary);
                 }
@@ -127,7 +127,7 @@ namespace BH.Engine.Ground
                     if (property is StratumReference)
                     {
                         StratumReference consolidatedReference = null;
-                        if(!initial)
+                        if (!initial)
                             consolidatedReference = consolidatedStratum.Properties.OfType<StratumReference>().First();
                         StratumReference updatedReference = (StratumReference)property.ShallowClone();
                         foreach (PropertyInfo prop in typeof(StratumReference).GetProperties())
