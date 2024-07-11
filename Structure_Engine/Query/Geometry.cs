@@ -136,19 +136,9 @@ namespace BH.Engine.Structure
         [Description("Gets the geometry of a Stem. Method required for automatic display in UI packages.")]
         [Input("stem", "Stem to get the surface geometry from.")]
         [Output("surface", "The geometry defining the Stem.")]
-        public static IGeometry Geometry(this BaseHeel baseHeel)
+        public static IGeometry Geometry(this RTBase rTBase)
         {
-            return baseHeel.IsNull() ? null : new PlanarSurface(baseHeel.Outline, null);
-        }
-
-        /***************************************************/
-
-        [Description("Gets the geometry of a Stem. Method required for automatic display in UI packages.")]
-        [Input("stem", "Stem to get the surface geometry from.")]
-        [Output("surface", "The geometry defining the Stem.")]
-        public static IGeometry Geometry(this BaseToe baseToe)
-        {
-            return baseToe.IsNull() ? null : new PlanarSurface(baseToe.Outline, null);
+            return rTBase.IsNull() ? null : new PlanarSurface(rTBase.Outline, null);
         }
 
         /***************************************************/
@@ -161,8 +151,7 @@ namespace BH.Engine.Structure
             List<IGeometry> geometry = new List<IGeometry>
             {
                 retainingWall.Stem.Geometry(),
-                retainingWall.BaseHeel.Geometry(),
-                retainingWall.BaseToe.Geometry()
+                retainingWall.RTBase.Geometry(),
             };
 
             return Engine.Geometry.Create.CompositeGeometry(geometry);

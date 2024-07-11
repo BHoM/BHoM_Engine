@@ -68,46 +68,22 @@ namespace BH.Engine.Structure
         [Input("BaseHeel", "")]
         [Input("curves", "A list of IElement1Ds which all should be of a type of ICurve.")]
         [Output("baseHeel", "A new BaseHeel...")]
-        public static BaseHeel SetOutlineElements1D(this BaseHeel baseHeel, IEnumerable<IElement1D> curves)
+        public static RTBase SetOutlineElements1D(this RTBase rTBase, IEnumerable<IElement1D> curves)
         {
-            if (baseHeel.IsNull())
-                return baseHeel;
+            if (rTBase.IsNull())
+                return rTBase;
 
             if (curves.IsNullOrEmpty())
             {
                 Base.Compute.RecordError("The list of IElement1D is null or empty.");
-                return baseHeel;
+                return rTBase;
             }
 
             PolyCurve curve = Geometry.Compute.IJoin(curves.Cast<ICurve>().ToList())[0];
 
-            baseHeel.Outline = curve; // While there is no create method. 
+            rTBase.Outline = curve; // While there is no create method. 
 
-            return baseHeel;
-        }
-
-        /***************************************************/
-
-        [Description("")]
-        [Input("BaseToe", "")]
-        [Input("curves", "A list of IElement1Ds which all should be of a type of ICurve.")]
-        [Output("baseToe", "A new BaseToe...")]
-        public static BaseToe SetOutlineElements1D(this BaseToe baseToe, IEnumerable<IElement1D> curves)
-        {
-            if (baseToe.IsNull())
-                return baseToe;
-
-            if (curves.IsNullOrEmpty())
-            {
-                Base.Compute.RecordError("The list of IElement1D is null or empty.");
-                return baseToe;
-            }
-
-            PolyCurve curve = Geometry.Compute.IJoin(curves.Cast<ICurve>().ToList())[0];
-
-            baseToe.Outline = curve; // While there is no create method. 
-
-            return baseToe;
+            return rTBase;
         }
 
         /***************************************************/

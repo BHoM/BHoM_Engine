@@ -51,22 +51,12 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Returns the outline 1D elements of a BaseToe.")]
-        [Input("padFoundation", "The BaseToe to find the outline elements for.")]
-        [Output("outlineElements", "A collection of outline 1D elements.")]
-        public static List<IElement1D> OutlineElements1D(this BaseToe baseToe)
-        {
-            return baseToe.IsNull() ? null : baseToe.Outline.SubParts().ToList<IElement1D>();
-        }
-
-        /***************************************************/
-
         [Description("Returns the outline 1D elements of a BaseHeel.")]
         [Input("baseHeel", "The BaseHeel to find the outline elements for.")]
         [Output("outlineElements", "A collection of outline 1D elements.")]
-        public static List<IElement1D> OutlineElements1D(this BaseHeel baseHeel)
+        public static List<IElement1D> OutlineElements1D(this RTBase rTBase)
         {
-            return baseHeel.IsNull() ? null : baseHeel.Outline.SubParts().ToList<IElement1D>();
+            return rTBase.IsNull() ? null : rTBase.Outline.SubParts().ToList<IElement1D>();
         }
 
         /***************************************************/

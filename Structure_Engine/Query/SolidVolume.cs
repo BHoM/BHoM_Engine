@@ -112,20 +112,11 @@ namespace BH.Engine.Structure
         //TODO Add descriptions and error messages to retaining wall functions below. 
 
         [Description("")]
-        [Input("baseToe", "")]
-        [Output("volume", "The baseToe solid material volume.", typeof(Volume))]
-        public static double SolidVolume(this BaseToe baseToe)
-        {
-            //Feels like double work since the public static double SolidVolume(this IAreaElement areaElement) does exist. But that would not work with the diff. thicknesses along the base and stem. 
-            return SolidVolume(baseToe.Outline.Area(), baseToe.ThicknessStem, baseToe.ThicknessToe);
-        }
-
-        [Description("")]
         [Input("baseHeel", "")]
         [Output("volume", "The baseHeel solid material volume.", typeof(Volume))]
-        public static double SolidVolume(this BaseHeel baseHeel)
+        public static double SolidVolume(this RTBase rTBase)
         {
-            return SolidVolume(baseHeel.Outline.Area(), baseHeel.ThicknessStem, baseHeel.ThicknessHeel);
+            return rTBase.Property.IVolumePerArea() * rTBase.Outline.Area();
         }
 
         [Description("")]
@@ -141,7 +132,7 @@ namespace BH.Engine.Structure
         [Output("volume", "The retainingWall solid material volume.", typeof(Volume))]
         public static double SolidVolume(this RetainingWall retainingWall)
         {
-            return SolidVolume(retainingWall.BaseHeel) + SolidVolume(retainingWall.BaseToe) + SolidVolume(retainingWall.Stem);
+            return SolidVolume(retainingWall.RTBase) + SolidVolume(retainingWall.Stem);
         }
 
         /***************************************************/
