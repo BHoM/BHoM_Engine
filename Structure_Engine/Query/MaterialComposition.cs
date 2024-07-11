@@ -36,6 +36,7 @@ using BH.oM.Physical.Materials;
 using BH.oM.Dimensional;
 using BH.oM.Structure.Fragments;
 using BH.Engine.Base;
+using Microsoft.SqlServer.Server;
 
 namespace BH.Engine.Structure
 {
@@ -442,15 +443,31 @@ namespace BH.Engine.Structure
             if (retainingWall.IsNull() || retainingWall.Stem.IsNull() || retainingWall.RTBase.IsNull())
                 return null;
 
-            //ReinforcementDensity reinfDensity = stem.FindFragment<ReinforcementDensity>();
-
             List<IElementM> elements = new List<IElementM>
             {
                 retainingWall.Stem,
                 retainingWall.RTBase
             };
 
-            return Matter.Compute.AggregateMaterialComposition(elements);
+            if (!(retainingWall.Stem.FindFragment<ReinforcementDensity>().IsNull() || retainingWall.RTBase.FindFragment<ReinforcementDensity>().IsNull()) && retainingWall.FindFragment<ReinforcementDensity>().IsNull())
+            {
+                Base.Compute.RecordWarning("A reinforcement density fragment is found on both the retaining wall object and on at least one of its defining objects. The reinforcementdensity of the lower level parts has been used.");
+                return Matter.Compute.AggregateMaterialComposition(elements);
+            }
+
+            else if (retainingWall.FindFragment<ReinforcementDensity>().IsNull())
+                return Matter.Compute.AggregateMaterialComposition(elements);
+
+            else if (!retainingWall.FindFragment<ReinforcementDensity>().IsNull())
+            {
+                ReinforcementDensity reinfDensity = retainingWall.FindFragment<ReinforcementDensity>();
+
+                return null;
+            }
+
+            //MaterialComposition AggMatComp = Matter.Compute.AggregateMaterialComposition(elements);
+
+            return null;
         }
 
         /***************************************************/
