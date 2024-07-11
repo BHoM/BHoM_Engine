@@ -425,9 +425,9 @@ namespace BH.Engine.Structure
         public static MaterialComposition MaterialComposition(this RetainingWall retainingWall)
         {
 
+
             if (retainingWall.IsNull() && retainingWall.Stem.IsNull() && retainingWall.Footing.IsNull())
                 return null;
-
 
             List<IElementM> elements = new List<IElementM>
             {

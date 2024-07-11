@@ -667,42 +667,19 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the PileFoundation is null.")]
-        public static bool IsNull(this BaseToe baseToe, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this RTBase rTBase, [CallerMemberName] string methodName = "Method", string msg = "")
         {
-            if (baseToe == null)
+            if (rTBase == null)
             {
                 ErrorMessage(methodName, "PadFoundation", msg);
                 return true;
             }
-            else if (baseToe.Outline == null)
+            else if (rTBase.Outline == null)
             {
                 ErrorMessage(methodName, " Edges", msg);
                 return true;
             }
-            else if (baseToe.Outline.IsNull())
-                return true;
-
-            return false;
-        }
-
-        [Description("Checks if a BaseHeel is null and outputs relevant error message.")]
-        [Input("baseHeel", "The BaseHeel to test for null.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Output("isNull", "True if the PileFoundation is null.")]
-        public static bool IsNull(this BaseHeel baseHeel, [CallerMemberName] string methodName = "Method", string msg = "")
-        {
-            if (baseHeel == null)
-            {
-                ErrorMessage(methodName, "PadFoundation", msg);
-                return true;
-            }
-            else if (baseHeel.Outline == null)
-            {
-                ErrorMessage(methodName, " Edges", msg);
-                return true;
-            }
-            else if (baseHeel.Outline.IsNull())
+            else if (rTBase.Outline.IsNull())
                 return true;
 
             return false;
@@ -722,9 +699,7 @@ namespace BH.Engine.Structure
             }
             else if (retainingWall.Stem.IsNull())
                 return true;
-            else if (retainingWall.BaseHeel.IsNull())
-                return true;
-            else if (retainingWall.BaseToe.IsNull())
+            else if (retainingWall.RTBase.IsNull())
                 return true;
 
             return false;
