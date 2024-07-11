@@ -46,7 +46,7 @@ namespace BH.Engine.Serialiser
                 return null;
             else if (bson.IsString)
             {
-                Type type = BH.Engine.Base.Create.Type(bson.AsString, true);
+                Type type = BH.Engine.Base.Create.Type(bson.AsString, true, true);
                 if (type != null)
                     return type;
                 else
