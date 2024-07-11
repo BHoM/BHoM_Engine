@@ -159,6 +159,73 @@ namespace BH.Engine.Structure
             return compositeGeometry;
         }
 
+        /***************************************************/
+
+        [Description("Gets a CompositeGeometry made of the PileCap and Piles of a PileFoundation.")]
+        [Input("pileFoundation", "The input PileFoundation to get the Geometry3D out of.")]
+        [Output("3d", "Three-dimensional geometry of the PileFoundation.")]
+        public static IGeometry Geometry3D(this RTBase rTBase)
+        {
+            if (rTBase.IsNull())
+                return null;
+
+            CompositeGeometry compositeGeometry = new CompositeGeometry();
+
+            PlanarSurface botSrf = Engine.Geometry.Create.PlanarSurface(rTBase.Outline);
+
+
+            double thickness = rTBase.Property.ITotalThickness();
+            Vector extrudeVect = new Vector() { Z = thickness };
+
+            PlanarSurface topSrf = botSrf.ITranslate(extrudeVect) as PlanarSurface;
+
+            Extrusion externalEdgesExtrusion = Engine.Geometry.Create.Extrusion(rTBase.Outline, extrudeVect);
+
+            compositeGeometry.Elements.Add(topSrf);
+            compositeGeometry.Elements.Add(botSrf);
+            compositeGeometry.Elements.Add(externalEdgesExtrusion);
+
+            return compositeGeometry;
+        }
+
+        /***************************************************/
+
+        [Description("Gets a CompositeGeometry made of the PileCap and Piles of a PileFoundation.")]
+        [Input("pileFoundation", "The input PileFoundation to get the Geometry3D out of.")]
+        [Output("3d", "Three-dimensional geometry of the PileFoundation.")]
+        public static IGeometry Geometry3D(this Stem stem)
+        {
+            if (stem.IsNull())
+                return null;
+
+            CompositeGeometry compositeGeometry = new CompositeGeometry();
+
+            PlanarSurface centralPlanarSrf = Engine.Geometry.Create.PlanarSurface(stem.Outline);
+
+            PlanarSurface retainingSrf = centralPlanarSrf.ITranslate(stem.Orientation.Normalise() * -stem.ThicknessBottom / 2) as PlanarSurface;
+
+            PlanarSurface frontsrf = centralPlanarSrf.ITranslate(stem.Orientation.Normalise() * stem.ThicknessBottom / 2) as PlanarSurface;
+
+            //Figure out angle to rotate frontface by. Need a value of stem bound in Z direction. think there is something within BHoM to handle that.
+            double a = stem.ThicknessBottom - stem.ThicknessTop;
+            double b = 5; // THis is a palceholder value and will be changed.
+            double rad = Math.Atan(a / b);
+
+            frontsrf = frontsrf.IRotate(frontsrf.ICentroid(), stem.Orientation.CrossProduct(Vector.ZAxis), rad).ITranslate(stem.Orientation * -Math.Tan(rad) * b/2) as PlanarSurface;
+
+            Extrusion externalEdgesExtrusion = Engine.Geometry.Create.Extrusion(stem.Outline.ITranslate(stem.Orientation.Normalise() * -stem.ThicknessBottom / 2), stem.Orientation.Normalise() * stem.ThicknessBottom);
+
+
+            compositeGeometry.Elements.Add(retainingSrf);
+            compositeGeometry.Elements.Add(frontsrf);
+            compositeGeometry.Elements.Add(externalEdgesExtrusion);
+
+            return compositeGeometry;
+
+        }
+
+        /***************************************************/
+
         [Description("Gets a CompositeGeometry made of the PileCap and Piles of a PileFoundation.")]
         [Input("pileFoundation", "The input PileFoundation to get the Geometry3D out of.")]
         [Output("3d", "Three-dimensional geometry of the PileFoundation.")]
@@ -168,6 +235,8 @@ namespace BH.Engine.Structure
                 return null;
 
             CompositeGeometry compositeGeometry = new CompositeGeometry();
+            compositeGeometry.Elements.Add(retainingWall.Stem.Geometry3D());
+            compositeGeometry.Elements.Add(retainingWall.RTBase.Geometry3D());
 
             return compositeGeometry;
         }
