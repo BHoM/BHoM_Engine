@@ -405,9 +405,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Returns a BaseHeel's homogeneous MaterialComposition.")]
-        [Input("baseHeel", "The BaseHeel to get material from.")]
-        [Output("materialComposition", "The kind of matter the BaseHeel is composed of.")]
+        [Description("Returns a Footing's homogeneous MaterialComposition.")]
+        [Input("footing", "The Footing to get material from.")]
+        [Output("materialComposition", "The kind of matter the Footing is composed of.")]
         public static MaterialComposition MaterialComposition(this Footing footing)
         {
             if (footing.IsNull() || footing.Property.IsNull())
@@ -435,11 +435,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Returns a RetainingWall's homogeneous MaterialComposition.")]
+        [Description("Returns a RetainingWall's homogeneous MaterialComposition based on the Stem and Footing.")]
         [Input("retainingWall", "The RetainingWall to get material from.")]
         [Output("materialComposition", "The kind of matter the RetainingWall is composed of.")]
         public static MaterialComposition MaterialComposition(this RetainingWall retainingWall)
         {
+
+            //WIP TODO
+            //Chek if ReinforcementDensity fragment is present on both sub parts and higher level object. Use one and inform the user.
             if (retainingWall.IsNull() || retainingWall.Stem.IsNull() || retainingWall.Footing.IsNull())
                 return null;
 

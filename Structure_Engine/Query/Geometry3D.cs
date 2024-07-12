@@ -161,9 +161,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets a CompositeGeometry made of the PileCap and Piles of a PileFoundation.")]
-        [Input("pileFoundation", "The input PileFoundation to get the Geometry3D out of.")]
-        [Output("3d", "Three-dimensional geometry of the PileFoundation.")]
+        [Description("Gets a CompositeGeometry made of boundary surfaces of the Footing based on its Outline and thickness.")]
+        [Input("footing", "The input Footing to get the Geometry3D out of.")]
+        [Output("3d", "Three-dimensional geometry of the Footing.")]
         public static IGeometry Geometry3D(this Footing footing)
         {
             if (footing.IsNull())
@@ -190,9 +190,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets a CompositeGeometry made of the PileCap and Piles of a PileFoundation.")]
-        [Input("pileFoundation", "The input PileFoundation to get the Geometry3D out of.")]
-        [Output("3d", "Three-dimensional geometry of the PileFoundation.")]
+        [Description("Gets a CompositeGeometry made of boundary surfaces of the Stem based on its Outline, thicknesses and orientation.")]
+        [Input("stem", "The input Stem to get the Geometry3D out of.")]
+        [Output("3d", "Three-dimensional geometry of the Stem.")]
         public static IGeometry Geometry3D(this Stem stem)
         {
             if (stem.IsNull())
@@ -226,9 +226,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets a CompositeGeometry made of the PileCap and Piles of a PileFoundation.")]
-        [Input("pileFoundation", "The input PileFoundation to get the Geometry3D out of.")]
-        [Output("3d", "Three-dimensional geometry of the PileFoundation.")]
+        [Description("Gets a CompositeGeometry made of the Stem and Footing of a RetainingWall.")]
+        [Input("retainingWall", "The input RetainingWall to get the Geometry3D out of.")]
+        [Output("3d", "Three-dimensional geometry of the RetainingWall.")]
         public static IGeometry Geometry3D(this RetainingWall retainingWall)
         {
             if (retainingWall.IsNull())

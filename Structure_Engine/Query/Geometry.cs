@@ -133,9 +133,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the geometry of a Stem. Method required for automatic display in UI packages.")]
-        [Input("stem", "Stem to get the surface geometry from.")]
-        [Output("surface", "The geometry defining the Stem.")]
+        [Description("Gets the geometry of a Footing. Method required for automatic display in UI packages.")]
+        [Input("footing", "Footing to get the surface geometry from.")]
+        [Output("surface", "The geometry defining the footing.")]
         public static IGeometry Geometry(this Footing footing)
         {
             return footing.IsNull() ? null : new PlanarSurface(footing.Outline, null);
@@ -143,9 +143,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the geometry of a Stem. Method required for automatic display in UI packages.")]
-        [Input("stem", "Stem to get the surface geometry from.")]
-        [Output("surface", "The geometry defining the Stem.")]
+        [Description("Gets the geometry of a RetainingWall. Method required for automatic display in UI packages.")]
+        [Input("retainingWall", "RetainingWall to get the surface geometries from.")]
+        [Output("surface", "The geometries defining the RetainingWall.")]
         public static IGeometry Geometry(this RetainingWall retainingWall)
         {
             List<IGeometry> geometry = new List<IGeometry>

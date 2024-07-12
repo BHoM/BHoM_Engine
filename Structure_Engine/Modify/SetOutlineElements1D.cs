@@ -64,10 +64,12 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("")]
-        [Input("BaseHeel", "")]
+        [Description("Sets the Outline Element1Ds of a Footing, i.e. the ExternalBoundary. Method required for all IElement2Ds.\n" +
+                     "The provided edges all need to be ICurves and should form a closed loop. No checking for planarity is made by the method.\n" +
+                     "The Method will return a new Footing with the provided edges as the Outline.")]
+        [Input("footing", "The Footing to update the ExternalEdge of.")]
         [Input("curves", "A list of IElement1Ds which all should be of a type of ICurve.")]
-        [Output("baseHeel", "A new BaseHeel...")]
+        [Output("footing", "A new Footing with Outline matching the provided edges.")]
         public static Footing SetOutlineElements1D(this Footing footing, IEnumerable<IElement1D> curves)
         {
             if (footing.IsNull())
@@ -88,10 +90,12 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("")]
-        [Input("Stem", "")]
+        [Description("Sets the Outline Element1Ds of a Stem, i.e. the ExternalBoundary. Method required for all IElement2Ds.\n" +
+                     "The provided edges all need to be ICurves and should form a closed loop. No checking for planarity is made by the method.\n" +
+                     "The Method will return a new Stem with the provided edges as the Outline.")]
+        [Input("stem", "The Stem to update the ExternalEdge of.")]
         [Input("curves", "A list of IElement1Ds which all should be of a type of ICurve.")]
-        [Output("stem", "A new Stem...")]
+        [Output("stem", "A new Stem with Outline matching the provided edges.")]
         public static Stem SetOutlineElements1D(this Stem stem, IEnumerable<IElement1D> curves)
         {
             if (stem.IsNull())

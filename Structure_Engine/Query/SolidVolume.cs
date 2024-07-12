@@ -34,7 +34,6 @@ using BH.oM.Structure.SurfaceProperties;
 using BH.Engine.Spatial;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Spatial.ShapeProfiles;
-using static System.Collections.Specialized.BitVector32;
 using BH.Engine.Geometry;
 
 namespace BH.Engine.Structure
@@ -109,30 +108,32 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        //TODO Add descriptions and error messages to retaining wall functions below. 
-
-        [Description("")]
-        [Input("baseHeel", "")]
-        [Output("volume", "The baseHeel solid material volume.", typeof(Volume))]
+        [Description("Returns a Footing's solid volume based on the area of the element and the average thickness of its SurfaceProperty.")]
+        [Input("footing", "The Footing to get the volume from.")]
+        [Output("volume", "The Footing solid material volume.", typeof(Volume))]
         public static double SolidVolume(this Footing footing)
         {
             return footing.Property.IVolumePerArea() * footing.Outline.Area();
         }
 
-        [Description("")]
-        [Input("stem", "")]
-        [Output("volume", "The stem solid material volume.", typeof(Volume))]
+        /***************************************************/
+
+        [Description("Returns a Stem's solid volume based on the area of the element and its top and bottom thickness.")]
+        [Input("stem", "The Stem to get the volume from.")]
+        [Output("volume", "The Stem solid material volume.", typeof(Volume))]
         public static double SolidVolume(this Stem stem)
         {
-            return SolidVolume(stem.Outline.Area(), stem.ThicknessBottom, stem.ThicknessTop);
+            return stem.IsNull() ? 0 : SolidVolume(stem.Outline.Area(), stem.ThicknessBottom, stem.ThicknessTop);
         }
 
-        [Description("")]
-        [Input("retainingWall", "")]
-        [Output("volume", "The retainingWall solid material volume.", typeof(Volume))]
+        /***************************************************/
+
+        [Description("Returns a RetainingWall's solid volume based on the Stem and Footing volumes.")]
+        [Input("retainingWall", "The RetainingWall to get the volume from.")]
+        [Output("volume", "The RetainingWall solid material volume.", typeof(Volume))]
         public static double SolidVolume(this RetainingWall retainingWall)
         {
-            return SolidVolume(retainingWall.Footing) + SolidVolume(retainingWall.Stem);
+            return retainingWall.IsNull() ? 0 : SolidVolume(retainingWall.Footing) + SolidVolume(retainingWall.Stem);
         }
 
         /***************************************************/
