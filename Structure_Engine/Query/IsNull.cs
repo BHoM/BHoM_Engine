@@ -667,19 +667,19 @@ namespace BH.Engine.Structure
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Output("isNull", "True if the PileFoundation is null.")]
-        public static bool IsNull(this RTBase rTBase, [CallerMemberName] string methodName = "Method", string msg = "")
+        public static bool IsNull(this Footing footing, [CallerMemberName] string methodName = "Method", string msg = "")
         {
-            if (rTBase == null)
+            if (footing == null)
             {
                 ErrorMessage(methodName, "PadFoundation", msg);
                 return true;
             }
-            else if (rTBase.Outline == null)
+            else if (footing.Outline == null)
             {
                 ErrorMessage(methodName, " Edges", msg);
                 return true;
             }
-            else if (rTBase.Outline.IsNull())
+            else if (footing.Outline.IsNull())
                 return true;
 
             return false;
@@ -699,7 +699,7 @@ namespace BH.Engine.Structure
             }
             else if (retainingWall.Stem.IsNull())
                 return true;
-            else if (retainingWall.RTBase.IsNull())
+            else if (retainingWall.Footing.IsNull())
                 return true;
 
             return false;

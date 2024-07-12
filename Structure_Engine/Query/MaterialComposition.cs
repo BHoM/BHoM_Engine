@@ -425,8 +425,6 @@ namespace BH.Engine.Structure
         [Output("materialComposition", "The MaterialComposition of the RetainingWall.")]
         public static MaterialComposition MaterialComposition(this RetainingWall retainingWall)
         {
-
-
             if (retainingWall.IsNull() && retainingWall.Stem.IsNull() && retainingWall.Footing.IsNull())
                 return null;
 
