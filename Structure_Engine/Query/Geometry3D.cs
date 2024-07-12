@@ -164,22 +164,22 @@ namespace BH.Engine.Structure
         [Description("Gets a CompositeGeometry made of the PileCap and Piles of a PileFoundation.")]
         [Input("pileFoundation", "The input PileFoundation to get the Geometry3D out of.")]
         [Output("3d", "Three-dimensional geometry of the PileFoundation.")]
-        public static IGeometry Geometry3D(this RTBase rTBase)
+        public static IGeometry Geometry3D(this Footing footing)
         {
-            if (rTBase.IsNull())
+            if (footing.IsNull())
                 return null;
 
             CompositeGeometry compositeGeometry = new CompositeGeometry();
 
-            PlanarSurface botSrf = Engine.Geometry.Create.PlanarSurface(rTBase.Outline);
+            PlanarSurface botSrf = Engine.Geometry.Create.PlanarSurface(footing.Outline);
 
 
-            double thickness = rTBase.Property.ITotalThickness();
+            double thickness = footing.Property.ITotalThickness();
             Vector extrudeVect = new Vector() { Z = thickness };
 
             PlanarSurface topSrf = botSrf.ITranslate(extrudeVect) as PlanarSurface;
 
-            Extrusion externalEdgesExtrusion = Engine.Geometry.Create.Extrusion(rTBase.Outline, extrudeVect);
+            Extrusion externalEdgesExtrusion = Engine.Geometry.Create.Extrusion(footing.Outline, extrudeVect);
 
             compositeGeometry.Elements.Add(topSrf);
             compositeGeometry.Elements.Add(botSrf);
@@ -236,7 +236,7 @@ namespace BH.Engine.Structure
 
             CompositeGeometry compositeGeometry = new CompositeGeometry();
             compositeGeometry.Elements.Add(retainingWall.Stem.Geometry3D());
-            compositeGeometry.Elements.Add(retainingWall.RTBase.Geometry3D());
+            compositeGeometry.Elements.Add(retainingWall.Footing.Geometry3D());
 
             return compositeGeometry;
         }

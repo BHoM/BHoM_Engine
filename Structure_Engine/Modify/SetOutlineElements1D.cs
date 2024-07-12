@@ -68,22 +68,22 @@ namespace BH.Engine.Structure
         [Input("BaseHeel", "")]
         [Input("curves", "A list of IElement1Ds which all should be of a type of ICurve.")]
         [Output("baseHeel", "A new BaseHeel...")]
-        public static RTBase SetOutlineElements1D(this RTBase rTBase, IEnumerable<IElement1D> curves)
+        public static Footing SetOutlineElements1D(this Footing footing, IEnumerable<IElement1D> curves)
         {
-            if (rTBase.IsNull())
-                return rTBase;
+            if (footing.IsNull())
+                return footing;
 
             if (curves.IsNullOrEmpty())
             {
                 Base.Compute.RecordError("The list of IElement1D is null or empty.");
-                return rTBase;
+                return footing;
             }
 
             PolyCurve curve = Geometry.Compute.IJoin(curves.Cast<ICurve>().ToList())[0];
 
-            rTBase.Outline = curve; // While there is no create method. 
+            footing.Outline = curve; // While there is no create method. 
 
-            return rTBase;
+            return footing;
         }
 
         /***************************************************/

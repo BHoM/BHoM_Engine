@@ -136,9 +136,9 @@ namespace BH.Engine.Structure
         [Description("Gets the geometry of a Stem. Method required for automatic display in UI packages.")]
         [Input("stem", "Stem to get the surface geometry from.")]
         [Output("surface", "The geometry defining the Stem.")]
-        public static IGeometry Geometry(this RTBase rTBase)
+        public static IGeometry Geometry(this Footing footing)
         {
-            return rTBase.IsNull() ? null : new PlanarSurface(rTBase.Outline, null);
+            return footing.IsNull() ? null : new PlanarSurface(footing.Outline, null);
         }
 
         /***************************************************/
@@ -151,7 +151,7 @@ namespace BH.Engine.Structure
             List<IGeometry> geometry = new List<IGeometry>
             {
                 retainingWall.Stem.Geometry(),
-                retainingWall.RTBase.Geometry(),
+                retainingWall.Footing.Geometry(),
             };
 
             return Engine.Geometry.Create.CompositeGeometry(geometry);

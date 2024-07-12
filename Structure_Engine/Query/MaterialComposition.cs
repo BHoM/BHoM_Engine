@@ -408,14 +408,14 @@ namespace BH.Engine.Structure
         [Description("Returns a BaseHeel's homogeneous MaterialComposition.")]
         [Input("baseHeel", "The BaseHeel to get material from.")]
         [Output("materialComposition", "The kind of matter the BaseHeel is composed of.")]
-        public static MaterialComposition MaterialComposition(this RTBase rTBase)
+        public static MaterialComposition MaterialComposition(this Footing footing)
         {
-            if (rTBase.IsNull() || rTBase.Property.IsNull())
+            if (footing.IsNull() || footing.Property.IsNull())
                 return null;
 
-            ReinforcementDensity reinfDensity = rTBase.FindFragment<ReinforcementDensity>();
+            ReinforcementDensity reinfDensity = footing.FindFragment<ReinforcementDensity>();
 
-            return MaterialComposition(rTBase.Property.Material, reinfDensity);
+            return MaterialComposition(footing.Property.Material, reinfDensity);
         }
 
         /***************************************************/
@@ -440,16 +440,16 @@ namespace BH.Engine.Structure
         [Output("materialComposition", "The kind of matter the RetainingWall is composed of.")]
         public static MaterialComposition MaterialComposition(this RetainingWall retainingWall)
         {
-            if (retainingWall.IsNull() || retainingWall.Stem.IsNull() || retainingWall.RTBase.IsNull())
+            if (retainingWall.IsNull() || retainingWall.Stem.IsNull() || retainingWall.Footing.IsNull())
                 return null;
 
             List<IElementM> elements = new List<IElementM>
             {
                 retainingWall.Stem,
-                retainingWall.RTBase
+                retainingWall.Footing
             };
 
-            if (!(retainingWall.Stem.FindFragment<ReinforcementDensity>().IsNull() || retainingWall.RTBase.FindFragment<ReinforcementDensity>().IsNull()) && retainingWall.FindFragment<ReinforcementDensity>().IsNull())
+            if (!(retainingWall.Stem.FindFragment<ReinforcementDensity>().IsNull() || retainingWall.Footing.FindFragment<ReinforcementDensity>().IsNull()) && retainingWall.FindFragment<ReinforcementDensity>().IsNull())
             {
                 Base.Compute.RecordWarning("A reinforcement density fragment is found on both the retaining wall object and on at least one of its defining objects. The reinforcementdensity of the lower level parts has been used.");
                 return Matter.Compute.AggregateMaterialComposition(elements);

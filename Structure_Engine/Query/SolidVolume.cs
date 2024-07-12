@@ -114,9 +114,9 @@ namespace BH.Engine.Structure
         [Description("")]
         [Input("baseHeel", "")]
         [Output("volume", "The baseHeel solid material volume.", typeof(Volume))]
-        public static double SolidVolume(this RTBase rTBase)
+        public static double SolidVolume(this Footing footing)
         {
-            return rTBase.Property.IVolumePerArea() * rTBase.Outline.Area();
+            return footing.Property.IVolumePerArea() * footing.Outline.Area();
         }
 
         [Description("")]
@@ -132,7 +132,7 @@ namespace BH.Engine.Structure
         [Output("volume", "The retainingWall solid material volume.", typeof(Volume))]
         public static double SolidVolume(this RetainingWall retainingWall)
         {
-            return SolidVolume(retainingWall.RTBase) + SolidVolume(retainingWall.Stem);
+            return SolidVolume(retainingWall.Footing) + SolidVolume(retainingWall.Stem);
         }
 
         /***************************************************/

@@ -54,9 +54,9 @@ namespace BH.Engine.Structure
         [Description("Returns the outline 1D elements of a BaseHeel.")]
         [Input("baseHeel", "The BaseHeel to find the outline elements for.")]
         [Output("outlineElements", "A collection of outline 1D elements.")]
-        public static List<IElement1D> OutlineElements1D(this RTBase rTBase)
+        public static List<IElement1D> OutlineElements1D(this Footing footing)
         {
-            return rTBase.IsNull() ? null : rTBase.Outline.SubParts().ToList<IElement1D>();
+            return footing.IsNull() ? null : footing.Outline.SubParts().ToList<IElement1D>();
         }
 
         /***************************************************/
