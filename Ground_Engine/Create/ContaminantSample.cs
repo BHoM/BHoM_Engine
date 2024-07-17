@@ -51,7 +51,7 @@ namespace BH.Engine.Ground
         {
             if (string.IsNullOrWhiteSpace(chemical))
             {
-                Compute.RecordError("The chemical name is null or whitespace.");
+                Base.Compute.RecordError("The chemical name is null or whitespace.");
                 return null;
             }
 
