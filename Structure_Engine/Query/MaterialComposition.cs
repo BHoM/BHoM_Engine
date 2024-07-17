@@ -428,6 +428,7 @@ namespace BH.Engine.Structure
             if (retainingWall.IsNull() && retainingWall.Stem.IsNull() && retainingWall.Footing.IsNull())
                 return null;
 
+
             List<IElementM> elements = new List<IElementM>
             {
                 retainingWall.Stem,
