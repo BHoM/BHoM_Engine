@@ -31,6 +31,7 @@ using BH.Engine.Structure;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.Engine.Base;
+using System.Runtime.InteropServices;
 
 namespace BH.Engine.Structure
 {
@@ -202,23 +203,43 @@ namespace BH.Engine.Structure
 
             PlanarSurface centralPlanarSrf = Engine.Geometry.Create.PlanarSurface(stem.Outline);
 
-            PlanarSurface retainingSrf = centralPlanarSrf.ITranslate(stem.Orientation.Normalise() * -stem.ThicknessBottom / 2) as PlanarSurface;
+            PlanarSurface backSrf = centralPlanarSrf.ITranslate(stem.Orientation.Normalise() * -stem.ThicknessBottom / 2) as PlanarSurface;
+            PlanarSurface frontSrf = centralPlanarSrf.ITranslate(stem.Orientation.Normalise() * stem.ThicknessBottom / 2) as PlanarSurface;
 
-            PlanarSurface frontsrf = centralPlanarSrf.ITranslate(stem.Orientation.Normalise() * stem.ThicknessBottom / 2) as PlanarSurface;
-
-            //Figure out angle to rotate frontface by. Need a value of stem bound in Z direction. think there is something within BHoM to handle that.
+            //Figure out angle to rotate frontface by. Do some trig magic here. 
             double a = stem.ThicknessBottom - stem.ThicknessTop;
-            double b = 5; // THis is a palceholder value and will be changed.
+            double b = 5; // This is a palceholder value and will be changed.
             double rad = Math.Atan(a / b);
 
-            frontsrf = frontsrf.IRotate(frontsrf.ICentroid(), stem.Orientation.CrossProduct(Vector.ZAxis), rad).ITranslate(stem.Orientation * -Math.Tan(rad) * b/2) as PlanarSurface;
+            //Lowest point. To rotrate around.
+            Point rotatePF = frontSrf.ControlPoints().OrderBy(p => p.Z).First();
+            Point rotatePB = backSrf.ControlPoints().OrderBy(p => p.Z).First();
 
-            Extrusion externalEdgesExtrusion = Engine.Geometry.Create.Extrusion(stem.Outline.ITranslate(stem.Orientation.Normalise() * -stem.ThicknessBottom / 2), stem.Orientation.Normalise() * stem.ThicknessBottom);
+            frontSrf = frontSrf.IRotate(rotatePF, stem.Orientation.CrossProduct(Vector.ZAxis), rad) as PlanarSurface;
+            backSrf = backSrf.IRotate(rotatePB, stem.Orientation.CrossProduct(Vector.ZAxis), -rad) as PlanarSurface;
+
+            //Extend the surface to be at correct height with the walls. Need to be extended dependant on the rotation angle.
+            //is there a method to extend it? (Have one in my back pocket though...)
+
+            //Close out the shape. Would be great with a method to close it out...
+
+            // Creates an extrusion closing the shape. Needs to be dut by the other surface.
+            Extrusion sides = Engine.Geometry.Create.Extrusion(backSrf.ExternalBoundary, stem.Orientation.Normalise() * stem.ThicknessBottom);
+
+            //Surface att bottom
+            //Surface at Top 
+            //Surfaces at sides
+
+            //Is there any geometry or engine methods 
+
+            //Extrusion externalEdgesExtrusion = Engine.Geometry.Create.Extrusion(stem.Outline.ITranslate(stem.Orientation.Normalise() * -stem.ThicknessBottom / 2), stem.Orientation.Normalise() * stem.ThicknessBottom);
 
 
-            compositeGeometry.Elements.Add(retainingSrf);
-            compositeGeometry.Elements.Add(frontsrf);
-            compositeGeometry.Elements.Add(externalEdgesExtrusion);
+            compositeGeometry.Elements.Add(backSrf);
+            compositeGeometry.Elements.Add(frontSrf);
+            compositeGeometry.Elements.Add(centralPlanarSrf); //Provisionally added for checking. 
+            compositeGeometry.Elements.Add(sides);
+            //compositeGeometry.Elements.Add(externalEdgesExtrusion);
 
             return compositeGeometry;
 
