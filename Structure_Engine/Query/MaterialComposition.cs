@@ -441,10 +441,9 @@ namespace BH.Engine.Structure
         public static MaterialComposition MaterialComposition(this RetainingWall retainingWall)
         {
 
-            //WIP TODO
-            //Chek if ReinforcementDensity fragment is present on both sub parts and higher level object. Use one and inform the user.
-            if (retainingWall.IsNull() || retainingWall.Stem.IsNull() || retainingWall.Footing.IsNull())
+            if (retainingWall.IsNull() && retainingWall.Stem.IsNull() && retainingWall.Footing.IsNull())
                 return null;
+
 
             List<IElementM> elements = new List<IElementM>
             {
@@ -452,23 +451,32 @@ namespace BH.Engine.Structure
                 retainingWall.Footing
             };
 
-            if (!(retainingWall.Stem.FindFragment<ReinforcementDensity>().IsNull() || retainingWall.Footing.FindFragment<ReinforcementDensity>().IsNull()) && retainingWall.FindFragment<ReinforcementDensity>().IsNull())
+            //Case for when ReinforcementDensity is attached to both hihgher and lower level objects.
+            if ((!retainingWall.Stem.FindFragment<ReinforcementDensity>().IsNull() || !retainingWall.Footing.FindFragment<ReinforcementDensity>().IsNull()) && !retainingWall.FindFragment<ReinforcementDensity>().IsNull())
             {
                 Base.Compute.RecordWarning("A reinforcement density fragment is found on both the retaining wall object and on at least one of its defining objects. The reinforcementdensity of the lower level parts has been used.");
                 return Matter.Compute.AggregateMaterialComposition(elements);
             }
 
-            else if (retainingWall.FindFragment<ReinforcementDensity>().IsNull())
+            //Case when ReinforcementDensity is atatched to lower level objects.
+            //Gives an error becasue the ReinforcementDensity is null on the retaining wall even though it works fine.
+            else if (!retainingWall.Stem.FindFragment<ReinforcementDensity>().IsNull() || !retainingWall.Footing.FindFragment<ReinforcementDensity>().IsNull())
                 return Matter.Compute.AggregateMaterialComposition(elements);
 
+            //Case when ReinforcementDensity is atatched to higher level object.
+            //Gives an error becasue the ReinforcementDensity is null on the retaining wall even though it works fine.
             else if (!retainingWall.FindFragment<ReinforcementDensity>().IsNull())
             {
                 ReinforcementDensity reinfDensity = retainingWall.FindFragment<ReinforcementDensity>();
 
-                return null;
-            }
+                List<IElementM> reinforcedElements = new List<IElementM>
+                {
+                    (IElementM)retainingWall.Stem.AddFragment(reinfDensity),
+                    (IElementM)retainingWall.Footing.AddFragment(reinfDensity)
+                };
 
-            //MaterialComposition AggMatComp = Matter.Compute.AggregateMaterialComposition(elements);
+                return Matter.Compute.AggregateMaterialComposition(reinforcedElements);
+            }
 
             return null;
         }
