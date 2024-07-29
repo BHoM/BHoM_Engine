@@ -68,7 +68,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-
+		
         [Description("Create RetainingWall from a Line and defining properties.")]
         [Input("line", "A Line parallell to the XY plane to build the RetainingWall from.")]
         [Input("retainedHeight", "The retained height of soil measured from the bottom of the wall Footing.")]
