@@ -69,6 +69,26 @@ namespace BH.Engine.Structure
 
             return flipped;
         }
+
+        [Description("Flips normal of the Stem.")]
+        [Input("stem", "The Stem to flip.")]
+        [Output("stem", "The Stem with flipped Normal")]
+        public static Stem Flip(this Stem stem)
+        {
+            if (stem.IsNull())
+                return null;
+            if (stem.Normal.IsNull())
+            {
+                Base.Compute.RecordWarning("The Normal of the Stem is null and could not be flipped.");
+                return null;
+            }
+
+            Stem flipped = stem.ShallowClone();
+
+            flipped.Normal = stem.Normal * -1;
+
+            return flipped;
+        }
     }
 }
 
