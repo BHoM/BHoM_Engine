@@ -203,8 +203,8 @@ namespace BH.Engine.Structure
 
             PlanarSurface centralPlanarSrf = Engine.Geometry.Create.PlanarSurface(stem.Outline);
 
-            PlanarSurface backSrf = centralPlanarSrf.ITranslate(stem.Orientation.Normalise() * -stem.ThicknessBottom / 2) as PlanarSurface;
-            PlanarSurface frontSrf = centralPlanarSrf.ITranslate(stem.Orientation.Normalise() * stem.ThicknessBottom / 2) as PlanarSurface;
+            PlanarSurface backSrf = centralPlanarSrf.ITranslate(stem.Normal.Normalise() * -stem.ThicknessBottom / 2) as PlanarSurface;
+            PlanarSurface frontSrf = centralPlanarSrf.ITranslate(stem.Normal.Normalise() * stem.ThicknessBottom / 2) as PlanarSurface;
 
             //Figure out angle to rotate frontface by. Do some trig magic here. 
             double a = stem.ThicknessBottom - stem.ThicknessTop;
@@ -215,8 +215,8 @@ namespace BH.Engine.Structure
             Point rotatePF = frontSrf.ControlPoints().OrderBy(p => p.Z).First();
             Point rotatePB = backSrf.ControlPoints().OrderBy(p => p.Z).First();
 
-            frontSrf = frontSrf.IRotate(rotatePF, stem.Orientation.CrossProduct(Vector.ZAxis), rad) as PlanarSurface;
-            backSrf = backSrf.IRotate(rotatePB, stem.Orientation.CrossProduct(Vector.ZAxis), -rad) as PlanarSurface;
+            frontSrf = frontSrf.IRotate(rotatePF, stem.Normal.CrossProduct(Vector.ZAxis), rad) as PlanarSurface;
+            backSrf = backSrf.IRotate(rotatePB, stem.Normal.CrossProduct(Vector.ZAxis), -rad) as PlanarSurface;
 
             //Extend the surface to be at correct height with the walls. Need to be extended dependant on the rotation angle.
             //is there a method to extend it? (Have one in my back pocket though...)
@@ -224,7 +224,7 @@ namespace BH.Engine.Structure
             //Close out the shape. Would be great with a method to close it out...
 
             // Creates an extrusion closing the shape. Needs to be dut by the other surface.
-            Extrusion sides = Engine.Geometry.Create.Extrusion(backSrf.ExternalBoundary, stem.Orientation.Normalise() * stem.ThicknessBottom);
+            Extrusion sides = Engine.Geometry.Create.Extrusion(backSrf.ExternalBoundary, stem.Normal.Normalise() * stem.ThicknessBottom);
 
             //Surface att bottom
             //Surface at Top 
@@ -232,7 +232,7 @@ namespace BH.Engine.Structure
 
             //Is there any geometry or engine methods 
 
-            //Extrusion externalEdgesExtrusion = Engine.Geometry.Create.Extrusion(stem.Outline.ITranslate(stem.Orientation.Normalise() * -stem.ThicknessBottom / 2), stem.Orientation.Normalise() * stem.ThicknessBottom);
+            //Extrusion externalEdgesExtrusion = Engine.Geometry.Create.Extrusion(stem.Outline.ITranslate(stem.Normal.Normalise() * -stem.ThicknessBottom / 2), stem.Normal.Normalise() * stem.ThicknessBottom);
 
 
             compositeGeometry.Elements.Add(backSrf);
