@@ -72,13 +72,11 @@ namespace BH.Engine.Structure
         [Output("retainingWall", "The created RetainingWall containing the stem and footing.")]
         public static RetainingWall RetainingWall(Stem stem, Footing footing)
         {
-            if (stem.IsNull())
-                return null;
-
-            if (footing.IsNull())
-                return null;
-
-            return RetainingWall(stem, footing);
+            return new RetainingWall()
+            {
+                Stem = stem,
+                Footing = footing
+            };
         }
 
         /***************************************************/
