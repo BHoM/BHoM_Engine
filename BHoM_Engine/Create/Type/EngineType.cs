@@ -35,7 +35,7 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("7.3", "BH.Engine.Base.Create.EngineType(System.String, System.Boolean"))]
+        [PreviousVersion("7.3", "BH.Engine.Base.Create.EngineType(System.String, System.Boolean)")]
         [Description("Creates an Engine type that matches the given name.")]
         [Input("name", "Name to be searched for among all Engine types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
