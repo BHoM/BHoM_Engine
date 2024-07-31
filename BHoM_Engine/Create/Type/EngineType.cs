@@ -39,6 +39,7 @@ namespace BH.Engine.Base
         [Description("Creates an Engine type that matches the given name.")]
         [Input("name", "Name to be searched for among all Engine types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
+        [Input("takeFirstIfMultiple", "Defines what happens in case of finding multiple matching types. If true, first type found will be returned, otherwise null.")]
         [Output("type", "BHoM Engine type that matches the given name.")]
         public static Type EngineType(string name, bool silent = false, bool takeFirstIfMultiple = false)
         {
