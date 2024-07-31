@@ -149,7 +149,7 @@ namespace BH.Engine.Serialiser
             if (fullName.IsOmNamespace())
                 type = Base.Create.Type(fullName, true, true);
             else if (fullName.IsEngineNamespace())
-                type = Base.Create.EngineType(fullName, true);
+                type = Base.Create.EngineType(fullName, true, true);
             else
                 type = Type.GetType(fullName);
 

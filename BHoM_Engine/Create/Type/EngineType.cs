@@ -39,7 +39,7 @@ namespace BH.Engine.Base
         [Input("name", "Name to be searched for among all Engine types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
         [Output("type", "BHoM Engine type that matches the given name.")]
-        public static Type EngineType(string name, bool silent = false)
+        public static Type EngineType(string name, bool silent = false, bool takeFirstIfMultiple = false)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -47,11 +47,17 @@ namespace BH.Engine.Base
                 return null;
             }
 
-            List<Type> methodTypeList = Query.EngineTypeList();
+            // Try finding any types based on the assembly qualified name
+            List<Type> types = Global.EngineTypeList.Where(x => x.AssemblyQualifiedName == name).ToList();
+            
+            // If not found, look also based on unqualified name
+            if (types.Count == 0)
+            {
+                string unQualifiedName = name.Contains(",") ? name.Split(',').First() : name;
+                types = Global.EngineTypeList.Where(x => x.FullName == unQualifiedName).ToList();
+            }
 
-            List<Type> types = methodTypeList.Where(x => x.AssemblyQualifiedName.StartsWith(name)).ToList();
-
-            if (types.Count == 1)
+            if (types.Count == 1 || (takeFirstIfMultiple && types.Count > 1))
                 return types[0];
             else
             {
