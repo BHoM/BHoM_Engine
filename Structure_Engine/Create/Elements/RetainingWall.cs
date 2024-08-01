@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a structural RetainingWall from a stem, a footing and properties.")]
+        [Description("Creates a RetainingWall from a Stem, Footing and properties.")]
         [Input("stem", "The stem of the retaining wall.")]
         [Input("footing", "The footing of the retaining wall.")]
         [Input("retainedHeight", "The retained height of soil measured from the bottom of the wall Footing.")]
