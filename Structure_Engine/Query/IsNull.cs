@@ -662,29 +662,6 @@ namespace BH.Engine.Structure
             return false;
         }
 
-        [Description("Checks if a Footing is null and outputs relevant error message.")]
-        [Input("footing", "The Footing to test for null.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Output("isNull", "True if the Footing is null.")]
-        public static bool IsNull(this Footing footing, [CallerMemberName] string methodName = "Method", string msg = "")
-        {
-            if (footing == null)
-            {
-                ErrorMessage(methodName, "PadFoundation", msg);
-                return true;
-            }
-            else if (footing.Outline == null)
-            {
-                ErrorMessage(methodName, " Edges", msg);
-                return true;
-            }
-            else if (footing.Outline.IsNull())
-                return true;
-
-            return false;
-        }
-
         [Description("Checks if a RetainingWall is null and outputs relevant error message.")]
         [Input("retainingWall", "The RetainingWall to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
