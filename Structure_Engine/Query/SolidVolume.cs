@@ -108,16 +108,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Returns a Footing's solid volume based on the area of the element and the average thickness of its SurfaceProperty.")]
-        [Input("footing", "The Footing to get the volume from.")]
-        [Output("volume", "The Footing solid material volume.", typeof(Volume))]
-        public static double SolidVolume(this Footing footing)
-        {
-            return footing.Property.IVolumePerArea() * footing.Outline.Area();
-        }
-
-        /***************************************************/
-
         [Description("Returns a Stem's solid volume based on the area of the element and its top and bottom thickness.")]
         [Input("stem", "The Stem to get the volume from.")]
         [Output("volume", "The Stem solid material volume.", typeof(Volume))]

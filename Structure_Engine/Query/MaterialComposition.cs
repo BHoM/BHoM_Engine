@@ -405,21 +405,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Returns a Footing's homogeneous MaterialComposition.")]
-        [Input("footing", "The Footing to get material from.")]
-        [Output("materialComposition", "The kind of matter the Footing is composed of.")]
-        public static MaterialComposition MaterialComposition(this Footing footing)
-        {
-            if (footing.IsNull() || footing.Property.IsNull())
-                return null;
-
-            ReinforcementDensity reinfDensity = footing.FindFragment<ReinforcementDensity>();
-
-            return MaterialComposition(footing.Property.Material, reinfDensity);
-        }
-
-        /***************************************************/
-
         [Description("Returns a Stem's homogeneous MaterialComposition.")]
         [Input("stem", "The Stem to get material from.")]
         [Output("materialComposition", "The kind of matter the Stem is composed of.")]

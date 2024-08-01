@@ -128,17 +128,7 @@ namespace BH.Engine.Structure
         [Output("surface", "The geometry defining the Stem.")]
         public static IGeometry Geometry(this Stem stem)
         {
-            return stem.IsNull() ? null : new PlanarSurface(stem.Outline, null);
-        }
-
-        /***************************************************/
-
-        [Description("Gets the geometry of a Footing. Method required for automatic display in UI packages.")]
-        [Input("footing", "Footing to get the surface geometry from.")]
-        [Output("surface", "The geometry defining the footing.")]
-        public static IGeometry Geometry(this Footing footing)
-        {
-            return footing.IsNull() ? null : new PlanarSurface(footing.Outline, null);
+            return stem.IsNull() ? null : stem.Outline;
         }
 
         /***************************************************/

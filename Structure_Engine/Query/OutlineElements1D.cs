@@ -51,16 +51,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Returns the outline 1D elements of a Footing.")]
-        [Input("footing", "The Footing to find the outline elements for.")]
-        [Output("outlineElements", "A collection of outline 1D elements.")]
-        public static List<IElement1D> OutlineElements1D(this Footing footing)
-        {
-            return footing.IsNull() ? null : footing.Outline.SubParts().ToList<IElement1D>();
-        }
-
-        /***************************************************/
-
         [Description("Returns the outline 1D elements of a Stem.")]
         [Input("stem", "The Stem to find the outline elements for.")]
         [Output("outlineElements", "A collection of outline 1D elements.")]

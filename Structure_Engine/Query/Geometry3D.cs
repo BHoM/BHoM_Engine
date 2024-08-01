@@ -162,35 +162,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets a CompositeGeometry made of boundary surfaces of the Footing based on its Outline and thickness.")]
-        [Input("footing", "The input Footing to get the Geometry3D out of.")]
-        [Output("3d", "Three-dimensional geometry of the Footing.")]
-        public static IGeometry Geometry3D(this Footing footing)
-        {
-            if (footing.IsNull())
-                return null;
-
-            CompositeGeometry compositeGeometry = new CompositeGeometry();
-
-            PlanarSurface botSrf = Engine.Geometry.Create.PlanarSurface(footing.Outline);
-
-
-            double thickness = footing.Property.ITotalThickness();
-            Vector extrudeVect = new Vector() { Z = thickness };
-
-            PlanarSurface topSrf = botSrf.ITranslate(extrudeVect) as PlanarSurface;
-
-            Extrusion externalEdgesExtrusion = Engine.Geometry.Create.Extrusion(footing.Outline, extrudeVect);
-
-            compositeGeometry.Elements.Add(topSrf);
-            compositeGeometry.Elements.Add(botSrf);
-            compositeGeometry.Elements.Add(externalEdgesExtrusion);
-
-            return compositeGeometry;
-        }
-
-        /***************************************************/
-
         [Description("Gets a CompositeGeometry made of boundary surfaces of the Stem based on its Outline, thicknesses and orientation.")]
         [Input("stem", "The input Stem to get the Geometry3D out of.")]
         [Output("3d", "Three-dimensional geometry of the Stem.")]
