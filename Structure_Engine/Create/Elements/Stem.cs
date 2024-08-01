@@ -45,7 +45,7 @@ namespace BH.Engine.Structure
         [Input("thicknessTop", "Thickness at the top of the stem.")]
         [Input("thicknessBottom", "Thickness at the bottom of the stem.")]
         [Input("normal", "Normal to the surface of the stem denoting the direction of the retained face.")]
-        [Input("material", "Structural material of the property.")]
+        [Input("material", "Material of the Stem.")]
         [Output("stem", "The created Stem.")]
         public static Stem Stem(PolyCurve outline, double thicknessTop = 0, double thicknessBottom = 0, Vector normal = null, IMaterialFragment material = null)
         {
