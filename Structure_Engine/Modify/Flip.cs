@@ -85,7 +85,7 @@ namespace BH.Engine.Structure
 
             Stem flipped = stem.ShallowClone();
 
-            flipped.Normal = stem.Normal * -1;
+            flipped.Normal = flipped.Normal * -1;
 
             return flipped;
         }
