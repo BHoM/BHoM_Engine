@@ -79,7 +79,7 @@ namespace BH.Engine.Structure
                 return null;
             if (stem.Normal.IsNull())
             {
-                Base.Compute.RecordWarning("The Normal of the Stem is null and could not be flipped.");
+                Base.Compute.RecordError("The Normal of the Stem is null and could not be flipped.");
                 return null;
             }
 
