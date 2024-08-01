@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a Stem from an outline, one thickness, normal and material.")]
+        [Description("Creates a Stem with a constant thickness.")]
         [Input("outline", "The outer edge of the Stem.")]
         [Input("thickness", "Thickness at the top and bottom of the stem.")]
         [Input("normal", "Normal to the surface of the stem denoting the direction of the retained face.")]
