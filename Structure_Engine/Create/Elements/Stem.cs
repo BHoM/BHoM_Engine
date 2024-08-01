@@ -40,7 +40,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a Stem from an outline, thicknesses, normal and material.")]
+        [Description("Creates a tapered Stem.")]
         [Input("outline", "The outer edge of the Stem.")]
         [Input("thicknessTop", "Thickness at the top of the stem.")]
         [Input("thicknessBottom", "Thickness at the bottom of the stem.")]
