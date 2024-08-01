@@ -162,7 +162,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets a CompositeGeometry made of boundary surfaces of the Stem based on its Outline, thicknesses and orientation.")]
+        [Description("Gets a CompositeGeometry made of boundary surfaces of the Stem based on its outline, thicknesses and orientation.")]
         [Input("stem", "The input Stem to get the Geometry3D out of.")]
         [Output("3d", "Three-dimensional geometry of the Stem.")]
         public static IGeometry Geometry3D(this Stem stem)
