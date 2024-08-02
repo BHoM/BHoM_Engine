@@ -140,8 +140,8 @@ namespace BH.Engine.Structure
         {
             List<IGeometry> geometry = new List<IGeometry>
             {
-                retainingWall.Stem.Geometry(),
-                retainingWall.Footing.Geometry(),
+                new PlanarSurface(retainingWall.Stem.Outline, null),
+                new PlanarSurface(retainingWall.Footing.TopOutline, null)
             };
 
             return Engine.Geometry.Create.CompositeGeometry(geometry);
