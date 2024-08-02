@@ -71,7 +71,7 @@ namespace BH.Engine.Structure
             double stemThickness,
             double toeLength,
             double heelLength,
-            ConstantThickness thickness,
+            ConstantThickness footingThickness,
             double coverDepth
             )
         {
@@ -96,12 +96,11 @@ namespace BH.Engine.Structure
             Line bottomLine = line.DeepClone();
             Line topLine = line.DeepClone();
 
-            bottomLine = bottomLine.Translate(Vector.ZAxis * thickness.Thickness);
             topLine = topLine.Translate(Vector.ZAxis * retainedHeight).Reverse();
 
             stemOutline.Curves = new List<ICurve> { bottomLine, Geometry.Create.Line(bottomLine.End, topLine.Start), topLine, Geometry.Create.Line(topLine.End, bottomLine.Start) };
 
-            return RetainingWall(Create.Stem(stemOutline, stemThickness, normal), Create.PadFoundation(footingOutline, thickness), retainedHeight, coverDepth);
+            return RetainingWall(Create.Stem(stemOutline, stemThickness, normal), Create.PadFoundation(footingOutline, footingThickness), retainedHeight, coverDepth);
         }
 
         /***************************************************/
