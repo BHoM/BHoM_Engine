@@ -36,7 +36,6 @@ using BH.oM.Physical.Materials;
 using BH.oM.Dimensional;
 using BH.oM.Structure.Fragments;
 using BH.Engine.Base;
-using Microsoft.SqlServer.Server;
 
 namespace BH.Engine.Structure
 {
