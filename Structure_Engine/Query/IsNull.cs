@@ -648,7 +648,7 @@ namespace BH.Engine.Structure
         {
             if (stem == null)
             {
-                ErrorMessage(methodName, "PadFoundation", msg);
+                ErrorMessage(methodName, "Stem", msg);
                 return true;
             }
             else if (stem.Outline == null)
@@ -671,7 +671,7 @@ namespace BH.Engine.Structure
         {
             if (retainingWall == null)
             {
-                ErrorMessage(methodName, "PadFoundation", msg);
+                ErrorMessage(methodName, "RetainingWall", msg);
                 return true;
             }
             else if (retainingWall.Stem.IsNull())
