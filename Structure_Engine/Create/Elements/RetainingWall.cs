@@ -53,7 +53,7 @@ namespace BH.Engine.Structure
         [Input("groundWaterDepth", "The distance from the base of the Footing to ground water level.")]
         [Input("retentionAngle", "A property of the material being retained measured from the horizontal plane.")]
         [Output("retainingWall", "The created RetainingWall containing the stem and footing.")]
-        public static RetainingWall RetainingWall(Stem stem, PadFoundation footing, double retainedHeight = 0.0, double coverDepth = 0.0, double groundWaterDepth = 0.0, double retentionAngle = 0.0)
+        public static RetainingWall RetainingWall(Stem stem, PadFoundation footing, double retainedHeight, double coverDepth, double groundWaterDepth, double retentionAngle)
         {
             if (stem.IsNull())
                 return null;

@@ -47,7 +47,7 @@ namespace BH.Engine.Structure
         [Input("normal", "Normal to the surface of the stem denoting the direction of the retained face.")]
         [Input("material", "Material of the Stem.")]
         [Output("stem", "A tapered stem.")]
-        public static Stem Stem(PolyCurve outline, double thicknessTop = 0, double thicknessBottom = 0, Vector normal = null, IMaterialFragment material = null)
+        public static Stem Stem(PolyCurve outline, double thicknessTop, double thicknessBottom, Vector normal, IMaterialFragment material = null)
         {
             return outline.IsNull() ? null : new Stem() { Outline = outline, ThicknessTop = thicknessTop, ThicknessBottom = thicknessBottom, Normal = normal, Material = material };
         }
@@ -59,8 +59,8 @@ namespace BH.Engine.Structure
         [Input("thickness", "Thickness at the top and bottom of the stem.")]
         [Input("normal", "Normal to the surface of the stem denoting the direction of the retained face.")]
         [Input("material", "Structural material of the property.")]
-        [Output("stem", "The created Stem with same thickness at top and bottom.")]
-        public static Stem Stem(PolyCurve outline, double thickness = 0, Vector normal = null, IMaterialFragment material = null)
+        [Output("stem", "A stem with constant thickness.")]
+        public static Stem Stem(PolyCurve outline, double thickness, Vector normal, IMaterialFragment material = null)
         {
             return outline.IsNull() ? null : new Stem() { Outline = outline, ThicknessTop = thickness, ThicknessBottom = thickness, Normal = normal, Material = material };
         }
