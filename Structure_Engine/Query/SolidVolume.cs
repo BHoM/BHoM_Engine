@@ -174,10 +174,5 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-
-        private static double SolidVolume(double area, double thickness_0, double thickness_1)
-        {
-            return area * (thickness_0 + thickness_1)/2;
-        }
     }
 }
