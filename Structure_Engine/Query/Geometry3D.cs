@@ -32,6 +32,7 @@ using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.Engine.Base;
 using System.Runtime.InteropServices;
+using ICSharpCode.Decompiler.IL;
 
 namespace BH.Engine.Structure
 {
@@ -177,9 +178,20 @@ namespace BH.Engine.Structure
             PlanarSurface backSrf = centralPlanarSrf.ITranslate(stem.Normal.Normalise() * -stem.ThicknessBottom / 2) as PlanarSurface;
             PlanarSurface frontSrf = centralPlanarSrf.ITranslate(stem.Normal.Normalise() * stem.ThicknessBottom / 2) as PlanarSurface;
 
+            if (stem.ThicknessBottom == stem.ThicknessTop)
+            {
+                IEnumerable<Extrusion> externalEdgesExtrusions = stem.Outline.Translate(stem.Normal.Normalise() * -stem.ThicknessBottom / 2).SubParts().Select(c => Engine.Geometry.Create.Extrusion(c, stem.Normal.Normalise()*stem.ThicknessBottom));
+
+                compositeGeometry.Elements.Add(backSrf);
+                compositeGeometry.Elements.Add(frontSrf);
+                compositeGeometry.Elements.AddRange(externalEdgesExtrusions);
+
+                return compositeGeometry;
+            }
+
             //Figure out angle to rotate frontface by. Do some trig magic here. 
             double a = stem.ThicknessBottom - stem.ThicknessTop;
-            double b = 5; // This is a palceholder value and will be changed.
+            double b = Math.Abs((stem.ThicknessBottom - stem.ThicknessTop) / 2); // This is a palceholder value and will be changed.
             double rad = Math.Atan(a / b);
 
             //Lowest point. To rotrate around.
@@ -190,7 +202,6 @@ namespace BH.Engine.Structure
             backSrf = backSrf.IRotate(rotatePB, stem.Normal.CrossProduct(Vector.ZAxis), -rad) as PlanarSurface;
 
             //Extend the surface to be at correct height with the walls. Need to be extended dependant on the rotation angle.
-            //is there a method to extend it? (Have one in my back pocket though...)
 
             //Close out the shape. Would be great with a method to close it out...
 
