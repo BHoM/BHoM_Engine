@@ -23,18 +23,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
-using BH.oM.Spatial.Layouts;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.SurfaceProperties;
 using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
-using System.Drawing.Drawing2D;
 
 
 namespace BH.Engine.Structure
