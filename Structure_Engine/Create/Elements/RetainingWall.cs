@@ -53,7 +53,7 @@ namespace BH.Engine.Structure
         [Input("groundWaterDepth", "The distance from the base of the Footing to ground water level.")]
         [Input("retentionAngle", "A property of the material being retained measured from the horizontal plane.")]
         [Output("retainingWall", "The created RetainingWall containing the stem and footing.")]
-        public static RetainingWall RetainingWall(Stem stem, PadFoundation footing, double retainedHeight, double coverDepth, double groundWaterDepth, double retentionAngle)
+        public static RetainingWall RetainingWall(Stem stem, PadFoundation footing, double retainedHeight, double coverDepth, double groundWaterDepth = 0, double retentionAngle = 0)
         {
             if (stem.IsNull())
                 return null;
@@ -66,17 +66,46 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Creates a structural RetainingWall from a stem and a footing.")]
-        [Input("stem", "The stem of the retaining wall.")]
-        [Input("footing", "The footing of the retaining wall.")]
-        [Output("retainingWall", "The created RetainingWall containing the stem and footing.")]
-        public static RetainingWall RetainingWall(Stem stem, PadFoundation footing)
+        [Description("Create RetainingWall from a Line and defining properties.")]
+        [Output("retainingWall", "RetainingWall with specified properties")]
+        public static RetainingWall RetainingWallFromLine(
+            Line line,
+            double retainedHeight,
+            Vector normal,
+            double stemThickness,
+            double toeLength,
+            double heelLength,
+            ConstantThickness thickness,
+            double coverDepth
+            )
         {
-            return new RetainingWall()
-            {
-                Stem = stem,
-                Footing = footing
-            };
+
+            if (line.Start == null && line.End == null) { return null; }
+
+            PolyCurve stemOutline = new PolyCurve();
+            PolyCurve footingOutline = new PolyCurve();
+
+            //Create the footing outline. 
+            //Could create an XY plane with origin at lowest point on line an project the line to it.
+            Line toeLine = line.DeepClone();
+            Line heelLine = line.DeepClone();
+
+
+            toeLine = toeLine.Translate(normal * toeLength);
+            heelLine = heelLine.Translate(normal * heelLength * -1).Reverse();
+
+            footingOutline.Curves = new List<ICurve> { toeLine, Geometry.Create.Line(toeLine.End, heelLine.Start), heelLine, Geometry.Create.Line(heelLine.End, toeLine.Start) };
+
+            //Create the Stem outline.
+            Line bottomLine = line.DeepClone();
+            Line topLine = line.DeepClone();
+
+            bottomLine = bottomLine.Translate(Vector.ZAxis * thickness.Thickness);
+            topLine = topLine.Translate(Vector.ZAxis * retainedHeight).Reverse();
+
+            stemOutline.Curves = new List<ICurve> { bottomLine, Geometry.Create.Line(bottomLine.End, topLine.Start), topLine, Geometry.Create.Line(topLine.End, bottomLine.Start) };
+
+            return RetainingWall(Create.Stem(stemOutline, stemThickness, normal), Create.PadFoundation(footingOutline, thickness), retainedHeight, coverDepth);
         }
 
         /***************************************************/
