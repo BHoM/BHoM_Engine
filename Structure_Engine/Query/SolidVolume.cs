@@ -27,9 +27,7 @@ using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using BH.oM.Structure.Elements;
 using System.Linq;
-using System.Collections.Generic;
 using System;
-using BH.oM.Physical.Materials;
 using BH.oM.Structure.SurfaceProperties;
 using BH.Engine.Spatial;
 using BH.oM.Structure.SectionProperties;
@@ -113,7 +111,7 @@ namespace BH.Engine.Structure
         [Output("volume", "The Stem solid material volume.", typeof(Volume))]
         public static double SolidVolume(this Stem stem)
         {
-            return stem.IsNull() ? 0 : SolidVolume(stem.Outline.Area(), stem.ThicknessBottom, stem.ThicknessTop);
+            return stem.IsNull() ? 0 : stem.Outline.Area() * (stem.ThicknessBottom + stem.ThicknessTop) / 2;
         }
 
         /***************************************************/
@@ -176,11 +174,6 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-
-        private static double SolidVolume(double area, double thickness_0, double thickness_1)
-        {
-            return area * (thickness_0 + thickness_1)/2;
-        }
     }
 }
 
