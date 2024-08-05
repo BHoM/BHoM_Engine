@@ -64,7 +64,7 @@ namespace BH.Engine.Base
             else
             {
                 //Unique method not found in list, check if it can be extracted using the system Type
-                Type type = System.Type.GetType(name, silent);
+                Type type = System.Type.GetType(name, false);
                 if (type == null && !silent)
                 {
                     if (types.Count == 0)
