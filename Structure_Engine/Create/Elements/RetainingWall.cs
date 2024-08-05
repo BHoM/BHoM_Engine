@@ -49,19 +49,37 @@ namespace BH.Engine.Structure
         [Input("groundWaterDepth", "The distance from the base of the Footing to ground water level.")]
         [Input("retentionAngle", "A property of the material being retained measured from the horizontal plane.")]
         [Output("retainingWall", "The created RetainingWall containing the stem and footing.")]
-        public static RetainingWall RetainingWall(Stem stem, PadFoundation footing, double retainedHeight, double coverDepth, double groundWaterDepth = 0, double retentionAngle = 0)
+        public static RetainingWall RetainingWall(Stem stem, PadFoundation footing, double retainedHeight, double coverDepth, double retentionAngle, double groundWaterDepth = 0)
         {
+            //Is there a method written to split a polycurve into its defining segments? Then this could be used to simplify the check. otherwise the below method works fine. 
+            //ICurve stembottomLine = stem.Outline.ToPolyline().OrderBy(p => p.IStartPoint().Z + p.IEndPoint().Z ).First();
+            List<ICurve> curves = new List<ICurve>();
+            foreach (ICurve curve in stem.Outline.SplitAtPoints(stem.Outline.DiscontinuityPoints()))
+            {
+                Point start = curve.IStartPoint();
+                Point end = curve.IEndPoint();
+                curves.Add(curve);
+            }
+            ICurve bottomcurve = curves.OrderBy(p => p.IStartPoint().Z + p.IEndPoint().Z).First();
+
+            if (!footing.TopOutline.IsContaining(bottomcurve))
+            {
+                Base.Compute.RecordError("The stem is not connected to the footing. Make sure the stem bottom is on the footing outline.");
+                return null;
+            }
+
             if (stem.IsNull())
                 return null;
 
             if (footing.IsNull())
                 return null;
 
-            return new RetainingWall() { Stem = stem, Footing = footing, RetainedHeight = retainedHeight, CoverDepth = coverDepth, GroundWaterDepth = groundWaterDepth, RetentionAngle = retentionAngle };
+            return new RetainingWall() { Stem = stem, Footing = footing, RetainedHeight = retainedHeight, CoverDepth = coverDepth, RetentionAngle = retentionAngle, GroundWaterDepth = groundWaterDepth };
         }
 
         /***************************************************/
 
+        //TODO Add input descriptions here
         [Description("Create RetainingWall from a Line and defining properties.")]
         [Output("retainingWall", "RetainingWall with specified properties")]
         public static RetainingWall RetainingWallFromLine(
@@ -72,17 +90,22 @@ namespace BH.Engine.Structure
             double toeLength,
             double heelLength,
             ConstantThickness footingThickness,
-            double coverDepth
+            double coverDepth,
+            double retentionAngle
             )
         {
-
             if (line.Start == null && line.End == null) { return null; }
+
+            if (!line.IsInPlane(Plane.XY))
+            {
+                Base.Compute.RecordError("Provided line is not in the XY plane. Please provide a line in the XY plane.");
+                return null; 
+            }
 
             PolyCurve stemOutline = new PolyCurve();
             PolyCurve footingOutline = new PolyCurve();
 
             //Create the footing outline. 
-            //Could create an XY plane with origin at lowest point on line an project the line to it.
             Line toeLine = line.DeepClone();
             Line heelLine = line.DeepClone();
 
@@ -100,7 +123,7 @@ namespace BH.Engine.Structure
 
             stemOutline.Curves = new List<ICurve> { bottomLine, Geometry.Create.Line(bottomLine.End, topLine.Start), topLine, Geometry.Create.Line(topLine.End, bottomLine.Start) };
 
-            return RetainingWall(Create.Stem(stemOutline, stemThickness, normal), Create.PadFoundation(footingOutline, footingThickness), retainedHeight, coverDepth);
+            return RetainingWall(Create.Stem(stemOutline, stemThickness, normal), Create.PadFoundation(footingOutline, footingThickness), retainedHeight, coverDepth, retentionAngle);
         }
 
         /***************************************************/
