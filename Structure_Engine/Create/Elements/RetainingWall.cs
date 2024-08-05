@@ -51,8 +51,6 @@ namespace BH.Engine.Structure
         [Output("retainingWall", "The created RetainingWall containing the stem and footing.")]
         public static RetainingWall RetainingWall(Stem stem, PadFoundation footing, double retainedHeight, double coverDepth, double retentionAngle, double groundWaterDepth = 0)
         {
-            //Is there a method written to split a polycurve into its defining segments? Then this could be used to simplify the check. otherwise the below method works fine. 
-            //ICurve stembottomLine = stem.Outline.ToPolyline().OrderBy(p => p.IStartPoint().Z + p.IEndPoint().Z ).First();
             List<ICurve> curves = new List<ICurve>();
             foreach (ICurve curve in stem.Outline.SplitAtPoints(stem.Outline.DiscontinuityPoints()))
             {
@@ -96,9 +94,9 @@ namespace BH.Engine.Structure
         {
             if (line.Start == null && line.End == null) { return null; }
 
-            if (!line.IsInPlane(Plane.XY))
+            if (!line.IsInPlane(Geometry.Create.Plane(line.Start, Vector.ZAxis)))
             {
-                Base.Compute.RecordError("Provided line is not in the XY plane. Please provide a line in the XY plane.");
+                Base.Compute.RecordError("Provided line is not parallell to the XY plane. Please provide a line parallell to the XY plane.");
                 return null; 
             }
 
