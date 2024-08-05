@@ -92,13 +92,18 @@ namespace BH.Engine.Structure
                 return null;
             }
 
+            if (!line.IsInPlane(Plane.XY))
+            {
+                Base.Compute.RecordError("Provided line is not in the XY plane. Please provide a line in the XY plane.");
+                return null; 
+            }
+
             PolyCurve stemOutline = new PolyCurve();
             PolyCurve footingOutline = new PolyCurve();
 
             //Create the footing outline. 
             Line toeLine = line.ShallowClone();
             Line heelLine = line.ShallowClone();
-
 
             toeLine = toeLine.Translate(normal * (toeLength + stemThickness / 2));
             heelLine = heelLine.Translate(normal * (heelLength + stemThickness / 2) * -1).Reverse();
