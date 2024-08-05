@@ -58,9 +58,9 @@ namespace BH.Engine.Structure
                 Point end = curve.IEndPoint();
                 curves.Add(curve);
             }
-            ICurve bottomcurve = curves.OrderBy(p => p.IStartPoint().Z + p.IEndPoint().Z).First();
+            ICurve bottomCurve = curves.OrderBy(p => p.IStartPoint().Z + p.IEndPoint().Z).First();
 
-            if (!footing.TopOutline.IsContaining(bottomcurve))
+            if (!footing.TopOutline.IsContaining(bottomCurve))
             {
                 Base.Compute.RecordError("The stem is not connected to the footing. Make sure the stem bottom is on the footing outline.");
                 return null;

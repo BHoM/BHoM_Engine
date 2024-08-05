@@ -33,6 +33,7 @@ using BH.Engine.Spatial;
 using BH.Engine.Base;
 using System.Runtime.InteropServices;
 using ICSharpCode.Decompiler.IL;
+using System.Text.RegularExpressions;
 
 namespace BH.Engine.Structure
 {
@@ -189,24 +190,37 @@ namespace BH.Engine.Structure
                 return compositeGeometry;
             }
 
-            //Figure out angle to rotate frontface by. Do some trig magic here. 
-            double a = stem.ThicknessBottom - stem.ThicknessTop;
-            double b = Math.Abs((stem.ThicknessBottom - stem.ThicknessTop) / 2); // This is a palceholder value and will be changed.
+            //Case of tapering wall. Works well for rectangular retaining walls.
+            //Get lowest curve.
+            List<ICurve> curves = new List<ICurve>();
+            foreach (ICurve curve in stem.Outline.SplitAtPoints(stem.Outline.DiscontinuityPoints()))
+            {
+                Point start = curve.IStartPoint();
+                Point end = curve.IEndPoint();
+                curves.Add(curve);
+            }
+            ICurve bottomCurve = curves.OrderBy(p => p.IStartPoint().Z + p.IEndPoint().Z).First();
+
+            ICurve backBLine = bottomCurve.ITranslate(stem.Normal.Normalise() * -stem.ThicknessBottom / 2);
+            ICurve frontBLine = bottomCurve.ITranslate(stem.Normal.Normalise() * stem.ThicknessBottom / 2);
+
+            //Figure out angle to rotate faces by. 
+            double a = (stem.ThicknessBottom - stem.ThicknessTop)/2;
+            double b = centralPlanarSrf.ControlPoints().OrderBy(p => p.Z).Last().Z - centralPlanarSrf.ControlPoints().OrderBy(p => p.Z).First().Z;
             double rad = Math.Atan(a / b);
 
-            //Lowest point. To rotrate around.
-            Point rotatePF = frontSrf.ControlPoints().OrderBy(p => p.Z).First();
-            Point rotatePB = backSrf.ControlPoints().OrderBy(p => p.Z).First();
+            double extensionDist = Math.Sqrt(a*a + b*b)- b;
 
-            frontSrf = frontSrf.IRotate(rotatePF, stem.Normal.CrossProduct(Vector.ZAxis), rad) as PlanarSurface;
-            backSrf = backSrf.IRotate(rotatePB, stem.Normal.CrossProduct(Vector.ZAxis), -rad) as PlanarSurface;
+            //Rotate around the lowest line.
+            frontSrf = frontSrf.IRotate(frontBLine.IStartPoint(), frontBLine.DominantVector(), rad) as PlanarSurface;
+            backSrf = backSrf.IRotate(backBLine.IStartPoint(), backBLine.DominantVector(), -rad) as PlanarSurface;
 
-            //Extend the surface to be at correct height with the walls. Need to be extended dependant on the rotation angle.
-
-            //Close out the shape. Would be great with a method to close it out...
+            //Top and bottom surfaces. 
+            Extrusion bottom = Engine.Geometry.Create.Extrusion(backBLine, stem.Normal.Normalise() * stem.ThicknessBottom);
+            Extrusion top = Engine.Geometry.Create.Extrusion(curves.OrderBy(p => p.IStartPoint().Z + p.IEndPoint().Z).Last().ITranslate(stem.Normal.Normalise() * -stem.ThicknessTop / 2), stem.Normal.Normalise() * stem.ThicknessTop);
 
             // Creates an extrusion closing the shape. Needs to be dut by the other surface.
-            Extrusion sides = Engine.Geometry.Create.Extrusion(backSrf.ExternalBoundary, stem.Normal.Normalise() * stem.ThicknessBottom);
+            //Extrusion sides = Engine.Geometry.Create.Extrusion(backSrf.ExternalBoundary, stem.Normal.Normalise() * stem.ThicknessBottom);
 
             //Surface att bottom
             //Surface at Top 
@@ -220,7 +234,8 @@ namespace BH.Engine.Structure
             compositeGeometry.Elements.Add(backSrf);
             compositeGeometry.Elements.Add(frontSrf);
             compositeGeometry.Elements.Add(centralPlanarSrf); //Provisionally added for checking. 
-            compositeGeometry.Elements.Add(sides);
+            compositeGeometry.Elements.Add(bottom);
+            compositeGeometry.Elements.Add(top);
             //compositeGeometry.Elements.Add(externalEdgesExtrusion);
 
             return compositeGeometry;
