@@ -33,6 +33,7 @@ using BH.Engine.Spatial;
 using BH.Engine.Base;
 using System.Runtime.InteropServices;
 using ICSharpCode.Decompiler.IL;
+using System.Text.RegularExpressions;
 
 namespace BH.Engine.Structure
 {
