@@ -92,9 +92,9 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            if (!line.IsInPlane(Plane.XY))
+            if (!line.IsInPlane(Geometry.Create.Plane(line.Start, Vector.ZAxis)))
             {
-                Base.Compute.RecordError("Provided line is not in the XY plane. Please provide a line in the XY plane.");
+                Base.Compute.RecordError("Provided line is not parallell to the XY plane. Please provide a line parallell to the XY plane.");
                 return null; 
             }
 
