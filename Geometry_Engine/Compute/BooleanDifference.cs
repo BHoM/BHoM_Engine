@@ -102,9 +102,13 @@ namespace BH.Engine.Geometry
 
             List<Polyline> allRegions = new List<Polyline> { region };
             Plane p = region.FitPlane();
+            if (p == null)
+                return new List<Polyline>();
+
             foreach (Polyline refRegion in refRegions)
             {
-                if (p.IsCoplanar(refRegion.FitPlane()))
+                Plane refPlane = refRegion.FitPlane();
+                if (refPlane != null && p.IsCoplanar(refPlane))
                     allRegions.Add(refRegion);
             }
 
@@ -268,9 +272,13 @@ namespace BH.Engine.Geometry
             
             List<ICurve> allRegions = new List<ICurve> { region };
             Plane p = region.IFitPlane();
+            if (p == null)
+                return new List<PolyCurve>();
+
             foreach (ICurve refRegion in refRegionsList)
             {
-                if (p.IsCoplanar(refRegion.IFitPlane()))
+                Plane refPlane = refRegion.IFitPlane();
+                if (refPlane != null && p.IsCoplanar(refPlane))
                     allRegions.Add(refRegion);
             }
 

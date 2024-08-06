@@ -20,50 +20,51 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Analytical.Elements;
+using BH.oM.Geometry;
+using BH.oM.Base.Attributes;
+using BH.Engine.Geometry;
+using BH.Engine.Reflection;
+
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using BH.oM.Base.Attributes;
-using BH.oM.Geometry;
-using BH.oM.Geometry.CoordinateSystem;
-using BH.oM.Ground;
-using BH.Engine.Base;
+using System.ComponentModel;
 
-namespace BH.Engine.Ground
+namespace BH.Engine.Analytical
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a ContaminantSample object containing the chemical code, the depth, quantity and properties related to the sample.")]
-        [Input("id", "Location identifier for the borehole unique to the project (LOCA_ID).")]
-        [Input("top", "Depth to the top of the sample, measured from the top of the borehole (SAMP_TOP).")]
-        [Input("chemical", "Chemical code for the contaminant (ERES_CODE).")]
-        [Input("name", "The name of the chemical (ERES_NAME).")]
-        [Input("result", "The amount of the chemical present (ERES_RVAL).")]
-        [Input("type", "The type of sample (SAMP_TYPE).")]
-        [Input("properties", "A list of different properties including references, tests, analysis, results and detection..")]
-        [Output("contaminantSample", "The created ContaminantSample defined by its chemical code, depth and quantity based on the AGS schema.")]
-        public static ContaminantSample ContaminantSample(string id, double top, string chemical, string name, double result, string type, List<IContaminantProperty> properties = null)
+        [Description("Determines whether a panel's outline is triangular.")]
+        [Input("panel", "The IPanel to check if the outline is a triangular.")]
+        [Output("bool", "True for panels with a triangular outline or false for panels with a non-triangular outline.")]
+        public static bool IsOutlineTriangular<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+            where TEdge : IEdge
+            where TOpening : IOpening<TEdge>
         {
-            if (string.IsNullOrWhiteSpace(chemical))
-            {
-                Base.Compute.RecordError("The chemical name is null or whitespace.");
-                return null;
-            }
+            PolyCurve polycurve = ExternalPolyCurve(panel);
+            if (polycurve == null)
+                return false;
 
-            return new ContaminantSample() {Id = id, Top = top, Chemical = chemical, Name = name, Result = result, Type = type, ContaminantProperties = properties};
+            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
+                return false;
+
+            List<Point> points = polycurve.DiscontinuityPoints();
+            if (points.Count != 3)
+                return false;
+
+            return true;
 
         }
 
         /***************************************************/
+
     }
 }
-
-
 
 
 

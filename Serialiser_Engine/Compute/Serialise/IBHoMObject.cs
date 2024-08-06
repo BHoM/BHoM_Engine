@@ -57,9 +57,6 @@ namespace BH.Engine.Serialiser
 
                 switch (prop.Name)
                 {
-                    case "Name":
-                        include = !string.IsNullOrEmpty(value.Name);
-                        break;
                     case "Fragments":
                         include = (value.Fragments != null && value.Fragments.Count > 0);
                         break;

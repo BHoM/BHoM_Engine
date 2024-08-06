@@ -35,11 +35,13 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("7.3", "BH.Engine.Base.Create.EngineType(System.String, System.Boolean)")]
         [Description("Creates an Engine type that matches the given name.")]
         [Input("name", "Name to be searched for among all Engine types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
+        [Input("takeFirstIfMultiple", "Defines what happens in case of finding multiple matching types. If true, first type found will be returned, otherwise null.")]
         [Output("type", "BHoM Engine type that matches the given name.")]
-        public static Type EngineType(string name, bool silent = false)
+        public static Type EngineType(string name, bool silent = false, bool takeFirstIfMultiple = false)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -47,16 +49,22 @@ namespace BH.Engine.Base
                 return null;
             }
 
-            List<Type> methodTypeList = Query.EngineTypeList();
+            // Try finding any types based on the assembly qualified name
+            List<Type> types = Global.EngineTypeList.Where(x => x.AssemblyQualifiedName == name).ToList();
+            
+            // If not found, look also based on unqualified name
+            if (types.Count == 0)
+            {
+                string unQualifiedName = name.Contains(",") ? name.Split(',').First() : name;
+                types = Global.EngineTypeList.Where(x => x.FullName == unQualifiedName).ToList();
+            }
 
-            List<Type> types = methodTypeList.Where(x => x.AssemblyQualifiedName.StartsWith(name)).ToList();
-
-            if (types.Count == 1)
+            if (types.Count == 1 || (takeFirstIfMultiple && types.Count > 1))
                 return types[0];
             else
             {
                 //Unique method not found in list, check if it can be extracted using the system Type
-                Type type = System.Type.GetType(name, silent);
+                Type type = System.Type.GetType(name, false);
                 if (type == null && !silent)
                 {
                     if (types.Count == 0)
