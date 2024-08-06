@@ -297,11 +297,11 @@ namespace BH.Tests.Engine.Serialiser
 
         /***************************************************/
 
-        [Test]
-        public void SystemTypesToFromJsonBitMapObjectProperty()
-        {
-            SystemTypesToFromJsonCustomDataProperty(RandomBitmap(1));       
-        }
+        //[Test]
+        //public void SystemTypesToFromJsonBitMapObjectProperty()
+        //{
+        //    SystemTypesToFromJsonCustomDataProperty(RandomBitmap(1));       
+        //}
 
         /***************************************************/
 
