@@ -209,27 +209,25 @@ namespace BH.Engine.Structure
             double b = centralPlanarSrf.ControlPoints().OrderBy(p => p.Z).Last().Z - centralPlanarSrf.ControlPoints().OrderBy(p => p.Z).First().Z;
             double rad = Math.Atan(a / b);
 
+            //Figure out distance the face needs to extended by
             double extensionDist = Math.Sqrt(a*a + b*b)- b;
 
             //Rotate around the lowest line.
             frontSrf = frontSrf.IRotate(frontBLine.IStartPoint(), frontBLine.DominantVector(), rad) as PlanarSurface;
             backSrf = backSrf.IRotate(backBLine.IStartPoint(), backBLine.DominantVector(), -rad) as PlanarSurface;
 
-            //Top and bottom surfaces. 
+            //Cap off top and bottom surfaces. 
             Extrusion bottom = Engine.Geometry.Create.Extrusion(backBLine, stem.Normal.Normalise() * stem.ThicknessBottom);
             Extrusion top = Engine.Geometry.Create.Extrusion(curves.OrderBy(p => p.IStartPoint().Z + p.IEndPoint().Z).Last().ITranslate(stem.Normal.Normalise() * -stem.ThicknessTop / 2), stem.Normal.Normalise() * stem.ThicknessTop);
 
-            // Creates an extrusion closing the shape. Needs to be dut by the other surface.
+
+            //Todo
+            //Create side srfs. Either by extending over and cutting the srf. Or finding all the lines and using creating a planarsrf. 
+
+            //Extend the front and back facing srfs up to the top by the extension dist. calculated.
+
+
             //Extrusion sides = Engine.Geometry.Create.Extrusion(backSrf.ExternalBoundary, stem.Normal.Normalise() * stem.ThicknessBottom);
-
-            //Surface att bottom
-            //Surface at Top 
-            //Surfaces at sides
-
-            //Is there any geometry or engine methods 
-
-            //Extrusion externalEdgesExtrusion = Engine.Geometry.Create.Extrusion(stem.Outline.ITranslate(stem.Normal.Normalise() * -stem.ThicknessBottom / 2), stem.Normal.Normalise() * stem.ThicknessBottom);
-
 
             compositeGeometry.Elements.Add(backSrf);
             compositeGeometry.Elements.Add(frontSrf);
