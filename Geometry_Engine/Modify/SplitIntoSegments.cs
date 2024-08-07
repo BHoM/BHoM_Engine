@@ -39,7 +39,7 @@ namespace BH.Engine.Geometry
         [Input("splitInterval", "Length that the segments should not exceed.")]
         [Input("graceLength", "If the total length of the wall is lower than this number it will not be segmented. The Line will be returned.")]
         [Output("segments", "Segments of input line as a list of Lines.")]
-        public static List<Line> SplitInToSegments(Line line, double splitInterval, double graceLength = 0.0)
+        public static List<Line> SplitIntoSegments(Line line, double splitInterval, double graceLength = 0.0)
         {
 
             List<Line> segments = new List<Line>();
@@ -67,7 +67,7 @@ namespace BH.Engine.Geometry
         [Input("graceLength", "If the total length of the wall is lower than this number it will not be segmented. The whole line is returned.")]
         [Input("fractionalDigits", "The number of fractional digits to round the segment length to. An integer between 0 and 15 inclusive. Zero will round to nearest 5/0.")]
         [Output("segments", "Segments of input line, not exceeding the split interval.")]
-        public static List<Line> SplitInToSegments(Line line, double splitInterval, double gapLength = 0.0, double graceLength = 0.0, int fractionalDigits = -1)
+        public static List<Line> SplitIntoSegments(Line line, double splitInterval, double gapLength = 0.0, double graceLength = 0.0, int fractionalDigits = -1)
         {
             List<Line> segments = new List<Line>();
 
