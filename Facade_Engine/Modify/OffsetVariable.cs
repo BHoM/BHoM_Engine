@@ -40,7 +40,7 @@ namespace BH.Engine.Facade
 
         [PreviousVersion("7.3", "BH.Engine.Facade.Modify.OffsetVariable(BH.oM.Geometry.PolyCurve, System.Collections.Generic.List<System.Double>, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Creates an offset of a curve. Works only on planar curves")]
-        [Input("polyCurve", "Curve to offset")]
+        [Input("curve", "Curve to offset")]
         [Input("offsets", "Offset distances (Length must match count of curves in the PolyCurve). Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
         [Input("normal", "Normal of a plane for offset operation, not needed for closed curves")]
         [Output("curve", "Resulting offset")]
