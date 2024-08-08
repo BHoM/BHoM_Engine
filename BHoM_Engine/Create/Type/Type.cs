@@ -98,7 +98,8 @@ namespace BH.Engine.Base
             ["System.Text.RegularExpressions.Regex"] = typeof(System.Text.RegularExpressions.Regex),
             ["System.Drawing.Bitmap"] = typeof(System.Drawing.Bitmap),
             ["System.Collections.Generic.SortedDictionary`2"] = typeof(System.Collections.Generic.SortedDictionary<,>),
-            ["System.Data.DataTable"] = typeof(System.Data.DataTable)
+            ["System.Data.DataTable"] = typeof(System.Data.DataTable),
+            ["System.Collections.Generic.HashSet"] = typeof(System.Collections.Generic.HashSet<>)
         };
 
         /*******************************************/

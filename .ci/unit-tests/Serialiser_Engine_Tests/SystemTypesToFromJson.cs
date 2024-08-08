@@ -265,11 +265,11 @@ namespace BH.Tests.Engine.Serialiser
 
         /***************************************************/
 
-        //[Test]
-        //public void SystemTypesToFromJsonHashSetObjectProperty()
-        //{
-        //    SystemTypesToFromJsonCustomDataProperty(new HashSet<int>(new List<int> { 5, 6, 7 }));
-        //}
+        [Test]
+        public void SystemTypesToFromJsonHashSetObjectProperty()
+        {
+            SystemTypesToFromJsonCustomDataProperty(new HashSet<int>(new List<int> { 5, 6, 7 }));
+        }
 
         /***************************************************/
 
