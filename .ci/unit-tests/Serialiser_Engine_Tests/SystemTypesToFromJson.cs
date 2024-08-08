@@ -297,6 +297,7 @@ namespace BH.Tests.Engine.Serialiser
 
         /***************************************************/
 
+        // Commented out because it is not functioning as intended for CI 
         //[Test]
         //public void SystemTypesToFromJsonBitMapObjectProperty()
         //{
