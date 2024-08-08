@@ -24,6 +24,7 @@ using BH.Engine.Base;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,9 +38,15 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Generate multiple offset curves corresponding to the provided values.")]
-        [Input("", "")]
-        [Output("", "")]
+        [Description("Generate multiple offset curves corresponding to the provided values. Method can return more than a single curve for a particular distance for self-intersection curves.")]
+        [Input("curve", "Curve to offset.")]
+        [Input("offsets", "List of offset distances thaat the curve should be offset by. Please note that the order of the input offset distances might differ from the returned curves!", typeof(Length))]
+        [Input("normal", "Optional Normal of the curve. Method atempts to automatically compute a normal if nothing is provided.")]
+        [Input("options", "Various options controling the behaviour of the method.")]
+        [Input("onlyLargestPerStep", "If true, only the largest curve per step is returned for self-intersection curves. If false, all curves are returned..")]
+        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc..")]
+        [Input("angleTol", "Angle tolerance used for checking if segments are parallel.")]
+        [Output("offsetCurves", "List of offset curves. Please note that the order might not correspond to the order of the input offset values.")]
         public static List<Polyline> MultiOffset(this Polyline curve, List<double> offsets, Vector normal = null, OffsetOptions options = null, bool onlyLargestPerStep = false, double distTol = Tolerance.Distance, double angleTol = Tolerance.Angle)
         {
             if (curve == null || curve.Length() < distTol)
