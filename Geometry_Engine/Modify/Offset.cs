@@ -40,7 +40,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        [PreviousVersion("7.2", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.Line, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
+        [PreviousVersion("7.3", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.Line, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Creates an offset of a curve")]
         [Input("curve", "Curve to offset")]
         [Input("offset", "Offset distance. Positive value offsets to the right with normal pointing up and direction of a curve pointing forward")]
@@ -54,7 +54,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("7.2", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.Arc, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
+        [PreviousVersion("7.3", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.Arc, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Creates an offset of a curve")]
         [Input("curve", "Curve to offset")]
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
@@ -92,7 +92,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("7.2", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.Circle, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
+        [PreviousVersion("7.3", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.Circle, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Creates an offset of a curve")]
         [Input("curve", "Curve to offset")]
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
@@ -131,7 +131,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("7.2", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.Polyline, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
+        [PreviousVersion("7.3", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.Polyline, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Creates an offset of a curve. Works only on planar curves")]
         [Input("curve", "Curve to offset")]
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
@@ -156,7 +156,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousVersion("7.2", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.PolyCurve, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
+        [PreviousVersion("7.3", "BH.Engine.Geometry.Modify.Offset(BH.oM.Geometry.PolyCurve, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Creates an offset of a curve. Works only on planar curves")]
         [Input("curve", "Curve to offset")]
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
@@ -412,7 +412,7 @@ namespace BH.Engine.Geometry
         /***  Public methods - Interfaces                ***/
         /***************************************************/
 
-        [PreviousVersion("7.2", "BH.Engine.Geometry.Modify.IOffset(BH.oM.Geometry.ICurve, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
+        [PreviousVersion("7.3", "BH.Engine.Geometry.Modify.IOffset(BH.oM.Geometry.ICurve, System.Double, BH.oM.Geometry.Vector, System.Boolean, System.Double)")]
         [Description("Creates an offset of a curve. Works only on planar curves")]
         [Input("curve", "Curve to offset")]
         [Input("offset", "Offset distance. Positive value offsets outside of a closed curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
