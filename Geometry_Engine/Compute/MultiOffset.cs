@@ -44,7 +44,7 @@ namespace BH.Engine.Geometry
         [Input("normal", "Optional Normal of the curve. Method atempts to automatically compute a normal if nothing is provided.")]
         [Input("options", "Various options controling the behaviour of the method.")]
         [Input("onlyLargestPerStep", "If true, only the largest curve per step is returned for self-intersection curves. If false, all curves are returned..")]
-        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc..")]
+        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc.")]
         [Input("angleTol", "Angle tolerance used for checking if segments are parallel.")]
         [Output("offsetCurves", "List of offset curves. Please note that the order might not correspond to the order of the input offset values.")]
         public static List<Polyline> MultiOffset(this Polyline curve, List<double> offsets, Vector normal = null, OffsetOptions options = null, bool onlyLargestPerStep = false, double distTol = Tolerance.Distance, double angleTol = Tolerance.Angle)
