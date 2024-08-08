@@ -99,7 +99,7 @@ namespace BH.Engine.Base
             ["System.Drawing.Bitmap"] = typeof(System.Drawing.Bitmap),
             ["System.Collections.Generic.SortedDictionary`2"] = typeof(System.Collections.Generic.SortedDictionary<,>),
             ["System.Data.DataTable"] = typeof(System.Data.DataTable),
-            ["System.Collections.Generic.HashSet"] = typeof(System.Collections.Generic.HashSet<>)
+            ["System.Collections.Generic.HashSet`1"] = typeof(System.Collections.Generic.HashSet<>)
         };
 
         /*******************************************/
