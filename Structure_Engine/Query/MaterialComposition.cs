@@ -444,12 +444,12 @@ namespace BH.Engine.Structure
 
             //Case when ReinforcementDensity is atatched to lower level objects.
             //Gives an error becasue the ReinforcementDensity is null on the retaining wall even though it works fine.
-            else if (!retainingWall.Stem.FindFragment<ReinforcementDensity>().IsNull() || !retainingWall.Footing.FindFragment<ReinforcementDensity>().IsNull())
+            else if (retainingWall.Stem.FindFragment<ReinforcementDensity>() != null || retainingWall.Footing.FindFragment<ReinforcementDensity>() != null)
                 return Matter.Compute.AggregateMaterialComposition(elements);
 
             //Case when ReinforcementDensity is atatched to higher level object.
             //Gives an error becasue the ReinforcementDensity is null on the retaining wall even though it works fine.
-            else if (!retainingWall.FindFragment<ReinforcementDensity>().IsNull())
+            else if (retainingWall.FindFragment<ReinforcementDensity>() != null)
             {
                 ReinforcementDensity reinfDensity = retainingWall.FindFragment<ReinforcementDensity>();
 
