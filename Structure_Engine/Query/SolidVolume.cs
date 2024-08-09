@@ -121,6 +121,14 @@ namespace BH.Engine.Structure
         [Output("volume", "The RetainingWall solid material volume.", typeof(Volume))]
         public static double SolidVolume(this RetainingWall retainingWall)
         {
+            if (retainingWall.Footing.TopOutline.ControlPoints().OrderBy(p => p.Z).First().Z < retainingWall.Stem.Outline.ControlPoints().OrderBy(p => p.Z).First().Z)
+            {
+                Base.Compute.RecordError("The footings highest control point is above the lowest control point of the stem. The two objects should not go into eachother. A NaN is returned.");
+                return double.NaN;
+
+            }
+
+
             return retainingWall.IsNull() ? 0 : SolidVolume(retainingWall.Footing) + SolidVolume(retainingWall.Stem);
         }
 

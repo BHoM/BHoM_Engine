@@ -435,7 +435,7 @@ namespace BH.Engine.Structure
                 retainingWall.Footing
             };
 
-            //Case for when ReinforcementDensity is attached to both hihgher and lower level objects.
+            //Case for when ReinforcementDensity is attached to both higher and lower level objects.
             if ((!retainingWall.Stem.FindFragment<ReinforcementDensity>().IsNull() || !retainingWall.Footing.FindFragment<ReinforcementDensity>().IsNull()) && !retainingWall.FindFragment<ReinforcementDensity>().IsNull())
             {
                 Base.Compute.RecordWarning("A reinforcement density fragment is found on both the retaining wall object and on at least one of its defining objects. The reinforcementdensity of the lower level parts has been used.");
