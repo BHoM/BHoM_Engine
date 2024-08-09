@@ -169,6 +169,12 @@ namespace BH.Engine.Structure
             if (stem.IsNull())
                 return null;
 
+            if (stem.ThicknessBottom != stem.ThicknessTop)
+            {
+                Base.Compute.RecordError("The Geometry3D() method is not implemented for a tapered Stem. Null is returned.");
+                return null;
+            }
+
             CompositeGeometry compositeGeometry = new CompositeGeometry();
 
             PlanarSurface centralPlanarSrf = Engine.Geometry.Create.PlanarSurface(stem.Outline);
@@ -176,65 +182,13 @@ namespace BH.Engine.Structure
             PlanarSurface backSrf = centralPlanarSrf.ITranslate(stem.Normal.Normalise() * -stem.ThicknessBottom / 2) as PlanarSurface;
             PlanarSurface frontSrf = centralPlanarSrf.ITranslate(stem.Normal.Normalise() * stem.ThicknessBottom / 2) as PlanarSurface;
 
-            if (stem.ThicknessBottom == stem.ThicknessTop)
-            {
-                IEnumerable<Extrusion> externalEdgesExtrusions = stem.Outline.Translate(stem.Normal.Normalise() * -stem.ThicknessBottom / 2).SubParts().Select(c => Engine.Geometry.Create.Extrusion(c, stem.Normal.Normalise()*stem.ThicknessBottom));
-
-                compositeGeometry.Elements.Add(backSrf);
-                compositeGeometry.Elements.Add(frontSrf);
-                compositeGeometry.Elements.AddRange(externalEdgesExtrusions);
-
-                return compositeGeometry;
-            }
-
-            //Case of tapering wall. Works well for rectangular retaining walls.
-            //Get lowest curve.
-            List<ICurve> curves = new List<ICurve>();
-            foreach (ICurve curve in stem.Outline.SplitAtPoints(stem.Outline.DiscontinuityPoints()))
-            {
-                Point start = curve.IStartPoint();
-                Point end = curve.IEndPoint();
-                curves.Add(curve);
-            }
-            ICurve bottomCurve = curves.OrderBy(p => p.IStartPoint().Z + p.IEndPoint().Z).First();
-
-            ICurve backBLine = bottomCurve.ITranslate(stem.Normal.Normalise() * -stem.ThicknessBottom / 2);
-            ICurve frontBLine = bottomCurve.ITranslate(stem.Normal.Normalise() * stem.ThicknessBottom / 2);
-
-            //Figure out angle to rotate faces by. 
-            double a = (stem.ThicknessBottom - stem.ThicknessTop)/2;
-            double b = centralPlanarSrf.ControlPoints().OrderBy(p => p.Z).Last().Z - centralPlanarSrf.ControlPoints().OrderBy(p => p.Z).First().Z;
-            double rad = Math.Atan(a / b);
-
-            //Figure out distance the face needs to extended by
-            double extensionDist = Math.Sqrt(a*a + b*b)- b;
-
-            //Rotate around the lowest line.
-            frontSrf = frontSrf.IRotate(frontBLine.IStartPoint(), frontBLine.DominantVector(), rad) as PlanarSurface;
-            backSrf = backSrf.IRotate(backBLine.IStartPoint(), backBLine.DominantVector(), -rad) as PlanarSurface;
-
-            //Cap off top and bottom surfaces. 
-            Extrusion bottom = Engine.Geometry.Create.Extrusion(backBLine, stem.Normal.Normalise() * stem.ThicknessBottom);
-            Extrusion top = Engine.Geometry.Create.Extrusion(curves.OrderBy(p => p.IStartPoint().Z + p.IEndPoint().Z).Last().ITranslate(stem.Normal.Normalise() * -stem.ThicknessTop / 2), stem.Normal.Normalise() * stem.ThicknessTop);
-
-
-            //Todo
-            //Create side srfs. Either by extending over and cutting the srf. Or finding all the lines and using creating a planarsrf. 
-
-            //Extend the front and back facing srfs up to the top by the extension dist. calculated.
-
-
-            //Extrusion sides = Engine.Geometry.Create.Extrusion(backSrf.ExternalBoundary, stem.Normal.Normalise() * stem.ThicknessBottom);
+            IEnumerable<Extrusion> externalEdgesExtrusions = stem.Outline.Translate(stem.Normal.Normalise() * -stem.ThicknessBottom / 2).SubParts().Select(c => Engine.Geometry.Create.Extrusion(c, stem.Normal.Normalise()*stem.ThicknessBottom));
 
             compositeGeometry.Elements.Add(backSrf);
             compositeGeometry.Elements.Add(frontSrf);
-            compositeGeometry.Elements.Add(centralPlanarSrf); //Provisionally added for checking. 
-            compositeGeometry.Elements.Add(bottom);
-            compositeGeometry.Elements.Add(top);
-            //compositeGeometry.Elements.Add(externalEdgesExtrusion);
+            compositeGeometry.Elements.AddRange(externalEdgesExtrusions);
 
             return compositeGeometry;
-
         }
 
         /***************************************************/
