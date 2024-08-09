@@ -37,23 +37,23 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the geometry of a ConcreteSection as its profile outlines and reinforcement in the global XY plane. Method required for automatic display in UI packages.")]
-        [Input("section", "ConcreteSection to get outline and reinforcement geometry from.")]
-        [Output("outlines", "The geometry of the ConcreteSection as its outline and reinforment curves in the global XY.")]
-        public static CompositeGeometry Geometry(this ConcreteSection section)
-        {
-            if (section?.SectionProfile?.Edges == null)
-                return null;
+        //[Description("Gets the geometry of a ConcreteSection as its profile outlines and reinforcement in the global XY plane. Method required for automatic display in UI packages.")]
+        //[Input("section", "ConcreteSection to get outline and reinforcement geometry from.")]
+        //[Output("outlines", "The geometry of the ConcreteSection as its outline and reinforment curves in the global XY.")]
+        //public static CompositeGeometry Geometry(this ConcreteSection section)
+        //{
+        //    if (section?.SectionProfile?.Edges == null)
+        //        return null;
 
-            if (section.SectionProfile.Edges.Count == 0)
-                return null;
+        //    if (section.SectionProfile.Edges.Count == 0)
+        //        return null;
 
-            CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.SectionProfile.Edges);
-            //if(section.Reinforcement != null)
-            //geom.Elements.AddRange(section.Layout().Elements);
+        //    CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.SectionProfile.Edges);
+        //    //if(section.Reinforcement != null)
+        //    //geom.Elements.AddRange(section.Layout().Elements);
 
-            return geom;
-        }
+        //    return geom;
+        //}
 
         /***************************************************/
 
