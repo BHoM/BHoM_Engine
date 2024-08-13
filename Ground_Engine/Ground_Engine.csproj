@@ -17,12 +17,18 @@
   </Target>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
+    <ProjectReference Include="..\Data_Engine\Data_Engine.csproj" />
     <ProjectReference Include="..\Geometry_Engine\Geometry_Engine.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="BHoM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>false</Private>
+      <SpecificVersion>false</SpecificVersion>
+    </Reference>
+    <Reference Include="Data_oM">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Data_oM.dll</HintPath>
+	  <Private>false</Private>
       <SpecificVersion>false</SpecificVersion>
     </Reference>
     <Reference Include="Geometry_oM">
