@@ -90,7 +90,8 @@ namespace BH.Engine.Ground
                 {
                     depths.Add(contaminantSample.Top);
                 }
-                else
+
+                if(!reference && !testName && !depth)
                 {
                     Engine.Base.Compute.RecordError("Neither the ContaminantReference.Reference, TestProperties.Name or Top depth fields contain any data. \n" +
                         "Therefore, the number of suites cannot be counted.");
@@ -99,6 +100,8 @@ namespace BH.Engine.Ground
 
             if (depth)
                 suites = depths.Distinct().Cast<string>().ToList();
+            else
+                suites = suites.Distinct().ToList();
 
             return suites;
         }
