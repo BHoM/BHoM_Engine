@@ -64,7 +64,7 @@ namespace BH.Engine.Ground
                     List<IContaminantProperty> contaminantProperties = contaminantSample.ContaminantProperties;
                     FilterRequest filterRequest = Data.Create.FilterRequest(typeof(ContaminantReference), "");
                     IEnumerable<IBHoMObject> contaminantReferences = Data.Compute.FilterData(filterRequest, contaminantProperties);
-                    if (!contaminantReferences.IsNullOrEmpty())
+                    if (contaminantReferences.Any(x => x == null) || contaminantReferences.Count() != 0)
                     {
                         ContaminantReference contaminantReference = (ContaminantReference)contaminantReferences.First();
                         if (contaminantReference.Reference != "")
@@ -87,7 +87,7 @@ namespace BH.Engine.Ground
                     List<IContaminantProperty> contaminantProperties = contaminantSample.ContaminantProperties;
                     FilterRequest filterRequest = Data.Create.FilterRequest(typeof(TestProperties), "");
                     IEnumerable<IBHoMObject> testProperties = Data.Compute.FilterData(filterRequest, contaminantProperties);
-                    if (!testProperties.IsNullOrEmpty())
+                    if (!testProperties.Any(x => x == null) || testProperties.Count() != 0)
                     {
                         TestProperties testProperty = (TestProperties)testProperties.First();
                         if (testProperty.Name != "")
