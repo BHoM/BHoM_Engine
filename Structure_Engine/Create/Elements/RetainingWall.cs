@@ -80,7 +80,7 @@ namespace BH.Engine.Structure
         //TODO Add input descriptions here
         [Description("Create RetainingWall from a Line and defining properties.")]
         [Output("retainingWall", "RetainingWall with specified properties")]
-        public static RetainingWall RetainingWallFromLine(
+        public static RetainingWall RetainingWall(
             Line line,
             double retainedHeight,
             Vector normal,
