@@ -45,9 +45,9 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the unique number of suites from a Borehole using ContaminantReference.Reference, TestProperties.Name or Top depth.")]
+        [Description("Returns a distinct list of suites from a Borehole using the sample reference, test name or top depth (in order of priority).")]
         [Input("borehole", "The Borehole from which to count the number of suites.")]
-        [Output("n", "The ContaminantReferences from the Borehole provided.")]
+        [Output("suites", "A distinct list of suites from the Borehole provided.")]
         public static List<string> DistinctSuites(this Borehole borehole)
         {
             bool reference = true;
