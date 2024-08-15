@@ -25,6 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Data;
 using BH.oM.Geometry;
@@ -62,13 +63,22 @@ namespace BH.Engine.Ground
                 {
                     List<IContaminantProperty> contaminantProperties = contaminantSample.ContaminantProperties;
                     FilterRequest filterRequest = Data.Create.FilterRequest(typeof(ContaminantReference), "");
-                    ContaminantReference contaminantReference = Data.Compute.FilterData(filterRequest, contaminantProperties).Cast<ContaminantReference>().First();
-                    if (contaminantReference != null && contaminantReference.Reference != "")
-                        suites.Add(contaminantReference.Reference);
+                    IEnumerable<IBHoMObject> contaminantReferences = Data.Compute.FilterData(filterRequest, contaminantProperties);
+                    if (!contaminantReferences.IsNullOrEmpty())
+                    {
+                        ContaminantReference contaminantReference = (ContaminantReference)contaminantReferences.First();
+                        if (contaminantReference.Reference != "")
+                            suites.Add(contaminantReference.Reference);
+                        else
+                        {
+                            testName = false;
+                            depth = true;
+                        }
+                    }
                     else
                     {
-                        reference = false;
-                        testName = true;
+                        testName = false;
+                        depth = true;
                     }
                 }    
                 
@@ -76,9 +86,18 @@ namespace BH.Engine.Ground
                 {
                     List<IContaminantProperty> contaminantProperties = contaminantSample.ContaminantProperties;
                     FilterRequest filterRequest = Data.Create.FilterRequest(typeof(TestProperties), "");
-                    ContaminantReference testProperties = Data.Compute.FilterData(filterRequest, contaminantProperties).Cast<ContaminantReference>().First();
-                    if (testProperties != null && testProperties.Name != "")
-                        suites.Add(testProperties.Name);
+                    IEnumerable<IBHoMObject> testProperties = Data.Compute.FilterData(filterRequest, contaminantProperties);
+                    if (!testProperties.IsNullOrEmpty())
+                    {
+                        TestProperties testProperty = (TestProperties)testProperties.First();
+                        if (testProperty.Name != "")
+                            suites.Add(testProperty.Name);
+                        else
+                        {
+                            testName = false;
+                            depth = true;
+                        }
+                    }    
                     else
                     {
                         testName = false;
@@ -99,7 +118,7 @@ namespace BH.Engine.Ground
             }
 
             if (depth)
-                suites = depths.Distinct().Cast<string>().ToList();
+                suites = depths.Distinct().Select(x => x.ToString()).ToList();
             else
                 suites = suites.Distinct().ToList();
 
