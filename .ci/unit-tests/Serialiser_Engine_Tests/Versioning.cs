@@ -1,6 +1,3 @@
-
-// COMMENTED OUT BECAUSE THE IGNORE ATTRIBUTE IS NOT FUNCTIONING AS INTENDED FOR CI
-
 ///*
 // * This file is part of the Buildings and Habitats object Model (BHoM)
 // * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
@@ -42,6 +39,8 @@ using Bogus;
 using System.IO;
 using ICSharpCode.Decompiler.TypeSystem;
 
+
+// COMMENTED OUT BECAUSE THE IGNORE ATTRIBUTE IS NOT FUNCTIONING AS INTENDED FOR CI
 //namespace BH.Tests.Engine.Serialiser
 //{
 //    [Ignore("Ignoring NUnit versioning tests as overlapping with centralised check Versioning. Test kept for debugging purposes.")]

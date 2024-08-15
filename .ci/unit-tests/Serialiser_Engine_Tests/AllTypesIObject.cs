@@ -1,7 +1,3 @@
-
-
-// COMMENTED OUT BECAUSE THE IGNORE ATTRIBUTE IS NOT FUNCTIONING AS INTENDED FOR CI
-
 ///*
 // * This file is part of the Buildings and Habitats object Model (BHoM)
 // * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
@@ -32,6 +28,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+// COMMENTED OUT BECAUSE THE IGNORE ATTRIBUTE IS NOT FUNCTIONING AS INTENDED FOR CI
 //namespace BH.Tests.Engine.Serialiser
 //{
 //    [Ignore("Ignoring NUnit versioning tests as no 100% clear action for every single class to be IObject. Usefull to be able to get this information out, but not required to be run automatically. Test kept for debugging purposes.")]
