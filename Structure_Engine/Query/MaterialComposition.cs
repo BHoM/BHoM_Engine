@@ -462,7 +462,7 @@ namespace BH.Engine.Structure
                 return Matter.Compute.AggregateMaterialComposition(reinforcedElements);
             }
 
-            return null;
+            return Matter.Compute.AggregateMaterialComposition(elements);
         }
 
         /***************************************************/
