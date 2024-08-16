@@ -30,6 +30,7 @@ using BH.oM.Physical.Materials;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Physical
 {
