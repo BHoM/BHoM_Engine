@@ -77,7 +77,6 @@ namespace BH.Engine.Structure
         {
             if (stem.IsNull())
                 return null;
-			
             if (stem.Normal.IsNull("The Normal of the Stem is null and could not be flipped.","Flip"))
                 return null;
 
