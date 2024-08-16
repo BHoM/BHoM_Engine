@@ -51,6 +51,9 @@ namespace BH.Engine.Structure
         [Output("retainingWall", "The created RetainingWall containing the stem and footing.")]
         public static RetainingWall RetainingWall(Stem stem, PadFoundation footing, double retainedHeight, double coverDepth, double retentionAngle, double groundWaterDepth = 0)
         {
+            if (stem.IsNull() || footing.IsNull())
+                return null;
+
             List<ICurve> curves = new List<ICurve>();
             foreach (ICurve curve in stem.Outline.SplitAtPoints(stem.Outline.DiscontinuityPoints()))
             {
@@ -65,12 +68,6 @@ namespace BH.Engine.Structure
                 Base.Compute.RecordError("The stem is not connected to the footing. Make sure the stem bottom is on the footing outline.");
                 return null;
             }
-
-            if (stem.IsNull())
-                return null;
-
-            if (footing.IsNull())
-                return null;
 
             return new RetainingWall() { Stem = stem, Footing = footing, RetainedHeight = retainedHeight, CoverDepth = coverDepth, RetentionAngle = retentionAngle, GroundWaterDepth = groundWaterDepth };
         }
