@@ -34,6 +34,11 @@ namespace BH.Engine.Structure
 {
     public static partial class Query
     {
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+
         [Description("Checks if a RetainignWall is valid by performing null checks and a basic check that the stem does not go into the footing.")]
         [Input("retainingWall", "The RetainingWall to check.")]
         [Output("result", "Returns true if the RetainingWall is valid.")]
@@ -45,12 +50,34 @@ namespace BH.Engine.Structure
                 return false;
 
             //Checks if the footing is below the stem with a tolerence of 1E-6
-            if (retainingWall.Footing.TopOutline.ControlPoints().OrderBy(p => p.Z).First().Z - 1E-6 < retainingWall.Stem.Outline.ControlPoints().OrderBy(p => p.Z).First().Z)
+            double tol = 1E-6;
+            if (retainingWall.Footing.TopOutline.ControlPoints().OrderBy(p => p.Z).First().Z - tol < retainingWall.Stem.Outline.ControlPoints().OrderBy(p => p.Z).First().Z)
             {
-                Base.Compute.RecordError("The footings highest control point is above the lowest control point of the stem. The two objects should not go into eachother. ");
+                Base.Compute.RecordError("The footings highest control point is above the lowest control point of the stem. The two objects should not go into eachother.");
                 return false;
             }
 
+            return true;
+        }
+
+        /***************************************************/
+
+        public static bool IsValid(Stem stem, PadFoundation footing)
+        {
+            List<ICurve> curves = new List<ICurve>();
+            foreach (ICurve curve in stem.Outline.SplitAtPoints(stem.Outline.DiscontinuityPoints()))
+            {
+                Point start = curve.IStartPoint();
+                Point end = curve.IEndPoint();
+                curves.Add(curve);
+            }
+            ICurve bottomCurve = curves.OrderBy(p => p.IStartPoint().Z + p.IEndPoint().Z).First();
+
+            if (!footing.TopOutline.IsContaining(bottomCurve))
+            {
+                Base.Compute.RecordError("The stem is not connected to the footing. Make sure the stem bottom is on the footing outline.");
+                return false;
+            }
             return true;
         }
     }
