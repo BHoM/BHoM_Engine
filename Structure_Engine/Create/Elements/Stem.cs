@@ -40,7 +40,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a tapered Stem.")]
+        [Description("Creates a tapered Stem to be used in the RetainingWall object.")]
         [Input("outline", "The outer edge of the centre of the Stem in elevation.")]
         [Input("thicknessTop", "Thickness at the top of the stem.")]
         [Input("thicknessBottom", "Thickness at the bottom of the stem.")]
