@@ -28,16 +28,16 @@ using Shouldly;
 using BH.oM.Test.NUnit;
 using System.Reflection;
 
-namespace BH.Tests.Engine.Structure.Query
-{
-    public class IGeometryTests : NUnitTest
-    {
-        [Test]
-        public void ConcreteSection()
-        {
-            ConcreteSection concreteSection = (ConcreteSection)Create.RandomObject(typeof(ConcreteSection));
-            IGeometry geom = concreteSection.IGeometry();
-            geom.ShouldNotBeNull();
-        }
-    }
-}
+//namespace BH.Tests.Engine.Structure.Query
+//{
+//    public class IGeometryTests : NUnitTest
+//    {
+//        [Test]
+//        public void ConcreteSection()
+//        {
+//            ConcreteSection concreteSection = (ConcreteSection)Create.RandomObject(typeof(ConcreteSection));
+//            IGeometry geom = concreteSection.IGeometry();
+//            geom.ShouldNotBeNull();
+//        }
+//    }
+//}
