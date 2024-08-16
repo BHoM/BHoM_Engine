@@ -63,8 +63,16 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        //TODO Add input descriptions here
         [Description("Create RetainingWall from a Line and defining properties.")]
+        [Input("line", "A Line parallell to the XY plane to build the RetainingWall from.")]
+        [Input("retainedHeight", "The retained height of soil measured from the bottom of the wall Footing.")]
+        [Input("normal", "Normal to the surface of the stem denoting the direction of the retained face.")]
+        [Input("stemThickness", "Thickness at the top and bottom of the stem.")]
+        [Input("toeLength", "Length of the toe of the footing")]
+        [Input("heelLength", "Length of the heel of the footing")]
+        [Input("footingThickness", "Thickness of the footing")]
+        [Input("coverDepth", "The distance from top of Footing to finished floor level on the exposed face.")]
+        [Input("retentionAngle", "A property of the material being retained measured from the horizontal plane.")]
         [Output("retainingWall", "RetainingWall with specified properties")]
         public static RetainingWall RetainingWall(
             Line line,
@@ -94,8 +102,8 @@ namespace BH.Engine.Structure
             Line heelLine = line.ShallowClone();
 
 
-            toeLine = toeLine.Translate(normal * toeLength);
-            heelLine = heelLine.Translate(normal * heelLength * -1).Reverse();
+            toeLine = toeLine.Translate(normal * (toeLength + stemThickness/2));
+            heelLine = heelLine.Translate(normal * (heelLength + stemThickness / 2) * -1).Reverse();
 
             footingOutline.Curves = new List<ICurve> { toeLine, Geometry.Create.Line(toeLine.End, heelLine.Start), heelLine, Geometry.Create.Line(heelLine.End, toeLine.Start) };
 
