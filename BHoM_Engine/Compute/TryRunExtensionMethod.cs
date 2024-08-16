@@ -152,11 +152,11 @@ namespace BH.Engine.Base
         [Description("Finds an extension method with given name and parameters. For performance reasons compiles the method to a function the first time it is run, then stores it for subsequent calls.")]
         private static Func<object[], object> ExtensionMethodToRun(string methodName, object[] parameters)
         {
-            if (parameters == null || parameters.Length == 0 || parameters.Any(x => x == null) || string.IsNullOrWhiteSpace(methodName))
+            if (parameters == null || parameters.Length == 0 || parameters[0] == null || string.IsNullOrWhiteSpace(methodName))
                 return null;
 
             //Construct key used to store/extract method
-            string key = methodName + string.Join("", parameters.Select(x => x.GetType().ToString()));
+            string key = methodName + string.Join("", parameters.Select(x => x?.GetType()?.ToString() ?? "null"));
 
             // If the method has been called before, use the previously compiled function
             Func<object[], object> func;

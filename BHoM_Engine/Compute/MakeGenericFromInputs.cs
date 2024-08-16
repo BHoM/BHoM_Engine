@@ -61,7 +61,16 @@ namespace BH.Engine.Base
             {
                 Type paramType = paramTypes[i];
                 if (paramType.IsGenericType || paramType.IsGenericParameter)
-                    MatchGenericParameters(paramTypes[i], inputTypes[i], ref dic);
+                {
+                    Type inputType = inputTypes[i];
+                    if (inputType != null)
+                        MatchGenericParameters(paramTypes[i], inputType, ref dic);
+                    else
+                    {
+                        BH.Engine.Base.Compute.RecordError("Can't find generic method for a null generic type argument.");
+                        return null;
+                    }
+                }
             }
 
             // Actually make the generic method

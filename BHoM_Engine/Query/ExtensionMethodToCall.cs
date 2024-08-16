@@ -69,14 +69,14 @@ namespace BH.Engine.Base
         [Output("method", "Most suitable extension method with requested name and parameters. If no method was found, null is returned.")]
         public static MethodInfo ExtensionMethodToCall(string methodName, object[] parameters)
         {
-            if (parameters == null || parameters.Length == 0 || parameters.Any(x => x == null) || string.IsNullOrWhiteSpace(methodName))
+            if (parameters == null || parameters.Length == 0 || parameters[0] == null || string.IsNullOrWhiteSpace(methodName))
                 return null;
             
             //Get type of first argument, to be used for first method extraction filtering
             Type type = parameters[0].GetType();
 
             //Construct key used to store/extract method
-            string name = methodName + parameters.Select(x => x.GetType().ToString()).Aggregate((a, b) => a + b);
+            string name = methodName + parameters.Select(x => x?.GetType()?.ToString() ?? "null").Aggregate((a, b) => a + b);
             Tuple<Type, string> key = new Tuple<Type, string>(type, name);
 
             // If the method has been called before, just use that
@@ -95,7 +95,6 @@ namespace BH.Engine.Base
                     //If more parameters to method then provided, check if parameter has defaul value (is optional)
                     if (i >= parameters.Length)
                     {
-                        
                         if (!paramInfo[i].Attributes.HasFlag(ParameterAttributes.HasDefault))
                         {
                             //No default value -> no match -> abort for this method
@@ -103,7 +102,8 @@ namespace BH.Engine.Base
                             break;
                         }
                     }
-                    else if (!paramInfo[i].ParameterType.IsAssignableFromIncludeGenerics(parameters[i].GetType()))
+                    else if ((parameters[i] != null && !paramInfo[i].ParameterType.IsAssignableFromIncludeGenerics(parameters[i].GetType()))
+                        || (parameters[i] == null && !paramInfo[i].ParameterType.IsNullable()))
                     {
                         //Parameter does not match, abort for this method
                         matchingTypes = false;
@@ -115,7 +115,7 @@ namespace BH.Engine.Base
                     continue;
 
                 // If method is generic, make sure the appropriate generic arguments are set
-                MethodInfo finalMethod = method.MakeGenericFromInputs(parameters.Select(x => x.GetType()).ToList());
+                MethodInfo finalMethod = method.MakeGenericFromInputs(parameters.Select(x => x?.GetType()).ToList());
 
                 // Cache and return the method
                 StoreExtensionMethod(key, finalMethod);
@@ -127,6 +127,14 @@ namespace BH.Engine.Base
 
             // Return null if nothing found
             return null;
+        }
+
+        private static bool IsNullable(this Type type)
+        {
+            if (type == null)
+                return false;
+
+            return !type.IsValueType || Nullable.GetUnderlyingType(type) != null;
         }
 
         /***************************************************/
