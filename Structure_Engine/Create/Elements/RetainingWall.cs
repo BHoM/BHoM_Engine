@@ -90,8 +90,8 @@ namespace BH.Engine.Structure
             PolyCurve footingOutline = new PolyCurve();
 
             //Create the footing outline. 
-            Line toeLine = line.DeepClone();
-            Line heelLine = line.DeepClone();
+            Line toeLine = line.ShallowClone();
+            Line heelLine = line.ShallowClone();
 
 
             toeLine = toeLine.Translate(normal * toeLength);
