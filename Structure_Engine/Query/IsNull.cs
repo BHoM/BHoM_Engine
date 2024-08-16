@@ -643,7 +643,7 @@ namespace BH.Engine.Structure
         [Input("stem", "The Stem to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Output("isNull", "True if the PileFoundation is null.")]
+        [Output("isNull", "True if the Stem is null.")]
         public static bool IsNull(this Stem stem, [CallerMemberName] string methodName = "Method", string msg = "")
         {
             if (stem == null)
