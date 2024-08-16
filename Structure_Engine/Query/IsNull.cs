@@ -666,7 +666,7 @@ namespace BH.Engine.Structure
         [Input("retainingWall", "The RetainingWall to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Output("isNull", "True if the PileFoundation is null.")]
+        [Output("isNull", "True if the RetainingWall is null.")]
         public static bool IsNull(this RetainingWall retainingWall, [CallerMemberName] string methodName = "Method", string msg = "")
         {
             if (retainingWall == null)
