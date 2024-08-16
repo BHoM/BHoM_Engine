@@ -77,11 +77,8 @@ namespace BH.Engine.Structure
         {
             if (stem.IsNull())
                 return null;
-            if (stem.Normal.IsNull())
-            {
-                Base.Compute.RecordError("The Normal of the Stem is null and could not be flipped.");
+            if (stem.Normal.IsNull("The Normal of the Stem is null and could not be flipped.","Flip"))
                 return null;
-            }
 
             Stem flipped = stem.ShallowClone();
 
