@@ -67,5 +67,26 @@ namespace BH.Engine.Structure
 
             return true;
         }
+
+        /***************************************************/
+
+        public static bool IsValid(Stem stem, PadFoundation footing)
+        {
+            List<ICurve> curves = new List<ICurve>();
+            foreach (ICurve curve in stem.Outline.SplitAtPoints(stem.Outline.DiscontinuityPoints()))
+            {
+                Point start = curve.IStartPoint();
+                Point end = curve.IEndPoint();
+                curves.Add(curve);
+            }
+            ICurve bottomCurve = curves.OrderBy(p => p.IStartPoint().Z + p.IEndPoint().Z).First();
+
+            if (!footing.TopOutline.IsContaining(bottomCurve))
+            {
+                Base.Compute.RecordError("The stem is not connected to the footing. Make sure the stem bottom is on the footing outline.");
+                return false;
+            }
+            return true;
+        }
     }
 }
