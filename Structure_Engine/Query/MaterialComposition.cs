@@ -405,7 +405,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a Stem's homogeneous MaterialComposition.")]
-        [Input("stem", "The Stem to get material from.")]
+        [Input("stem", "The Stem to query.")]
         [Output("materialComposition", "The MaterialComposition of the Stem")]
         public static MaterialComposition MaterialComposition(this Stem stem)
         {
