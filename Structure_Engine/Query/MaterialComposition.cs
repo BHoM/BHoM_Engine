@@ -420,7 +420,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a RetainingWall's homogeneous MaterialComposition based on the Stem and Footing.")]
-        [Input("retainingWall", "The RetainingWall to get material from.")]
+        [Input("retainingWall", "The RetainingWall to query.")]
         [Output("materialComposition", "The MaterialComposition of the RetainingWall")]
         public static MaterialComposition MaterialComposition(this RetainingWall retainingWall)
         {
