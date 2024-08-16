@@ -124,7 +124,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the geometry of a Stem. Method required for automatic display in UI packages.")]
-        [Input("stem", "Stem to get the surface geometry from.")]
+        [Input("stem", "Stem to get the geometry from.")]
         [Output("surface", "The geometry defining the Stem.")]
         public static IGeometry Geometry(this Stem stem)
         {
