@@ -68,12 +68,12 @@ namespace BH.Engine.Structure
         [Input("retainedHeight", "The retained height of soil measured from the bottom of the wall Footing.")]
         [Input("normal", "Normal to the surface of the stem denoting the direction of the retained face.")]
         [Input("stemThickness", "Thickness at the top and bottom of the stem.")]
-        [Input("toeLength", "Length of the toe of the footing")]
-        [Input("heelLength", "Length of the heel of the footing")]
-        [Input("footingThickness", "Thickness of the footing")]
+        [Input("toeLength", "Length of the toe of the footing.")]
+        [Input("heelLength", "Length of the heel of the footing.")]
+        [Input("footingThickness", "Thickness of the footing.")]
         [Input("coverDepth", "The distance from top of Footing to finished floor level on the exposed face.")]
         [Input("retentionAngle", "A property of the material being retained measured from the horizontal plane.")]
-        [Output("retainingWall", "RetainingWall with specified properties")]
+        [Output("retainingWall", "RetainingWall with specified properties.")]
         public static RetainingWall RetainingWall(
             Line line,
             double retainedHeight,
