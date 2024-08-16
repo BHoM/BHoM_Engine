@@ -171,7 +171,7 @@ namespace BH.Engine.Structure
 
             if (stem.ThicknessBottom != stem.ThicknessTop)
             {
-                Base.Compute.RecordError("The Geometry3D() method is not implemented for a tapered Stem. Null is returned.");
+                Base.Compute.RecordError("The Geometry3D() method is not implemented for a tapered Stem.");
                 return null;
             }
 
