@@ -55,10 +55,10 @@ namespace BH.Engine.Structure
             if (stem.IsNull() || footing.IsNull())
                 return null;
 
-            if (!Query.IsValid(stem, footing)) 
+            if (Query.IsValid(stem, footing))
+                return new RetainingWall() { Stem = stem, Footing = footing, RetainedHeight = retainedHeight, CoverDepth = coverDepth, RetentionAngle = retentionAngle, GroundWaterDepth = groundWaterDepth };
+            else
                 return null;
-
-            return new RetainingWall() { Stem = stem, Footing = footing, RetainedHeight = retainedHeight, CoverDepth = coverDepth, RetentionAngle = retentionAngle, GroundWaterDepth = groundWaterDepth };
         }
 
         /***************************************************/

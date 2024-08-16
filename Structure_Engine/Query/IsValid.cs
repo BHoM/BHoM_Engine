@@ -49,9 +49,7 @@ namespace BH.Engine.Structure
             if (retainingWall.Footing.IsNull() || retainingWall.Stem.IsNull())
                 return false;
 
-            //Checks if the footing is below the stem with a tolerence of 1E-6
-            double tol = 1E-6;
-            if (retainingWall.Footing.TopOutline.ControlPoints().OrderBy(p => p.Z).First().Z - tol < retainingWall.Stem.Outline.ControlPoints().OrderBy(p => p.Z).First().Z)
+            if (retainingWall.Footing.TopOutline.ControlPoints().OrderBy(p => p.Z).First().Z - retainingWall.Stem.Outline.ControlPoints().OrderBy(p => p.Z).First().Z > Tolerance.MicroDistance)
             {
                 Base.Compute.RecordError("The footings highest control point is above the lowest control point of the stem. The two objects should not go into eachother.");
                 return false;
