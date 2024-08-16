@@ -123,7 +123,7 @@ namespace BH.Engine.Structure
         {
             if (retainingWall.Footing.TopOutline.ControlPoints().OrderBy(p => p.Z).First().Z < retainingWall.Stem.Outline.ControlPoints().OrderBy(p => p.Z).First().Z)
             {
-                Base.Compute.RecordError("The footings highest control point is above the lowest control point of the stem. The two objects should not go into eachother. A NaN is returned.");
+                Base.Compute.RecordError("The footings highest control point is above the lowest control point of the stem. The two objects should not go into eachother. ");
                 return double.NaN;
 
             }
