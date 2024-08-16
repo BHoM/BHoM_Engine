@@ -406,7 +406,7 @@ namespace BH.Engine.Structure
 
         [Description("Returns a Stem's homogeneous MaterialComposition.")]
         [Input("stem", "The Stem to get material from.")]
-        [Output("materialComposition", "The kind of matter the Stem is composed of.")]
+        [Output("materialComposition", "The MaterialComposition of the Stem")]
         public static MaterialComposition MaterialComposition(this Stem stem)
         {
             if (stem.IsNull() || stem.Material.IsNull())
