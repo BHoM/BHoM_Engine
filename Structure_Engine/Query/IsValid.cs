@@ -53,7 +53,6 @@ namespace BH.Engine.Structure
         [Input("stem", "The Stem to check.")]
         [Input("footing", "The footing to check.")]
         [Output("result", "Returns true if the Stem and PadFoundation are valid.")]
-
         public static bool IsValid(this Stem stem, PadFoundation footing)
         {
             if (footing.IsNull() || stem.IsNull())
