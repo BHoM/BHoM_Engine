@@ -60,7 +60,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        public static bool IsValid(Stem stem, PadFoundation footing)
+        public static bool IsValid(this Stem stem, PadFoundation footing)
         {
             List<ICurve> curves = new List<ICurve>();
             foreach (ICurve curve in stem.Outline.SplitAtPoints(stem.Outline.DiscontinuityPoints()))
