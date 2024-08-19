@@ -106,8 +106,8 @@ namespace BH.Engine.Structure
             footingOutline.Curves = new List<ICurve> { toeLine, Geometry.Create.Line(toeLine.End, heelLine.Start), heelLine, Geometry.Create.Line(heelLine.End, toeLine.Start) };
 
             //Create the Stem outline.
-            Line bottomLine = line.DeepClone();
-            Line topLine = line.DeepClone();
+            Line bottomLine = line.ShallowClone();
+            Line topLine = line.ShallowClone();
 
             topLine = topLine.Translate(Vector.ZAxis * retainedHeight).Reverse();
 
