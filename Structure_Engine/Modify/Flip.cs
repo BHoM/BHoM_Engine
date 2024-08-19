@@ -70,9 +70,9 @@ namespace BH.Engine.Structure
             return flipped;
         }
 
-        [Description("Flips normal of the Stem.")]
+        [Description("Flips the normal of the Stem.")]
         [Input("stem", "The Stem to flip.")]
-        [Output("stem", "The Stem with flipped Normal")]
+        [Output("stem", "The Stem with flipped Normal.")]
         public static Stem Flip(this Stem stem)
         {
             if (stem.IsNull())

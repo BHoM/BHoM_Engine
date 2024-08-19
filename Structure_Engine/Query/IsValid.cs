@@ -39,7 +39,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
 
-        [Description("Checks if a RetainignWall is valid by performingverifying that the Stem does not intersect the footing.")]
+        [Description("Checks if a RetainignWall is valid by verifying that the Stem does not intersect the footing.")]
         [Input("retainingWall", "The RetainingWall to check.")]
         [Output("result", "Returns true if the RetainingWall is valid.")]
         public static bool IsValid(this RetainingWall retainingWall)
@@ -49,8 +49,11 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Checks if a Stem and PadFoundation are valid by performing null checks and a basic check that the stem does not go into the footing.")]
-        [Input("retainingWall", "The RetainingWall to check.")]
+        [Description("Checks if a Stem and PadFoundation are valid by verifying that the Stem does not intersect the footing.")]
+        [Input("stem", "The Stem to check.")]
+        [Input("footing", "The footing to check.")]
+        [Output("result", "Returns true if the Stem and PadFoundation are valid.")]
+
         public static bool IsValid(this Stem stem, PadFoundation footing)
         {
             if (footing.IsNull() || stem.IsNull())

@@ -406,7 +406,7 @@ namespace BH.Engine.Structure
 
         [Description("Returns a Stem's homogeneous MaterialComposition.")]
         [Input("stem", "The Stem to query.")]
-        [Output("materialComposition", "The MaterialComposition of the Stem")]
+        [Output("materialComposition", "The MaterialComposition of the Stem.")]
         public static MaterialComposition MaterialComposition(this Stem stem)
         {
             if (stem.IsNull() || stem.Material.IsNull())
@@ -421,7 +421,7 @@ namespace BH.Engine.Structure
 
         [Description("Returns a RetainingWall's homogeneous MaterialComposition based on the Stem and Footing.")]
         [Input("retainingWall", "The RetainingWall to query.")]
-        [Output("materialComposition", "The MaterialComposition of the RetainingWall")]
+        [Output("materialComposition", "The MaterialComposition of the RetainingWall.")]
         public static MaterialComposition MaterialComposition(this RetainingWall retainingWall)
         {
 
@@ -483,6 +483,7 @@ namespace BH.Engine.Structure
 
         [Description("Returns a SurfaceProperty's MaterialComposition.")]
         [Input("property", "The SurfaceProperty to query.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the SurfaceProperty.")]
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         public static MaterialComposition IMaterialComposition(this ISurfaceProperty property, ReinforcementDensity reinforcementDensity = null)
         {
