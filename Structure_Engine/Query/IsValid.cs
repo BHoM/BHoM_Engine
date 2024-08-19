@@ -70,22 +70,19 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Checks if a Stem and PadFoundation are valid by performing null checks and a basic check that the stem does not go into the footing.")]
+        [Input("retainingWall", "The RetainingWall to check.")]
         public static bool IsValid(this Stem stem, PadFoundation footing)
         {
-            List<ICurve> curves = new List<ICurve>();
-            foreach (ICurve curve in stem.Outline.SplitAtPoints(stem.Outline.DiscontinuityPoints()))
-            {
-                Point start = curve.IStartPoint();
-                Point end = curve.IEndPoint();
-                curves.Add(curve);
-            }
-            ICurve bottomCurve = curves.OrderBy(p => p.IStartPoint().Z + p.IEndPoint().Z).First();
+            if (footing.IsNull() || stem.IsNull())
+                return false;
 
-            if (!footing.TopOutline.IsContaining(bottomCurve))
+            if (footing.TopOutline.ControlPoints().OrderBy(p => p.Z).First().Z - stem.Outline.ControlPoints().OrderBy(p => p.Z).First().Z > Tolerance.MicroDistance)
             {
-                Base.Compute.RecordError("The stem is not connected to the footing. Make sure the stem bottom is on the footing outline.");
+                Base.Compute.RecordError("The footings highest control point is above the lowest control point of the stem. The two objects should not intersect.");
                 return false;
             }
+
             return true;
         }
     }
