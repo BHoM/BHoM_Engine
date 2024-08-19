@@ -129,14 +129,6 @@ namespace BH.Engine.Base
             return null;
         }
 
-        private static bool IsNullable(this Type type)
-        {
-            if (type == null)
-                return false;
-
-            return !type.IsValueType || Nullable.GetUnderlyingType(type) != null;
-        }
-
         /***************************************************/
 
         [Description("Checks if an entry with the provided key has already been extracted. Put in its own method to simplify the use of locks to provide thread safety.")]
