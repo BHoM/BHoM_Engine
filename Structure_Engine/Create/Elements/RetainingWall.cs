@@ -94,8 +94,8 @@ namespace BH.Engine.Structure
 
             if (!line.IsInPlane(Geometry.Create.Plane(line.Start, Vector.ZAxis)))
             {
-                Base.Compute.RecordError("Provided line is not parallell to the XY plane. Please provide a line parallell to the XY plane.");
-                return null; 
+                Base.Compute.RecordError("Provided line is not parallel to the XY plane. Please provide a line parallel to the XY plane.");
+                return null;
             }
 
             PolyCurve stemOutline = new PolyCurve();
