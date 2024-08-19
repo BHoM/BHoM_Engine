@@ -121,7 +121,7 @@ namespace BH.Engine.Structure
         [Output("volume", "The RetainingWall solid material volume.", typeof(Volume))]
         public static double SolidVolume(this RetainingWall retainingWall)
         {
-            return !retainingWall.IsValid() ? 0 : SolidVolume(retainingWall.Footing) + SolidVolume(retainingWall.Stem);
+            return retainingWall.IsValid() ? SolidVolume(retainingWall.Footing) + SolidVolume(retainingWall.Stem) : 0;
         }
 
         /***************************************************/
@@ -176,7 +176,3 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
-
-
-
-

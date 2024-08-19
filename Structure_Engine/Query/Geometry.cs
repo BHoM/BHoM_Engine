@@ -172,7 +172,3 @@ namespace BH.Engine.Structure
     }
 
 }
-
-
-
-

@@ -55,10 +55,16 @@ namespace BH.Engine.Structure
             if (stem.IsNull() || footing.IsNull())
                 return null;
 
-            if (Query.IsValid(stem, footing))
-                return new RetainingWall() { Stem = stem, Footing = footing, RetainedHeight = retainedHeight, CoverDepth = coverDepth, RetentionAngle = retentionAngle, GroundWaterDepth = groundWaterDepth };
-            else
-                return null;
+            return Query.IsValid(stem, footing) ? new RetainingWall()
+            {
+                Stem = stem,
+                Footing = footing,
+                RetainedHeight = retainedHeight,
+                CoverDepth = coverDepth,
+                RetentionAngle = retentionAngle,
+                GroundWaterDepth = groundWaterDepth
+            }
+            : null;
         }
 
         /***************************************************/
@@ -74,24 +80,16 @@ namespace BH.Engine.Structure
         [Input("coverDepth", "The distance from top of Footing to finished floor level on the exposed face.")]
         [Input("retentionAngle", "A property of the material being retained measured from the horizontal plane.")]
         [Output("retainingWall", "RetainingWall with specified properties.")]
-        public static RetainingWall RetainingWall(
-            Line line,
-            double retainedHeight,
-            Vector normal,
-            double stemThickness,
-            double toeLength,
-            double heelLength,
-            ConstantThickness footingThickness,
-            double coverDepth,
-            double retentionAngle
-            )
+        public static RetainingWall RetainingWall(Line line, double retainedHeight, Vector normal, double stemThickness, double toeLength,
+            double heelLength, ConstantThickness footingThickness, double coverDepth, double retentionAngle)
         {
-            if (line.Start == null && line.End == null) { return null; }
+            if (line.Start == null && line.End == null || line.IsNull())
+                return null;
 
             if (!line.IsInPlane(Geometry.Create.Plane(line.Start, Vector.ZAxis)))
             {
-                Base.Compute.RecordError("Provided line is not parallell to the XY plane. Please provide a line parallell to the XY plane.");
-                return null; 
+                Base.Compute.RecordError("Provided line is not parallel to the XY plane. Please provide a line parallel to the XY plane.");
+                return null;
             }
 
             PolyCurve stemOutline = new PolyCurve();
@@ -102,7 +100,7 @@ namespace BH.Engine.Structure
             Line heelLine = line.ShallowClone();
 
 
-            toeLine = toeLine.Translate(normal * (toeLength + stemThickness/2));
+            toeLine = toeLine.Translate(normal * (toeLength + stemThickness / 2));
             heelLine = heelLine.Translate(normal * (heelLength + stemThickness / 2) * -1).Reverse();
 
             footingOutline.Curves = new List<ICurve> { toeLine, Geometry.Create.Line(toeLine.End, heelLine.Start), heelLine, Geometry.Create.Line(heelLine.End, toeLine.Start) };

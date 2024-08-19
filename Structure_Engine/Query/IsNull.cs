@@ -638,7 +638,7 @@ namespace BH.Engine.Structure
 
             return false;
         }
-        
+
         [Description("Checks if a Stem is null and outputs relevant error message.")]
         [Input("stem", "The Stem to test for null.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
@@ -733,6 +733,3 @@ namespace BH.Engine.Structure
 
     }
 }
-
-
-

@@ -274,7 +274,7 @@ namespace BH.Engine.Structure
             double volPerAreaRibZone = property.RibHeight * (property.RibThickness / property.RibSpacing);
 
             return Matter.Compute.AggregateMaterialComposition(new List<MaterialComposition>
-            { 
+            {
                 topMat.MaterialComposition(reinforcementDensity),
                 bottomMat.MaterialComposition(reinforcementDensity),
                 ribMat.MaterialComposition(reinforcementDensity)
@@ -560,7 +560,3 @@ namespace BH.Engine.Structure
 
     }
 }
-
-
-
-
