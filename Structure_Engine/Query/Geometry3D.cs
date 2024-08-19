@@ -184,11 +184,11 @@ namespace BH.Engine.Structure
             PlanarSurface backSrf = centralPlanarSrf.ITranslate(normal * -thk / 2) as PlanarSurface;
             PlanarSurface frontSrf = centralPlanarSrf.ITranslate(normal * thk / 2) as PlanarSurface;
 
-            IEnumerable<Extrusion> externalEdgesExtrusions = backSrf.OutlineCurve().SubParts().Select(c => Engine.Geometry.Create.Extrusion(c, normal * thk));
+            Extrusion externalEdgesExtrusions = Engine.Geometry.Create.Extrusion(backSrf.OutlineCurve(), normal * thk);
 
             compositeGeometry.Elements.Add(backSrf);
             compositeGeometry.Elements.Add(frontSrf);
-            compositeGeometry.Elements.AddRange(externalEdgesExtrusions);
+            compositeGeometry.Elements.Add(externalEdgesExtrusions);
 
             return compositeGeometry;
         }
