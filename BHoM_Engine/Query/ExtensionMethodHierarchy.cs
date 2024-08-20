@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
@@ -20,40 +20,48 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Base.Attributes;
+using System.Linq;
 using System.Reflection;
-using BH.oM.Base;
 
 namespace BH.Engine.Base
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Sorts methods based on methods first parameters closeness to the type. First implementation will only rate exact type matching over non exact")]
+        [Description("Builds a hierarchy of methods based on distance of each method's first parameter to the provided type. " +
+                     "First level of hierarchy will contain methods that extend types that are closest in inheritance hierarchy to the input type.")]
         [Input("methods", "The list of extentionmethods to sort. Will assume the first inputparameter of the methods to be of a type assignable from the provided Type")]
         [Input("type", "Type to check closeness to. Assumed to match first input parameter of the methods")]
-        [Output("metods", "Sorted methods")]
-        public static List<MethodInfo> SortExtensionMethods(this IEnumerable<MethodInfo> methods, Type type)
+        [Output("hierarchy", "Hierarchy of input methods based on distance of each method's first parameter to the input type.")]
+        public static List<List<MethodInfo>> ExtensionMethodHierarchy(this IEnumerable<MethodInfo> methods, Type type)
         {
-            if (methods == null || methods.Count() == 0)
-                return new List<MethodInfo>();
+            if (methods == null || type == null)
+                return null;
 
-            if (type == null)
+            if (methods.Count() == 0)
+                return new List<List<MethodInfo>>();
+
+            // Build inheritance hierarchy for the input type
+            List<List<Type>> inheritanceHierarchy = type.InheritanceHierarchy();
+
+            // Organise methods into hierarchy based on hierarchy of types they extend
+            List<List<MethodInfo>> methodHierarchy = inheritanceHierarchy.Select(x => new List<MethodInfo>()).ToList();
+            foreach (MethodInfo method in methods)
             {
-                Compute.RecordWarning("Cannot sort methods based on a null type. The original list will be returned.");
-                return methods.ToList();
+                int hierarchyLevel = inheritanceHierarchy.InheritanceLevel(method.GetParameters()[0].ParameterType);
+                if (hierarchyLevel!=-1)
+                    methodHierarchy[hierarchyLevel].Add(method);
             }
 
-            List<List<Type>> hierarchy = type.InheritanceHierarchy();
-            IEnumerable<int> levels = methods.Select(x => hierarchy.InheritanceLevel(x.GetParameters()[0].ParameterType));
-            return methods.Zip(levels, (m, l) => new { m, l }).Where(x => x.l != -1).OrderBy(x => x.l).Select(x => x.m).ToList();
+            // Return the hierarchy
+            return methodHierarchy.Where(x => x.Count != 0).ToList();
         }
 
 
@@ -131,8 +139,3 @@ namespace BH.Engine.Base
         /***************************************************/
     }
 }
-
-
-
-
-
