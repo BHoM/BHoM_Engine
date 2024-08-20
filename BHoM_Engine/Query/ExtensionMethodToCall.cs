@@ -70,8 +70,17 @@ namespace BH.Engine.Base
         [Output("method", "Most suitable extension method with requested name and parameters. If no method was found, null is returned.")]
         public static MethodInfo ExtensionMethodToCall(string methodName, object[] parameters)
         {
-            if (parameters == null || parameters.Length == 0 || parameters[0] == null || string.IsNullOrWhiteSpace(methodName))
+            if (parameters == null || parameters.Length == 0 || parameters[0] == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Can't find extension method to call because provided method arguments are not valid.");
                 return null;
+            }
+
+            if (string.IsNullOrWhiteSpace(methodName))
+            {
+                BH.Engine.Base.Compute.RecordError("Can't find extension method to call because provided method name is not valid.");
+                return null;
+            }
 
             // Get type of first argument, to be used for first method extraction filtering
             Type type = parameters[0].GetType();
@@ -82,7 +91,13 @@ namespace BH.Engine.Base
 
             // If the method has been called before, just use that
             if (MethodPreviouslyExtracted(key))
-                return GetStoredExtensionMethod(key);
+            {
+                MethodInfo result = GetStoredExtensionMethod(key);
+                if (result == null)
+                    BH.Engine.Base.Compute.RecordError("Applicable extension method not found for provided method name and arguments.");
+
+                return result;
+            }
 
             // Loop through all methods with matching name, first argument and number of parameters, sorted by best match to the first argument
             var applicableMethods = type.ExtensionMethods(methodName).Where(x => x.IsApplicable(parameters)).ExtensionMethodHierarchy(type);
