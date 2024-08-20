@@ -91,13 +91,7 @@ namespace BH.Engine.Base
 
             // If the method has been called before, just use that
             if (MethodPreviouslyExtracted(key))
-            {
-                MethodInfo result = GetStoredExtensionMethod(key);
-                if (result == null)
-                    BH.Engine.Base.Compute.RecordError("Applicable extension method not found for provided method name and arguments.");
-
-                return result;
-            }
+                return GetStoredExtensionMethod(key);
 
             // Loop through all methods with matching name, first argument and number of parameters, sorted by best match to the first argument
             var applicableMethods = type.ExtensionMethods(methodName).Where(x => x.IsApplicable(parameters)).ExtensionMethodHierarchy(type);
@@ -105,7 +99,6 @@ namespace BH.Engine.Base
             // Return null if no applicable methods
             if (applicableMethods.Count == 0)
             {
-                BH.Engine.Base.Compute.RecordError("Applicable extension method not found for provided method name and arguments.");
                 StoreExtensionMethod(key, null);
                 return null;
             }
@@ -113,7 +106,6 @@ namespace BH.Engine.Base
             // If more than one method at the top level of applicable method hierarchy, there is a risk of ambiguous call
             if (applicableMethods[0].Count != 1)
             {
-                BH.Engine.Base.Compute.RecordError("Error in binding the extension method: ambiguous call can be made for provided method name and arguments.");
                 StoreExtensionMethod(key, null);
                 return null;
             }
@@ -125,6 +117,8 @@ namespace BH.Engine.Base
             StoreExtensionMethod(key, methodToCall);
             return methodToCall;
         }
+
+        /***************************************************/
 
         private static bool IsApplicable(this MethodInfo method, object[] parameters)
         {
@@ -154,61 +148,6 @@ namespace BH.Engine.Base
 
             return true;
         }
-
-
-        /***************************************************/
-
-        //[Description("Checks whether there is more than one method that could be called using the provided arguments.")]
-
-        //TODO: CHECK WHAT IF ONE OBJECT IMPLEMENTS 2 INTERFACES!! NEED TO TEST IT PER LEVEL IN HIERARCHY RATHER THAN ALL AT ONCE
-        //TODO: so first build multi-level hierarchy and then call this method against every set
-        //private static bool AreAmbiguous(this List<MethodInfo> methods, object[] arguments)
-        //{
-        //    // Find indexes under which nulls are stored
-        //    List<int> nullIds = new List<int>();
-        //    for (int i = arguments.Length - 1; i >= 0; i--)
-        //    {
-        //        if (arguments[i] == null)
-        //            nullIds.Add(i);
-        //    }
-
-        //    List<List<Type>> inputTypes = new List<List<Type>>();
-        //    foreach (MethodInfo method in methods)
-        //    {
-        //        // Take parameters with values provided as arguments
-        //        List<Type> parameterTypes = method.GetParameters().Take(arguments.Length).Select(x => x.ParameterType).ToList();
-
-        //        // Remove parameters with provided nulls
-        //        foreach (int i in nullIds)
-        //        {
-        //            parameterTypes.RemoveAt(i);
-        //        }
-
-        //        inputTypes.Add(parameterTypes);
-        //    }
-
-        //    // After degradation of parameters as above, check if there are any couples of identical sets
-        //    for (int i = 0; i < inputTypes.Count - 1; i++)
-        //    {
-        //        for (int j = i + 1; j < inputTypes.Count; j++)
-        //        {
-        //            bool same = true;
-        //            for (int k = 0; k < inputTypes[i].Count; k++)
-        //            {
-        //                if (inputTypes[i][k] != inputTypes[j][k])
-        //                {
-        //                    same = false;
-        //                    break;
-        //                }
-        //            }
-
-        //            if (same)
-        //                return true;
-        //        }
-        //    }
-
-        //    return false;
-        //}
 
         /***************************************************/
 

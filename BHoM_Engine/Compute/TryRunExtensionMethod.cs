@@ -170,11 +170,7 @@ namespace BH.Engine.Base
             // If the method has been called before, use the previously compiled function
             Func<object[], object> func;
             if (FunctionPreviouslyCompiled(key))
-            {
                 func = GetStoredCompiledFunction(key);
-                if (func == null)
-                    BH.Engine.Base.Compute.RecordError("Applicable extension method not found for provided method name and arguments.");
-            }
             else
             {
                 MethodInfo method = Query.ExtensionMethodToCall(methodName, parameters);
