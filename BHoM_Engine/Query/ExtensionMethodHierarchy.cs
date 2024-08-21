@@ -52,16 +52,21 @@ namespace BH.Engine.Base
             List<List<Type>> inheritanceHierarchy = type.InheritanceHierarchy();
 
             // Organise methods into hierarchy based on hierarchy of types they extend
-            List<List<MethodInfo>> methodHierarchy = inheritanceHierarchy.Select(x => new List<MethodInfo>()).ToList();
+            Dictionary<int, List<MethodInfo>> methodHierarchy = new Dictionary<int, List<MethodInfo>>();
             foreach (MethodInfo method in methods)
             {
                 int hierarchyLevel = inheritanceHierarchy.InheritanceLevel(method.GetParameters()[0].ParameterType);
-                if (hierarchyLevel!=-1)
+                if (hierarchyLevel != -1)
+                {
+                    if (!methodHierarchy.ContainsKey(hierarchyLevel))
+                        methodHierarchy[hierarchyLevel] = new List<MethodInfo>();
+
                     methodHierarchy[hierarchyLevel].Add(method);
+                }
             }
 
             // Return the hierarchy
-            return methodHierarchy.Where(x => x.Count != 0).ToList();
+            return methodHierarchy.OrderBy(x => x.Key).Select(x => x.Value).ToList();
         }
 
 
