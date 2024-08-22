@@ -50,22 +50,22 @@ namespace BH.Engine.Ground
             if (borehole == null)
             {
                 Base.Compute.RecordError("The borehole is null.");
-                return true;
+                return false;
             }
 
             if (borehole.Id == "")
             {
                 Base.Compute.RecordError("The borehole does not contain an ID.");
-                return true;
+                return false;
             }
 
             if (borehole.Top == null || borehole.Bottom == null)
             {
                 Base.Compute.RecordError("The top or bottom of the Borehole is null.");
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
 
         [Description("Checks if a Strata or its defining properties are valid and outputs relevant error message.")]
@@ -78,16 +78,16 @@ namespace BH.Engine.Ground
             if (strata == null)
             {
                 Base.Compute.RecordError("The stratum is null.");
-                return true;
+                return false;
             }
 
             if (strata.LogDescription.Trim() == "")
             {
                 Base.Compute.RecordError("The LogDescription is empty.");
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
 
         [Description("Checks if a IBoreholeProperty is valid and outputs relevant error message.")]
@@ -100,10 +100,10 @@ namespace BH.Engine.Ground
             if (property == null)
             {
                 ErrorMessage(methodName, property.GetType().ToString(), msg);
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
 
         [Description("Checks if a IStratumProperties is valid and outputs relevant error message.")]
@@ -116,10 +116,10 @@ namespace BH.Engine.Ground
             if (property == null)
             {
                 ErrorMessage(methodName, property.GetType().ToString(), msg);
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
 
         [Description("Checks if a IContaminantProperty is valid and outputs relevant error message.")]
@@ -132,10 +132,10 @@ namespace BH.Engine.Ground
             if (property == null)
             {
                 ErrorMessage(methodName, property.GetType().ToString(), msg);
-                return true;
+                return false;
             }
 
-            return false;
+            return true;
         }
 
         /***************************************************/
