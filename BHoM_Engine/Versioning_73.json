@@ -1,0 +1,5 @@
+﻿{
+  "MessageForNoUpgrade": {
+    "BH.Engine.Base.Modify.SortExtensionMethods(System.Collections.Generic.IEnumerable<System.Reflection.MethodInfo>, System.Type)": "The method has been replaced with Query.ExtensionMethodHierarchy with same inputs but different return type, please replace carefully."
+  }
+}
