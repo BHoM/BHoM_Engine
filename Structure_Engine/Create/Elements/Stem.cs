@@ -49,7 +49,7 @@ namespace BH.Engine.Structure
         [Output("stem", "A tapered stem.")]
         public static Stem Stem(PolyCurve outline, double thicknessTop, double thicknessBottom, Vector normal, IMaterialFragment material = null)
         {
-            return outline.IsNull() ? null : new Stem() { Outline = outline, ThicknessTop = thicknessTop, ThicknessBottom = thicknessBottom, Normal = normal, Material = material };
+            return outline.IsNull() ? null : new Stem() { Perimeter = outline, ThicknessTop = thicknessTop, ThicknessBottom = thicknessBottom, Normal = normal, Material = material };
         }
 
         /***************************************************/
@@ -62,7 +62,7 @@ namespace BH.Engine.Structure
         [Output("stem", "A stem with constant thickness.")]
         public static Stem Stem(PolyCurve outline, double thickness, Vector normal, IMaterialFragment material = null)
         {
-            return outline.IsNull() ? null : new Stem() { Outline = outline, ThicknessTop = thickness, ThicknessBottom = thickness, Normal = normal, Material = material };
+            return outline.IsNull() ? null : new Stem() { Perimeter = outline, ThicknessTop = thickness, ThicknessBottom = thickness, Normal = normal, Material = material };
         }
 
         /***************************************************/

@@ -83,7 +83,7 @@ namespace BH.Engine.Structure
 
             PolyCurve curve = Geometry.Compute.IJoin(curves.Cast<ICurve>().ToList())[0];
 
-            stem.Outline = curve;
+            stem.Perimeter = curve;
 
             return stem;
         }

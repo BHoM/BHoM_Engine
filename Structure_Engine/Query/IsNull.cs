@@ -651,12 +651,12 @@ namespace BH.Engine.Structure
                 ErrorMessage(methodName, "Stem", msg);
                 return true;
             }
-            else if (stem.Outline == null)
+            else if (stem.Perimeter == null)
             {
                 ErrorMessage(methodName, " Edges", msg);
                 return true;
             }
-            else if (stem.Outline.IsNull())
+            else if (stem.Perimeter.IsNull())
                 return true;
 
             return false;

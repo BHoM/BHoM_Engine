@@ -177,7 +177,7 @@ namespace BH.Engine.Structure
 
             CompositeGeometry compositeGeometry = new CompositeGeometry();
 
-            PlanarSurface centralPlanarSrf = Engine.Geometry.Create.PlanarSurface(stem.Outline);
+            PlanarSurface centralPlanarSrf = Engine.Geometry.Create.PlanarSurface(stem.Perimeter);
             Vector normal = stem.Normal.Normalise();
             double thk = stem.ThicknessBottom;
 

@@ -130,7 +130,7 @@ namespace BH.Engine.Structure
         {
             List<IGeometry> geometry = new List<IGeometry>
             {
-                new PlanarSurface(retainingWall.Stem.Outline, null),
+                new PlanarSurface(retainingWall.Stem.Perimeter, null),
                 new PlanarSurface(retainingWall.Footing.TopOutline, null)
             };
 
