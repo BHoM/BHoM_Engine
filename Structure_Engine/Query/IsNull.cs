@@ -656,8 +656,6 @@ namespace BH.Engine.Structure
                 ErrorMessage(methodName, " Edges", msg);
                 return true;
             }
-            else if (stem.Perimeter.IsNull())
-                return true;
 
             return false;
         }

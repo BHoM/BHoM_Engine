@@ -115,9 +115,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the geometry of a Stem. Method required for automatic display in UI packages.")]
-        [Input("stem", "Stem to get the geometry from.")]
-        [Output("surface", "The geometry defining the Stem.")]
+        [Description("Gets the geometry of a RetainingWall. Method required for automatic display in UI packages.")]
+        [Input("stem", "RetainingWall to get the geometry from.")]
+        [Output("geom", "The geometry defining the RetainingWall.")]
         public static IGeometry Geometry(this RetainingWall retainingWall)
         {
             List<IGeometry> geometry = new List<IGeometry>
