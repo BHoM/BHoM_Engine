@@ -41,28 +41,28 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Creates a tapered Stem to be used in the RetainingWall object.")]
-        [Input("outline", "The outer edge of the centre of the Stem in elevation.")]
+        [Input("perimeter", "The outer edge of the centre of the Stem in elevation.")]
         [Input("thicknessTop", "Thickness at the top of the stem.")]
         [Input("thicknessBottom", "Thickness at the bottom of the stem.")]
         [Input("normal", "Normal to the surface of the stem denoting the direction of the retained face.")]
         [Input("material", "Material of the Stem.")]
         [Output("stem", "A tapered stem.")]
-        public static Stem Stem(PolyCurve outline, double thicknessTop, double thicknessBottom, Vector normal, IMaterialFragment material = null)
+        public static Stem Stem(PolyCurve perimeter, double thicknessTop, double thicknessBottom, Vector normal, IMaterialFragment material = null)
         {
-            return outline.IsNull() ? null : new Stem() { Perimeter = outline, ThicknessTop = thicknessTop, ThicknessBottom = thicknessBottom, Normal = normal, Material = material };
+            return perimeter.IsNull() ? null : new Stem() { Perimeter = perimeter, ThicknessTop = thicknessTop, ThicknessBottom = thicknessBottom, Normal = normal, Material = material };
         }
 
         /***************************************************/
 
         [Description("Creates a Stem with a constant thickness.")]
-        [Input("outline", "The outer edge of the centre of the Stem in elevation.")]
+        [Input("perimeter", "The outer edge of the centre of the Stem in elevation.")]
         [Input("thickness", "Thickness at the top and bottom of the stem.")]
         [Input("normal", "Normal to the surface of the stem denoting the direction of the retained face.")]
         [Input("material", "Structural material of the property.")]
         [Output("stem", "A stem with constant thickness.")]
-        public static Stem Stem(PolyCurve outline, double thickness, Vector normal, IMaterialFragment material = null)
+        public static Stem Stem(PolyCurve perimeter, double thickness, Vector normal, IMaterialFragment material = null)
         {
-            return outline.IsNull() ? null : new Stem() { Perimeter = outline, ThicknessTop = thickness, ThicknessBottom = thickness, Normal = normal, Material = material };
+            return perimeter.IsNull() ? null : new Stem() { Perimeter = perimeter, ThicknessTop = thickness, ThicknessBottom = thickness, Normal = normal, Material = material };
         }
 
         /***************************************************/
