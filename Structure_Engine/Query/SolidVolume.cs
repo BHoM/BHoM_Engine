@@ -111,7 +111,7 @@ namespace BH.Engine.Structure
         [Output("volume", "The Stem solid material volume.", typeof(Volume))]
         public static double SolidVolume(this Stem stem)
         {
-            return stem.IsNull() ? 0 : stem.Perimeter.IArea() * (stem.ThicknessBottom + stem.ThicknessTop) / 2;
+            return stem.IsNull() ? 0 : Engine.Geometry.Query.IArea(stem.Perimeter) * (stem.ThicknessBottom + stem.ThicknessTop) / 2;
         }
 
         /***************************************************/

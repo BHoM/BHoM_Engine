@@ -101,14 +101,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the geometry of a PadFoundation as a single curve. Method required for automatic display in UI packages.")]
-        [Input("padFoundation", "Pile to get the line geometry from.")]
-        [Output("curve", "The curve defining the PadFoundation.")]
-        public static IGeometry Geometry(this PadFoundation padFoundation)
-        {
-            return padFoundation.IsNull() ? null : padFoundation.Perimeter;
-        }
-
         [Description("Gets the geometry of a PileFoundation. Method required for automatic display in UI packages.")]
         [Input("pileFoundation", "PileFoundation to get the line geometry from.")]
         [Output("curve", "The geometry defining the PadFoundation.")]
