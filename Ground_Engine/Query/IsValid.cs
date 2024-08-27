@@ -49,13 +49,13 @@ namespace BH.Engine.Ground
         {
             if (borehole == null)
             {
-                Base.Compute.RecordError("The borehole is null.");
+                Base.Compute.RecordError("The Borehole is null.");
                 return false;
             }
 
             if (borehole.Id == "")
             {
-                Base.Compute.RecordError("The borehole does not contain an ID.");
+                Base.Compute.RecordError("The Borehole does not contain an ID.");
                 return false;
             }
 
@@ -84,6 +84,22 @@ namespace BH.Engine.Ground
             if (strata.LogDescription.Trim() == "")
             {
                 Base.Compute.RecordError("The LogDescription is empty.");
+                return false;
+            }
+
+            return true;
+        }
+
+        [Description("Checks if a Strata or its defining properties are valid and outputs relevant error message.")]
+        [Input("strata", "The Strata to test for validity.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Output("isNull", "True if the Strata or its defining properties are valid.")]
+        public static bool IsValid(this ContaminantSample sample, string msg = "", [CallerMemberName] string methodName = "Method")
+        {
+            if (sample == null)
+            {
+                Base.Compute.RecordError("The ContaminantSample is null.");
                 return false;
             }
 
