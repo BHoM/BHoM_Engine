@@ -682,49 +682,6 @@ namespace BH.Engine.Structure
             return false;
         }
 
-        [Description("Checks if a Stem is null and outputs relevant error message.")]
-        [Input("stem", "The Stem to test for null.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Output("isNull", "True if the Stem is null.")]
-        public static bool IsNull(this Stem stem, [CallerMemberName] string methodName = "Method", string msg = "")
-        {
-            if (stem == null)
-            {
-                ErrorMessage(methodName, "Stem", msg);
-                return true;
-            }
-            else if (stem.Outline == null)
-            {
-                ErrorMessage(methodName, " Edges", msg);
-                return true;
-            }
-            else if (stem.Outline.IsNull())
-                return true;
-
-            return false;
-        }
-
-        [Description("Checks if a RetainingWall is null and outputs relevant error message.")]
-        [Input("retainingWall", "The RetainingWall to test for null.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
-        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Output("isNull", "True if the RetainingWall is null.")]
-        public static bool IsNull(this RetainingWall retainingWall, [CallerMemberName] string methodName = "Method", string msg = "")
-        {
-            if (retainingWall == null)
-            {
-                ErrorMessage(methodName, "RetainingWall", msg);
-                return true;
-            }
-            else if (retainingWall.Stem.IsNull())
-                return true;
-            else if (retainingWall.Footing.IsNull())
-                return true;
-
-            return false;
-        }
-
         /***************************************************/
         /**** Public Methods - Interface                ****/
         /***************************************************/
