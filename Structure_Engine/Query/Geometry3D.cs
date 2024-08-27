@@ -126,7 +126,7 @@ namespace BH.Engine.Structure
             if (pad.IsNull() || !pad.IsPlanar())
                 return null;
 
-            PlanarSurface top = Engine.Geometry.Create.PlanarSurface(pad.TopOutline);
+            PlanarSurface top = Engine.Geometry.Create.PlanarSurface(pad.Perimeter);
 
             CompositeGeometry compositeGeometry = new CompositeGeometry();
 
@@ -135,7 +135,7 @@ namespace BH.Engine.Structure
 
             PlanarSurface bot = top.ITranslate(translateVect) as PlanarSurface;
 
-            IEnumerable<Extrusion> externalEdgesExtrusions = pad.TopOutline.SubParts().Select(c => Engine.Geometry.Create.Extrusion(c, translateVect));
+            IEnumerable<Extrusion> externalEdgesExtrusions = pad.Perimeter.ISubParts().Select(c => Engine.Geometry.Create.Extrusion(c, translateVect));
 
             compositeGeometry.Elements.Add(top);
             compositeGeometry.Elements.Add(bot);

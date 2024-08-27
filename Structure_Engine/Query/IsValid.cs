@@ -76,7 +76,7 @@ namespace BH.Engine.Structure
             if (footing.IsNull() || stem.IsNull())
                 return false;
 
-            if (footing.TopOutline.ControlPoints().OrderBy(p => p.Z).First().Z - stem.Perimeter.IControlPoints().OrderBy(p => p.Z).First().Z > Tolerance.MicroDistance)
+            if (footing.Perimeter.IControlPoints().OrderBy(p => p.Z).First().Z - stem.Perimeter.IControlPoints().OrderBy(p => p.Z).First().Z > Tolerance.MicroDistance)
             {
                 Base.Compute.RecordError("The footings highest control point is above the lowest control point of the stem. The two objects should not intersect.");
                 return false;

@@ -590,12 +590,12 @@ namespace BH.Engine.Structure
                 ErrorMessage(methodName, "PadFoundation", msg);
                 return true;
             }
-            else if (padFoundation.TopOutline == null)
+            else if (padFoundation.Perimeter == null)
             {
                 ErrorMessage(methodName, " Edges", msg);
                 return true;
             }
-            else if (padFoundation.TopOutline.IsNull())
+            else if (padFoundation.Perimeter.IsNull())
                 return true;
 
             return false;

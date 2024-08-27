@@ -53,7 +53,7 @@ namespace BH.Engine.Structure
         [Output("padFoundation", "The created PadFoundation with the property and orientation applied.")]
         public static PadFoundation PadFoundation(PolyCurve topOutline, ISurfaceProperty thickness = null, double orientationAngle = 0)
         {
-            return topOutline.IsNull() ? null : new PadFoundation() { TopOutline = topOutline, Property = thickness, OrientationAngle = orientationAngle };
+            return topOutline.IsNull() ? null : new PadFoundation() { Perimeter = topOutline, Property = thickness, OrientationAngle = orientationAngle };
         }
 
         /***************************************************/

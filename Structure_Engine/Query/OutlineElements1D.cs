@@ -46,7 +46,7 @@ namespace BH.Engine.Structure
         [Output("outlineElements", "A collection of outline 1D elements.")]
         public static List<IElement1D> OutlineElements1D(this PadFoundation padFoundation)
         {
-            return padFoundation.IsNull() ? null : padFoundation.TopOutline.SubParts().ToList<IElement1D>();
+            return padFoundation.IsNull() ? null : padFoundation.Perimeter.ISubParts().ToList<IElement1D>();
         }
 
         /***************************************************/

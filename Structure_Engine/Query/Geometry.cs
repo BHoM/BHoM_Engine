@@ -106,7 +106,7 @@ namespace BH.Engine.Structure
         [Output("curve", "The curve defining the PadFoundation.")]
         public static IGeometry Geometry(this PadFoundation padFoundation)
         {
-            return padFoundation.IsNull() ? null : padFoundation.TopOutline;
+            return padFoundation.IsNull() ? null : padFoundation.Perimeter;
         }
 
         [Description("Gets the geometry of a PileFoundation. Method required for automatic display in UI packages.")]
@@ -131,7 +131,7 @@ namespace BH.Engine.Structure
             List<IGeometry> geometry = new List<IGeometry>
             {
                 new PlanarSurface(retainingWall.Stem.Perimeter, null),
-                new PlanarSurface(retainingWall.Footing.TopOutline, null)
+                new PlanarSurface(retainingWall.Footing.Perimeter, null)
             };
 
             return Engine.Geometry.Create.CompositeGeometry(geometry);
