@@ -73,7 +73,7 @@ namespace BH.Engine.Base
                 //If more than one type found, and assembly name was found, try use it to further filter
                 if (types.Count > 1 && assemblyName != null)
                 {
-                    List<Type> assemblyMatches = types.Where(x => x.Assembly.FullName.Split(',')[0] == assemblyName).ToList();  //Assembly fullname contains both name and version. Split removes the verison
+                    List<Type> assemblyMatches = types.Where(x => x.Assembly.GetName().Name == assemblyName).ToList();
                     if (assemblyMatches.Any())   //If any matches are found, use them
                         types = assemblyMatches;
                 }
