@@ -71,14 +71,14 @@ namespace BH.Engine.Ground
                             suites.Add(contaminantReference.Reference);
                         else
                         {
-                            testName = false;
-                            depth = true;
+                            testName = true;
+                            reference = false;
                         }
                     }
                     else
                     {
-                        testName = false;
-                        depth = true;
+                        testName = true;
+                        reference = false;
                     }
                 }    
                 
