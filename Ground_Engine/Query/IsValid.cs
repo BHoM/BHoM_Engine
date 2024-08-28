@@ -90,11 +90,11 @@ namespace BH.Engine.Ground
             return true;
         }
 
-        [Description("Checks if a Strata or its defining properties are valid and outputs relevant error message.")]
-        [Input("strata", "The Strata to test for validity.")]
+        [Description("Checks if a ContaminantSample or its defining properties are valid and outputs relevant error message.")]
+        [Input("sample", "The ContaminantSample to test for validity.")]
         [Input("msg", "Optional message to be returned in addition to the generated error message.")]
         [Input("methodName", "The name of the method to reference in the error message.")]
-        [Output("isNull", "True if the Strata or its defining properties are valid.")]
+        [Output("isNull", "True if the ContaminantSample or its defining properties are valid.")]
         public static bool IsValid(this ContaminantSample sample, string msg = "", [CallerMemberName] string methodName = "Method")
         {
             if (sample == null)
