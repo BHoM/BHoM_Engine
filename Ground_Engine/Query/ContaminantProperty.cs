@@ -25,12 +25,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Data;
 using BH.oM.Geometry;
 using BH.oM.Ground;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Base;
+using BH.Engine.Data;
 using BH.Engine.Geometry;
+using BH.oM.Data.Requests;
 
 
 namespace BH.Engine.Ground
@@ -41,33 +45,29 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Generates a list of lines relating to the strata within the Borehole which can be used for visualisation purposes.")]
-        [Input("borehole", "The Borehole from which to produce the lines representing the strata.")]
-        [Output("strata", "A list of lines representing the strata from the Borehole.")]
-        public static List<Line> StrataLines(this Borehole borehole)
+        [Description("Returns the IContaminantProperty matching the type provided..")]
+        [Input("sample", "The ContaminantSample to retrieve the property from.")]
+        [Input("type", "The type that inherits IContaminantProperty to search the ContaminantSample for.")]
+        [Output("property", "The IContaminantProperty found on the ContaminantSample.")]
+        public static IContaminantProperty ContaminantProperty(this ContaminantSample sample, Type type)
         {
-            List<Line> lines = new List<Line>();
-
-            // Null checks
-            if (IsValid(borehole))
+            if (sample.IsValid())
             {
-                Vector direction = Geometry.Create.Vector(borehole.Top, borehole.Bottom).Normalise();
-                foreach (Stratum stratum in borehole.Strata)
+                List<IContaminantProperty> contaminantProperties = sample.ContaminantProperties;
+
+                if (contaminantProperties.Select(x => x.GetType()).Contains(type))
+                    return (IContaminantProperty)Base.Query.FilterByType(contaminantProperties, type).First();
+                else
                 {
-                    Point start = borehole.Top.Translate(direction * stratum.Top);
-                    Point bottom = borehole.Top.Translate(direction * stratum.Bottom);
-                    Line line = new Line() { Start = start, End = bottom };
-                    lines.Add(line);
+                    Base.Compute.RecordError($"The ContaminantSample does not contain {type}.");
+                    return null;
                 }
             }
             else
                 return null;
-
-            return lines;
         }
+
+        /***************************************************/
 
     }
 }
-
-
-
