@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
@@ -21,52 +21,50 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
-using BH.oM.Dimensional;
+using BH.oM.Structure;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
-using BH.Engine.Base;
 using BH.Engine.Geometry;
-
 
 namespace BH.Engine.Structure
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
-        /****               Public Methods              ****/
+        /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Sets the Outline Element1Ds of a PadFoundation, i.e. the ExternalBoundary. Method required for all IElement2Ds.\n" +
-                     "The provided edges all need to be ICurves and should form a closed loop. No checking for planarity is made by the method.\n" +
-                     "The Method will return a new PadFoundation with the provided edges as the TopSurface.")]
-        [Input("padFoundation", "The PadFoundation to update the ExternalEdge of.")]
-        [Input("curves", "A list of IElement1Ds which all should be of a type of ICurve.")]
-        [Output("padFoundation", "A new PadFoundation with TopSurface matching the provided edges.")]
-        public static PadFoundation SetOutlineElements1D(this PadFoundation padFoundation, IEnumerable<IElement1D> curves)
+
+        [Description("Checks if a RetainignWall is valid by verifying that the Stem does not intersect the footing.")]
+        [Input("retainingWall", "The RetainingWall to check.")]
+        [Output("result", "Returns true if the RetainingWall is valid.")]
+        public static bool IsValid(this RetainingWall retainingWall)
         {
-            if (padFoundation.IsNull())
-                return padFoundation;
-
-            if (curves.IsNullOrEmpty())
-            {
-                Base.Compute.RecordError("The list of IElement1D is null or empty.");
-                return padFoundation;
-            }
-
-            PolyCurve curve = Geometry.Compute.IJoin(curves.Cast<ICurve>().ToList())[0];
-
-            return Create.PadFoundation(curve, padFoundation.Property, padFoundation.OrientationAngle);
+            return IsValid(retainingWall.Stem, retainingWall.Footing);
         }
 
         /***************************************************/
 
+        [Description("Checks if a Stem and PadFoundation are valid by performing null checks and a basic check that the stem does not go into the footing.")]
+        [Input("retainingWall", "The RetainingWall to check.")]
+        [Input("footing", "The footing to check.")]
+        [Output("result", "Returns true if the Stem and PadFoundation are valid.")]
+        public static bool IsValid(this Stem stem, PadFoundation footing)
+        {
+            if (footing.IsNull() || stem.IsNull())
+                return false;
+
+            if (footing.Perimeter.IControlPoints().OrderBy(p => p.Z).First().Z - stem.Perimeter.IControlPoints().OrderBy(p => p.Z).First().Z > Tolerance.MicroDistance)
+            {
+                Base.Compute.RecordError("The footings highest control point is above the lowest control point of the stem. The two objects should not intersect.");
+                return false;
+            }
+
+            return true;
+        }
     }
 }
-
-
-
-

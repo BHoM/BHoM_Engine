@@ -27,14 +27,12 @@ using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using BH.oM.Structure.Elements;
 using System.Linq;
-using System.Collections.Generic;
 using System;
-using BH.oM.Physical.Materials;
 using BH.oM.Structure.SurfaceProperties;
 using BH.Engine.Spatial;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Spatial.ShapeProfiles;
-using static System.Collections.Specialized.BitVector32;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Structure
 {
@@ -107,6 +105,26 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Returns a Stem's solid volume based on the area of the element and its top and bottom thickness.")]
+        [Input("stem", "The Stem to get the volume from.")]
+        [Output("volume", "The Stem solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this Stem stem)
+        {
+            return stem.IsNull() ? 0 : Engine.Geometry.Query.IArea(stem.Perimeter) * (stem.ThicknessBottom + stem.ThicknessTop) / 2;
+        }
+
+        /***************************************************/
+
+        [Description("Returns a RetainingWall's solid volume based on the Stem and Footing volumes.")]
+        [Input("retainingWall", "The RetainingWall to get the volume from.")]
+        [Output("volume", "The RetainingWall solid material volume.", typeof(Volume))]
+        public static double SolidVolume(this RetainingWall retainingWall)
+        {
+            return retainingWall.IsValid() ? SolidVolume(retainingWall.Footing) + SolidVolume(retainingWall.Stem) : 0;
+        }
+
+        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
@@ -158,7 +176,3 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
-
-
-
-

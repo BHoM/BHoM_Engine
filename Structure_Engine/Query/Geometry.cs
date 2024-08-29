@@ -101,14 +101,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the geometry of a PadFoundation as a single curve. Method required for automatic display in UI packages.")]
-        [Input("padFoundation", "Pile to get the line geometry from.")]
-        [Output("curve", "The curve defining the PadFoundation.")]
-        public static IGeometry Geometry(this PadFoundation padFoundation)
-        {
-            return padFoundation.IsNull() ? null : padFoundation.TopOutline;
-        }
-
         [Description("Gets the geometry of a PileFoundation. Method required for automatic display in UI packages.")]
         [Input("pileFoundation", "PileFoundation to get the line geometry from.")]
         [Output("curve", "The geometry defining the PadFoundation.")]
@@ -121,6 +113,21 @@ namespace BH.Engine.Structure
             return Engine.Geometry.Create.CompositeGeometry(geometry);
         }
 
+        /***************************************************/
+
+        [Description("Gets the geometry of a RetainingWall. Method required for automatic display in UI packages.")]
+        [Input("stem", "RetainingWall to get the geometry from.")]
+        [Output("geom", "The geometry defining the RetainingWall.")]
+        public static IGeometry Geometry(this RetainingWall retainingWall)
+        {
+            List<IGeometry> geometry = new List<IGeometry>
+            {
+                new PlanarSurface(retainingWall.Stem.Perimeter, null),
+                new PlanarSurface(retainingWall.Footing.Perimeter, null)
+            };
+
+            return Engine.Geometry.Create.CompositeGeometry(geometry);
+        }
 
         /***************************************************/
         /**** Public Methods - Interface                ****/
@@ -147,7 +154,3 @@ namespace BH.Engine.Structure
     }
 
 }
-
-
-
-
