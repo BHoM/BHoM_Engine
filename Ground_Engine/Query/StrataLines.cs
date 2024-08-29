@@ -46,22 +46,19 @@ namespace BH.Engine.Ground
         [Output("strata", "A list of lines representing the strata from the Borehole.")]
         public static List<Line> StrataLines(this Borehole borehole)
         {
-            List<Line> lines = new List<Line>();
-
             // Null checks
-            if (IsValid(borehole))
-            {
-                Vector direction = Geometry.Create.Vector(borehole.Top, borehole.Bottom).Normalise();
-                foreach (Stratum stratum in borehole.Strata)
-                {
-                    Point start = borehole.Top.Translate(direction * stratum.Top);
-                    Point bottom = borehole.Top.Translate(direction * stratum.Bottom);
-                    Line line = new Line() { Start = start, End = bottom };
-                    lines.Add(line);
-                }
-            }
-            else
+            if (Query.IsValid(borehole))
                 return null;
+
+            Vector direction = Geometry.Create.Vector(borehole.Top, borehole.Bottom).Normalise();
+            List<Line> lines = new List<Line>();
+            foreach(Stratum stratum in borehole.Strata)
+            {
+                Point start = borehole.Top.Translate(direction * stratum.Top);
+                Point bottom = borehole.Top.Translate(direction * stratum.Bottom);
+                Line line = new Line() { Start = start, End = bottom };
+                lines.Add(line);
+            }
 
             return lines;
         }

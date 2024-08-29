@@ -48,37 +48,36 @@ namespace BH.Engine.Ground
         public static Borehole ConsolidateStrata(Borehole borehole, string propertyCompare, int decimals)
         {
             if (borehole.IsValid())
-            {
-                Borehole consolidatedBorehole = borehole.ShallowClone();
-
-                List<Stratum> strata = consolidatedBorehole.Strata;
-                // Add first strata so the strings are formatted the same as the consolidated borehole
-                List<Stratum> consolidatedStrata = new List<Stratum>() { strata[0].RangeProperties(null, propertyCompare, true, decimals) };
-
-                for (int i = 1; i < strata.Count; i++)
-                {
-                    Stratum consolidatedStratum = consolidatedStrata.Last();
-                    Stratum stratum = strata[i];
-                    // Check whether the strings are equal based on the propertyCompare
-                    if (string.Equals(Base.Query.PropertyValue(stratum, propertyCompare), Base.Query.PropertyValue(strata[i - 1], propertyCompare)))
-                    {
-                        // Update ConsolidatedStratum to include next stratum
-                        consolidatedStratum = RangeProperties(stratum, consolidatedStratum, propertyCompare, false, decimals);
-                        consolidatedStrata[consolidatedStrata.Count - 1] = consolidatedStratum;
-                    }
-                    else
-                    {
-                        // Add new line
-                        consolidatedStrata.Add(strata[i].RangeProperties(null, propertyCompare, true, decimals));
-                    }
-                }
-
-                consolidatedBorehole.SetPropertyValue("Strata", consolidatedStrata);
-                return consolidatedBorehole;
-
-            }
-            else
                 return null;
+
+
+            Borehole consolidatedBorehole = borehole.ShallowClone();
+
+            List<Stratum> strata = consolidatedBorehole.Strata;
+            // Add first strata so the strings are formatted the same as the consolidated borehole
+            List<Stratum> consolidatedStrata = new List<Stratum>() { strata[0].RangeProperties(null, propertyCompare, true, decimals) };
+
+            for (int i = 1; i < strata.Count; i++)
+            {
+                Stratum consolidatedStratum = consolidatedStrata.Last();
+                Stratum stratum = strata[i];
+                // Check whether the strings are equal based on the propertyCompare
+                if (string.Equals(Base.Query.PropertyValue(stratum, propertyCompare), Base.Query.PropertyValue(strata[i - 1], propertyCompare)))
+                {
+                    // Update ConsolidatedStratum to include next stratum
+                    consolidatedStratum = RangeProperties(stratum, consolidatedStratum, propertyCompare, false, decimals);
+                    consolidatedStrata[consolidatedStrata.Count - 1] = consolidatedStratum;
+                }
+                else
+                {
+                    // Add new line
+                    consolidatedStrata.Add(strata[i].RangeProperties(null, propertyCompare, true, decimals));
+                }
+            }
+
+            consolidatedBorehole.SetPropertyValue("Strata", consolidatedStrata);
+
+            return consolidatedBorehole;
         }
 
         /***************************************************/

@@ -49,23 +49,23 @@ namespace BH.Engine.Ground
         {
             if (borehole == null)
             {
-                Base.Compute.RecordError("The Borehole is null.");
-                return false;
+                Base.Compute.RecordError("The borehole is null.");
+                return true;
             }
 
             if (borehole.Id == "")
             {
-                Base.Compute.RecordError("The Borehole does not contain an ID.");
-                return false;
+                Base.Compute.RecordError("The borehole does not contain an ID.");
+                return true;
             }
 
             if (borehole.Top == null || borehole.Bottom == null)
             {
                 Base.Compute.RecordError("The top or bottom of the Borehole is null.");
-                return false;
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         [Description("Checks if a Strata or its defining properties are valid and outputs relevant error message.")]
@@ -78,32 +78,16 @@ namespace BH.Engine.Ground
             if (strata == null)
             {
                 Base.Compute.RecordError("The stratum is null.");
-                return false;
+                return true;
             }
 
             if (strata.LogDescription.Trim() == "")
             {
                 Base.Compute.RecordError("The LogDescription is empty.");
-                return false;
+                return true;
             }
 
-            return true;
-        }
-
-        [Description("Checks if a ContaminantSample or its defining properties are valid and outputs relevant error message.")]
-        [Input("sample", "The ContaminantSample to test for validity.")]
-        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
-        [Input("methodName", "The name of the method to reference in the error message.")]
-        [Output("isNull", "True if the ContaminantSample or its defining properties are valid.")]
-        public static bool IsValid(this ContaminantSample sample, string msg = "", [CallerMemberName] string methodName = "Method")
-        {
-            if (sample == null)
-            {
-                Base.Compute.RecordError("The ContaminantSample is null.");
-                return false;
-            }
-
-            return true;
+            return false;
         }
 
         [Description("Checks if a IBoreholeProperty is valid and outputs relevant error message.")]
@@ -116,10 +100,10 @@ namespace BH.Engine.Ground
             if (property == null)
             {
                 ErrorMessage(methodName, property.GetType().ToString(), msg);
-                return false;
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         [Description("Checks if a IStratumProperties is valid and outputs relevant error message.")]
@@ -132,10 +116,10 @@ namespace BH.Engine.Ground
             if (property == null)
             {
                 ErrorMessage(methodName, property.GetType().ToString(), msg);
-                return false;
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         [Description("Checks if a IContaminantProperty is valid and outputs relevant error message.")]
@@ -148,10 +132,10 @@ namespace BH.Engine.Ground
             if (property == null)
             {
                 ErrorMessage(methodName, property.GetType().ToString(), msg);
-                return false;
+                return true;
             }
 
-            return true;
+            return false;
         }
 
         /***************************************************/

@@ -44,11 +44,7 @@ namespace BH.Engine.Structure
         [Output("result", "Returns true if the RetainingWall is valid.")]
         public static bool IsValid(this RetainingWall retainingWall)
         {
-<<<<<<<< HEAD:Structure_Engine/Query/IsValid.cs
             return IsValid(retainingWall.Stem, retainingWall.Footing);
-========
-            return padFoundation.IsNull() ? null : padFoundation.Perimeter.ISubParts().ToList<IElement1D>();
->>>>>>>> baa2caa5af03bfe34e82004da26f4af0fe5977f3:Structure_Engine/Query/OutlineElements1D.cs
         }
 
         /***************************************************/
