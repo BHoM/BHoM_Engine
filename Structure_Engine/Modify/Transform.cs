@@ -271,7 +271,7 @@ namespace BH.Engine.Structure
 
             PadFoundation result = padFoundation.ShallowClone();
 
-            result.TopOutline = result.TopOutline.Transform(transform);
+            result.Perimeter = result.Perimeter.ITransform(transform);
 
             Basis orientation = padFoundation.LocalOrientation()?.Transform(transform);
             if (orientation != null)
