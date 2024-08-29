@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
@@ -20,17 +20,24 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using BH.oM.Structure;
+using BH.oM.Data;
 using BH.oM.Geometry;
-using BH.oM.Structure.Elements;
+using BH.oM.Ground;
+using BH.oM.Quantities.Attributes;
+using BH.Engine.Base;
+using BH.Engine.Data;
 using BH.Engine.Geometry;
+using BH.oM.Data.Requests;
 
-namespace BH.Engine.Structure
+
+namespace BH.Engine.Ground
 {
     public static partial class Query
     {
@@ -38,37 +45,29 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-
-        [Description("Checks if a RetainignWall is valid by verifying that the Stem does not intersect the footing.")]
-        [Input("retainingWall", "The RetainingWall to check.")]
-        [Output("result", "Returns true if the RetainingWall is valid.")]
-        public static bool IsValid(this RetainingWall retainingWall)
+        [Description("Returns the IContaminantProperty matching the type provided..")]
+        [Input("sample", "The ContaminantSample to retrieve the property from.")]
+        [Input("type", "The type that inherits IContaminantProperty to search the ContaminantSample for.")]
+        [Output("property", "The IContaminantProperty found on the ContaminantSample.")]
+        public static IContaminantProperty ContaminantProperty(this ContaminantSample sample, Type type)
         {
-<<<<<<<< HEAD:Structure_Engine/Query/IsValid.cs
-            return IsValid(retainingWall.Stem, retainingWall.Footing);
-========
-            return padFoundation.IsNull() ? null : padFoundation.Perimeter.ISubParts().ToList<IElement1D>();
->>>>>>>> baa2caa5af03bfe34e82004da26f4af0fe5977f3:Structure_Engine/Query/OutlineElements1D.cs
+            if (sample.IsValid())
+            {
+                List<IContaminantProperty> contaminantProperties = sample.ContaminantProperties;
+
+                if (contaminantProperties.Select(x => x.GetType()).Contains(type))
+                    return (IContaminantProperty)Base.Query.FilterByType(contaminantProperties, type).First();
+                else
+                {
+                    Base.Compute.RecordError($"The ContaminantSample does not contain {type}.");
+                    return null;
+                }
+            }
+            else
+                return null;
         }
 
         /***************************************************/
 
-        [Description("Checks if a Stem and PadFoundation are valid by performing null checks and a basic check that the stem does not go into the footing.")]
-        [Input("retainingWall", "The RetainingWall to check.")]
-        [Input("footing", "The footing to check.")]
-        [Output("result", "Returns true if the Stem and PadFoundation are valid.")]
-        public static bool IsValid(this Stem stem, PadFoundation footing)
-        {
-            if (footing.IsNull() || stem.IsNull())
-                return false;
-
-            if (footing.Perimeter.IControlPoints().OrderBy(p => p.Z).First().Z - stem.Perimeter.IControlPoints().OrderBy(p => p.Z).First().Z > Tolerance.MicroDistance)
-            {
-                Base.Compute.RecordError("The footings highest control point is above the lowest control point of the stem. The two objects should not intersect.");
-                return false;
-            }
-
-            return true;
-        }
     }
 }
