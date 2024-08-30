@@ -92,31 +92,19 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            if (!line.IsInPlane(Geometry.Create.Plane(line.Start, Vector.ZAxis)))
-            {
-                Base.Compute.RecordError("Provided line is not parallel to the XY plane. Please provide a line parallel to the XY plane.");
-                return null;
-            }
-
             PolyCurve stemOutline = new PolyCurve();
             PolyCurve footingOutline = new PolyCurve();
 
             //Create the footing outline. 
-            Line toeLine = line.ShallowClone();
-            Line heelLine = line.ShallowClone();
-
-            toeLine = toeLine.Translate(normal * (toeLength + stemThickness / 2));
-            heelLine = heelLine.Translate(normal * (heelLength + stemThickness / 2) * -1).Reverse();
+            Line toeLine = line.Translate(normal * (toeLength + stemThickness / 2));
+            Line heelLine = line.Translate(normal * (heelLength + stemThickness / 2) * -1).Reverse();
 
             footingOutline.Curves = new List<ICurve> { toeLine, Geometry.Create.Line(toeLine.End, heelLine.Start), heelLine, Geometry.Create.Line(heelLine.End, toeLine.Start) };
 
             //Create the Stem outline.
-            Line bottomLine = line.ShallowClone();
-            Line topLine = line.ShallowClone();
+            Line topLine = line.Translate(Vector.ZAxis * retainedHeight).Reverse();
 
-            topLine = topLine.Translate(Vector.ZAxis * retainedHeight).Reverse();
-
-            stemOutline.Curves = new List<ICurve> { bottomLine, Geometry.Create.Line(bottomLine.End, topLine.Start), topLine, Geometry.Create.Line(topLine.End, bottomLine.Start) };
+            stemOutline.Curves = new List<ICurve> { line, Geometry.Create.Line(line.End, topLine.Start), topLine, Geometry.Create.Line(topLine.End, line.Start) };
 
             return RetainingWall(Create.Stem(stemOutline, stemThickness, normal), Create.PadFoundation(footingOutline, footingThickness), retainedHeight, coverDepth, retentionAngle);
         }
