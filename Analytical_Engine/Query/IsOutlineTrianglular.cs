@@ -47,17 +47,8 @@ namespace BH.Engine.Analytical
             where TOpening : IOpening<TEdge>
         {
             PolyCurve polycurve = ExternalPolyCurve(panel);
-            if (polycurve == null)
-                return false;
 
-            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
-                return false;
-
-            List<Point> points = polycurve.DiscontinuityPoints();
-            if (points.Count != 3)
-                return false;
-
-            return true;
+            return polycurve.IsTriangular();
 
         }
 

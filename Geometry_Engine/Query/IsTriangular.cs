@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
@@ -20,8 +20,6 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-
-using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
 using BH.Engine.Geometry;
@@ -32,7 +30,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 
-namespace BH.Engine.Analytical
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
@@ -40,16 +38,22 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel's outline is a square.")]
-        [Input("panel", "The IPanel to check if the outline is a square.")]
-        [Output("bool", "True for panels with a square outline or false for panels with a non square outline.")]
-        public static bool IsOutlineSquare<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
-            where TEdge : IEdge
-            where TOpening : IOpening<TEdge>
+        [Description("Determines whether a panel's outline is a rectangular.")]
+        [Input("panel", "The IPanel to check if the outline is a rectangular.")]
+        [Output("bool", "True for panels with a rectangular outline or false for panels with a non rectangular outline.")]
+        public static bool IsTriangular(this PolyCurve polycurve)
         {
-            PolyCurve polycurve = ExternalPolyCurve(panel);
+            if (polycurve == null)
+                return false;
 
-            return polycurve.IsSquare();
+            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
+                return false;
+
+            List<Point> points = polycurve.DiscontinuityPoints();
+            if (points.Count != 3)
+                return false;
+
+            return true;
         }
 
         /***************************************************/

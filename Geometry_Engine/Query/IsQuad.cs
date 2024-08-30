@@ -20,7 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.ComponentModel;
 using BH.oM.Geometry;
+
 
 namespace BH.Engine.Geometry
 {
@@ -33,6 +38,23 @@ namespace BH.Engine.Geometry
         public static bool IsQuad(this Face face)
         {
             return face.D != -1;
+        }
+
+        /***************************************************/
+
+        public static bool IsQuad(this PolyCurve polycurve)
+        {
+            if (polycurve == null)
+                return false;
+
+            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
+                return false;
+
+            List<Point> points = polycurve.DiscontinuityPoints();
+            if (points.Count != 4)
+                return false;
+
+            return points.IsCoplanar();
         }
 
         /***************************************************/

@@ -20,19 +20,14 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-
-using BH.oM.Analytical.Elements;
-using BH.oM.Geometry;
-using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
-using BH.Engine.Reflection;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
+using BH.oM.Geometry;
 
-namespace BH.Engine.Analytical
+
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
@@ -40,23 +35,38 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel's outline is a square.")]
-        [Input("panel", "The IPanel to check if the outline is a square.")]
-        [Output("bool", "True for panels with a square outline or false for panels with a non square outline.")]
-        public static bool IsOutlineSquare<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
-            where TEdge : IEdge
-            where TOpening : IOpening<TEdge>
+        public static bool IsSquare(this PolyCurve polycurve)
         {
-            PolyCurve polycurve = ExternalPolyCurve(panel);
+            if (polycurve == null)
+                return false;
 
-            return polycurve.IsSquare();
+            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
+                return false;
+
+            List<Point> points = polycurve.DiscontinuityPoints();
+            if (points.Count != 4)
+                return false;
+            if (!points.IsCoplanar())
+                return false;
+
+            List<Vector> vectors = VectorsBetweenPoints(points);
+
+            List<double> angles = AnglesBetweenVectors(vectors);
+
+            //Check the three angles are pi/2 degrees within tolerance
+            if (angles.Any(x => Math.Abs(Math.PI / 2 - x) > Tolerance.Angle))
+                return false;
+
+            //Check all lengths are the same within tolerance
+            double length = vectors.First().Length();
+            return vectors.Skip(0).All(x => (Math.Abs(x.Length() - length) < Tolerance.Distance)) ? true : false;
         }
 
         /***************************************************/
-
     }
-
 }
+
+
 
 
 

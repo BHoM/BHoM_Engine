@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
@@ -20,7 +20,6 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Analytical.Elements;
 using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
 using BH.Engine.Geometry;
@@ -31,7 +30,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 
-namespace BH.Engine.Analytical
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
@@ -42,13 +41,64 @@ namespace BH.Engine.Analytical
         [Description("Determines whether a panel's outline is a rectangular.")]
         [Input("panel", "The IPanel to check if the outline is a rectangular.")]
         [Output("bool", "True for panels with a rectangular outline or false for panels with a non rectangular outline.")]
-        public static bool IsOutlineRectangular<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
-            where TEdge : IEdge
-            where TOpening : IOpening<TEdge>
+        public static bool IsRectangular(this PolyCurve polycurve)
         {
-            PolyCurve polycurve = ExternalPolyCurve(panel);
+            if (polycurve == null)
+                return false;
 
-            return polycurve.IsRectangular();
+            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
+                return false;
+
+            List<Point> points = polycurve.DiscontinuityPoints();
+            if (points.Count != 4)
+                return false;
+            if (!points.IsCoplanar())
+                return false;
+
+            List<Vector> vectors = VectorsBetweenPoints(points);
+
+            List<double> angles = AnglesBetweenVectors(vectors);
+
+            //Check the three angles are pi/2 degrees within tolerance
+            return (angles.Any(x => Math.Abs(Math.PI / 2 - x) > Tolerance.Angle)) ? false : true;
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        [Description("Computes the vectors between the provided list of points.")]
+        [Input("points", "The list of points.")]
+        [Output("vectors", "The vectors computed from the list of points.")]
+        private static List<Vector> VectorsBetweenPoints(this List<Point> points)
+        {
+            List<Vector> vectors = new List<Vector>();
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                int next = (i + 1) % points.Count;
+                vectors.Add(points[next] - points[i]);
+            }
+
+            return vectors;
+        }
+
+        /***************************************************/
+
+        [Description("Gets the internal angle between sequential vectors.")]
+        [Input("vectors", "The vectors to find the internal angle between.")]
+        [Output("angles", "The internal angles between sequential vectors.")]
+        private static List<double> AnglesBetweenVectors(this List<Vector> vectors)
+        {
+
+            List<double> angles = new List<double>();
+            for (int i = 0; i < vectors.Count; i++)
+            {
+                int next = (i + 1) % vectors.Count;
+                angles.Add(vectors[i].Angle(vectors[next]));
+            }
+
+            return angles;
         }
 
         /***************************************************/

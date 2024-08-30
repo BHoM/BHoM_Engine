@@ -50,15 +50,7 @@ namespace BH.Engine.Analytical
             if (polycurve == null)
                 return false;
 
-            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
-                return false;
-
-            List<Point> points = polycurve.DiscontinuityPoints();
-            if (points.Count != 4)
-                return false;
-
-            return points.IsCoplanar();
-
+            return polycurve.IsQuad();
         }
 
         /***************************************************/
