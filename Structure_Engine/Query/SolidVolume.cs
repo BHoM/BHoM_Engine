@@ -33,6 +33,8 @@ using BH.Engine.Spatial;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.Engine.Geometry;
+using BH.oM.Analytical;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Structure
 {
@@ -111,7 +113,13 @@ namespace BH.Engine.Structure
         [Output("volume", "The Stem solid material volume.", typeof(Volume))]
         public static double SolidVolume(this Stem stem)
         {
-            return stem.IsNull() ? 0 : Engine.Geometry.Query.IArea(stem.Perimeter) * (stem.ThicknessBottom + stem.ThicknessTop) / 2;
+            if (Math.Abs(stem.ThicknessTop - stem.ThicknessBottom) < Tolerance.Distance || stem.OutlineCurve().IsRectangular())
+                return stem.IsNull() ? 0 : Engine.Geometry.Query.IArea(stem.Perimeter) * (stem.ThicknessBottom + stem.ThicknessTop) / 2;
+            else
+            {
+                Base.Compute.RecordError("Solid volume cannot be calculated for non-rectangular non-uniform Stems");
+                return 0;
+            }
         }
 
         /***************************************************/
