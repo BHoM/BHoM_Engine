@@ -39,9 +39,9 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel's outline is triangular.")]
+        [Description("Determines whether a Panel's outline is triangular.")]
         [Input("panel", "The IPanel to check if the outline is a triangular.")]
-        [Output("bool", "True for panels with a triangular outline or false for panels with a non-triangular outline.")]
+        [Output("bool", "True for Panels with a triangular outline or false for Panels with a non-triangular outline.")]
         public static bool IsOutlineTriangular<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>

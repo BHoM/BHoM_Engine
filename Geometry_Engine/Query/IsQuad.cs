@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using BH.oM.Geometry;
+using BH.oM.Base.Attributes;
 
 
 namespace BH.Engine.Geometry
@@ -34,7 +35,9 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
+        [Description("Determines whether a Polycurve is a quadilaterial.")]
+        [Input("panel", "The Polycurve to check if it is quadilaterial.")]
+        [Output("bool", "True for Polycurves that are quadilaterial or false for Polycurves that are non-quadilaterial.")]
         public static bool IsQuad(this Face face)
         {
             return face.D != -1;

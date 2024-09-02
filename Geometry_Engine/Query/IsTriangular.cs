@@ -38,9 +38,9 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel's outline is a rectangular.")]
-        [Input("panel", "The IPanel to check if the outline is a rectangular.")]
-        [Output("bool", "True for panels with a rectangular outline or false for panels with a non rectangular outline.")]
+        [Description("Determines whether a Polycurve is triangular.")]
+        [Input("panel", "The Polycurve to check if it is triangular.")]
+        [Output("bool", "True for Polycurves that are triangular or false for Polycurves that are non-triangular.")]
         public static bool IsTriangular(this PolyCurve polycurve)
         {
             if (polycurve == null)

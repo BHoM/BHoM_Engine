@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using BH.oM.Geometry;
+using BH.oM.Base.Attributes;
 
 
 namespace BH.Engine.Geometry
@@ -34,6 +35,9 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        [Description("Determines whether a Polycurve is a square.")]
+        [Input("panel", "The Polycurve to check if it is square.")]
+        [Output("bool", "True for Polycurves that are square or false for Polycurves that are not square.")]
 
         public static bool IsSquare(this PolyCurve polycurve)
         {

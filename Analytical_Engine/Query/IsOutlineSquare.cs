@@ -40,9 +40,9 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel's outline is a square.")]
+        [Description("Determines whether a Panel's outline is a square.")]
         [Input("panel", "The IPanel to check if the outline is a square.")]
-        [Output("bool", "True for panels with a square outline or false for panels with a non square outline.")]
+        [Output("bool", "True for Panels with a square outline or false for Panels with a non square outline.")]
         public static bool IsOutlineSquare<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
