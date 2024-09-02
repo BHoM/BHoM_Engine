@@ -39,9 +39,9 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel's outline is a rectangular.")]
+        [Description("Determines whether a Panel's outline is a rectangular.")]
         [Input("panel", "The IPanel to check if the outline is a rectangular.")]
-        [Output("bool", "True for panels with a rectangular outline or false for panels with a non rectangular outline.")]
+        [Output("bool", "True for Panels with a rectangular outline or false for Panels with a non rectangular outline.")]
         public static bool IsOutlineRectangular<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>

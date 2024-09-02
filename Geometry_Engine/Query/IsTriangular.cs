@@ -39,7 +39,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         [Description("Determines whether a Polycurve is triangular.")]
-        [Input("panel", "The Polycurve to check if it is triangular.")]
+        [Input("polycurve", "The Polycurve to check if it is triangular.")]
         [Output("bool", "True for Polycurves that are triangular or false for Polycurves that are non-triangular.")]
         public static bool IsTriangular(this PolyCurve polycurve)
         {

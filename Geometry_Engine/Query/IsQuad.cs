@@ -35,16 +35,18 @@ namespace BH.Engine.Geometry
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Determines whether a Polycurve is a quadilaterial.")]
-        [Input("panel", "The Polycurve to check if it is quadilaterial.")]
-        [Output("bool", "True for Polycurves that are quadilaterial or false for Polycurves that are non-quadilaterial.")]
+        [Description("Determines whether a Face is a quadilaterial.")]
+        [Input("face", "The Face to check if it is quadilaterial.")]
+        [Output("bool", "True for Faces that are quadilaterial or false for Faces that are non-quadilaterial.")]
         public static bool IsQuad(this Face face)
         {
             return face.D != -1;
         }
 
         /***************************************************/
-
+        [Description("Determines whether a Polycurve is a quadilaterial.")]
+        [Input("polycurve", "The Polycurve to check if it is quadilaterial.")]
+        [Output("bool", "True for Polycurves that are quadilaterial or false for Polycurves that are non-quadilaterial.")]
         public static bool IsQuad(this PolyCurve polycurve)
         {
             if (polycurve == null)
