@@ -274,7 +274,7 @@ namespace BH.Engine.Structure
             double volPerAreaRibZone = property.RibHeight * (property.RibThickness / property.RibSpacing);
 
             return Matter.Compute.AggregateMaterialComposition(new List<MaterialComposition>
-            { 
+            {
                 topMat.MaterialComposition(reinforcementDensity),
                 bottomMat.MaterialComposition(reinforcementDensity),
                 ribMat.MaterialComposition(reinforcementDensity)
@@ -403,6 +403,68 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
+
+        [Description("Returns a Stem's homogeneous MaterialComposition.")]
+        [Input("stem", "The Stem to query.")]
+        [Output("materialComposition", "The MaterialComposition of the Stem.")]
+        public static MaterialComposition MaterialComposition(this Stem stem)
+        {
+            if (stem.IsNull() || stem.Material.IsNull())
+                return null;
+
+            ReinforcementDensity reinfDensity = stem.FindFragment<ReinforcementDensity>();
+
+            return MaterialComposition(stem.Material, reinfDensity);
+        }
+
+        /***************************************************/
+
+        [Description("Returns a RetainingWall's homogeneous MaterialComposition based on the Stem and Footing.")]
+        [Input("retainingWall", "The RetainingWall to query.")]
+        [Output("materialComposition", "The MaterialComposition of the RetainingWall.")]
+        public static MaterialComposition MaterialComposition(this RetainingWall retainingWall)
+        {
+            if (retainingWall.IsNull() && retainingWall.Stem.IsNull() && retainingWall.Footing.IsNull())
+                return null;
+
+
+            List<IElementM> elements = new List<IElementM>
+            {
+                retainingWall.Stem,
+                retainingWall.Footing
+            };
+
+            //Case for when ReinforcementDensity is attached to both higher and lower level objects.
+            if ((retainingWall.Stem.FindFragment<ReinforcementDensity>() != null || retainingWall.Footing.FindFragment<ReinforcementDensity>() != null) && retainingWall.FindFragment<ReinforcementDensity>() != null)
+            {
+                Base.Compute.RecordWarning("A ReinforcementDensity Fragment is found on both the RetainingWall and on at least one of its defining objects. The ReinforcementDensity of the defining objects has been used.");
+                return Matter.Compute.AggregateMaterialComposition(elements);
+            }
+
+            //Case when ReinforcementDensity is atatched to lower level objects.
+            //Gives an error becasue the ReinforcementDensity is null on the retaining wall even though it works fine.
+            else if (retainingWall.Stem.FindFragment<ReinforcementDensity>() != null || retainingWall.Footing.FindFragment<ReinforcementDensity>() != null)
+                return Matter.Compute.AggregateMaterialComposition(elements);
+
+            //Case when ReinforcementDensity is atatched to higher level object.
+            //Gives an error becasue the ReinforcementDensity is null on the retaining wall even though it works fine.
+            else if (retainingWall.FindFragment<ReinforcementDensity>() != null)
+            {
+                ReinforcementDensity reinfDensity = retainingWall.FindFragment<ReinforcementDensity>();
+
+                List<IElementM> reinforcedElements = new List<IElementM>
+                {
+                    (IElementM)retainingWall.Stem.AddFragment(reinfDensity),
+                    (IElementM)retainingWall.Footing.AddFragment(reinfDensity)
+                };
+
+                return Matter.Compute.AggregateMaterialComposition(reinforcedElements);
+            }
+
+            return Matter.Compute.AggregateMaterialComposition(elements);
+        }
+
+        /***************************************************/
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
@@ -420,6 +482,7 @@ namespace BH.Engine.Structure
 
         [Description("Returns a SurfaceProperty's MaterialComposition.")]
         [Input("property", "The SurfaceProperty to query.")]
+        [Input("reinforcementDensity", "ReinforcementDensity assigned to the SurfaceProperty.")]
         [Output("materialComposition", "The MaterialComposition of the SurfaceProperty.")]
         public static MaterialComposition IMaterialComposition(this ISurfaceProperty property, ReinforcementDensity reinforcementDensity = null)
         {
@@ -496,7 +559,3 @@ namespace BH.Engine.Structure
 
     }
 }
-
-
-
-

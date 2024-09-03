@@ -73,6 +73,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
+        [PreviousVersion("7.3", "BH.Engine.Structure.Modify.SetOutlineElements1D(BH.oM.Structure.Elements.PadFoundation, System.Collections.Generic.IEnumerable<BH.oM.Dimensional.IElement1D>)")]
         [Description("Sets the Outline Element1Ds of an IRegion, i.e. the perimiter. Method required for all IElement2Ds.")]
         [Input("region", "The IRegion to update the Perimeter of.")]
         [Input("outlineElements", "A list of IElement1Ds which all should be Geometrical ICurves.")]
