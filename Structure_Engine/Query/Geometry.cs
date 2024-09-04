@@ -107,7 +107,7 @@ namespace BH.Engine.Structure
         public static IGeometry Geometry(this PileFoundation pileFoundation)
         {
             List<IGeometry> geometry = new List<IGeometry>();
-            geometry.Add(pileFoundation.PileCap.Geometry());
+            geometry.Add(Analytical.Query.Geometry(pileFoundation.PileCap));
             geometry.AddRange(pileFoundation.Piles.Select(x => x.Geometry()));
 
             return Engine.Geometry.Create.CompositeGeometry(geometry);
