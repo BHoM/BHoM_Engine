@@ -22,7 +22,6 @@
 
 using BH.Engine.Reflection;
 using BH.Engine.Base;
-using BH.Engine.Serialiser;
 using BH.Engine.Test;
 using BH.oM.Base.Debugging;
 using BH.oM.Test;

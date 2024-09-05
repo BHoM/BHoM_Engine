@@ -22,6 +22,11 @@
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="Diffing_Engine">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Diffing_Engine.dll</HintPath>
+	  <Private>False</Private>
+	  <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="Reflection_Engine">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Reflection_Engine.dll</HintPath>
       <Private>False</Private>
