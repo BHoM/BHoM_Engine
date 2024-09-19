@@ -126,7 +126,7 @@ namespace BH.Engine.Structure
             if (pad.IsNull() || !pad.IsPlanar())
                 return null;
 
-            PlanarSurface top = Engine.Geometry.Create.PlanarSurface(pad.TopOutline);
+            PlanarSurface top = Engine.Geometry.Create.PlanarSurface(pad.Perimeter);
 
             CompositeGeometry compositeGeometry = new CompositeGeometry();
 
@@ -135,7 +135,7 @@ namespace BH.Engine.Structure
 
             PlanarSurface bot = top.ITranslate(translateVect) as PlanarSurface;
 
-            IEnumerable<Extrusion> externalEdgesExtrusions = pad.TopOutline.SubParts().Select(c => Engine.Geometry.Create.Extrusion(c, translateVect));
+            IEnumerable<Extrusion> externalEdgesExtrusions = pad.Perimeter.ISubParts().Select(c => Engine.Geometry.Create.Extrusion(c, translateVect));
 
             compositeGeometry.Elements.Add(top);
             compositeGeometry.Elements.Add(bot);
@@ -155,6 +155,57 @@ namespace BH.Engine.Structure
             CompositeGeometry compositeGeometry = new CompositeGeometry();
             compositeGeometry.Elements.Add(pileFoundation.PileCap.Geometry3D());
             compositeGeometry.Elements.AddRange(pileFoundation.Piles.Select(x => x.Geometry3D()));
+
+            return compositeGeometry;
+        }
+
+        /***************************************************/
+
+        [Description("Gets a CompositeGeometry made of boundary surfaces of the Stem based on its outline, thicknesses and orientation.")]
+        [Input("stem", "The input Stem to get the Geometry3D out of.")]
+        [Output("3d", "Three-dimensional geometry of the Stem.")]
+        public static IGeometry Geometry3D(this Stem stem)
+        {
+            if (stem.IsNull())
+                return null;
+
+            if (stem.ThicknessBottom != stem.ThicknessTop)
+            {
+                Base.Compute.RecordError("The Geometry3D() method is not implemented for a tapered Stem.");
+                return null;
+            }
+
+            CompositeGeometry compositeGeometry = new CompositeGeometry();
+
+            PlanarSurface centralPlanarSrf = Engine.Geometry.Create.PlanarSurface(stem.Perimeter);
+            Vector normal = stem.Normal.Normalise();
+            double thk = stem.ThicknessBottom;
+
+            PlanarSurface backSrf = centralPlanarSrf.ITranslate(normal * -thk / 2) as PlanarSurface;
+            PlanarSurface frontSrf = centralPlanarSrf.ITranslate(normal * thk / 2) as PlanarSurface;
+
+            Extrusion externalEdgesExtrusions = Engine.Geometry.Create.Extrusion(backSrf.OutlineCurve(), normal * thk);
+
+            compositeGeometry.Elements.Add(backSrf);
+            compositeGeometry.Elements.Add(frontSrf);
+            compositeGeometry.Elements.Add(externalEdgesExtrusions);
+
+            return compositeGeometry;
+        }
+
+        /***************************************************/
+
+        [Description("Gets a CompositeGeometry made of the Stem and Footing of a RetainingWall.")]
+        [Input("retainingWall", "The input RetainingWall to get the Geometry3D out of.")]
+        [Output("3d", "Three-dimensional geometry of the RetainingWall.")]
+        public static IGeometry Geometry3D(this RetainingWall retainingWall)
+        {
+            if (retainingWall.IsNull())
+                return null;
+
+            CompositeGeometry compositeGeometry = new CompositeGeometry();
+            compositeGeometry.Elements.Add(retainingWall.Stem.Geometry3D());
+            compositeGeometry.Elements.Add(retainingWall.Footing.Geometry3D());
 
             return compositeGeometry;
         }

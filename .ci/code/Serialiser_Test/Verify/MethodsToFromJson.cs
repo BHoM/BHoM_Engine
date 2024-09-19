@@ -33,6 +33,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using BH.Engine.Diffing;
 
 namespace BH.Test.Serialiser
 {

@@ -36,7 +36,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("7.2", "BH.Engine.Base.Create.Type(System.String, System.Boolean)")]
         [Description("Creates a BHoM type that matches the given name.")]
         [Input("name", "Name to be searched for among all BHoM types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
@@ -79,15 +78,14 @@ namespace BH.Engine.Base
             else if (types.Count == 1)
                 return types[0];
             else if (types.Count > 1 && takeFirstIfMultiple)
-                return types.OrderBy(x => x.Assembly.FullName).First();
-            else if (!silent)
             {
-                string message = "Ambiguous match: Multiple types correspond the the name provided: \n";
-                foreach (Type type in types)
-                    message += "- " + type.FullName + "\n";
+                if (!silent)
+                    Compute.RecordWarning($"Ambiguous match: Multiple types correspond the the name provided:\n{string.Join("\n", types.Select(x => x.FullName))}");
 
-                Compute.RecordError(message);
+                return types.OrderBy(x => x.Assembly.FullName).First();
             }
+            else if (!silent)
+                Compute.RecordError($"Ambiguous match: Multiple types correspond the the name provided:\n{string.Join("\n", types.Select(x => x.FullName))}");
 
             return null;
         }
@@ -100,7 +98,8 @@ namespace BH.Engine.Base
             ["System.Text.RegularExpressions.Regex"] = typeof(System.Text.RegularExpressions.Regex),
             ["System.Drawing.Bitmap"] = typeof(System.Drawing.Bitmap),
             ["System.Collections.Generic.SortedDictionary`2"] = typeof(System.Collections.Generic.SortedDictionary<,>),
-            ["System.Data.DataTable"] = typeof(System.Data.DataTable)
+            ["System.Data.DataTable"] = typeof(System.Data.DataTable),
+            ["System.Collections.Generic.HashSet`1"] = typeof(System.Collections.Generic.HashSet<>)
         };
 
         /*******************************************/

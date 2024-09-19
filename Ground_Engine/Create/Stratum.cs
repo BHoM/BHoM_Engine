@@ -39,6 +39,7 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("7.3", "BH.Engine.Ground.Create.Stratum(System.String, System.Double, System.Double, System.String, System.String, System.String, System.String, System.String, System.String, System.Collections.Generic.List<BH.oM.Ground.IStratumProperty>)")]
         [Description("Creates a Stratum element based on its strata, descriptions and optional geological properties. The lists must be of equal length.")]
         [Input("id", "Location identifier for the borehole unique to the project (LOCA_ID).")]
         [Input("top", "Depth to the top of the strata based on the datum provided on the Borehole (GEOL_TOP).")]
@@ -48,11 +49,11 @@ namespace BH.Engine.Ground
         [Input("observedGeology", "Observed geologies expressed as a GeologicalUnit (GEOL_GEOL).")]
         [Input("interpretedGeology", "Interpreted geologies expressed as an EngineeringMaterial (GEOL_GEO2).")]
         [Input("optionalInterpretedGeology", "The optional interpreted geology expressed as an EngineeringMaterial(GEOL_GEO3).")]
-        [Input("blankGeology", "The geology to use where blank spaces occur in the observedGeology parameter.")]
         [Input("properties", "A list of properties related to the borehole.")]
         [Output("stratum", "Stratum object containing information for each strata including descriptions, legend codes and optional geological properties.")]
+        
         public static Stratum Stratum(string id, double top, double bottom, string logDescription, string legend,
-            string observedGeology, string interpretedGeology = "", string optionalInterpretedGeology = "", string blankGeology = "", List<IStratumProperty> properties = null)
+            string observedGeology, string interpretedGeology = "", string optionalInterpretedGeology = "", List<IStratumProperty> properties = null)
         {
             if(id == "")
             {
@@ -64,12 +65,6 @@ namespace BH.Engine.Ground
             {
                 Base.Compute.RecordError("The LogDescription is empty.");
                 return null;
-            }
-
-            if (!blankGeology.Trim().IsNullOrEmpty())
-            {
-                if (observedGeology.Trim().IsNullOrEmpty())
-                    observedGeology = blankGeology;
             }
 
             return new Stratum()
