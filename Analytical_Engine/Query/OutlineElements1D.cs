@@ -62,7 +62,6 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [PreviousVersion("7.3", "BH.Engine.Structure.Query.OutlineElements1D(BH.oM.Structure.Elements.PadFoundation)")]
         [Description("Gets the boundary from an IRegion defining the boundary of the element as the subparts of the perimiter curve. Method required for all IElement2Ds.")]
         [Input("region", "The IRegion to get outline elements from.")]
         [Output("elements", "Outline elements of the IRegion, i.e. the subparts of the Perimiter curve.")]
