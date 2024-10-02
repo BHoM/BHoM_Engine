@@ -35,7 +35,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("7.3", "BH.Engine.Base.Create.EngineType(System.String, System.Boolean)")]
         [Description("Creates an Engine type that matches the given name.")]
         [Input("name", "Name to be searched for among all Engine types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
@@ -49,14 +48,34 @@ namespace BH.Engine.Base
                 return null;
             }
 
-            // Try finding any types based on the assembly qualified name
+            // Try finding any types based on the assembly qualified name. This checks both assembly name as well as version
             List<Type> types = Global.EngineTypeList.Where(x => x.AssemblyQualifiedName == name).ToList();
             
             // If not found, look also based on unqualified name
             if (types.Count == 0)
             {
-                string unQualifiedName = name.Contains(",") ? name.Split(',').First() : name;
+                string unQualifiedName, assemblyName;
+                if (name.Contains(","))
+                {
+                    string[] split = name.Split(',');
+                    unQualifiedName = split[0];
+                    assemblyName = split[1].Trim(); //Assembly name is second part. Trim to remove whitespace
+                }
+                else
+                { 
+                    unQualifiedName = name;
+                    assemblyName = null;
+                }
+
                 types = Global.EngineTypeList.Where(x => x.FullName == unQualifiedName).ToList();
+
+                //If more than one type found, and assembly name was found, try use it to further filter
+                if (types.Count > 1 && assemblyName != null)
+                {
+                    List<Type> assemblyMatches = types.Where(x => x.Assembly.GetName().Name == assemblyName).ToList();
+                    if (assemblyMatches.Any())   //If any matches are found, use them
+                        types = assemblyMatches;
+                }
             }
 
             if (types.Count == 1 || (takeFirstIfMultiple && types.Count > 1))

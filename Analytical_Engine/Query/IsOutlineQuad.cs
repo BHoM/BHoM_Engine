@@ -39,9 +39,9 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel's outline is a quadilateral.")]
+        [Description("Determines whether a Panel's outline is a quadilateral.")]
         [Input("panel", "The IPanel to check if the outline is a quadilateral.")]
-        [Output("bool", "True for panels with a quadilateral outline or false for panels with a non-quadilateral outline.")]
+        [Output("bool", "True for Panels with a quadilateral outline or false for Panels with a non-quadilateral outline.")]
         public static bool IsOutlineQuad<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
@@ -50,15 +50,7 @@ namespace BH.Engine.Analytical
             if (polycurve == null)
                 return false;
 
-            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
-                return false;
-
-            List<Point> points = polycurve.DiscontinuityPoints();
-            if (points.Count != 4)
-                return false;
-
-            return points.IsCoplanar();
-
+            return polycurve.IsQuad();
         }
 
         /***************************************************/

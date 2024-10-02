@@ -152,11 +152,20 @@ namespace BH.Engine.Base
         [Description("Finds an extension method with given name and parameters. For performance reasons compiles the method to a function the first time it is run, then stores it for subsequent calls.")]
         private static Func<object[], object> ExtensionMethodToRun(string methodName, object[] parameters)
         {
-            if (parameters == null || parameters.Length == 0 || parameters.Any(x => x == null) || string.IsNullOrWhiteSpace(methodName))
+            if (parameters == null || parameters.Length == 0 || parameters[0] == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Can't find extension method to call because provided method arguments are not valid.");
                 return null;
+            }
+
+            if (string.IsNullOrWhiteSpace(methodName))
+            {
+                BH.Engine.Base.Compute.RecordError("Can't find extension method to call because provided method name is not valid.");
+                return null;
+            }
 
             //Construct key used to store/extract method
-            string key = methodName + string.Join("", parameters.Select(x => x.GetType().ToString()));
+            string key = methodName + string.Join("", parameters.Select(x => x?.GetType()?.ToString() ?? "null"));
 
             // If the method has been called before, use the previously compiled function
             Func<object[], object> func;
@@ -182,7 +191,7 @@ namespace BH.Engine.Base
                         for (int i = parameters.Length; i < parameterInfo.Length; i++)
                         {
                             //Check that the parameter has a default value.
-                            //This should always be true, based on the logic of the ExtensionMethodToCall but additional check here for saftey
+                            //This should always be true, based on the logic of the ExtensionMethodToCall but additional check here for safety
                             if (parameterInfo[i].HasDefaultValue)
                             {
                                 defaultArgs.Add(parameterInfo[i].DefaultValue); //Add the argument to be used when calling the function

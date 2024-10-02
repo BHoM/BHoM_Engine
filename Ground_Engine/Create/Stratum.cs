@@ -39,7 +39,6 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("7.3", "BH.Engine.Ground.Create.Stratum(System.String, System.Double, System.Double, System.String, System.String, System.String, System.String, System.String, System.String, System.Collections.Generic.List<BH.oM.Ground.IStratumProperty>)")]
         [Description("Creates a Stratum element based on its strata, descriptions and optional geological properties. The lists must be of equal length.")]
         [Input("id", "Location identifier for the borehole unique to the project (LOCA_ID).")]
         [Input("top", "Depth to the top of the strata based on the datum provided on the Borehole (GEOL_TOP).")]

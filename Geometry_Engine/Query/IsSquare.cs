@@ -20,42 +20,57 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Analytical.Elements;
-using BH.oM.Geometry;
-using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
-using BH.Engine.Reflection;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
+using BH.oM.Geometry;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Analytical
+
+namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+        [Description("Determines whether a Polycurve is a square.")]
+        [Input("polycurve", "The Polycurve to check if it is square.")]
+        [Output("bool", "True for Polycurves that are square or false for Polycurves that are not square.")]
 
-        [Description("Determines whether a Panel's outline is a rectangular.")]
-        [Input("panel", "The IPanel to check if the outline is a rectangular.")]
-        [Output("bool", "True for Panels with a rectangular outline or false for Panels with a non rectangular outline.")]
-        public static bool IsOutlineRectangular<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
-            where TEdge : IEdge
-            where TOpening : IOpening<TEdge>
+        public static bool IsSquare(this PolyCurve polycurve)
         {
-            PolyCurve polycurve = ExternalPolyCurve(panel);
+            if (polycurve == null)
+                return false;
 
-            return polycurve.IsRectangular();
+            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
+                return false;
+
+            List<Point> points = polycurve.DiscontinuityPoints();
+            if (points.Count != 4)
+                return false;
+            if (!points.IsCoplanar())
+                return false;
+
+            List<Vector> vectors = VectorsBetweenPoints(points);
+
+            List<double> angles = AnglesBetweenVectors(vectors);
+
+            //Check the three angles are pi/2 degrees within tolerance
+            if (angles.Any(x => Math.Abs(Math.PI / 2 - x) > Tolerance.Angle))
+                return false;
+
+            //Check all lengths are the same within tolerance
+            double length = vectors.First().Length();
+            return vectors.Skip(0).All(x => (Math.Abs(x.Length() - length) < Tolerance.Distance)) ? true : false;
         }
 
         /***************************************************/
-
     }
-
 }
+
+
 
 
 

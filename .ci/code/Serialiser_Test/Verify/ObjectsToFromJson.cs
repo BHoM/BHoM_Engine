@@ -21,6 +21,7 @@
  */
 
 using BH.Engine.Base;
+using BH.Engine.Diffing;
 using BH.Engine.Serialiser;
 using BH.Engine.Test;
 using BH.oM.Base.Debugging;

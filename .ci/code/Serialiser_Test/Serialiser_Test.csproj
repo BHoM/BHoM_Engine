@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>https://github.com/BHoM/BHoM_Engine</Description>
-    <AssemblyVersion>7.0.0.0</AssemblyVersion>
-    <FileVersion>7.3.0.0</FileVersion>
+    <AssemblyVersion>8.0.0.0</AssemblyVersion>
+    <FileVersion>8.0.0.0</FileVersion>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
@@ -21,6 +21,11 @@
       <HintPath>$(ProgramData)\BHoM\Assemblies\BHoM_Engine.dll</HintPath>
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Diffing_Engine">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Diffing_Engine.dll</HintPath>
+	  <Private>False</Private>
+	  <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Reflection_Engine">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Reflection_Engine.dll</HintPath>

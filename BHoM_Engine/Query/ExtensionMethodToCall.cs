@@ -23,6 +23,7 @@
 using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -34,7 +35,7 @@ namespace BH.Engine.Base
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        
+
         [Description("Finds an extension method accepting a multiple argument based on a provided main object and method name.\n" +
                      "The method is found via reflection at the first time it is queried, then it is stored for subsequent calls.")]
         [Input("target", "First argument of the method to find.")]
@@ -69,64 +70,83 @@ namespace BH.Engine.Base
         [Output("method", "Most suitable extension method with requested name and parameters. If no method was found, null is returned.")]
         public static MethodInfo ExtensionMethodToCall(string methodName, object[] parameters)
         {
-            if (parameters == null || parameters.Length == 0 || parameters.Any(x => x == null) || string.IsNullOrWhiteSpace(methodName))
+            if (parameters == null || parameters.Length == 0 || parameters[0] == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Can't find extension method to call because provided method arguments are not valid.");
                 return null;
-            
-            //Get type of first argument, to be used for first method extraction filtering
+            }
+
+            if (string.IsNullOrWhiteSpace(methodName))
+            {
+                BH.Engine.Base.Compute.RecordError("Can't find extension method to call because provided method name is not valid.");
+                return null;
+            }
+
+            // Get type of first argument, to be used for first method extraction filtering
             Type type = parameters[0].GetType();
 
-            //Construct key used to store/extract method
-            string name = methodName + parameters.Select(x => x.GetType().ToString()).Aggregate((a, b) => a + b);
+            // Construct key used to store/extract method
+            string name = methodName + parameters.Select(x => x?.GetType()?.ToString() ?? "null").Aggregate((a, b) => a + b);
             Tuple<Type, string> key = new Tuple<Type, string>(type, name);
 
             // If the method has been called before, just use that
             if (MethodPreviouslyExtracted(key))
                 return GetStoredExtensionMethod(key);
 
-            //Loop through all methods with matching name, first argument and number of parameters, sorted by best match to the first argument
-            foreach (MethodInfo method in type.ExtensionMethods(methodName).Where(x => x.GetParameters().Length >= parameters.Length).SortExtensionMethods(type))
+            // Loop through all methods with matching name, first argument and number of parameters, sorted by best match to the first argument
+            var applicableMethods = type.ExtensionMethods(methodName).Where(x => x.IsApplicable(parameters)).ExtensionMethodHierarchy(type);
+            
+            // Return null if no applicable methods
+            if (applicableMethods.Count == 0)
             {
-                ParameterInfo[] paramInfo = method.GetParameters();
-
-                // Make sure the type of parameters is matching, skipping first as already used to extract parameters
-                bool matchingTypes = true;
-                for (int i = 1; i < paramInfo.Length; i++)
-                {
-                    //If more parameters to method then provided, check if parameter has defaul value (is optional)
-                    if (i >= parameters.Length)
-                    {
-                        
-                        if (!paramInfo[i].Attributes.HasFlag(ParameterAttributes.HasDefault))
-                        {
-                            //No default value -> no match -> abort for this method
-                            matchingTypes = false;
-                            break;
-                        }
-                    }
-                    else if (!paramInfo[i].ParameterType.IsAssignableFromIncludeGenerics(parameters[i].GetType()))
-                    {
-                        //Parameter does not match, abort for this method
-                        matchingTypes = false;
-                        break;
-                    }
-                }
-
-                if (!matchingTypes)
-                    continue;
-
-                // If method is generic, make sure the appropriate generic arguments are set
-                MethodInfo finalMethod = method.MakeGenericFromInputs(parameters.Select(x => x.GetType()).ToList());
-
-                // Cache and return the method
-                StoreExtensionMethod(key, finalMethod);
-                return finalMethod;
+                StoreExtensionMethod(key, null);
+                return null;
             }
 
-            // If nothing found, store null, to avoid having to search again in vain
-            StoreExtensionMethod(key, null);
+            // If more than one method at the top level of applicable method hierarchy, there is a risk of ambiguous call
+            if (applicableMethods[0].Count != 1)
+            {
+                StoreExtensionMethod(key, null);
+                return null;
+            }
 
-            // Return null if nothing found
-            return null;
+            // Take first applicable method, if method is generic, make sure the appropriate generic arguments are set
+            MethodInfo methodToCall = applicableMethods[0][0].MakeGenericFromInputs(parameters.Select(x => x?.GetType()).ToList());
+
+            // Cache and return the method
+            StoreExtensionMethod(key, methodToCall);
+            return methodToCall;
+        }
+
+        /***************************************************/
+
+        private static bool IsApplicable(this MethodInfo method, object[] parameters)
+        {
+            ParameterInfo[] paramInfo = method.GetParameters();
+            if (paramInfo.Length < parameters.Length)
+                return false;
+
+            // Make sure the type of parameters is matching, skipping first as already used to extract parameters
+            for (int i = 1; i < paramInfo.Length; i++)
+            {
+                //If more parameters to method then provided, check if parameter has default value (is optional)
+                if (i >= parameters.Length)
+                {
+                    if (!paramInfo[i].Attributes.HasFlag(ParameterAttributes.HasDefault))
+                    {
+                        //No default value -> no match -> not applicable
+                        return false;
+                    }
+                }
+                else if ((parameters[i] != null && !paramInfo[i].ParameterType.IsAssignableFromIncludeGenerics(parameters[i].GetType()))
+                    || (parameters[i] == null && !paramInfo[i].ParameterType.IsNullable()))
+                {
+                    //Parameter does not match, not applicable
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /***************************************************/

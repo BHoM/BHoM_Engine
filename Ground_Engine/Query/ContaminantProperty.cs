@@ -20,18 +20,24 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Analytical.Elements;
-using BH.oM.Geometry;
-using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
-using BH.Engine.Reflection;
-
+using System.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using BH.oM.Base;
+using BH.oM.Base.Attributes;
+using BH.oM.Data;
+using BH.oM.Geometry;
+using BH.oM.Ground;
+using BH.oM.Quantities.Attributes;
+using BH.Engine.Base;
+using BH.Engine.Data;
+using BH.Engine.Geometry;
+using BH.oM.Data.Requests;
 
-namespace BH.Engine.Analytical
+
+namespace BH.Engine.Ground
 {
     public static partial class Query
     {
@@ -39,23 +45,29 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a Panel's outline is a rectangular.")]
-        [Input("panel", "The IPanel to check if the outline is a rectangular.")]
-        [Output("bool", "True for Panels with a rectangular outline or false for Panels with a non rectangular outline.")]
-        public static bool IsOutlineRectangular<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
-            where TEdge : IEdge
-            where TOpening : IOpening<TEdge>
+        [Description("Returns the IContaminantProperty matching the type provided..")]
+        [Input("sample", "The ContaminantSample to retrieve the property from.")]
+        [Input("type", "The type that inherits IContaminantProperty to search the ContaminantSample for.")]
+        [Output("property", "The IContaminantProperty found on the ContaminantSample.")]
+        public static IContaminantProperty ContaminantProperty(this ContaminantSample sample, Type type)
         {
-            PolyCurve polycurve = ExternalPolyCurve(panel);
+            if (sample.IsValid())
+            {
+                List<IContaminantProperty> contaminantProperties = sample.ContaminantProperties;
 
-            return polycurve.IsRectangular();
+                if (contaminantProperties.Select(x => x.GetType()).Contains(type))
+                    return (IContaminantProperty)Base.Query.FilterByType(contaminantProperties, type).First();
+                else
+                {
+                    Base.Compute.RecordError($"The ContaminantSample does not contain {type}.");
+                    return null;
+                }
+            }
+            else
+                return null;
         }
 
         /***************************************************/
 
     }
-
 }
-
-
-

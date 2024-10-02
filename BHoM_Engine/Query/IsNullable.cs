@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
@@ -20,42 +20,30 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Analytical.Elements;
-using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
-using BH.Engine.Reflection;
-
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
 
-namespace BH.Engine.Analytical
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****              Public Methods               ****/
         /***************************************************/
 
-        [Description("Determines whether a Panel's outline is a rectangular.")]
-        [Input("panel", "The IPanel to check if the outline is a rectangular.")]
-        [Output("bool", "True for Panels with a rectangular outline or false for Panels with a non rectangular outline.")]
-        public static bool IsOutlineRectangular<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
-            where TEdge : IEdge
-            where TOpening : IOpening<TEdge>
-        {
-            PolyCurve polycurve = ExternalPolyCurve(panel);
+        [Description("Checks whether a given type is nullable or not.")]
+        [Input("type", "Type to check for nullability.")]
+        [Output("nullable", "True if the input type is nullable, otherwise not.")]
 
-            return polycurve.IsRectangular();
+        public static bool IsNullable(this Type type)
+        {
+            if (type == null)
+                return false;
+
+            return !type.IsValueType || Nullable.GetUnderlyingType(type) != null;
         }
 
         /***************************************************/
-
     }
-
 }
-
-
-
