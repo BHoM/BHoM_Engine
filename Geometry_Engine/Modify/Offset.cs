@@ -154,6 +154,7 @@ namespace BH.Engine.Geometry
             if (offset == 0)
                 return curve;
             List<Polyline> pLines = Compute.MultiOffset(curve, new List<double> { offset }, normal, options, true, distTol, angleTol);
+
             if (pLines.Count == 0)
             {
                 BH.Engine.Base.Compute.RecordWarning("Polyline offset leads to curve vanishing into nothing. Empty polyline returned.");
