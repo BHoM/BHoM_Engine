@@ -42,7 +42,7 @@ namespace BH.Engine.Geometry
         [Input("curve", "Curve to offset.")]
         [Input("offsets", "List of offset distances that the curve will be offset by. Please note that the order of the input offset distances might differ from the returned curves!", typeof(Length))]
         [Input("normal", "Optional Normal of the curve. Method atempts to automatically compute a normal if nothing is provided.")]
-        [Input("options", "Various options controling the behaviour of the method.")]
+        [Input("options", "Various options controling the behaviour of the method in terms of hanlding of intersections and short segments.")]
         [Input("onlyLargestPerStep", "If true, only the largest curve per step is returned for self-intersection curves. If false, all curves are returned.")]
         [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc.")]
         [Input("angleTol", "Angle tolerance used for checking if segments are parallel.")]
