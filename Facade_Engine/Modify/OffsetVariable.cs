@@ -95,8 +95,8 @@ namespace BH.Engine.Facade
             //First - offseting each individual element
             List<ICurve> offsetCurves = new List<ICurve>();
             for (int i = 0; i < subParts.Count; i++)
-                if (subParts[i].IOffset(offsets[i], normal, tangentExtensions, tolerance) != null)
-                    offsetCurves.Add(subParts[i].IOffset(offsets[i], normal, tangentExtensions, tolerance));
+                if (subParts[i].IOffset(offsets[i], normal, false, tolerance) != null)
+                    offsetCurves.Add(subParts[i].IOffset(offsets[i], normal, false, tolerance));
 
             bool connectingError = false;
             //Filleting offset curves to create continuous curve
