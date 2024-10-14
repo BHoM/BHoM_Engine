@@ -243,8 +243,11 @@ namespace BH.Engine.Geometry
             //First - offseting each individual element
             List<ICurve> offsetCurves = new List<ICurve>();
             foreach (ICurve crv in subParts)
-                if (crv.IOffset(offset, normal, options, distTol) != null)
-                    offsetCurves.Add(crv.IOffset(offset, normal, options, distTol));
+            {
+                ICurve partOffset = crv.IOffset(offset, normal, options, distTol);
+                if (partOffset != null)
+                    offsetCurves.Add(partOffset);
+            }
 
             int counter = 0;
             //removing curves that are on a wrong side of the main curve
