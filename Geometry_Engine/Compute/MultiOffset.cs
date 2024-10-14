@@ -52,7 +52,7 @@ namespace BH.Engine.Geometry
             if (curve == null || curve.Length() < distTol)
                 return null;
 
-            if (offsets.Count == 0)
+            if (offsets == null || offsets.Count == 0)
                 return new List<Polyline>();
 
             if (offsets.Count == 1 && offsets[0] == 0)
