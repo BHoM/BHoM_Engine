@@ -44,7 +44,7 @@ namespace BH.Engine.Facade
         [Input("offsets", "Offset distances (Length must match count of curves in the PolyCurve). Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
         [Input("normal", "Normal of a plane for offset operation, not needed for closed curves")]
         [Output("curve", "Resulting offset")]
-        public static PolyCurve OffsetVariable(this PolyCurve curve, List<double> offsets, Vector normal = null, OffsetOptions options = null, double tolerance = Tolerance.Distance)
+        public static PolyCurve OffsetVariable(this PolyCurve curve, List<double> offsets, Vector normal = null, bool tangentExtensions = false, double tolerance = Tolerance.Distance)
         {
             //TODO:
             //Migrate to Geometry Engine and align with Offset method
@@ -91,12 +91,12 @@ namespace BH.Engine.Facade
 
             PolyCurve result = new PolyCurve();
             Vector normalNormalised = normal.Normalise();
-            options = options ?? new OffsetOptions();
+
             //First - offseting each individual element
             List<ICurve> offsetCurves = new List<ICurve>();
             for (int i = 0; i < subParts.Count; i++)
-                if (subParts[i].IOffset(offsets[i], normal, options, tolerance) != null)
-                    offsetCurves.Add(subParts[i].IOffset(offsets[i], normal, options, tolerance));
+                if (subParts[i].IOffset(offsets[i], normal, tangentExtensions, tolerance) != null)
+                    offsetCurves.Add(subParts[i].IOffset(offsets[i], normal, tangentExtensions, tolerance));
 
             bool connectingError = false;
             //Filleting offset curves to create continuous curve
@@ -117,7 +117,7 @@ namespace BH.Engine.Facade
                 else
                     j = i + 1;
 
-                PolyCurve temp = offsetCurves[i].Fillet(offsetCurves[j], options.TangentExtensions, true, false, tolerance);
+                PolyCurve temp = offsetCurves[i].Fillet(offsetCurves[j], tangentExtensions, true, false, tolerance);
                 if (temp == null) //trying to fillet with next curve 
                 {
                     offsetCurves.RemoveAt(j);
@@ -127,7 +127,7 @@ namespace BH.Engine.Facade
 
                     if (j == offsetCurves.Count)
                         j = 0;
-                    temp = offsetCurves[i].Fillet(offsetCurves[j], options.TangentExtensions, true, false, tolerance);
+                    temp = offsetCurves[i].Fillet(offsetCurves[j], tangentExtensions, true, false, tolerance);
                 }
 
                 if (!(temp == null)) //inserting filetted curves
