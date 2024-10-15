@@ -184,7 +184,7 @@ namespace BH.Engine.Geometry
             //if there are only Line segmensts switching to polyline method which is more reliable 
             if (curve.Curves.All(x => x is Line))
             {
-                Polyline polyline = ((Polyline)curve).Offset(offset, normal, tangentExtensions, distTol);
+                Polyline polyline = ((Polyline)curve).Offset(offset, normal, tangentExtensions, distTol, angleTol);
                 if (polyline == null)
                     return null;
 
@@ -195,10 +195,10 @@ namespace BH.Engine.Geometry
             //Check if contains any circles, if so, handle them explicitly, and offset any potential leftovers by backcalling this method
             if (subParts.Any(x => x is Circle))
             {
-                IEnumerable<Circle> circles = subParts.Where(x => x is Circle).Cast<Circle>().Select(x => x.Offset(offset, normal, tangentExtensions, distTol));
+                IEnumerable<Circle> circles = subParts.Where(x => x is Circle).Cast<Circle>().Select(x => x.Offset(offset, normal, tangentExtensions, distTol, angleTol));
                 PolyCurve nonCirclePolyCurve = new PolyCurve { Curves = curve.Curves.Where(x => !(x is Circle)).ToList() };
                 if (nonCirclePolyCurve.Curves.Count != 0)
-                    nonCirclePolyCurve = nonCirclePolyCurve.Offset(offset, normal, tangentExtensions, distTol);
+                    nonCirclePolyCurve = nonCirclePolyCurve.Offset(offset, normal, tangentExtensions, distTol, angleTol);
 
                 nonCirclePolyCurve.Curves.AddRange(circles);
                 return nonCirclePolyCurve;
@@ -232,7 +232,7 @@ namespace BH.Engine.Geometry
             }
 
             if (offset > 0.05 * curve.Length())
-                return (curve.Offset(offset / 2, normal, tangentExtensions, distTol))?.Offset(offset / 2, normal, tangentExtensions, distTol);
+                return (curve.Offset(offset / 2, normal, tangentExtensions, distTol, angleTol))?.Offset(offset / 2, normal, tangentExtensions, distTol, angleTol);
 
             PolyCurve result = new PolyCurve();
 
@@ -242,7 +242,7 @@ namespace BH.Engine.Geometry
             List<ICurve> offsetCurves = new List<ICurve>();
             foreach (ICurve crv in subParts)
             {
-                ICurve partOffset = crv.IOffset(offset, normal, tangentExtensions, distTol);
+                ICurve partOffset = crv.IOffset(offset, normal, tangentExtensions, distTol, angleTol);
                 if (partOffset != null)
                     offsetCurves.Add(partOffset);
             }
@@ -290,7 +290,7 @@ namespace BH.Engine.Geometry
             if (offsetCurves.All(x => x is Line))
             {
                 Polyline polyline = new Polyline { ControlPoints = curve.DiscontinuityPoints() };
-                result.Curves.AddRange(polyline.Offset(offset, normal, tangentExtensions, distTol).SubParts());
+                result.Curves.AddRange(polyline.Offset(offset, normal, tangentExtensions, distTol, angleTol).SubParts());
                 return result;
             }
 
