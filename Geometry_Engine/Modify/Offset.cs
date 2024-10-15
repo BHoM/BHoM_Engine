@@ -44,8 +44,8 @@ namespace BH.Engine.Geometry
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward.")]
         [Input("normal", "Normal of a plane for offset operation, not needed for closed curves.")]
         [Input("tangentExtensions", "If true, arc segments of a PolyCurve will be extend by a tangent line, if false - by arc.")]
-        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc.")]
-        [Input("angleTol", "Angle tolerance used in the method.")]
+        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc.", typeof(Length))]
+        [Input("angleTol", "Angle tolerance used in the method.", typeof(Angle))]
         [Output("curve", "Resulting offset.")]
         public static Line Offset(this Line curve, double offset, Vector normal, bool tangentExtensions = false, double distTol = Tolerance.Distance, double angleTol = Tolerance.Angle)
         {
@@ -60,8 +60,8 @@ namespace BH.Engine.Geometry
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward.")]
         [Input("normal", "Normal of a plane for offset operation, not needed for closed curves.")]
         [Input("tangentExtensions", "If true, arc segments of a PolyCurve will be extend by a tangent line, if false - by arc.")]
-        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc.")]
-        [Input("angleTol", "Angle tolerance used in the method.")]
+        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc.", typeof(Length))]
+        [Input("angleTol", "Angle tolerance used in the method.", typeof(Angle))]
         [Output("curve", "Resulting offset.")]
         public static Arc Offset(this Arc curve, double offset, Vector normal, bool tangentExtensions = false, double distTol = Tolerance.Distance, double angleTol = Tolerance.Angle)
         {
@@ -100,8 +100,8 @@ namespace BH.Engine.Geometry
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward.")]
         [Input("normal", "Normal of a plane for offset operation, not needed for closed curves.")]
         [Input("tangentExtensions", "If true, arc segments of a PolyCurve will be extend by a tangent line, if false - by arc.")]
-        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc.")]
-        [Input("angleTol", "Angle tolerance used in the method.")]
+        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc.", typeof(Length))]
+        [Input("angleTol", "Angle tolerance used in the method.", typeof(Angle))]
         [Output("curve", "Resulting offset.")]
         public static Circle Offset(this Circle curve, double offset, Vector normal = null, bool tangentExtensions = false, double distTol = Tolerance.Distance, double angleTol = Tolerance.Angle)
         {
@@ -141,7 +141,7 @@ namespace BH.Engine.Geometry
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward.")]
         [Input("normal", "Normal of a plane for offset operation, not needed for closed curves.")]
         [Input("tangentExtensions", "If true, arc segments of a PolyCurve will be extend by a tangent line, if false - by arc.")]
-        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc.")]
+        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc.", typeof(Length))]
         [Input("angleTol", "Angle tolerance used for checking if segments are parallel.")]
         [Output("curve", "Resulting offset.")]
         public static Polyline Offset(this Polyline curve, double offset, Vector normal = null, bool tangentExtensions = false, double distTol = Tolerance.Distance, double angleTol = Tolerance.Angle)
@@ -171,8 +171,8 @@ namespace BH.Engine.Geometry
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward.")]
         [Input("normal", "Normal of a plane for offset operation, not needed for closed curves.")]
         [Input("tangentExtensions", "If true, arc segments of a PolyCurve will be extend by a tangent line, if false - by arc.")]
-        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc.")]
-        [Input("angleTol", "Angle tolerance used in the method.")]
+        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc.", typeof(Length))]
+        [Input("angleTol", "Angle tolerance used in the method.", typeof(Angle))]
         [Output("curve", "Resulting offset.")]
         public static PolyCurve Offset(this PolyCurve curve, double offset, Vector normal = null, bool tangentExtensions = false, double distTol = Tolerance.Distance, double angleTol = Tolerance.Angle)
         {
@@ -431,8 +431,8 @@ namespace BH.Engine.Geometry
         [Input("offset", "Offset distance. Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward.")]
         [Input("normal", "Normal of a plane for offset operation, not needed for closed curves.")]
         [Input("tangentExtensions", "If true, arc segments of a PolyCurve will be extend by a tangent line, if false - by arc.")]
-        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc.")]
-        [Input("angleTol", "Angle tolerance used in the method.")]
+        [Input("distTol", "Distance tolerance used for checking segment lengths equal to zero, point coincidence etc.", typeof(Length))]
+        [Input("angleTol", "Angle tolerance used in the method.", typeof(Angle))]
         [Output("curve", "Resulting offset.")]
         public static ICurve IOffset(this ICurve curve, double offset, Vector normal = null, bool tangentExtensions = false, double distTol = Tolerance.Distance, double angleTol = Tolerance.Angle)
         {
