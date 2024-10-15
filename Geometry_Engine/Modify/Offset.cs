@@ -29,8 +29,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using BH.oM.Quantities.Attributes;
-using System.Diagnostics;
-using Microsoft.SqlServer.Server;
 
 namespace BH.Engine.Geometry
 {
