@@ -204,7 +204,7 @@ namespace BH.Engine.Verification
                     return value.IPasses(typeCondition);
                 }
 
-                return CompareEquality(value, referenceValue, tolerance);
+                return CompareObjectEquality(value, referenceValue, tolerance);
             }
 
             //TODO: meaningful error or handle more cases
@@ -215,34 +215,22 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
-        //TODO: separate file!! to grow in time
-        //TODO: also most of ValueCondition.Passes should be a part of this
-        private static bool CompareEquality(object value, object refValue, object tolerance)
+        private static bool CompareObjectEquality(object value, object refValue, object tolerance)
         {
+            if (value == null || refValue == null)
+                return value == refValue;
+
+            if (value.GetType() != refValue.GetType())
+                return false;
+
             var cc = tolerance as ComparisonConfig;
             if (cc != null)
             {
-                //Compare by hash
                 HashComparer<object> hc = new HashComparer<object>(cc);
                 return hc.Equals(value, refValue);
             }
 
-            // Try checking name compatibility. Useful for materials.
-            string valueString = BH.Engine.Verification.Query.ValueFromSource(value, "Name") as string;
-            string referenceValue = BH.Engine.Verification.Query.ValueFromSource(refValue, "Name") as string;
-            if (string.IsNullOrWhiteSpace(referenceValue))
-                referenceValue = refValue as string;
-
-            if (valueString == referenceValue)
-                return true;
-
-            if (value.ToString().Contains("BH.oM") && (refValue is Type))
-                return value.ToString() == refValue.ToString();
-
-            if (value is string && refValue is string)
-                return value.ToString() == refValue.ToString(); // this workaround is required. Not even Convert.ChangeType and dynamic type worked.
-
-            return value == refValue;
+            return value.Equals(refValue);
         }
 
         /***************************************************/
@@ -287,10 +275,10 @@ namespace BH.Engine.Verification
 
         private static bool IsInSet(this object value, List<object> set, ComparisonConfig comparisonConfig)
         {
-            if (comparisonConfig != null) // use hashComparer
+            if (comparisonConfig != null)
                 return set.Contains(value, new HashComparer<object>(comparisonConfig));
             else
-                return set.Contains(value); // use default comparer
+                return set.Contains(value);
         }
 
         /***************************************************/
