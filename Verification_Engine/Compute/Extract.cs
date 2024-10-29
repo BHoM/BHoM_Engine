@@ -10,6 +10,18 @@ namespace BH.Engine.Verification
     {
         public static List<object> IExtract(this IEnumerable<object> objects, IExtraction extraction)
         {
+            if (objects == null)
+            {
+                //TODO: error
+                return null;
+            }
+
+            if (extraction == null)
+            {
+                BH.Engine.Base.Compute.RecordNote("No filter provided, all input objects have been verified against the requirements.");
+                return objects.ToList();
+            }
+
             object filtered;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(objects, nameof(Extract), new object[] { extraction }, out filtered))
             {

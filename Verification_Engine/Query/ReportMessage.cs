@@ -15,7 +15,32 @@ namespace BH.Engine.Verification
     {
         public static string ReportMessage(this Requirement requirement, RequirementResult result)
         {
-            return requirement.Condition.IReportMessage(result.VerificationResult, requirement.ReportingConfig);
+            if (requirement == null || result?.VerificationResult == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Can't generate the report because either the requirement or result is null.");
+                return null;
+            }
+
+            string status;
+            switch (result.VerificationResult.Passed)
+            {
+                case true:
+                    status = "success";
+                    break;
+                case false:
+                    status = "failed";
+                    break;
+                default:
+                    status = "inconclusive";
+                    break;
+            }
+
+            string report = $"Status: {status}";
+            
+            if (result.VerificationResult.Passed != null)
+                report += $"\n\nDetailed report:\n{requirement.Condition.IReportMessage(result.VerificationResult, requirement.ReportingConfig)}";
+
+            return report;
         }
 
         public static string IReportMessage(this ICondition condition, IConditionResult result, IConditionReportingConfig config)
@@ -41,7 +66,7 @@ namespace BH.Engine.Verification
             if (result.Passed == null)
                 return "Verification of condition was inconclusive.";
 
-            return $"Logical NOT condition {((bool)result.Passed ? "passed" : "failed")} after inverting the following: [{condition.Condition.IReportMessage(result.Result, config.NestedConfig)}]";
+            return $"Logical NOT condition {((bool)result.Passed ? "passed" : "failed")} after inverting the following:\n[{condition.Condition.IReportMessage(result.Result, config?.NestedConfig)}]";
         }
 
         public static string ReportMessage(this ILogicalCollectionCondition condition, LogicalCollectionConditionResult result, LogicalCollectionConditionReportingConfig config)
@@ -74,10 +99,11 @@ namespace BH.Engine.Verification
             {
                 ICondition subCondition = condition.Conditions[i];
                 IConditionResult subResult = result.Results[i];
-                
+
                 //TODO: will dictionary work after deserialisation??
-                IConditionReportingConfig subConfig;
-                config.NestedConfigs.TryGetValue(subCondition, out subConfig);
+                IConditionReportingConfig subConfig = null;
+                if (config?.NestedConfigs != null)
+                    config.NestedConfigs.TryGetValue(subCondition, out subConfig);
 
                 string subReport = subCondition.IReportMessage(subResult, config);
                 if ((bool)subResult.Passed)
@@ -118,11 +144,12 @@ namespace BH.Engine.Verification
             string sourceLabel = condition.ValueSourceLabel(config);
             string extractedValueLabel = result.ExtractedValue.IFormattedValueString(config);
             string refValueLabel = condition.ReferenceValue.IFormattedValueString(config);
+            string comparison = condition.ComparisonType.ComparisonString();
 
             if (result.Passed.Value)
-                return $"{sourceLabel} is {extractedValueLabel}.";
+                return $"{sourceLabel} is {extractedValueLabel}, which meets the requirement to {comparison} {refValueLabel}.";
             else
-                return $"{sourceLabel} must {condition.ComparisonType.ComparisonString()} {refValueLabel}, but is {extractedValueLabel}.";
+                return $"{sourceLabel} must {comparison} {refValueLabel}, but is {extractedValueLabel}.";
         }
 
         public static string ReportMessage(this IsInDomain condition, ValueConditionResult result, IValueConditionReportingConfig config)
