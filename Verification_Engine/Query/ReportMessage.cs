@@ -13,6 +13,11 @@ namespace BH.Engine.Verification
 {
     public static partial class Query
     {
+        public static string ReportMessage(this Requirement requirement, RequirementResult result)
+        {
+            return requirement.Condition.IReportMessage(result.VerificationResult, requirement.ReportingConfig);
+        }
+
         public static string IReportMessage(this ICondition condition, IConditionResult result, IConditionReportingConfig config)
         {
             object message;
