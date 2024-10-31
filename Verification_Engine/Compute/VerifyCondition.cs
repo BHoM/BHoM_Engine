@@ -7,6 +7,7 @@ using BH.oM.Verification.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 
 namespace BH.Engine.Verification
 {
@@ -14,6 +15,11 @@ namespace BH.Engine.Verification
     {
         public static IConditionResult IVerifyCondition(this object obj, ICondition condition)
         {
+            if (condition is IsNotNull notNullCondition)
+                return VerifyCondition(obj, notNullCondition);
+
+            //TODO: null check
+
             object result;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(obj, nameof(VerifyCondition), new object[] { condition }, out result))
             {
@@ -55,18 +61,16 @@ namespace BH.Engine.Verification
                 results.Add(r);
             }
 
-            bool pass;
-            string prefix;
+            bool? pass;
             if (condition is LogicalAndCondition)
             {
-                pass = results.All(x => x.Passed == true);
-                prefix = $"Logical AND condition:\n[";
+                if (results.Any(x => x == null))
+                    pass = null;
+                else
+                    pass = results.All(x => x.Passed == true);
             }
             else if (condition is LogicalOrCondition)
-            {
                 pass = results.Any(x => x.Passed == true);
-                prefix = $"Logical OR condition:\n[";
-            }
             else
                 throw new NotImplementedException();
 
@@ -99,7 +103,10 @@ namespace BH.Engine.Verification
 
         public static ValueConditionResult VerifyCondition(this object obj, HasId condition)
         {
-            object id = (obj as IBHoMObject)?.FindFragment<IAdapterId>()?.Id;
+            object id = ((obj as IBHoMObject)?.Fragments.FirstOrDefault(x => x is IAdapterId) as IAdapterId)?.Id;
+            if (id == null)
+                id = ((obj as IBHoMObject)?.Fragments.FirstOrDefault(x => x is IPersistentAdapterId) as IPersistentAdapterId)?.PersistentId;
+
             bool? pass = id != null && condition.Ids.Contains(id);
             return new ValueConditionResult(pass, id);
         }
@@ -123,7 +130,7 @@ namespace BH.Engine.Verification
 
         public static IsNotNullResult VerifyCondition(this object obj, IsNotNull condition)
         {
-            bool pass = obj != null;
+            bool? pass = obj.Passes(condition);
             return new IsNotNullResult(pass);
         }
 
@@ -134,9 +141,9 @@ namespace BH.Engine.Verification
             Type type = condition.Type is string ? BH.Engine.Base.Create.Type(condition.Type.ToString()) : condition.Type as Type;
             if (type == null)
             {
-                string error = $"Invalid {nameof(IsOfType.Type)} input in the given {nameof(IsOfType)}.";
+                string error = $"Type {nameof(IsOfType.Type)} provided in the given {nameof(IsOfType)} does not exist.";
                 BH.Engine.Base.Compute.RecordError(error);
-                return null;
+                return new IsOfTypeResult(null, null);
             }
 
             Type extractedType = obj.GetType();
@@ -170,9 +177,7 @@ namespace BH.Engine.Verification
 
             // Try enum comparison
             if (value is Enum || referenceValue is Enum)
-            {
                 return value.GetType() == referenceValue.GetType() && (int)value == (int)referenceValue;
-            }
 
             // Try a numerical comparison
             double numericalValue;
@@ -190,21 +195,26 @@ namespace BH.Engine.Verification
 
             // Try string comparison
             if (value is string || referenceValue is string)
-            {
                 return StringComparison((string)value, (string)referenceValue, comparisonType);
-            }
 
             // Consider some other way to compare objects.
-            if (comparisonType == ValueComparisonType.EqualTo)
+            if (comparisonType == ValueComparisonType.EqualTo || comparisonType == ValueComparisonType.NotEqualTo)
             {
+                bool? passed;
+
                 // If the referenceValue is a Type, convert this ValueCondition to a IsOfType condition.
                 if (referenceValue is Type)
                 {
                     IsOfType typeCondition = new IsOfType() { Type = referenceValue as Type };
-                    return value.IPasses(typeCondition);
+                    passed = value.IPasses(typeCondition);
                 }
+                else
+                    passed = CompareObjectEquality(value, referenceValue, tolerance);
 
-                return CompareObjectEquality(value, referenceValue, tolerance);
+                if (passed != null && comparisonType == ValueComparisonType.NotEqualTo)
+                    passed = !passed;
+
+                return passed;
             }
 
             //TODO: meaningful error or handle more cases
@@ -241,6 +251,8 @@ namespace BH.Engine.Verification
             {
                 case ValueComparisonType.EqualTo:
                     return (Math.Abs(value - referenceValue) <= tolerance);
+                case ValueComparisonType.NotEqualTo:
+                    return (Math.Abs(value - referenceValue) > tolerance);
                 case ValueComparisonType.GreaterThan:
                     return (value - referenceValue > tolerance);
                 case ValueComparisonType.GreaterThanOrEqualTo:
@@ -262,8 +274,14 @@ namespace BH.Engine.Verification
             {
                 case ValueComparisonType.EqualTo:
                     return value == referenceValue;
+                case ValueComparisonType.NotEqualTo:
+                    return value != referenceValue;
                 case ValueComparisonType.Contains:
                     return value.Contains(referenceValue);
+                case ValueComparisonType.StartsWith:
+                    return value.StartsWith(referenceValue);
+                case ValueComparisonType.EndsWith:
+                    return value.EndsWith(referenceValue);
                 default:
                     {
                         return false;

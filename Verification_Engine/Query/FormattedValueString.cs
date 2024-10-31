@@ -11,7 +11,7 @@ namespace BH.Engine.Verification
                 return value?.ToString() ?? "null";
 
             object valueString;
-            if (!BH.Engine.Base.Compute.TryRunExtensionMethod(value, nameof(ReportMessage), new object[] { config }, out valueString))
+            if (!BH.Engine.Base.Compute.TryRunExtensionMethod(value, nameof(FormattedValueString), new object[] { config }, out valueString))
             {
                 //TODO: error
                 return null;

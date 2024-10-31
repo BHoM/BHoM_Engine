@@ -43,7 +43,7 @@ namespace BH.Engine.Verification
             return report;
         }
 
-        public static string IReportMessage(this ICondition condition, IConditionResult result, IConditionReportingConfig config)
+        public static string IReportMessage(this ICondition condition, IConditionResult result, IConditionReportingConfig config = null)
         {
             object message;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(condition, nameof(ReportMessage), new object[] { result, config }, out message))
@@ -55,7 +55,7 @@ namespace BH.Engine.Verification
             return (string)message;
         }
 
-        public static string ReportMessage(this LogicalNotCondition condition, SingleLogicalConditionResult result, SingleLogicalConditionReportingConfig config)
+        public static string ReportMessage(this LogicalNotCondition condition, SingleLogicalConditionResult result, SingleLogicalConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
             {
@@ -69,7 +69,7 @@ namespace BH.Engine.Verification
             return $"Logical NOT condition {((bool)result.Passed ? "passed" : "failed")} after inverting the following:\n[{condition.Condition.IReportMessage(result.Result, config?.NestedConfig)}]";
         }
 
-        public static string ReportMessage(this ILogicalCollectionCondition condition, LogicalCollectionConditionResult result, LogicalCollectionConditionReportingConfig config)
+        public static string ReportMessage(this ILogicalCollectionCondition condition, LogicalCollectionConditionResult result, LogicalCollectionConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
             {
@@ -105,7 +105,7 @@ namespace BH.Engine.Verification
                 if (config?.NestedConfigs != null)
                     config.NestedConfigs.TryGetValue(subCondition, out subConfig);
 
-                string subReport = subCondition.IReportMessage(subResult, config);
+                string subReport = subCondition.IReportMessage(subResult, subConfig);
                 if ((bool)subResult.Passed)
                     passes.Add(subReport);
                 else
@@ -130,7 +130,7 @@ namespace BH.Engine.Verification
             return report;
         }
 
-        public static string ReportMessage(this ValueCondition condition, ValueConditionResult result, IValueConditionReportingConfig config)
+        public static string ReportMessage(this ValueCondition condition, ValueConditionResult result, IValueConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
             {
@@ -152,7 +152,7 @@ namespace BH.Engine.Verification
                 return $"{sourceLabel} must {comparison} {refValueLabel}, but is {extractedValueLabel}.";
         }
 
-        public static string ReportMessage(this IsInDomain condition, ValueConditionResult result, IValueConditionReportingConfig config)
+        public static string ReportMessage(this IsInDomain condition, ValueConditionResult result, IValueConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
             {
@@ -174,7 +174,7 @@ namespace BH.Engine.Verification
                 return $"{sourceLabel} is {extractedValueLabel}, which is not in ({minLabel}, {maxLabel}).";
         }
 
-        public static string ReportMessage(this HasId condition, ValueConditionResult result, IValueConditionReportingConfig config)
+        public static string ReportMessage(this HasId condition, ValueConditionResult result, IValueConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
             {
@@ -184,16 +184,14 @@ namespace BH.Engine.Verification
 
             if (result.Passed == null)
                 return "Verification of condition was inconclusive.";
-
-            string sourceLabel = condition.ValueSourceLabel(config);
 
             if (result.Passed.Value)
-                return $"{sourceLabel} contains one of the requested ids.";
+                return $"The object contains id equal to {result.ExtractedValue}.";
             else
-                return $"{sourceLabel} does not contain any of the requested ids: {string.Join(" | ", condition.Ids.Select(v => v.ToString()))}.";
+                return $"The object does not contain any of the requested ids: {string.Join(" | ", condition.Ids.Select(v => v.ToString()))}.";
         }
 
-        public static string ReportMessage(this IsInSet condition, ValueConditionResult result, IValueConditionReportingConfig config)
+        public static string ReportMessage(this IsInSet condition, ValueConditionResult result, IValueConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
             {
@@ -205,7 +203,7 @@ namespace BH.Engine.Verification
                 return "Verification of condition was inconclusive.";
 
             string sourceLabel = condition.ValueSourceLabel(config);
-            object extractedValue = result.ExtractedValue.ValueFromSource(condition);
+            object extractedValue = result.ExtractedValue;
 
             string extractedValueLabel;
             if (extractedValue is IEnumerable<object>)
@@ -219,7 +217,7 @@ namespace BH.Engine.Verification
                 return $"{sourceLabel} is {extractedValueLabel}, which is not among: {string.Join(" | ", condition.Set.Select(v => v.IFormattedValueString(config)))}.";
         }
 
-        public static string ReportMessage(this IsNotNull condition, IsNotNullResult result)
+        public static string ReportMessage(this IsNotNull condition, IsNotNullResult result, IConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
             {
@@ -236,7 +234,7 @@ namespace BH.Engine.Verification
                 return "The object is null.";
         }
 
-        public static string ReportMessage(this IsOfType condition, IsOfTypeResult result)
+        public static string ReportMessage(this IsOfType condition, IsOfTypeResult result, IConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
             {

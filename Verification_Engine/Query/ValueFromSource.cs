@@ -56,7 +56,7 @@ namespace BH.Engine.Verification
             }
 
             // Get the object if indexing applied
-            if (m_IndexerPattern.IsMatch(sourceName))
+            if (m_IndexedPropertyPattern.IsMatch(sourceName))
             {
                 // Check if there is no nested or open brackets or any characters between brackets
                 char expected = '[';
@@ -65,7 +65,7 @@ namespace BH.Engine.Verification
                 {
                     if (c == '[')
                     {
-                        if (expected == '[')
+                        if (expected != '[')
                             return InvalidPropertyError(sourceName);
                         else
                             expected = ']';
@@ -74,7 +74,7 @@ namespace BH.Engine.Verification
                     }
                     else if (c == ']')
                     {
-                        if (expected == ']')
+                        if (expected != ']')
                             return InvalidPropertyError(sourceName);
                         else
                             expected = '[';
@@ -89,47 +89,48 @@ namespace BH.Engine.Verification
                     return InvalidPropertyError(sourceName);
 
                 int nameCount = sourceName.IndexOf('[');
-                string propName = sourceName.Substring(nameCount);
+                string propName = sourceName.Substring(0, nameCount);
                 obj = obj.ValueFromSource(propName);
                 if (obj == null)
                     return IndexingFailedError(sourceName, propName);
 
-                foreach (string value in m_IndexerPattern.Matches(sourceName).Cast<Match>().Select(x => x.Value))
+                foreach (string match in m_IndexerPattern.Matches(sourceName).Cast<Match>().Select(x => x.Value))
                 {
+                    string trimmed = match.Trim('[', ']');
                     if (obj is IList list)
                     {
                         int index;
-                        if (int.TryParse(value, out index) && index >= 0 && list.Count > index)
+                        if (int.TryParse(trimmed, out index) && index >= 0 && list.Count > index)
                             obj = list[index];
                         else
-                            return IndexingFailedError(sourceName, value);
+                            return IndexingFailedError(sourceName, trimmed);
                     }
                     else if (obj is IDictionary dictionary)
                     {
-                        if (dictionary.Contains(value))
+                        if (dictionary.Contains(trimmed))
                         {
-                            obj = dictionary[value];
+                            obj = dictionary[trimmed];
                             continue;
                         }
 
                         int asInt;
-                        if (int.TryParse(value, out asInt) && dictionary.Contains(asInt))
+                        if (int.TryParse(trimmed, out asInt) && dictionary.Contains(asInt))
                         {
                             obj = dictionary[asInt];
                             continue;
                         }
 
                         double asDouble;
-                        if (double.TryParse(value, out asDouble) && dictionary.Contains(asDouble))
+                        if (double.TryParse(trimmed, out asDouble) && dictionary.Contains(asDouble))
                         {
                             obj = dictionary[asDouble];
                             continue;
                         }
 
-                        return IndexingFailedError(sourceName, value);
+                        return IndexingFailedError(sourceName, trimmed);
                     }
                     else
-                        return IndexingFailedError(sourceName, value);
+                        return IndexingFailedError(sourceName, trimmed);
                 }
 
                 return obj;
@@ -193,6 +194,7 @@ namespace BH.Engine.Verification
             return value;
         }
 
+        private static readonly Regex m_IndexedPropertyPattern = new Regex("^[a-zA-Z0-9]+\\[[^\\]]+\\]");
         private static readonly Regex m_IndexerPattern = new Regex("\\[[^\\]]+\\]");
 
 
