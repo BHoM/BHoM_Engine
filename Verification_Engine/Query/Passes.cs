@@ -20,7 +20,7 @@ namespace BH.Engine.Verification
                 return null;
             }
 
-            return (bool)result;
+            return (bool?)result;
         }
 
         public static bool? Passes(this object obj, IValueCondition condition)

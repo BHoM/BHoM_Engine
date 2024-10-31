@@ -140,11 +140,7 @@ namespace BH.Engine.Verification
         {
             Type type = condition.Type is string ? BH.Engine.Base.Create.Type(condition.Type.ToString()) : condition.Type as Type;
             if (type == null)
-            {
-                string error = $"Type {nameof(IsOfType.Type)} provided in the given {nameof(IsOfType)} does not exist.";
-                BH.Engine.Base.Compute.RecordError(error);
                 return new IsOfTypeResult(null, null);
-            }
 
             Type extractedType = obj.GetType();
             bool? pass = extractedType == type;
@@ -194,7 +190,7 @@ namespace BH.Engine.Verification
             }
 
             // Try string comparison
-            if (value is string || referenceValue is string)
+            if (value is string && referenceValue is string)
                 return StringComparison((string)value, (string)referenceValue, comparisonType);
 
             // Consider some other way to compare objects.
