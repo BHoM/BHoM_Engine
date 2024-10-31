@@ -35,38 +35,59 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Builds a hierarchy of methods based on distance of each method's first parameter to the provided type. " +
-                     "First level of hierarchy will contain methods that extend types that are closest in inheritance hierarchy to the input type.")]
-        [Input("methods", "The list of extentionmethods to sort. Will assume the first inputparameter of the methods to be of a type assignable from the provided Type")]
-        [Input("type", "Type to check closeness to. Assumed to match first input parameter of the methods")]
-        [Output("hierarchy", "Hierarchy of input methods based on distance of each method's first parameter to the input type.")]
-        public static List<List<MethodInfo>> ExtensionMethodHierarchy(this IEnumerable<MethodInfo> methods, Type type)
+        [Description("Builds a hierarchy of methods based on distance of each method's input parameter to the correspondent input type, first to first, second to second etc." +
+            "\nThree levels of hierarchy are returned:" +
+            "\n- first level of hierarchy groups the output by order of inputs, i.e. first sublist corresponds to first input type and first method parameter, second to second etc." +
+            "\n- second level of hierarchy groups methods by the distance in inheritance hierarchy between their input parameter and the correspondent input type" +
+            "\n- third level of hierarchy contains is an unordered set of methods with same distance in inheritance hierarchy between their input parameter and the correspondent input type.")]
+        [Input("methods", "The list of extension methods to sort. Will assume the input parameters of the methods to be of a type assignable from the provided types.")]
+        [Input("types", "Types to check closeness to. First provided type is assumed to match first input parameter of the methods, others to follow respectively.")]
+        [Output("hierarchy", "Hierarchy of input methods based on distance of each method's parameters to the input types.")]
+        public static List<List<List<MethodInfo>>> ExtensionMethodHierarchy(this IEnumerable<MethodInfo> methods, IEnumerable<Type> types)
         {
-            if (methods == null || type == null)
+            if (methods == null || types == null || !types.Any())
                 return null;
 
             if (methods.Count() == 0)
-                return new List<List<MethodInfo>>();
+                return new List<List<List<MethodInfo>>>();
 
-            // Build inheritance hierarchy for the input type
-            List<List<Type>> inheritanceHierarchy = type.InheritanceHierarchy();
+            // Build inheritance hierarchy for the input types
+            // Each item of the top list represents hierarchy for each input type
+            List<List<List<Type>>> allHierarchy = new List<List<List<Type>>>();
+            foreach (Type t in types)
+            {
+                allHierarchy.Add(t?.InheritanceHierarchy());
+            }
 
-            // Organise methods into hierarchy based on hierarchy of types they extend
-            Dictionary<int, List<MethodInfo>> methodHierarchy = new Dictionary<int, List<MethodInfo>>();
+            // Organise methods into hierarchy based on hierarchy of type parameters
+            // Order of the outputs follows the order in method signature
+            List<Dictionary<int, List<MethodInfo>>> methodHierarchy = new List<Dictionary<int, List<MethodInfo>>>();
             foreach (MethodInfo method in methods)
             {
-                int hierarchyLevel = inheritanceHierarchy.InheritanceLevel(method.GetParameters()[0].ParameterType);
-                if (hierarchyLevel != -1)
+                // Get input parameter types of the method
+                List<Type> parameterTypes = method.GetParameters().Select(x => x.ParameterType).ToList();
+                
+                for (int i = 0; i < parameterTypes.Count; i++)
                 {
-                    if (!methodHierarchy.ContainsKey(hierarchyLevel))
-                        methodHierarchy[hierarchyLevel] = new List<MethodInfo>();
+                    // Find distance between each method parameter and correspondent input type
+                    Dictionary<int, List<MethodInfo>> inheritanceHierarchy = new Dictionary<int, List<MethodInfo>>();
+                    int hierarchyLevel = allHierarchy[i]?.InheritanceLevel(parameterTypes[i]) ?? -1;
+                    
+                    // If distance found, add the method to the hierarchy
+                    if (hierarchyLevel != -1)
+                    {
+                        if (!inheritanceHierarchy.ContainsKey(hierarchyLevel))
+                            inheritanceHierarchy[hierarchyLevel] = new List<MethodInfo>();
 
-                    methodHierarchy[hierarchyLevel].Add(method);
+                        inheritanceHierarchy[hierarchyLevel].Add(method);
+                    }
+
+                    methodHierarchy.Add(inheritanceHierarchy);
                 }
             }
 
-            // Return the hierarchy
-            return methodHierarchy.OrderBy(x => x.Key).Select(x => x.Value).ToList();
+            // Return the hierarchy as a list of lists
+            return methodHierarchy.Select(x => x.OrderBy(y => y.Key).Select(y => y.Value).ToList()).ToList();
         }
 
 
