@@ -5,6 +5,10 @@ namespace BH.Engine.Verification
 {
     public static partial class Query
     {
+        /***************************************************/
+        /****             Interface Methods             ****/
+        /***************************************************/
+
         public static string IFormattedValueString(this object value, IValueConditionReportingConfig config)
         {
             if (config == null)
@@ -13,12 +17,17 @@ namespace BH.Engine.Verification
             object valueString;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(value, nameof(FormattedValueString), new object[] { config }, out valueString))
             {
-                //TODO: error
+                BH.Engine.Base.Compute.RecordError($"Formatting failed because reporting config of type {config.GetType().Name} is currently not supported.");
                 return null;
             }
 
             return (string)valueString;
         }
+
+
+        /***************************************************/
+        /****              Public Methods               ****/
+        /***************************************************/
 
         public static string FormattedValueString(this object value, NumberConditionReportingConfig config)
         {
@@ -42,10 +51,14 @@ namespace BH.Engine.Verification
             return result;
         }
 
+        /***************************************************/
+
         public static string FormattedValueString(this object value, ValueConditionReportingConfig config)
         {
             return value?.ToString() ?? "null";
         }
+
+        /***************************************************/
 
         //TODO: merge into Alessio's stuff?
         private static double RoundNumericValue(this double value, double accuracy)

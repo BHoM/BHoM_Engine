@@ -1,18 +1,23 @@
 ﻿using BH.oM.Verification.Conditions;
-using BH.oM.Verification.Results;
-using BH.oM.Verification.Specifications;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace BH.Engine.Verification
 {
     public static partial class Query
     {
+        /***************************************************/
+        /****             Interface Methods             ****/
+        /***************************************************/
+
         public static IEnumerable<ICondition> INestedConditions(this ICondition condition)
         {
             return NestedConditions(condition as dynamic);
         }
+
+
+        /***************************************************/
+        /****              Public Methods               ****/
+        /***************************************************/
 
         public static IEnumerable<ICondition> NestedConditions(this ILogicalCollectionCondition condition)
         {
@@ -25,14 +30,23 @@ namespace BH.Engine.Verification
             }
         }
 
+        /***************************************************/
+
         public static IEnumerable<ICondition> NestedConditions(this ISingleLogicalCondition condition)
         {
             yield return condition.Condition;
         }
 
+
+        /***************************************************/
+        /****              Private Methods              ****/
+        /***************************************************/
+
         private static IEnumerable<ICondition> NestedConditions(this ICondition condition)
         {
             yield return condition;
         }
+
+        /***************************************************/
     }
 }

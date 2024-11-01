@@ -9,22 +9,30 @@ namespace BH.Engine.Verification
     public static partial class Compute
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****             Interface Methods             ****/
         /***************************************************/
 
-        // Engineer to Order workflow. Verify against specs.
         public static SpecificationResult IVerifySpecification(IEnumerable<object> objects, ISpecification specification)
         {
+            if (objects == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify specification against null objects.");
+                return null;
+            }
+
             object result;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(objects, nameof(VerifySpecification), new object[] { specification }, out result))
             {
-                //TODO: error
+                BH.Engine.Base.Compute.RecordError($"Verification failed because specification of type {result.GetType().Name} is currently not supported.");
                 return null;
             }
 
             return (SpecificationResult)result;
         }
 
+
+        /***************************************************/
+        /****              Public Methods               ****/
         /***************************************************/
 
         public static SpecificationResult VerifySpecification(IEnumerable<object> objects, Specification specification)
@@ -37,18 +45,6 @@ namespace BH.Engine.Verification
 
             // Finally return the result
             return new SpecificationResult(specification, requirementResults);
-        }
-
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        // Fallback
-        private static SpecificationResult VerifySpecification(List<object> objects, ISpecification specification)
-        {
-            BH.Engine.Base.Compute.RecordError($"Specification of type {specification.GetType()} is currently not supported.");
-            return null;
         }
 
         /***************************************************/

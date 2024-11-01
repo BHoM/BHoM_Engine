@@ -13,6 +13,27 @@ namespace BH.Engine.Verification
 {
     public static partial class Query
     {
+        /***************************************************/
+        /****             Interface Methods             ****/
+        /***************************************************/
+
+        public static string IReportMessage(this ICondition condition, IConditionResult result, IConditionReportingConfig config = null)
+        {
+            object message;
+            if (!BH.Engine.Base.Compute.TryRunExtensionMethod(condition, nameof(ReportMessage), new object[] { result, config }, out message))
+            {
+                BH.Engine.Base.Compute.RecordError($"Report generation failed because combination of types {condition.GetType().Name}, {result.GetType().Name} and {config?.GetType().Name} is currently not supported.");
+                return null;
+            }
+
+            return message as string;
+        }
+
+
+        /***************************************************/
+        /****              Public Methods               ****/
+        /***************************************************/
+
         public static string ReportMessage(this Requirement requirement, RequirementResult result)
         {
             if (requirement == null || result?.VerificationResult == null)
@@ -43,17 +64,7 @@ namespace BH.Engine.Verification
             return report;
         }
 
-        public static string IReportMessage(this ICondition condition, IConditionResult result, IConditionReportingConfig config = null)
-        {
-            object message;
-            if (!BH.Engine.Base.Compute.TryRunExtensionMethod(condition, nameof(ReportMessage), new object[] { result, config }, out message))
-            {
-                //TODO: error
-                return null;
-            }
-
-            return (string)message;
-        }
+        /***************************************************/
 
         public static string ReportMessage(this LogicalNotCondition condition, SingleLogicalConditionResult result, SingleLogicalConditionReportingConfig config = null)
         {
@@ -68,6 +79,8 @@ namespace BH.Engine.Verification
 
             return $"Logical NOT condition {((bool)result.Passed ? "passed" : "failed")} after inverting the following:\n[{condition.Condition.IReportMessage(result.Result, config?.NestedConfig)}]";
         }
+
+        /***************************************************/
 
         public static string ReportMessage(this ILogicalCollectionCondition condition, LogicalCollectionConditionResult result, LogicalCollectionConditionReportingConfig config = null)
         {
@@ -91,7 +104,10 @@ namespace BH.Engine.Verification
                 prefix = $"Logical OR condition {passed}:\n[";
             }
             else
-                throw new NotImplementedException();
+            {
+                BH.Engine.Base.Compute.RecordError($"Report generation failed because condition of type {condition.GetType().Name} is currently not supported.");
+                return null;
+            }
 
             List<string> passes = new List<string>();
             List<string> fails = new List<string>();
@@ -130,6 +146,8 @@ namespace BH.Engine.Verification
             return report;
         }
 
+        /***************************************************/
+
         public static string ReportMessage(this ValueCondition condition, ValueConditionResult result, IValueConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
@@ -151,6 +169,8 @@ namespace BH.Engine.Verification
             else
                 return $"{sourceLabel} must {comparison} {refValueLabel}, but is {extractedValueLabel}.";
         }
+
+        /***************************************************/
 
         public static string ReportMessage(this IsInDomain condition, ValueConditionResult result, IValueConditionReportingConfig config = null)
         {
@@ -174,6 +194,8 @@ namespace BH.Engine.Verification
                 return $"{sourceLabel} is {extractedValueLabel}, which is not in ({minLabel}, {maxLabel}).";
         }
 
+        /***************************************************/
+
         public static string ReportMessage(this HasId condition, ValueConditionResult result, IValueConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
@@ -190,6 +212,8 @@ namespace BH.Engine.Verification
             else
                 return $"The object does not contain any of the requested ids: {string.Join(" | ", condition.Ids.Select(v => v.ToString()))}.";
         }
+
+        /***************************************************/
 
         public static string ReportMessage(this IsInSet condition, ValueConditionResult result, IValueConditionReportingConfig config = null)
         {
@@ -217,6 +241,8 @@ namespace BH.Engine.Verification
                 return $"{sourceLabel} is {extractedValueLabel}, which is not among: {string.Join(" | ", condition.Set.Select(v => v.IFormattedValueString(config)))}.";
         }
 
+        /***************************************************/
+
         public static string ReportMessage(this IsNotNull condition, IsNotNullResult result, IConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
@@ -233,6 +259,8 @@ namespace BH.Engine.Verification
             else
                 return "The object is null.";
         }
+
+        /***************************************************/
 
         public static string ReportMessage(this IsOfType condition, IsOfTypeResult result, IConditionReportingConfig config = null)
         {
@@ -253,6 +281,11 @@ namespace BH.Engine.Verification
                 return $"The object is of type {result.ExtractedType.Name}, not {refType}.";
             }
         }
+
+
+        /***************************************************/
+        /****              Private Methods              ****/
+        /***************************************************/
 
         private static string ComparisonString(this ValueComparisonType comparisonType)
         {
@@ -277,8 +310,10 @@ namespace BH.Engine.Verification
                 case ValueComparisonType.EndsWith:
                     return "end with";
                 default:
-                    throw new NotImplementedException();
+                    return comparisonType.ToString();
             }
         }
+
+        /***************************************************/
     }
 }

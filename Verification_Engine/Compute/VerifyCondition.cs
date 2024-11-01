@@ -1,39 +1,65 @@
-﻿using BH.Engine.Base;
-using BH.Engine.Base.Objects;
+﻿using BH.Engine.Base.Objects;
 using BH.oM.Base;
-using BH.oM.Verification;
 using BH.oM.Verification.Conditions;
 using BH.oM.Verification.Results;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 
 namespace BH.Engine.Verification
 {
     public static partial class Compute
     {
+        /***************************************************/
+        /****             Interface Methods             ****/
+        /***************************************************/
+
         public static IConditionResult IVerifyCondition(this object obj, ICondition condition)
         {
             if (condition is IsNotNull notNullCondition)
                 return VerifyCondition(obj, notNullCondition);
 
-            //TODO: null check
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition against a null object.");
+                return null;
+            }
+
+            if (condition == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition because it was null.");
+                return null;
+            }
 
             object result;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(obj, nameof(VerifyCondition), new object[] { condition }, out result))
             {
-                //TODO: error
+                BH.Engine.Base.Compute.RecordError($"Verification failed because condition of type {condition.GetType().Name} is currently not supported.");
                 return null;
             }
 
-            return VerifyCondition(obj, condition as dynamic);
+            return result as IConditionResult;
         }
 
+
+        /***************************************************/
+        /****              Public Methods               ****/
         /***************************************************/
 
         public static SingleLogicalConditionResult VerifyCondition(this object obj, LogicalNotCondition condition)
         {
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition against a null object.");
+                return null;
+            }
+
+            if (condition == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition because it was null.");
+                return null;
+            }
+
             IConditionResult result = obj.IVerifyCondition(condition.Condition);
             bool? inverted;
             if (result.Passed == null)
@@ -48,6 +74,18 @@ namespace BH.Engine.Verification
 
         public static LogicalCollectionConditionResult VerifyCondition(this object obj, ILogicalCollectionCondition condition)
         {
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition against a null object.");
+                return null;
+            }
+
+            if (condition == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition because it was null.");
+                return null;
+            }
+
             if (condition.Conditions.Count == 0)
                 return new LogicalCollectionConditionResult(null, new List<IConditionResult>());
 
@@ -72,7 +110,10 @@ namespace BH.Engine.Verification
             else if (condition is LogicalOrCondition)
                 pass = results.Any(x => x.Passed == true);
             else
-                throw new NotImplementedException();
+            {
+                BH.Engine.Base.Compute.RecordError($"Verification failed because condition of type {condition.GetType().Name} is currently not supported.");
+                return null;
+            }
 
             return new LogicalCollectionConditionResult(pass, results);
         }
@@ -81,6 +122,18 @@ namespace BH.Engine.Verification
 
         public static ValueConditionResult VerifyCondition(this object obj, IsInDomain condition)
         {
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition against a null object.");
+                return null;
+            }
+
+            if (condition == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition because it was null.");
+                return null;
+            }
+
             bool pass = false;
 
             object value = obj.ValueFromSource(condition);
@@ -103,6 +156,18 @@ namespace BH.Engine.Verification
 
         public static ValueConditionResult VerifyCondition(this object obj, HasId condition)
         {
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition against a null object.");
+                return null;
+            }
+
+            if (condition == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition because it was null.");
+                return null;
+            }
+
             object id = ((obj as IBHoMObject)?.Fragments.FirstOrDefault(x => x is IAdapterId) as IAdapterId)?.Id;
             if (id == null)
                 id = ((obj as IBHoMObject)?.Fragments.FirstOrDefault(x => x is IPersistentAdapterId) as IPersistentAdapterId)?.PersistentId;
@@ -115,6 +180,18 @@ namespace BH.Engine.Verification
 
         public static ValueConditionResult VerifyCondition(this object obj, IsInSet condition)
         {
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition against a null object.");
+                return null;
+            }
+
+            if (condition == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition because it was null.");
+                return null;
+            }
+
             object value = obj.ValueFromSource(condition);
             bool? pass = false;
             if (value.IsInSet(condition.Set, condition.ComparisonConfig))
@@ -130,6 +207,12 @@ namespace BH.Engine.Verification
 
         public static IsNotNullResult VerifyCondition(this object obj, IsNotNull condition)
         {
+            if (condition == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition because it was null.");
+                return null;
+            }
+
             bool? pass = obj.Passes(condition);
             return new IsNotNullResult(pass);
         }
@@ -138,6 +221,18 @@ namespace BH.Engine.Verification
 
         public static IsOfTypeResult VerifyCondition(this object obj, IsOfType condition)
         {
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition against a null object.");
+                return null;
+            }
+
+            if (condition == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition because it was null.");
+                return null;
+            }
+
             Type type = condition.Type is string ? BH.Engine.Base.Create.Type(condition.Type.ToString()) : condition.Type as Type;
             if (type == null)
                 return new IsOfTypeResult(null, null);
@@ -151,140 +246,26 @@ namespace BH.Engine.Verification
 
         public static ValueConditionResult VerifyCondition(this object obj, ValueCondition condition)
         {
-            //TODO: null check
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition against a null object.");
+                return null;
+            }
+
+            if (condition == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition because it was null.");
+                return null;
+            }
 
             object value = obj.ValueFromSource(condition);
-            bool? pass = value.Passes(condition.ReferenceValue, condition.ComparisonType, condition.Tolerance);
+            bool? pass = value.CompareValues(condition.ReferenceValue, condition.ComparisonType, condition.Tolerance);
             return new ValueConditionResult(pass, value);
         }
 
-        /***************************************************/
-
-        public static bool? Passes(this object value, object referenceValue, ValueComparisonType comparisonType, object tolerance)
-        {
-            // Basic cases (check for nullity)
-            if (referenceValue == null && value == null)
-                return true;
-            else if (referenceValue == null || value == null)
-                return false;
-
-            if (value is Type && referenceValue is Type)
-                return value == referenceValue;
-
-            // Try enum comparison
-            if (value is Enum || referenceValue is Enum)
-                return value.GetType() == referenceValue.GetType() && (int)value == (int)referenceValue;
-
-            // Try a numerical comparison
-            double numericalValue;
-            if (double.TryParse(value?.ToString(), out numericalValue))
-            {
-                double referenceNumValue;
-                double.TryParse(referenceValue?.ToString(), out referenceNumValue);
-
-                double numTolerance;
-                if (!double.TryParse(tolerance?.ToString(), out numTolerance))
-                    numTolerance = 1e-03;
-
-                return NumericalComparison(numericalValue, referenceNumValue, numTolerance, comparisonType);
-            }
-
-            // Try string comparison
-            if (value is string && referenceValue is string)
-                return StringComparison((string)value, (string)referenceValue, comparisonType);
-
-            // Consider some other way to compare objects.
-            if (comparisonType == ValueComparisonType.EqualTo || comparisonType == ValueComparisonType.NotEqualTo)
-            {
-                bool? passed;
-
-                // If the referenceValue is a Type, convert this ValueCondition to a IsOfType condition.
-                if (referenceValue is Type)
-                {
-                    IsOfType typeCondition = new IsOfType() { Type = referenceValue as Type };
-                    passed = value.IPasses(typeCondition);
-                }
-                else
-                    passed = CompareObjectEquality(value, referenceValue, tolerance);
-
-                if (passed != null && comparisonType == ValueComparisonType.NotEqualTo)
-                    passed = !passed;
-
-                return passed;
-            }
-
-            //TODO: meaningful error or handle more cases
-            string error = "";
-            BH.Engine.Base.Compute.RecordError(error);
-            return null;
-        }
 
         /***************************************************/
-
-        private static bool CompareObjectEquality(object value, object refValue, object tolerance)
-        {
-            if (value == null || refValue == null)
-                return value == refValue;
-
-            if (value.GetType() != refValue.GetType())
-                return false;
-
-            var cc = tolerance as ComparisonConfig;
-            if (cc != null)
-            {
-                HashComparer<object> hc = new HashComparer<object>(cc);
-                return hc.Equals(value, refValue);
-            }
-
-            return value.Equals(refValue);
-        }
-
-        /***************************************************/
-
-        private static bool NumericalComparison(double value, double referenceValue, double tolerance, ValueComparisonType condition)
-        {
-            switch (condition)
-            {
-                case ValueComparisonType.EqualTo:
-                    return (Math.Abs(value - referenceValue) <= tolerance);
-                case ValueComparisonType.NotEqualTo:
-                    return (Math.Abs(value - referenceValue) > tolerance);
-                case ValueComparisonType.GreaterThan:
-                    return (value - referenceValue > tolerance);
-                case ValueComparisonType.GreaterThanOrEqualTo:
-                    return (value - referenceValue >= -tolerance);
-                case ValueComparisonType.LessThan:
-                    return (value - referenceValue < -tolerance);
-                case ValueComparisonType.LessThanOrEqualTo:
-                    return (value - referenceValue <= tolerance);
-                default:
-                    return false;
-            }
-        }
-
-        /***************************************************/
-
-        private static bool StringComparison(string value, string referenceValue, ValueComparisonType condition)
-        {
-            switch (condition)
-            {
-                case ValueComparisonType.EqualTo:
-                    return value == referenceValue;
-                case ValueComparisonType.NotEqualTo:
-                    return value != referenceValue;
-                case ValueComparisonType.Contains:
-                    return value.Contains(referenceValue);
-                case ValueComparisonType.StartsWith:
-                    return value.StartsWith(referenceValue);
-                case ValueComparisonType.EndsWith:
-                    return value.EndsWith(referenceValue);
-                default:
-                    {
-                        return false;
-                    }
-            }
-        }
-
+        /****              Private Methods              ****/
         /***************************************************/
 
         private static bool IsInSet(this object value, List<object> set, ComparisonConfig comparisonConfig)

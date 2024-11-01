@@ -8,28 +8,37 @@ namespace BH.Engine.Verification
     public static partial class Compute
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****             Interface Methods             ****/
         /***************************************************/
 
         public static RequirementResult IVerifyRequirement(object obj, IRequirement requirement)
         {
-            object result;
-            if (!BH.Engine.Base.Compute.TryRunExtensionMethod(obj, nameof(VerifyRequirement), new object[] { requirement }, out result))
+            if (obj == null)
             {
-                //TODO: error
+                BH.Engine.Base.Compute.RecordError("Could not verify requirement against a null object.");
                 return null;
             }
 
-            return (RequirementResult)result;
+            object result;
+            if (!BH.Engine.Base.Compute.TryRunExtensionMethod(obj, nameof(VerifyRequirement), new object[] { requirement }, out result))
+            {
+                BH.Engine.Base.Compute.RecordError($"Verification failed because requirement of type {result.GetType().Name} is currently not supported.");
+                return null;
+            }
+
+            return result as RequirementResult;
         }
 
+
+        /***************************************************/
+        /****              Public Methods               ****/
         /***************************************************/
 
         public static RequirementResult VerifyRequirement(IBHoMObject obj, Requirement requirement)
         {
             if (requirement == null || requirement.Condition.INestedConditions().Any(x => x == null))
             {
-                BH.Engine.Base.Compute.RecordError($"Requirement {requirement.Name} is null or its condition constains nulls.");
+                BH.Engine.Base.Compute.RecordError($"Requirement {requirement.Name} is null or its condition contains nulls.");
                 return null;
             }
 

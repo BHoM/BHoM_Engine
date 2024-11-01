@@ -10,32 +10,72 @@ namespace BH.Engine.Verification
 {
     public static partial class Query
     {
+        /***************************************************/
+        /****             Interface Methods             ****/
+        /***************************************************/
+
+        public static object IValueFromSource(this object obj, IValueSource valueSource, bool errorIfNotFound = false)
+        {
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not extract value from a null object.");
+                return null;
+            }
+
+            if (valueSource == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not extract value based on a null value source.");
+                return null;
+            }
+
+            object result;
+            if (!BH.Engine.Base.Compute.TryRunExtensionMethod(obj, nameof(ValueFromSource), new object[] { valueSource, errorIfNotFound }, out result))
+            {
+                BH.Engine.Base.Compute.RecordError($"Extraction failed because value source of type {valueSource.GetType().Name} is currently not supported.");
+                return null;
+            }
+
+            return result;
+        }
+
+
+        /***************************************************/
+        /****              Public Methods               ****/
+        /***************************************************/
+
         public static object ValueFromSource(this object obj, IValueCondition valueCondition, bool errorIfNotFound = false)
         {
             return obj.IValueFromSource(valueCondition.ValueSource, errorIfNotFound);
         }
 
-        public static object IValueFromSource(this object obj, IValueSource valueSource, bool errorIfNotFound = false)
-        {
-            object result;
-            if (!BH.Engine.Base.Compute.TryRunExtensionMethod(obj, nameof(ValueFromSource), new object[] { valueSource, errorIfNotFound }, out result))
-            {
-                //TODO: error
-                return null;
-            }
-            
-            return result;
-        }
+        /***************************************************/
 
         public static object ValueFromSource(this object obj, PropertyValueSource valueSource, bool errorIfNotFound = false)
         {
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not extract value from a null object.");
+                return null;
+            }
+
+            if (valueSource == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not extract value based on a null value source.");
+                return null;
+            }
+
             return obj.ValueFromSource(valueSource.PropertyName, errorIfNotFound);
         }
+
+
+        /***************************************************/
+        /****              Private Methods              ****/
+        /***************************************************/
 
         // Re-written from BH.Engine.Reflection.Query.PropertyValue for additional features.
         // Imporantly, if this does not find the value in any property or CustomData, then it invokes RunExtensionMethod
         // with the last segment of the source path (segments = separated by dots).
-        public static object ValueFromSource(this object obj, string sourceName, bool errorIfNotFound = false)
+        private static object ValueFromSource(this object obj, string sourceName, bool errorIfNotFound = false)
         {
             // If source name not set, compare entire object
             if (obj == null || sourceName == null)
@@ -149,17 +189,23 @@ namespace BH.Engine.Verification
             return GetValue(obj as dynamic, sourceName, errorIfNotFound);
         }
 
+        /***************************************************/
+
         private static object IndexingFailedError(string sourceName, string index)
         {
             BH.Engine.Base.Compute.RecordError($"Indexing of {sourceName} failed on {index}.");
             return null;
         }
 
+        /***************************************************/
+
         private static object InvalidPropertyError(string sourceName)
         {
             BH.Engine.Base.Compute.RecordError($"{sourceName} is not a valid property name.");
             return null;
         }
+
+        /***************************************************/
 
         private static object GetValue(this IBHoMObject bhomObj, string sourceName, bool errorIfNotFound = false)
         {
@@ -194,12 +240,6 @@ namespace BH.Engine.Verification
             return value;
         }
 
-        private static readonly Regex m_IndexedPropertyPattern = new Regex("^[a-zA-Z0-9]+\\[[^\\]]+\\]");
-        private static readonly Regex m_IndexerPattern = new Regex("\\[[^\\]]+\\]");
-
-
-        /***************************************************/
-        /**** Fallback Methods                           ****/
         /***************************************************/
 
         private static object GetValue(this object obj, string sourceName, bool errorIfNotFound)
@@ -213,5 +253,14 @@ namespace BH.Engine.Verification
             return value;
         }
 
+
+        /***************************************************/
+        /****               Private Fields              ****/
+        /***************************************************/
+
+        private static readonly Regex m_IndexedPropertyPattern = new Regex("^[a-zA-Z0-9]+\\[[^\\]]+\\]");
+        private static readonly Regex m_IndexerPattern = new Regex("\\[[^\\]]+\\]");
+
+        /***************************************************/
     }
 }

@@ -1,6 +1,4 @@
-﻿using BH.oM.Verification.Conditions;
-using BH.oM.Verification.Extraction;
-using System;
+﻿using BH.oM.Verification.Extraction;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,11 +6,15 @@ namespace BH.Engine.Verification
 {
     public static partial class Compute
     {
+        /***************************************************/
+        /****             Interface Methods             ****/
+        /***************************************************/
+
         public static List<object> IExtract(this IEnumerable<object> objects, IExtraction extraction)
         {
             if (objects == null)
             {
-                //TODO: error
+                BH.Engine.Base.Compute.RecordError($"Extraction failed because the provided objects to extract from are null.");
                 return null;
             }
 
@@ -25,20 +27,23 @@ namespace BH.Engine.Verification
             object filtered;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(objects, nameof(Extract), new object[] { extraction }, out filtered))
             {
-                //error
+                BH.Engine.Base.Compute.RecordError($"Extraction failed because extraction type {extraction.GetType().Name} is currently not supported.");
+                return null;
             }
 
             return filtered as List<object>;
         }
+
+
+        /***************************************************/
+        /****              Public Methods               ****/
+        /***************************************************/
 
         public static List<object> Extract(this IEnumerable<object> objects, ConditionBasedFilter extraction)
         {
             return objects.Where(x => x.IPasses(extraction.Condition) == true).ToList();
         }
 
-        private static List<object> Extract(this IEnumerable<object> objects, IExtraction extraction)
-        {
-            throw new NotImplementedException();
-        }
+        /***************************************************/
     }
 }
