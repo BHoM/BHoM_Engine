@@ -103,21 +103,15 @@ namespace BH.Engine.Base
                 return null;
             }
 
-            // If more than one method at the top level of applicable method hierarchy, there is a risk of ambiguous call
-            // In such case iterate over other method arguments to find a uniquely best matching method
+            // Iterate over each method argument's suitability hierarchy and find common denominator of top levels
             HashSet<MethodInfo> candidates = new HashSet<MethodInfo>(applicableMethods[0][0]);
-            for (int i = 0; i < applicableMethods.Count; i++)
+            foreach (List<MethodInfo> mostApplicable in applicableMethods.Select(x => x[0]))
             {
-                // If empty collection, it means the input is null so neutral to binding, fine to skip
-                if (applicableMethods[i].Count != 0)
-                {
-                    // Only consider the candidates that were among the most applicable ones so far
-                    candidates.IntersectWith(applicableMethods[i][0]);
-                    
-                    // If no candidates left, there is ambiguity that cannot be solved
-                    if (candidates.Count == 0)
-                        break;
-                }
+                candidates.IntersectWith(mostApplicable);
+
+                // If no candidates left, there is ambiguity that cannot be solved, stop iterating
+                if (candidates.Count == 0)
+                    break;
             }
 
             // If only one candidate is left, ambiguity is solved and method to call identified
