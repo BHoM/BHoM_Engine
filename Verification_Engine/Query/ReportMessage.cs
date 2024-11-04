@@ -1,4 +1,5 @@
-﻿using BH.oM.Base;
+﻿using BH.Engine.Diffing;
+using BH.oM.Base;
 using BH.oM.Verification;
 using BH.oM.Verification.Conditions;
 using BH.oM.Verification.Reporting;
@@ -115,11 +116,7 @@ namespace BH.Engine.Verification
             {
                 ICondition subCondition = condition.Conditions[i];
                 IConditionResult subResult = result.Results[i];
-
-                //TODO: will dictionary work after deserialisation??
-                IConditionReportingConfig subConfig = null;
-                if (config?.NestedConfigs != null)
-                    config.NestedConfigs.TryGetValue(subCondition, out subConfig);
+                IConditionReportingConfig subConfig = config?.NestedConfigs?.FirstOrDefault(x => x.Key.IsEqual(subCondition)).Value;
 
                 string subReport = subCondition.IReportMessage(subResult, subConfig);
                 if ((bool)subResult.Passed)
