@@ -20,19 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
 using BH.oM.Base.Attributes;
+using System;
 using System.ComponentModel;
-using BH.Engine.Base;
-using System.Collections;
-using System.Data;
 
 namespace BH.Engine.Base
 {
@@ -42,7 +32,7 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Rounds a number using the given tolerance, rounding (to floor) to the nearest tolerance multiplier." +
+        [Description("Rounds a number using the given tolerance, rounding to floor to the nearest tolerance multiplier." +
             "Supports any fractional, integer, positive or negative numbers." +
             "\nSome examples:" +
             "\n\t RoundWithTolerance(12, 20) ==> 0" +
@@ -53,7 +43,7 @@ namespace BH.Engine.Base
             "\nand so on.")]
         [Input("number", "Number to be rounded.")]
         [Input("tolerance", "Tolerance to use for rounding.")]
-        public static double RoundWithTolerance(this double number, double tolerance)
+        public static double RoundToFloor(this double number, double tolerance)
         {
             if (tolerance < 0)
             {
@@ -79,10 +69,10 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        // NOTE: Although we could be satisfied with just one method "RoundWithTolerance" from the UI perspective,
+        // NOTE: Although we could be satisfied with just one method "RoundToFloor" from the UI perspective,
         // we also need a dedicated method for Integers, to avoid a performance hit when using this method from other parts of the code, e.g. in Hash().
 
-        [Description("Rounds an integer number using the given tolerance, rounding (to floor) to the nearest tolerance multiplier." +
+        [Description("Rounds an integer number using the given tolerance, rounding to floor to the nearest tolerance multiplier." +
             "\nSome examples:" +
             "\n\t RoundWithTolerance(12, 20) ==> 0" +
             "\n\t RoundWithTolerance(121, 2) ==> 120" +
@@ -90,7 +80,7 @@ namespace BH.Engine.Base
             "\nand so on.")]
         [Input("number", "Number to be rounded.")]
         [Input("tolerance", "Tolerance to use for rounding.")]
-        public static int RoundWithTolerance(this int number, double tolerance)
+        public static int RoundToFloor(this int number, double tolerance)
         {
             if (tolerance < 1)
                 return number; 
@@ -127,9 +117,7 @@ namespace BH.Engine.Base
             }
             return a / b;
         }
+
+        /***************************************************/
     }
 }
-
-
-
-
