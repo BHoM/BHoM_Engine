@@ -37,6 +37,11 @@ namespace BH.Engine.TestHelper
             return MethodBase.GetCurrentMethod().VersioningKey();
         }
 
+        public static string ExtensionMethodToCallHelper()
+        {
+            return MethodBase.GetCurrentMethod().VersioningKey();
+        }
+
         public static string IExtensionMethodToCallHelper(this object a, object b, object c, object d)
         {
             object result;

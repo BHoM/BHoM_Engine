@@ -130,9 +130,27 @@ namespace BH.Tests.Engine.Base.Compute
         public void TryRunExtensionMethod11()
         {
             Bar bar = new Bar();
-            double dbl = 123;
             string expected = null;
             string result = BH.Engine.TestHelper.Compute.IExtensionMethodToCallHelper(bar, null, null, null);
+            Assert.AreEqual(result, expected);
+        }
+
+        [Test]
+        public void TryRunExtensionMethod12()
+        {
+            Bar bar = new Bar();
+            double dbl = 123;
+            string expected = null;
+            string result = BH.Engine.TestHelper.Compute.IExtensionMethodToCallHelper(null, dbl, dbl, dbl);
+            Assert.AreEqual(result, expected);
+        }
+
+        [Test]
+        public void TryRunExtensionMethod13()
+        {
+            Bar bar = new Bar();
+            string expected = null;
+            string result = BH.Engine.TestHelper.Compute.IExtensionMethodToCallHelper(null, null, null, null);
             Assert.AreEqual(result, expected);
         }
     }
