@@ -12,7 +12,7 @@ namespace BH.Engine.Verification
         /****             Interface Methods             ****/
         /***************************************************/
 
-        public static SpecificationResult IVerifySpecification(IEnumerable<object> objects, ISpecification specification)
+        public static SpecificationResult IVerifySpecification(this IEnumerable<object> objects, ISpecification specification)
         {
             if (objects == null)
             {
@@ -35,7 +35,7 @@ namespace BH.Engine.Verification
         /****              Public Methods               ****/
         /***************************************************/
 
-        public static SpecificationResult VerifySpecification(IEnumerable<object> objects, Specification specification)
+        public static SpecificationResult VerifySpecification(this IEnumerable<object> objects, Specification specification)
         {
             // Extract the objects to verify
             List<object> extracted = objects.IExtract(specification.Extraction);

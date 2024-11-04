@@ -11,7 +11,7 @@ namespace BH.Engine.Verification
         /****             Interface Methods             ****/
         /***************************************************/
 
-        public static RequirementResult IVerifyRequirement(object obj, IRequirement requirement)
+        public static RequirementResult IVerifyRequirement(this object obj, IRequirement requirement)
         {
             if (obj == null)
             {
@@ -34,7 +34,7 @@ namespace BH.Engine.Verification
         /****              Public Methods               ****/
         /***************************************************/
 
-        public static RequirementResult VerifyRequirement(IBHoMObject obj, Requirement requirement)
+        public static RequirementResult VerifyRequirement(this IBHoMObject obj, Requirement requirement)
         {
             if (requirement == null || requirement.Condition.INestedConditions().Any(x => x == null))
             {
