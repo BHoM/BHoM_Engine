@@ -42,7 +42,7 @@ namespace BH.Engine.Verification
                 number /= config.ValueMultiplier;
 
             if (!double.IsNaN(config.RoundingAccuracy))
-                number = number.RoundNumericValue(config.RoundingAccuracy);
+                number = number.Round(config.RoundingAccuracy);
 
             string result = number.ToString();
             if (!string.IsNullOrWhiteSpace(config.UnitLabel))
@@ -59,30 +59,5 @@ namespace BH.Engine.Verification
         }
 
         /***************************************************/
-
-        //TODO: merge into Alessio's stuff?
-        private static double RoundNumericValue(this double value, double accuracy)
-        {
-            if (double.IsNaN(value) || double.IsNaN(accuracy))
-            {
-                return value;
-            }
-
-            decimal num = (decimal)accuracy;
-            if (num == 0m)
-            {
-                return value;
-            }
-
-            decimal num2 = (decimal)value;
-            decimal num3 = num2 % num;
-            if (num3 >= num / 2m)
-            {
-                num3 = -(num - num3);
-            }
-
-            decimal num4 = num2 - num3;
-            return (double)num4;
-        }
     }
 }
