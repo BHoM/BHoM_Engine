@@ -55,13 +55,6 @@ namespace BH.Engine.Base
             if (tolerance == double.MinValue || tolerance == 0 || Double.IsNaN(tolerance) || Double.IsNaN(number) || Double.IsInfinity(number) || Double.IsInfinity(tolerance))
                 return number;
 
-            // First check if the tolerance can be converted into fractional digits, i.e. is a number in the form of 10^someExp.
-            // This avoids imprecisions with the approximation formula below.
-            int fractionalDigits = Math.Abs(System.Convert.ToInt32(Math.Log10(tolerance)));
-            if (tolerance < 1 && Math.Pow(10, -fractionalDigits) == tolerance)
-                // If so, just return Math.Round().
-                return Math.Round(number, fractionalDigits);
-
             // Otherwise, perform the approximation with the given tolerance.
             int unitStep = number > 0 ? 1 : -1; // Useful to deal with negative numbers.
             return tolerance * Math.Floor(number * unitStep / tolerance) * unitStep;
