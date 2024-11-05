@@ -20,19 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Security.Cryptography;
-using System.Reflection;
 using BH.oM.Base.Attributes;
+using System;
 using System.ComponentModel;
-using BH.Engine.Base;
-using System.Collections;
-using System.Data;
 
 namespace BH.Engine.Base
 {
@@ -42,18 +32,21 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Rounds a number using the given tolerance, rounding (to floor) to the nearest tolerance multiplier." +
+        [PreviousVersion("8.0", "BH.Engine.Base.Query.RoundWithTolerance(System.Double, System.Double)")]
+        [Description("Rounds a number using the given tolerance, rounding to floor to the nearest tolerance multiplier." +
             "Supports any fractional, integer, positive or negative numbers." +
             "\nSome examples:" +
-            "\n\t RoundWithTolerance(12, 20) ==> 0" +
-            "\n\t RoundWithTolerance(121, 2) ==> 120" +
-            "\n\t RoundWithTolerance(1.2345, 1.1) ==> 1.1" +
-            "\n\t RoundWithTolerance(0.014, 0.01) ==> 0.01" +
-            "\n\t RoundWithTolerance(0.014, 0.02) ==> 0" +
+            "\n\t RoundToFloor(12, 20) ==> 0" +
+            "\n\t RoundToFloor(121, 2) ==> 120" +
+            "\n\t RoundToFloor(1.2345, 1.1) ==> 1.1" +
+            "\n\t RoundToFloor(0.014, 0.01) ==> 0.01" +
+            "\n\t RoundToFloor(-0.014, 0.01) ==> -0.02" +
+            "\n\t RoundToFloor(0.015, 0.01) ==> 0.01" +
+            "\n\t RoundToFloor(0.014, 0.02) ==> 0" +
             "\nand so on.")]
         [Input("number", "Number to be rounded.")]
         [Input("tolerance", "Tolerance to use for rounding.")]
-        public static double RoundWithTolerance(this double number, double tolerance)
+        public static double RoundToFloor(this double number, double tolerance)
         {
             if (tolerance < 0)
             {
@@ -62,74 +55,48 @@ namespace BH.Engine.Base
             }
 
             // If the tolerance is the smallest possible double, or if the inputs are invalid, just return.
-            if (tolerance == double.MinValue || tolerance == 0 || Double.IsNaN(tolerance) || Double.IsNaN(number) || Double.IsInfinity(number) || Double.IsInfinity(tolerance))
+            if (number == 0 || tolerance == 0 || Double.IsNaN(tolerance) || Double.IsNaN(number) || Double.IsInfinity(number) || Double.IsInfinity(tolerance))
                 return number;
 
-            // First check if the tolerance can be converted into fractional digits, i.e. is a number in the form of 10^someExp.
-            // This avoids imprecisions with the approximation formula below.
-            int fractionalDigits = Math.Abs(System.Convert.ToInt32(Math.Log10(tolerance)));
-            if (tolerance < 1 && Math.Pow(10, -fractionalDigits) == tolerance)
-                // If so, just return Math.Round().
-                return Math.Round(number, fractionalDigits);
-
             // Otherwise, perform the approximation with the given tolerance.
-            int unitStep = number > 0 ? 1 : -1; // Useful to deal with negative numbers.
-            return tolerance * Math.Floor(number * unitStep / tolerance) * unitStep;
+            return tolerance * Math.Floor(number / tolerance);
         }
 
         /***************************************************/
 
-        // NOTE: Although we could be satisfied with just one method "RoundWithTolerance" from the UI perspective,
+        // NOTE: Although we could be satisfied with just one method "RoundToFloor" from the UI perspective,
         // we also need a dedicated method for Integers, to avoid a performance hit when using this method from other parts of the code, e.g. in Hash().
 
-        [Description("Rounds an integer number using the given tolerance, rounding (to floor) to the nearest tolerance multiplier." +
+        [PreviousVersion("8.0", "BH.Engine.Base.Query.RoundWithTolerance(System.Int32, System.Double)")]
+        [Description("Rounds an integer number using the given tolerance, rounding to floor to the nearest tolerance multiplier." +
             "\nSome examples:" +
-            "\n\t RoundWithTolerance(12, 20) ==> 0" +
-            "\n\t RoundWithTolerance(121, 2) ==> 120" +
-            "\n\t RoundWithTolerance(-40, 20) ==> -40" +
+            "\n\t RoundToFloor(12, 20) ==> 0" +
+            "\n\t RoundToFloor(121, 2) ==> 120" +
+            "\n\t RoundToFloor(-35, 20) ==> -40" +
             "\nand so on.")]
         [Input("number", "Number to be rounded.")]
         [Input("tolerance", "Tolerance to use for rounding.")]
-        public static int RoundWithTolerance(this int number, double tolerance)
+        public static int RoundToFloor(this int number, double tolerance)
         {
-            if (tolerance < 1)
-                return number; 
-
-            if (number > 0 && tolerance > number)
-                return 0;
-
             if (tolerance < 0)
             {
                 BH.Engine.Base.Compute.RecordError("Tolerance cannot be less than 0.");
                 return 0;
             }
 
-            int unitStep = number > 0 ? 1 : -1;
-            int flooredIntegerTolerance = (int)tolerance;
-            return FlooredIntegerDivision(number * unitStep, flooredIntegerTolerance) * flooredIntegerTolerance * unitStep;
+            // If the tolerance is the smallest possible double, or if the inputs are invalid, just return.
+            if (number == 0 || tolerance == double.MinValue || tolerance == 0 || Double.IsNaN(tolerance) || number == int.MinValue || number == int.MaxValue || Double.IsInfinity(tolerance))
+                return number;
+
+            if ((int)tolerance != tolerance)
+            {
+                BH.Engine.Base.Compute.RecordError("Tolerance needs to be an integer value.");
+                return 0;
+            }
+
+            return (int)(Math.Floor(number / tolerance) * tolerance);
         }
 
         /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static int FlooredIntegerDivision(int a, int b)
-        {
-            if (a < 0)
-            {
-                if (b > 0)
-                    return (a - b + 1) / b;
-            }
-            else if (a > 0)
-            {
-                if (b < 0)
-                    return (a - b - 1) / b;
-            }
-            return a / b;
-        }
     }
 }
-
-
-
-
