@@ -93,7 +93,7 @@ namespace BH.Engine.Base
             {
                 double tolerance = NumericTolerance(customNumericTolerances, globalNumericTolerance, fullName, false);
                 if (tolerance != double.MaxValue)
-                    number = Query.RoundToFloor(number, tolerance);
+                    number = Query.Round(number, tolerance);
             }
 
             // 2) Check significantFigures.
