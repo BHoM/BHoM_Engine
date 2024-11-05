@@ -28,7 +28,7 @@ namespace BH.Tests.Engine.Base.Compute
     public class TryRunExtensionMethodTests
     {
         [Test]
-        public void TryRunExtensionMethod1()
+        public void BarDoubleDoubleDouble()
         {
             Bar bar = new Bar();
             double dbl = 123;
@@ -38,7 +38,7 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
-        public void TryRunExtensionMethod2()
+        public void BarBarDoubleDouble()
         {
             Bar bar = new Bar();
             double dbl = 123;
@@ -48,7 +48,7 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
-        public void TryRunExtensionMethod3()
+        public void BarBarBarDouble()
         {
             Bar bar = new Bar();
             double dbl = 123;
@@ -58,7 +58,7 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
-        public void TryRunExtensionMethod4()
+        public void BarBarBarBar()
         {
             Bar bar = new Bar();
             string expected = "BH.Engine.TestHelper.Compute.ExtensionMethodToCallHelper(BH.oM.Structure.Elements.Bar, System.Object, System.Object, System.Object)";
@@ -67,7 +67,7 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
-        public void TryRunExtensionMethod5()
+        public void BarBarPanelDouble()
         {
             Bar bar = new Bar();
             Panel panel = new Panel();
@@ -78,7 +78,7 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
-        public void TryRunExtensionMethod6()
+        public void PanelDoubleDoubleDouble()
         {
             Panel panel = new Panel();
             double dbl = 123;
@@ -88,7 +88,7 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
-        public void TryRunExtensionMethod7()
+        public void BarNullPanelNull()
         {
             Bar bar = new Bar();
             Panel panel = new Panel();
@@ -98,7 +98,7 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
-        public void TryRunExtensionMethod8()
+        public void PanelPanelPanelDouble()
         {
             Panel panel = new Panel();
             double dbl = 123;
@@ -108,7 +108,7 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
-        public void TryRunExtensionMethod9()
+        public void BarDoubleNullNull()
         {
             Bar bar = new Bar();
             double dbl = 123;
@@ -118,7 +118,7 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
-        public void TryRunExtensionMethod10()
+        public void BarNullNullBar()
         {
             Bar bar = new Bar();
             string expected = null;
@@ -127,7 +127,7 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
-        public void TryRunExtensionMethod11()
+        public void BarNullNullNull()
         {
             Bar bar = new Bar();
             string expected = null;
@@ -136,7 +136,7 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
-        public void TryRunExtensionMethod12()
+        public void NullDoubleDoubleDouble()
         {
             Bar bar = new Bar();
             double dbl = 123;
@@ -146,7 +146,7 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
-        public void TryRunExtensionMethod13()
+        public void NullNullNullNull()
         {
             Bar bar = new Bar();
             string expected = null;
