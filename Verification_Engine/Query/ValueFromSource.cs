@@ -215,29 +215,20 @@ namespace BH.Engine.Verification
             if (bhomObj.CustomData.TryGetValue(sourceName, out value))
                 return value;
 
-            if (sourceName.Contains("."))
+            Type fragmentType = BH.Engine.Base.Create.Type(sourceName, true);
+            if (fragmentType != null)
             {
-                string[] props = sourceName.Split('.');
-
-                Type fragmentType = BH.Engine.Base.Create.Type(sourceName, true);
-
-                if (fragmentType != null)
+                List<IFragment> allFragmentsOfType = bhomObj.Fragments.Where(fr => fragmentType.IsAssignableFrom(fr.GetType())).ToList();
+                if (allFragmentsOfType.Count == 1)
+                    return allFragmentsOfType[0];
+                else if (allFragmentsOfType.Count > 1)
                 {
-                    List<IFragment> allFragmentsOfType = bhomObj.Fragments.Where(fr => fragmentType.IsAssignableFrom(fr.GetType())).ToList();
-                    List<object> values = allFragmentsOfType.Select(f => ValueFromSource(f, string.Join(".", props.Skip(1)))).ToList();
-                    value = values.Count == 1 ? values.First() : values;
+                    BH.Engine.Base.Compute.RecordError($"Value extraction failed due to ambiguity: {allFragmentsOfType.Count} fragments of type {sourceName} found. BHoM_Guid: {bhomObj.BHoM_Guid}");
+                    return null;
                 }
-
-            }
-            else
-            {
-                // Try extracting the property using an Extension method.
-                if (!BH.Engine.Base.Compute.TryRunExtensionMethod(bhomObj, sourceName, out value))
-                    if (errorIfNotFound)
-                        BH.Engine.Base.Compute.RecordError($"No property, CustomData or extension method named `{sourceName}` found for {bhomObj.GetType().Name}.");
             }
 
-            return value;
+            return GetValue((object)bhomObj, sourceName, errorIfNotFound);
         }
 
         /***************************************************/
