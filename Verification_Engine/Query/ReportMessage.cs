@@ -1,5 +1,28 @@
-﻿using BH.Engine.Diffing;
+﻿/*
+ * This file is part of the Buildings and Habitats object Model (BHoM)
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ *
+ * Each contributor holds copyright over their respective contributions.
+ * The project versioning (Git) records all such contribution source information.
+ *                                           
+ *                                                                              
+ * The BHoM is free software: you can redistribute it and/or modify         
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3.0 of the License, or          
+ * (at your option) any later version.                                          
+ *                                                                              
+ * The BHoM is distributed in the hope that it will be useful,              
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+ * GNU Lesser General Public License for more details.                          
+ *                                                                            
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ */
+
+using BH.Engine.Diffing;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using BH.oM.Verification;
 using BH.oM.Verification.Conditions;
 using BH.oM.Verification.Reporting;
@@ -7,6 +30,7 @@ using BH.oM.Verification.Requirements;
 using BH.oM.Verification.Results;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -18,6 +42,11 @@ namespace BH.Engine.Verification
         /****             Interface Methods             ****/
         /***************************************************/
 
+        [Description("Generates a human readable report based on condition check result combined with reporting config.")]
+        [Input("condition", "Condition, from which the result was generated.")]
+        [Input("result", "Condition check result to generate report for.")]
+        [Input("config", "Reporting config to apply when generating the report.")]
+        [Output("report", "Human readable report generated based on the input condition check result combined with reporting config.")]
         public static string IReportMessage(this ICondition condition, IConditionResult result, IConditionReportingConfig config = null)
         {
             object message;
@@ -35,6 +64,10 @@ namespace BH.Engine.Verification
         /****              Public Methods               ****/
         /***************************************************/
 
+        [Description("Generates a human readable report based on requirement verification result.")]
+        [Input("requirement", "Requirement, from which the result was generated.")]
+        [Input("result", "Requirement verification result to generate report for.")]
+        [Output("report", "Human readable report generated based on the input requirement verification result.")]
         public static string ReportMessage(this Requirement requirement, RequirementResult result)
         {
             if (requirement == null || result?.VerificationResult == null)
@@ -67,6 +100,11 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Generates a human readable report based on " + nameof(LogicalNotCondition) + " check result combined with reporting config.")]
+        [Input("condition", "Condition, from which the result was generated.")]
+        [Input("result", "Condition check result to generate report for.")]
+        [Input("config", "Reporting config to apply when generating the report.")]
+        [Output("report", "Human readable report generated based on the input condition check result combined with reporting config.")]
         public static string ReportMessage(this LogicalNotCondition condition, SingleLogicalConditionResult result, SingleLogicalConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
@@ -83,6 +121,11 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Generates a human readable report based on " + nameof(ILogicalCollectionCondition) + " check result combined with reporting config.")]
+        [Input("condition", "Condition, from which the result was generated.")]
+        [Input("result", "Condition check result to generate report for.")]
+        [Input("config", "Reporting config to apply when generating the report.")]
+        [Output("report", "Human readable report generated based on the input condition check result combined with reporting config.")]
         public static string ReportMessage(this ILogicalCollectionCondition condition, LogicalCollectionConditionResult result, LogicalCollectionConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
@@ -145,6 +188,11 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Generates a human readable report based on " + nameof(ValueCondition) + " check result combined with reporting config.")]
+        [Input("condition", "Condition, from which the result was generated.")]
+        [Input("result", "Condition check result to generate report for.")]
+        [Input("config", "Reporting config to apply when generating the report.")]
+        [Output("report", "Human readable report generated based on the input condition check result combined with reporting config.")]
         public static string ReportMessage(this ValueCondition condition, ValueConditionResult result, IValueConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
@@ -169,6 +217,11 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Generates a human readable report based on " + nameof(IsInDomain) + " condition check result combined with reporting config.")]
+        [Input("condition", "Condition, from which the result was generated.")]
+        [Input("result", "Condition check result to generate report for.")]
+        [Input("config", "Reporting config to apply when generating the report.")]
+        [Output("report", "Human readable report generated based on the input condition check result combined with reporting config.")]
         public static string ReportMessage(this IsInDomain condition, ValueConditionResult result, IValueConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
@@ -193,6 +246,11 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Generates a human readable report based on " + nameof(HasId) + " condition check result combined with reporting config.")]
+        [Input("condition", "Condition, from which the result was generated.")]
+        [Input("result", "Condition check result to generate report for.")]
+        [Input("config", "Reporting config to apply when generating the report.")]
+        [Output("report", "Human readable report generated based on the input condition check result combined with reporting config.")]
         public static string ReportMessage(this HasId condition, ValueConditionResult result, IValueConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
@@ -212,6 +270,11 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Generates a human readable report based on " + nameof(IsInSet) + " condition check result combined with reporting config.")]
+        [Input("condition", "Condition, from which the result was generated.")]
+        [Input("result", "Condition check result to generate report for.")]
+        [Input("config", "Reporting config to apply when generating the report.")]
+        [Output("report", "Human readable report generated based on the input condition check result combined with reporting config.")]
         public static string ReportMessage(this IsInSet condition, ValueConditionResult result, IValueConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
@@ -240,6 +303,11 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Generates a human readable report based on " + nameof(IsNotNull) + " condition check result combined with reporting config.")]
+        [Input("condition", "Condition, from which the result was generated.")]
+        [Input("result", "Condition check result to generate report for.")]
+        [Input("config", "Reporting config to apply when generating the report.")]
+        [Output("report", "Human readable report generated based on the input condition check result combined with reporting config.")]
         public static string ReportMessage(this IsNotNull condition, IsNotNullResult result, IConditionReportingConfig config = null)
         {
             if (condition == null || result == null)
@@ -259,6 +327,11 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Generates a human readable report based on " + nameof(IsOfType) + " condition check result combined with reporting config.")]
+        [Input("condition", "Condition, from which the result was generated.")]
+        [Input("result", "Condition check result to generate report for.")]
+        [Input("config", "Reporting config to apply when generating the report.")]
+        [Output("report", "Human readable report generated based on the input condition check result combined with reporting config.")]
         public static string ReportMessage(this IsOfType condition, IsOfTypeResult result, IConditionReportingConfig config = null)
         {
             if (condition == null || result == null)

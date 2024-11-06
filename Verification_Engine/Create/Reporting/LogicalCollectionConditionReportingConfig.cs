@@ -1,6 +1,6 @@
 ﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2021, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,15 +20,26 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using BH.oM.Verification.Conditions;
+using BH.oM.Verification.Extraction;
 using BH.oM.Verification.Reporting;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Verification
 {
     public static partial class Create
     {
+        /***************************************************/
+        /****              Public Methods               ****/
+        /***************************************************/
+
+        [Description("Creates " + nameof(LogicalCollectionConditionReportingConfig) + " based on a set of conditions bundled with a set of correspondent reporting configs.")]
+        [Input("nestedConditions", "Nested conditions of " + nameof(ILogicalCollectionCondition) + " to set the reporting configs for.")]
+        [Input("nestedConfigs", "Reporting configs to bundle with their correspondent nested conditions.")]
+        [Output("config", nameof(LogicalCollectionConditionReportingConfig) + " created based on the provided inputs.")]
         public static LogicalCollectionConditionReportingConfig LogicalCollectionConditionReportingConfig(IEnumerable<ICondition> nestedConditions, IEnumerable<IConditionReportingConfig> nestedConfigs)
         {
             if (nestedConditions == null || nestedConfigs == null)
@@ -54,5 +65,7 @@ namespace BH.Engine.Verification
 
             return result;
         }
+
+        /***************************************************/
     }
 }

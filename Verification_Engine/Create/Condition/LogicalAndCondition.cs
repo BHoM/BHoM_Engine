@@ -21,13 +21,10 @@
  */
 
 using BH.oM.Base.Attributes;
+using BH.oM.Verification;
 using BH.oM.Verification.Conditions;
-using BH.oM.Verification.Extraction;
-using BH.oM.Verification.Requirements;
-using BH.oM.Verification.Specifications;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace BH.Engine.Verification
 {
@@ -37,27 +34,16 @@ namespace BH.Engine.Verification
         /****              Public Methods               ****/
         /***************************************************/
 
-        [Description("Creates Specification based on the provided filtering conditions, requirements and metadata.")]
-        [Input("filterConditions", "Filter conditions to be embedded in the extraction instruction " + nameof(ConditionBasedFilter) + " object.")]
-        [Input("requirements", "Collection of requirements to check the extracted object against.")]
-        [Input("name", "Name of the created specification.")]
-        [Input("description", "Description of the created specification.")]
-        [Input("clause", "Human readable identifier to reference the specification.")]
-        [Output("specification", "Specification created based on the provided inputs.")]
-        public static Specification Specification(List<ICondition> filterConditions, List<IRequirement> requirements, string name = "", string description = "", string clause = "")
+        [Description("Creates a logical AND condition based on a pair of conditions.")]
+        [Input("condition1", "First condition to nest in the output logical condition.")]
+        [Input("condition2", "Second condition to nest in the output logical condition.")]
+        [Output("condition", nameof(LogicalAndCondition) + " created based on the provided inputs.")]
+        public static LogicalAndCondition LogicalAndCondition(ICondition condition1, ICondition condition2)
         {
-            ICondition filterCondition = filterConditions.Count == 1 ? filterConditions[0] : new LogicalAndCondition { Conditions = filterConditions };
-
-            Specification specification = new Specification()
+            return new LogicalAndCondition()
             {
-                Extraction = new ConditionBasedFilter { Condition = filterCondition },
-                Requirements = requirements.Where(c => c != null).ToList(),
-                Name = name,
-                Description = description,
-                Clause = clause
+                Conditions = new List<ICondition>() { condition1, condition2 },
             };
-
-            return specification;
         }
 
         /***************************************************/

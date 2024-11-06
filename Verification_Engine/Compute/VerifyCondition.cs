@@ -1,9 +1,33 @@
-﻿using BH.Engine.Base.Objects;
+﻿/*
+ * This file is part of the Buildings and Habitats object Model (BHoM)
+ * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ *
+ * Each contributor holds copyright over their respective contributions.
+ * The project versioning (Git) records all such contribution source information.
+ *                                           
+ *                                                                              
+ * The BHoM is free software: you can redistribute it and/or modify         
+ * it under the terms of the GNU Lesser General Public License as published by  
+ * the Free Software Foundation, either version 3.0 of the License, or          
+ * (at your option) any later version.                                          
+ *                                                                              
+ * The BHoM is distributed in the hope that it will be useful,              
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of               
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
+ * GNU Lesser General Public License for more details.                          
+ *                                                                            
+ * You should have received a copy of the GNU Lesser General Public License     
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ */
+
+using BH.Engine.Base.Objects;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using BH.oM.Verification.Conditions;
 using BH.oM.Verification.Results;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Verification
@@ -14,6 +38,10 @@ namespace BH.Engine.Verification
         /****             Interface Methods             ****/
         /***************************************************/
 
+        [Description("Verifies an object against a condition and returns a result object containing details of the check.")]
+        [Input("obj", "Object to check against the condition.")]
+        [Input("condition", "Condition to check the object against.")]
+        [Output("result", "Object containing the check result as a boolean as well as details of the check (extracted values etc.).")]
         public static IConditionResult IVerifyCondition(this object obj, ICondition condition)
         {
             if (condition is IsNotNull notNullCondition)
@@ -46,6 +74,10 @@ namespace BH.Engine.Verification
         /****              Public Methods               ****/
         /***************************************************/
 
+        [Description("Verifies an object against " + nameof(LogicalNotCondition) + " and returns a result object containing details of the check.")]
+        [Input("obj", "Object to check against the condition.")]
+        [Input("condition", "Condition to check the object against.")]
+        [Output("result", "Object containing the check result as a boolean as well as details of the check (extracted values etc.).")]
         public static SingleLogicalConditionResult VerifyCondition(this object obj, LogicalNotCondition condition)
         {
             if (obj == null)
@@ -72,6 +104,10 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Verifies an object against " + nameof(ILogicalCollectionCondition) + " and returns a result object containing details of the check.")]
+        [Input("obj", "Object to check against the condition.")]
+        [Input("condition", "Condition to check the object against.")]
+        [Output("result", "Object containing the check result as a boolean as well as details of the check (extracted values etc.).")]
         public static LogicalCollectionConditionResult VerifyCondition(this object obj, ILogicalCollectionCondition condition)
         {
             if (obj == null)
@@ -120,6 +156,10 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Verifies an object against " + nameof(IsInDomain) + " condition and returns a result object containing details of the check.")]
+        [Input("obj", "Object to check against the condition.")]
+        [Input("condition", "Condition to check the object against.")]
+        [Output("result", "Object containing the check result as a boolean as well as details of the check (extracted value etc.).")]
         public static ValueConditionResult VerifyCondition(this object obj, IsInDomain condition)
         {
             if (obj == null)
@@ -154,6 +194,10 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Verifies an object against " + nameof(HasId) + " condition and returns a result object containing details of the check.")]
+        [Input("obj", "Object to check against the condition.")]
+        [Input("condition", "Condition to check the object against.")]
+        [Output("result", "Object containing the check result as a boolean as well as details of the check (extracted value etc.).")]
         public static ValueConditionResult VerifyCondition(this object obj, HasId condition)
         {
             if (obj == null)
@@ -178,6 +222,10 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Verifies an object against " + nameof(IsInSet) + " condition and returns a result object containing details of the check.")]
+        [Input("obj", "Object to check against the condition.")]
+        [Input("condition", "Condition to check the object against.")]
+        [Output("result", "Object containing the check result as a boolean as well as details of the check (extracted value etc.).")]
         public static ValueConditionResult VerifyCondition(this object obj, IsInSet condition)
         {
             if (obj == null)
@@ -205,6 +253,10 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Verifies an object against " + nameof(IsNotNull) + " condition and returns a result object containing details of the check.")]
+        [Input("obj", "Object to check against the condition.")]
+        [Input("condition", "Condition to check the object against.")]
+        [Output("result", "Object containing the check result as a boolean as well as details of the check.")]
         public static IsNotNullResult VerifyCondition(this object obj, IsNotNull condition)
         {
             if (condition == null)
@@ -219,6 +271,10 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Verifies an object against " + nameof(IsOfType) + " condition and returns a result object containing details of the check.")]
+        [Input("obj", "Object to check against the condition.")]
+        [Input("condition", "Condition to check the object against.")]
+        [Output("result", "Object containing the check result as a boolean as well as details of the check (object type etc.).")]
         public static IsOfTypeResult VerifyCondition(this object obj, IsOfType condition)
         {
             if (obj == null)
@@ -244,6 +300,10 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Verifies an object against " + nameof(ValueCondition) + " and returns a result object containing details of the check.")]
+        [Input("obj", "Object to check against the condition.")]
+        [Input("condition", "Condition to check the object against.")]
+        [Output("result", "Object containing the check result as a boolean as well as details of the check (extracted value etc.).")]
         public static ValueConditionResult VerifyCondition(this object obj, ValueCondition condition)
         {
             if (obj == null)
