@@ -72,7 +72,7 @@ namespace BH.Engine.Verification
             List<RequirementResult> requirementResults = extracted.SelectMany(x => specification.Requirements.Select(y => IVerifyRequirement(x, y))).ToList();
 
             // Finally return the result
-            return new SpecificationResult(specification, requirementResults);
+            return new SpecificationResult(specification, extracted, requirementResults);
         }
 
         /***************************************************/

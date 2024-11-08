@@ -50,7 +50,7 @@ namespace BH.Engine.Verification
             object result;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(obj, nameof(VerifyRequirement), new object[] { requirement }, out result))
             {
-                BH.Engine.Base.Compute.RecordError($"Verification failed because requirement of type {result.GetType().Name} is currently not supported.");
+                BH.Engine.Base.Compute.RecordError($"Verification failed because requirement of type {requirement.GetType().Name} is currently not supported.");
                 return null;
             }
 
@@ -66,7 +66,7 @@ namespace BH.Engine.Verification
         [Input("obj", "Object to check against the requirement.")]
         [Input("requirement", "Requirement to check the object against.")]
         [Output("result", "Result object containing references to the input object and requirement as well as condition verification result.")]
-        public static RequirementResult VerifyRequirement(this IBHoMObject obj, Requirement requirement)
+        public static RequirementResult VerifyRequirement(this object obj, Requirement requirement)
         {
             if (requirement == null || requirement.Condition.INestedConditions().Any(x => x == null))
             {
