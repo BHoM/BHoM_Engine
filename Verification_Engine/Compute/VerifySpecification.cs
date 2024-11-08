@@ -63,6 +63,10 @@ namespace BH.Engine.Verification
         /****              Public Methods               ****/
         /***************************************************/
 
+        [Description("Verifies an object against a specification and returns a result object with all necessary details.")]
+        [Input("objects", "Objects to check against the specification.")]
+        [Input("specification", "Specification to check the objects against.")]
+        [Output("result", "Result object containing reference to the input specification as well as requirement verification results per each pair of extracted object and requirement.")]
         public static SpecificationResult VerifySpecification(this IEnumerable<object> objects, Specification specification)
         {
             // Extract the objects to verify

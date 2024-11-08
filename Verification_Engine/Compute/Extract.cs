@@ -38,7 +38,7 @@ namespace BH.Engine.Verification
             "\nExtraction means either simple filtering from the input set or generation of derived objects based on the input set.")]
         [Input("objects", "Set of objects to extract from.")]
         [Input("extraction", "Instruction how to extract the objects from the input set.")]
-        [Input("extracted", "Collection of objects extracted from the input set based on the extraction instruction.")]
+        [Output("extracted", "Collection of objects extracted from the input set based on the extraction instruction.")]
         public static List<object> IExtract(this IEnumerable<object> objects, IExtraction extraction)
         {
             if (objects == null)
@@ -71,7 +71,7 @@ namespace BH.Engine.Verification
         [Description("Extracts the objects from the input set based on the condition based filter.")]
         [Input("objects", "Set of objects to extract from.")]
         [Input("extraction", "Condition based filter, i.e. set of conditions for each object to pass in order to be returned.")]
-        [Input("extracted", "Subset of the input objects that passed the conditions embedded in the input filter.")]
+        [Output("extracted", "Subset of the input objects that passed the conditions embedded in the input filter.")]
         public static List<object> Extract(this IEnumerable<object> objects, ConditionBasedFilter extraction)
         {
             return objects.Where(x => x.IPasses(extraction.Condition) == true).ToList();
