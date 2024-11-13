@@ -124,7 +124,7 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
-        private static bool NumericalComparison(double value, double referenceValue, double tolerance, ValueComparisonType condition)
+        private static bool? NumericalComparison(double value, double referenceValue, double tolerance, ValueComparisonType condition)
         {
             switch (condition)
             {
@@ -141,13 +141,14 @@ namespace BH.Engine.Verification
                 case ValueComparisonType.LessThanOrEqualTo:
                     return (value - referenceValue <= tolerance);
                 default:
-                    return false;
+                    BH.Engine.Base.Compute.RecordWarning($"Comparison of type {condition} is not supported for numbers.");
+                    return null;
             }
         }
 
         /***************************************************/
 
-        private static bool StringComparison(string value, string referenceValue, ValueComparisonType condition)
+        private static bool? StringComparison(string value, string referenceValue, ValueComparisonType condition)
         {
             switch (condition)
             {
@@ -162,9 +163,8 @@ namespace BH.Engine.Verification
                 case ValueComparisonType.EndsWith:
                     return value.EndsWith(referenceValue);
                 default:
-                    {
-                        return false;
-                    }
+                    BH.Engine.Base.Compute.RecordWarning($"Comparison of type {condition} is not supported for strings.");
+                    return null;
             }
         }
 
