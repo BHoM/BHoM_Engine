@@ -92,7 +92,7 @@ namespace BH.Engine.Verification
                 return passed;
             }
 
-            BH.Engine.Base.Compute.RecordError("Objects could not be compared because no meaningful comparison method has been found.");
+            BH.Engine.Base.Compute.RecordWarning("Objects could not be compared because no meaningful comparison method has been found.");
             return null;
         }
 
