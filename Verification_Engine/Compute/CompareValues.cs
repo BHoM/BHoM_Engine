@@ -58,12 +58,9 @@ namespace BH.Engine.Verification
                 return value.GetType() == referenceValue.GetType() && (int)value == (int)referenceValue;
 
             // Try a numerical comparison
-            double numericalValue;
-            if (double.TryParse(value?.ToString(), out numericalValue))
+            double numericalValue, referenceNumValue;
+            if (double.TryParse(value?.ToString(), out numericalValue) && double.TryParse(referenceValue?.ToString(), out referenceNumValue))
             {
-                double referenceNumValue;
-                double.TryParse(referenceValue?.ToString(), out referenceNumValue);
-
                 double numTolerance;
                 if (!double.TryParse(tolerance?.ToString(), out numTolerance))
                     numTolerance = 1e-03;
