@@ -56,7 +56,8 @@ namespace BH.Engine.Base
             // Each item of the top list represents hierarchy for each input type
             List<List<List<MethodInfo>>> result = new List<List<List<MethodInfo>>>();
             int i = 0;
-            foreach(Type type in types)
+            
+			foreach (Type type in types)
             {
                 if (type == null)
                 {

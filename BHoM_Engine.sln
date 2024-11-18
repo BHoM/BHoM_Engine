@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.33927.289
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34302.85
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BHoM_Engine", "BHoM_Engine\BHoM_Engine.csproj", "{AEAF161D-8206-40B8-93A7-67ABEBF2EE19}"
 EndProject
@@ -58,6 +58,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ground_Engine", "Ground_Engine\Ground_Engine.csproj", "{708A2924-9C63-47F1-927C-F0302E43FEA1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Search_Engine", "Search_Engine\Search_Engine.csproj", "{7DDAC1D8-5B6A-471F-BC39-5B7E91A0E86C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Verification_Engine", "Verification_Engine\Verification_Engine.csproj", "{3AC2FA07-E889-484B-A319-B5CA942C277E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -177,6 +179,10 @@ Global
 		{7DDAC1D8-5B6A-471F-BC39-5B7E91A0E86C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DDAC1D8-5B6A-471F-BC39-5B7E91A0E86C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7DDAC1D8-5B6A-471F-BC39-5B7E91A0E86C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AC2FA07-E889-484B-A319-B5CA942C277E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AC2FA07-E889-484B-A319-B5CA942C277E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AC2FA07-E889-484B-A319-B5CA942C277E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3AC2FA07-E889-484B-A319-B5CA942C277E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
