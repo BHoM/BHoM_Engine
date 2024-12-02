@@ -45,10 +45,10 @@ namespace BH.Engine.Facade
         /****          Public Methods                   ****/
         /***************************************************/
         
-        [Description("Returns effective U-Value of a collection of Facade objects calculated using the Area Weighting Method. Requires center of opening U-value, frame U-value and edge U-value as OpeningConstruction and FrameEdgeProperty fragments for Openings, and UValueContinuous fragment for Panels.")]
+        [Description("Returns effective U-Value of a collection of Facade objects calculated using the Single Assessment Method (Using Psi-tj). Requires center of opening U-value and frame Psi-tj value as OpeningConstruction and FrameEdgeProperty fragments.")]
         [Input("objs", "Objects to find U-value for.")]
         [Output("effectiveUValue", "Effective total U-value result of objects calculated using area weighting.")]
-        public static OverallUValue UValueAW(this List<IFacadeObject> objs)
+        public static OverallUValue UValueSAM(this List<IFacadeObject> objs)
         {
             double uValueProduct = 0;
             double totalArea = 0;
@@ -59,12 +59,12 @@ namespace BH.Engine.Facade
                 if (obj is Panel panel)
                 {
                     area = panel.Area();
-                    uValue = UValuePanelAW(panel)?.UValue;
+                    uValue = UValuePanelSAM(panel)?.UValue;
                 }
                 else if (obj is Opening opening)
                 {
                     area = opening.Area();
-                    uValue = UValueOpeningAW(opening)?.UValue;
+                    uValue = UValueOpeningSAM(opening)?.UValue;
                 }
                 else
                 {

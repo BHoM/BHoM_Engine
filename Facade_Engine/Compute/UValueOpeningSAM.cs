@@ -68,7 +68,15 @@ namespace BH.Engine.Facade
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one U-value assigned.");
                 return null;
             }
+
             double uValue = (uValues[0] as UValueGlassCentre).UValue;
+
+            List<IFragment> uValuesCont = opening.OpeningConstruction.GetAllFragments(typeof(UValueContinuous));
+            if (uValuesCont.Count == 1)
+            {
+                double contUValue = (uValuesCont[0] as UValueContinuous).UValue;
+                uValue = 1 / (1 / uValue + 1 / contUValue);
+            }
 
             List<FrameEdge> frameEdges = opening.Edges;
             List<double> psiValues = new List<double>();
