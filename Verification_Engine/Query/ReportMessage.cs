@@ -49,6 +49,18 @@ namespace BH.Engine.Verification
         [Output("report", "Human readable report generated based on the input condition check result combined with reporting config.")]
         public static string IReportMessage(this ICondition condition, IConditionResult result, IConditionReportingConfig config = null)
         {
+            if (condition == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not generate report for a null condition.");
+                return null;
+            }
+
+            if (result == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not generate report for a null condition result.");
+                return null;
+            }
+
             object message;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(condition, nameof(ReportMessage), new object[] { result, config }, out message))
             {
