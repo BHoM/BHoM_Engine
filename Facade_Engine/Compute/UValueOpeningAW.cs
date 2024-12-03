@@ -84,7 +84,7 @@ namespace BH.Engine.Facade
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Glass U-values, Continuous U-value, or Cavity U-value assigned.");
                 return null;
             }
-            if ((glassUValues.Count == 1) && (glassEdgeUValues.Count <= 0))
+            /*if ((glassUValues.Count == 1) && (glassEdgeUValues.Count <= 0))
             {
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has center of Glass U-value without Edge of Glass u-values assigned.");
                 return null;
@@ -93,7 +93,7 @@ namespace BH.Engine.Facade
             {
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has Edge of Glass U-values without center of Glass u-value assigned.");
                 return null;
-            }
+            }*/
             if (contUValues.Count > 1)
             {
                 Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one continuous U-value assigned.");
@@ -109,11 +109,11 @@ namespace BH.Engine.Facade
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Glass U-value assigned.");
                 return null;
             }
-            if (glassEdgeUValues.Count > 1)
+            /*if (glassEdgeUValues.Count > 1)
             {
                 Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Glass edge U-value assigned.");
                 return null;
-            }
+            }*/
 
             if (contUValues.Count == 1)
             {
@@ -123,9 +123,12 @@ namespace BH.Engine.Facade
             {
                 cavityUValue = (cavityUValues[0] as UValueCavity).UValue;
             }
-            if (glassUValues.Count == 1 || glassEdgeUValues.Count == 1)
+            if (glassUValues.Count == 1)
             {
                 glassUValue = (glassUValues[0] as UValueGlassCentre).UValue;
+            }
+            if (glassEdgeUValues.Count == 1)
+            {
                 glassEdgeUValue = (glassEdgeUValues[0] as UValueGlassEdge).UValue;
             }
 
@@ -133,6 +136,7 @@ namespace BH.Engine.Facade
             List<double> frameAreas = new List<double>();
             List<double> frameUValues = new List<double>();
             List<double> edgeAreas = new List<double>();
+            List<double> frameEdgeUValues = new List<double>();
 
             int h;
             int j;
@@ -178,11 +182,21 @@ namespace BH.Engine.Facade
                 }
                 if (f_uValues.Count > 1)
                 {
-                    BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Frame U-value assigned.");
+                    BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Frame U-value assigned to a FrameEdge.");
                     return null;
                 }
                 double frameUValue = (f_uValues[0] as UValueFrame).UValue;
                 frameUValues.Add(frameUValue);
+
+                //This new section runs through the frameedges and pulls the Edge U-value from each of them. Ideally this would be updated to allow the case that there is no edge u-value assigned to the frame edge properties. We would need additional handling downstream of here as well
+                List<IFragment> f_edgeUValues = frameEdges[i].FrameEdgeProperty.GetAllFragments(typeof(UValueGlassEdge));
+                if (f_edgeUValues.Count > 1)
+                {
+                    BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Edge U-value assigned to a FrameEdge.");
+                    return null;
+                }
+                double frameEdgeUValue = (f_edgeUValues[0] as UValueGlassEdge).UValue;
+                frameEdgeUValues.Add(frameEdgeUValue);
             }
 
             double totArea = opening.Area();
@@ -193,19 +207,31 @@ namespace BH.Engine.Facade
             double glassArea = totArea - totEdgeArea - totFrameArea;
             double centerArea = totArea - totFrameArea;
 
+            double frameUValProduct = 0;
             double edgeUValProduct = 0;
-            double centerUValue = 0;
+            for (int i = 0; i < frameUValues.Count; i++)
+            {
+                frameUValProduct += (frameUValues[i] * frameAreas[i]);
 
+            }
+            //Need to have shared logic for using either the frameEdgeUValue or glassEdgeUValue. EdgeAreas are the same either way
+            for (int i = 0; i < frameEdgeUValues.Count; i++)
+            {
+                edgeUValProduct += (frameEdgeUValues[i] * edgeAreas[i]);
+            }
+
+            //double edgeUValProduct = 0;
+            double centerUValue = 0;
             if ((glassEdgeUValue > 0) && (glassUValue > 0))
             {
                 if (cavityUValue > 0)
                 {
                     glassUValue = 1 / (1 / cavityUValue + 1 / glassUValue);
                 }
-                for (int i = 0; i < edgeAreas.Count; i++)
+                /*for (int i = 0; i < edgeAreas.Count; i++)
                 {
                     edgeUValProduct += (glassEdgeUValue * edgeAreas[i]);
-                }
+                }*/
                 centerUValue = (((glassArea * glassUValue) + edgeUValProduct) / centerArea);
             }
             else
@@ -214,13 +240,7 @@ namespace BH.Engine.Facade
             }
             double centerUValProduct = centerUValue * centerArea;
 
-            double FrameUValProduct = 0;
-            for (int i = 0; i < frameUValues.Count; i++)
-            {
-                FrameUValProduct += (frameUValues[i] * frameAreas[i]);
-            }
-
-            double baseUValue = ((centerUValProduct + FrameUValProduct) / totArea);
+            double baseUValue = ((centerUValProduct + frameUValProduct) / totArea);
 
             double effectiveUValue = 0;
             if (contUValue == 0)
