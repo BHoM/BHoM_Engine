@@ -82,17 +82,11 @@ namespace BH.Engine.Facade
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Glass U-values, Continuous U-value, or Cavity U-value assigned.");
                 return null;
             }
-            //TODO: Fix to use this check but include checking either glass edge or frame edges glassEdge fragments
-            /*if ((glassUValues.Count == 1) && (glassEdgeUValues.Count <= 0))
-            {
-                BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has center of Glass U-value without Edge of Glass u-values assigned.");
-                return null;
-            }
             if ((glassUValues.Count <= 0) && (glassEdgeUValues.Count == 1))
             {
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has Edge of Glass U-values without center of Glass u-value assigned.");
                 return null;
-            }*/
+            }
             if (contUValues.Count > 1)
             {
                 Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one continuous U-value assigned.");
@@ -187,20 +181,26 @@ namespace BH.Engine.Facade
                 double frameUValue = (f_uValues[0] as UValueFrame).UValue;
                 frameUValues.Add(frameUValue);
 
-                //This new section runs through the frameedges and pulls the Edge U-value from each of them. Ideally this would be updated to allow the case that there is no edge u-value assigned to the frame edge properties. We would need additional handling downstream of here as well
+                // Use the FrameEdge's UValueGlassEdge if it has one, otherwise use the Glass Construction's Frame Edge.
                 List<IFragment> f_edgeUValues = frameEdges[i].FrameEdgeProperty.GetAllFragments(typeof(UValueGlassEdge));
                 if (f_edgeUValues.Count > 1)
                 {
                     BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Edge U-value assigned to a FrameEdge.");
                     return null;
                 }
-
-                // Use the FrameEdge's UValueGlassEdge if it has one, otherwise use the Glass Construction's Frame Edge.
                 double frameEdgeUValue = 0;
                 if (f_edgeUValues.Count <= 0)
                     frameEdgeUValue = glassEdgeUValue;
                 else
                     frameEdgeUValue = (f_edgeUValues[0] as UValueGlassEdge).UValue;
+
+                // Checks if any edges have no valid UValue. THis is okay if no glass U Value is provided, but indicates invalid data if there is a glass U Value without a corresponding edge UValue.
+                if ((glassUValues.Count == 1) && (frameEdgeUValue == 0))
+                {
+                    BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has a center of Glass U-value without corresponding Edge of Glass u-values assigned.");
+                    return null;
+                }
+
                 frameEdgeUValues.Add(frameEdgeUValue);
             }
 
@@ -218,6 +218,10 @@ namespace BH.Engine.Facade
             {
                 frameUValProduct += (frameUValues[i] * frameAreas[i]);
             }
+            for (int i = 0; i < frameEdgeUValues.Count; i++)
+            {
+                edgeUValProduct += (frameEdgeUValues[i] * edgeAreas[i]);
+            }
 
             double centerUValue = 0;
             if ((glassEdgeUValue > 0) && (glassUValue > 0))
@@ -225,10 +229,6 @@ namespace BH.Engine.Facade
                 if (cavityUValue > 0)
                 {
                     glassUValue = 1 / (1 / cavityUValue + 1 / glassUValue);
-                }
-                for (int i = 0; i < frameEdgeUValues.Count; i++)
-                {
-                    edgeUValProduct += (frameEdgeUValues[i] * edgeAreas[i]);
                 }
                 centerUValue = (((glassArea * glassUValue) + edgeUValProduct) / centerArea);
             }
