@@ -35,6 +35,7 @@ using BH.oM.Facade.Results;
  
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
+using Microsoft.Cci;
 
 namespace BH.Engine.Facade
 {
@@ -46,8 +47,9 @@ namespace BH.Engine.Facade
 
         [Description("Returns effective U-Value of opening calculated using the Area Weighting Method. Requires center of opening U-value, frame U-value and edge U-value as OpeningConstruction and FrameEdgeProperty fragments.")]
         [Input("opening", "Opening to find U-value for.")]
+        [Input("isSpandrel", "Represents if the opening is a spandrel, in which case a larger edge width of 10 inches is used as per NFRC 100.")]
         [Output("effectiveUValue", "Effective U-value result of opening calculated using area weighting.")]
-        public static OverallUValue UValueOpeningAW(this Opening opening)
+        public static OverallUValue UValueOpeningAW(this Opening opening, bool isSpandrel = false)
         {
             if (opening == null)
             {
@@ -59,15 +61,11 @@ namespace BH.Engine.Facade
                 Base.Compute.RecordError($"U-Value can not be calculated for opening type Hole.");
                 return null;
             }
-            if (opening.Type == OpeningType.CurtainWallSpandrel)
-            {
-                return opening.UValueSpandrelAW();
-            }
-            if (opening.Type != OpeningType.CurtainWallVision && opening.Type != OpeningType.Window)
+            List <OpeningType> validTypes = new List<OpeningType>() { OpeningType.CurtainWallVision, OpeningType.CurtainWallSpandrel, OpeningType.Window };
+            if (!validTypes.Contains(opening.Type))
             {
                 Base.Compute.RecordWarning($"Opening does not have valid OpeningType assigned. U-value calculation methods for vision opening have been applied.");
             }
-
 
             List<IFragment> glassUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueGlassCentre));
             List<IFragment> glassEdgeUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueGlassEdge));
@@ -84,6 +82,7 @@ namespace BH.Engine.Facade
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} does not have Glass U-values, Continuous U-value, or Cavity U-value assigned.");
                 return null;
             }
+            //TODO: Fix to use this check but include checking either glass edge or frame edges glassEdge fragments
             /*if ((glassUValues.Count == 1) && (glassEdgeUValues.Count <= 0))
             {
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has center of Glass U-value without Edge of Glass u-values assigned.");
@@ -109,11 +108,11 @@ namespace BH.Engine.Facade
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Glass U-value assigned.");
                 return null;
             }
-            /*if (glassEdgeUValues.Count > 1)
+            if (glassEdgeUValues.Count > 1)
             {
                 Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Glass edge U-value assigned.");
                 return null;
-            }*/
+            }
 
             if (contUValues.Count == 1)
             {
@@ -140,7 +139,7 @@ namespace BH.Engine.Facade
 
             int h;
             int j;
-            double we = 0.0635; //2.5" edge zone, per NFRC 100
+            double we = isSpandrel ? 0.254 : 0.0635; //10" (spandrel) or 2.5" (vision) edge zone, as per NFRC 100
             double totEdgeArea = 0;
             double totFrameArea = 0;
 
@@ -195,7 +194,13 @@ namespace BH.Engine.Facade
                     BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Edge U-value assigned to a FrameEdge.");
                     return null;
                 }
-                double frameEdgeUValue = (f_edgeUValues[0] as UValueGlassEdge).UValue;
+
+                // Use the FrameEdge's UValueGlassEdge if it has one, otherwise use the Glass Construction's Frame Edge.
+                double frameEdgeUValue = 0;
+                if (f_edgeUValues.Count <= 0)
+                    frameEdgeUValue = glassEdgeUValue;
+                else
+                    frameEdgeUValue = (f_edgeUValues[0] as UValueGlassEdge).UValue;
                 frameEdgeUValues.Add(frameEdgeUValue);
             }
 
@@ -212,15 +217,8 @@ namespace BH.Engine.Facade
             for (int i = 0; i < frameUValues.Count; i++)
             {
                 frameUValProduct += (frameUValues[i] * frameAreas[i]);
-
-            }
-            //Need to have shared logic for using either the frameEdgeUValue or glassEdgeUValue. EdgeAreas are the same either way
-            for (int i = 0; i < frameEdgeUValues.Count; i++)
-            {
-                edgeUValProduct += (frameEdgeUValues[i] * edgeAreas[i]);
             }
 
-            //double edgeUValProduct = 0;
             double centerUValue = 0;
             if ((glassEdgeUValue > 0) && (glassUValue > 0))
             {
@@ -228,10 +226,10 @@ namespace BH.Engine.Facade
                 {
                     glassUValue = 1 / (1 / cavityUValue + 1 / glassUValue);
                 }
-                /*for (int i = 0; i < edgeAreas.Count; i++)
+                for (int i = 0; i < frameEdgeUValues.Count; i++)
                 {
-                    edgeUValProduct += (glassEdgeUValue * edgeAreas[i]);
-                }*/
+                    edgeUValProduct += (frameEdgeUValues[i] * edgeAreas[i]);
+                }
                 centerUValue = (((glassArea * glassUValue) + edgeUValProduct) / centerArea);
             }
             else
