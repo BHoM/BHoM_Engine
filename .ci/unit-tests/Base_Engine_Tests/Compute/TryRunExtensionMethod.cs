@@ -28,6 +28,8 @@ namespace BH.Tests.Engine.Base.Compute
     public class TryRunExtensionMethodTests
     {
         [Test]
+        [Description("Tests Compute.TryRunExtensionMethod by calling IExtensionMethodToCallHelper interface method with objects of types provided in name of this method." +
+                     "\n Underlying ExtensionMethodToCallHelper method to which the call is dispatched should return the value set in 'expected' variable.")]
         public void BarDoubleDoubleDouble()
         {
             Bar bar = new Bar();
@@ -38,6 +40,8 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
+        [Description("Tests Compute.TryRunExtensionMethod by calling IExtensionMethodToCallHelper interface method with objects of types provided in name of this method." +
+                     "\n Underlying ExtensionMethodToCallHelper method to which the call is dispatched should return the value set in 'expected' variable.")]
         public void BarBarDoubleDouble()
         {
             Bar bar = new Bar();
@@ -48,6 +52,8 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
+        [Description("Tests Compute.TryRunExtensionMethod by calling IExtensionMethodToCallHelper interface method with objects of types provided in name of this method." +
+                     "\n Underlying ExtensionMethodToCallHelper method to which the call is dispatched should return the value set in 'expected' variable.")]
         public void BarBarBarDouble()
         {
             Bar bar = new Bar();
@@ -58,6 +64,8 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
+        [Description("Tests Compute.TryRunExtensionMethod by calling IExtensionMethodToCallHelper interface method with objects of types provided in name of this method." +
+                     "\n Underlying ExtensionMethodToCallHelper method to which the call is dispatched should return the value set in 'expected' variable.")]
         public void BarBarBarBar()
         {
             Bar bar = new Bar();
@@ -67,6 +75,8 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
+        [Description("Tests Compute.TryRunExtensionMethod by calling IExtensionMethodToCallHelper interface method with objects of types provided in name of this method." +
+                     "\n Underlying ExtensionMethodToCallHelper method to which the call is dispatched should return the value set in 'expected' variable.")]
         public void BarBarPanelDouble()
         {
             Bar bar = new Bar();
@@ -78,6 +88,8 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
+        [Description("Tests Compute.TryRunExtensionMethod by calling IExtensionMethodToCallHelper interface method with objects of types provided in name of this method." +
+                     "\n Underlying ExtensionMethodToCallHelper method to which the call is dispatched should return the value set in 'expected' variable.")]
         public void PanelDoubleDoubleDouble()
         {
             Panel panel = new Panel();
@@ -88,6 +100,8 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
+        [Description("Tests Compute.TryRunExtensionMethod by calling IExtensionMethodToCallHelper interface method with objects of types provided in name of this method." +
+                     "\n Underlying ExtensionMethodToCallHelper method to which the call is dispatched should return the value set in 'expected' variable.")]
         public void BarNullPanelNull()
         {
             Bar bar = new Bar();
@@ -98,6 +112,8 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
+        [Description("Tests Compute.TryRunExtensionMethod by calling IExtensionMethodToCallHelper interface method with objects of types provided in name of this method." +
+                     "\n Underlying ExtensionMethodToCallHelper method to which the call is dispatched should return the value set in 'expected' variable.")]
         public void PanelPanelPanelDouble()
         {
             Panel panel = new Panel();
@@ -108,6 +124,8 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
+        [Description("Tests Compute.TryRunExtensionMethod by calling IExtensionMethodToCallHelper interface method with objects of types provided in name of this method." +
+                     "\n Underlying ExtensionMethodToCallHelper method to which the call is dispatched should return the value set in 'expected' variable.")]
         public void BarDoubleNullNull()
         {
             Bar bar = new Bar();
@@ -118,6 +136,8 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
+        [Description("Tests Compute.TryRunExtensionMethod by calling IExtensionMethodToCallHelper interface method with objects of types provided in name of this method." +
+                     "\n Underlying ExtensionMethodToCallHelper method to which the call is dispatched should return the value set in 'expected' variable.")]
         public void BarNullNullBar()
         {
             Bar bar = new Bar();
@@ -127,6 +147,8 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
+        [Description("Tests Compute.TryRunExtensionMethod by calling IExtensionMethodToCallHelper interface method with objects of types provided in name of this method." +
+                     "\n Underlying ExtensionMethodToCallHelper method to which the call is dispatched should return the value set in 'expected' variable.")]
         public void BarNullNullNull()
         {
             Bar bar = new Bar();
@@ -136,6 +158,8 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
+        [Description("Tests Compute.TryRunExtensionMethod by calling IExtensionMethodToCallHelper interface method with objects of types provided in name of this method." +
+                     "\n Underlying ExtensionMethodToCallHelper method to which the call is dispatched should return the value set in 'expected' variable.")]
         public void NullDoubleDoubleDouble()
         {
             Bar bar = new Bar();
@@ -146,6 +170,8 @@ namespace BH.Tests.Engine.Base.Compute
         }
 
         [Test]
+        [Description("Tests Compute.TryRunExtensionMethod by calling IExtensionMethodToCallHelper interface method with objects of types provided in name of this method." +
+                     "\n Underlying ExtensionMethodToCallHelper method to which the call is dispatched should return the value set in 'expected' variable.")]
         public void NullNullNullNull()
         {
             Bar bar = new Bar();
