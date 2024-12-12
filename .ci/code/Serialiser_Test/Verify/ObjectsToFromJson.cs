@@ -140,8 +140,15 @@ namespace BH.Test.Serialiser
                 }
                 catch (Exception e)
                 {
-                    BH.Engine.Base.Compute.RecordError(e, $"Failed to compare the objcets of type {type.Name}");
-                    isEqual = false;
+                    BH.Engine.Base.Compute.RecordError(e, $"Crashed when trying to compare objects.");
+
+                    return new TestResult
+                    {
+                        Description = typeDescription,
+                        Status = TestStatus.Warning,
+                        Message = $"Warning: Failed to compare objects of type {typeDescription}.",
+                        Information = Engine.Base.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
+                    };
                 }
 
                 if (!isEqual)
