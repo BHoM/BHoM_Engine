@@ -17,7 +17,7 @@
     <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(TargetDir)KellermanSoftware.Compare-NET-Objects.dll&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
   </Target>
   <ItemGroup>
-    <PackageReference Include="CompareNETObjects" Version="4.67.0" />
+    <PackageReference Include="CompareNETObjects" Version="4.83.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BHoM_Engine\BHoM_Engine.csproj" />
