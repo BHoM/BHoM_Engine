@@ -132,7 +132,19 @@ namespace BH.Test.Serialiser
                     Engine.Base.Compute.RecordError(e.Message);
                 }
 
-                if (!testObject.IsEqual(copy))
+                bool isEqual;
+
+                try
+                {
+                    isEqual = testObject.IsEqual(copy);
+                }
+                catch (Exception e)
+                {
+                    BH.Engine.Base.Compute.RecordError(e, $"Failed to compare the objcets of type {type.Name}");
+                    isEqual = false;
+                }
+
+                if (!isEqual)
                     return new TestResult
                     {
                         Description = typeDescription,
