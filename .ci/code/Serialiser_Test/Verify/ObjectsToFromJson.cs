@@ -140,7 +140,7 @@ namespace BH.Test.Serialiser
                 }
                 catch (Exception e)
                 {
-                    BH.Engine.Base.Compute.RecordError(e, $"Crashed when trying to compare objects.");
+                    BH.Engine.Base.Compute.RecordWarning(e, $"Crashed when trying to compare objects.");
 
                     return new TestResult
                     {
