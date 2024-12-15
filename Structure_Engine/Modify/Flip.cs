@@ -27,6 +27,7 @@ using BH.oM.Base.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using BH.Engine.Base;
+using BH.oM.Structure.Constraints;
 
 
 namespace BH.Engine.Structure
@@ -50,6 +51,15 @@ namespace BH.Engine.Structure
             Node tempNode = flipped.Start;
             flipped.Start = flipped.End;
             flipped.End = tempNode;
+
+            BarRelease flippedRelease = bar.Release?.ShallowClone();
+            if (flippedRelease != null)
+            {
+                Constraint6DOF tempRelease = flippedRelease.StartRelease;
+                flippedRelease.StartRelease = flippedRelease.EndRelease;
+                flippedRelease.EndRelease = tempRelease;
+                flipped.Release = flippedRelease;
+            }
 
             return flipped;
         }
