@@ -82,36 +82,43 @@ namespace BH.Engine.Base
                 return null;
             }
 
-            // Get type of first argument, to be used for first method extraction filtering
-            Type type = parameters[0].GetType();
+            // Get types of input arguments, to be used for first method extraction filtering
+            Type[] types = parameters.Select(x => x?.GetType()).ToArray();
 
             // Construct key used to store/extract method
             string name = methodName + parameters.Select(x => x?.GetType()?.ToString() ?? "null").Aggregate((a, b) => a + b);
-            Tuple<Type, string> key = new Tuple<Type, string>(type, name);
+            Tuple<Type, string> key = new Tuple<Type, string>(types[0], name);
 
             // If the method has been called before, just use that
             if (MethodPreviouslyExtracted(key))
                 return GetStoredExtensionMethod(key);
 
-            // Loop through all methods with matching name, first argument and number of parameters, sorted by best match to the first argument
-            var applicableMethods = type.ExtensionMethods(methodName).Where(x => x.IsApplicable(parameters)).ExtensionMethodHierarchy(type);
+            // Loop through all methods with matching name, pick applicable ones, then sort by best match to the provided inputs
+            var applicableMethods = types[0].ExtensionMethods(methodName).Where(x => x.IsApplicable(parameters)).ExtensionMethodHierarchy(types);
             
             // Return null if no applicable methods
-            if (applicableMethods.Count == 0)
+            if (applicableMethods.Count == 0 || applicableMethods[0].Count == 0)
             {
                 StoreExtensionMethod(key, null);
                 return null;
             }
 
-            // If more than one method at the top level of applicable method hierarchy, there is a risk of ambiguous call
-            if (applicableMethods[0].Count != 1)
+            // Iterate over each method argument's suitability hierarchy and find common denominator of top levels
+            HashSet<MethodInfo> candidates = new HashSet<MethodInfo>(applicableMethods[0][0]);
+            foreach (List<MethodInfo> mostApplicable in applicableMethods.Select(x => x[0]))
             {
-                StoreExtensionMethod(key, null);
-                return null;
+                candidates.IntersectWith(mostApplicable);
+
+                // If no candidates left, there is ambiguity that cannot be solved, stop iterating
+                if (candidates.Count == 0)
+                    break;
             }
 
-            // Take first applicable method, if method is generic, make sure the appropriate generic arguments are set
-            MethodInfo methodToCall = applicableMethods[0][0].MakeGenericFromInputs(parameters.Select(x => x?.GetType()).ToList());
+            // If only one candidate is left, ambiguity is solved and method to call identified
+            // If method is generic, make sure the appropriate generic arguments are set
+            MethodInfo methodToCall = null;
+            if (candidates.Count == 1)
+                methodToCall = candidates.First()?.MakeGenericFromInputs(parameters.Select(x => x?.GetType()).ToList());
 
             // Cache and return the method
             StoreExtensionMethod(key, methodToCall);

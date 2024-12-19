@@ -132,7 +132,26 @@ namespace BH.Test.Serialiser
                     Engine.Base.Compute.RecordError(e.Message);
                 }
 
-                if (!testObject.IsEqual(copy))
+                bool isEqual;
+
+                try
+                {
+                    isEqual = testObject.IsEqual(copy);
+                }
+                catch (Exception e)
+                {
+                    BH.Engine.Base.Compute.RecordWarning(e, $"Crashed when trying to compare objects.");
+
+                    return new TestResult
+                    {
+                        Description = typeDescription,
+                        Status = TestStatus.Warning,
+                        Message = $"Warning: Failed to compare objects of type {typeDescription}.",
+                        Information = Engine.Base.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
+                    };
+                }
+
+                if (!isEqual)
                     return new TestResult
                     {
                         Description = typeDescription,

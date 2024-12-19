@@ -29,7 +29,6 @@ using System.ComponentModel;
 using BH.oM.Base.Attributes;
 using BH.oM.Diffing;
 using BH.oM.Base;
-using kellerman = KellermanSoftware.CompareNetObjects;
 using System.Reflection;
 using BH.Engine.Base;
 

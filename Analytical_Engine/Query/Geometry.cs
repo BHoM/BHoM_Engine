@@ -184,7 +184,6 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [PreviousVersion("7.3", "BH.Engine.Structure.Query.Geometry(BH.oM.Structure.Elements.PadFoundation)")]
         [Description("Gets the geometry of a IRegion as its Perimiter curve. Method required for automatic display in UI packages.")]
         [Input("region", "IRegion to get the curve geometry from.")]
         [Output("curve", "The geometry of the IRegion as its Perimiter curve.")]

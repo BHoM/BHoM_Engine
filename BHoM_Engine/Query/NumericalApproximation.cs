@@ -69,6 +69,7 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Compute the approximation of a floating-point number given specific settings.")]
+        [Input("number", "Floating-point number to approximate.")]
         [Input("fullName", "Name of the number or of the property that holds this number. This name will be used to seek any matching custom tolerance/significant figure to apply for this approximation.")]
         [Input("customNumericTolerances", "Named custom numeric tolerances to be used for this approximation. If the `fullName` input matches any of these, it will be used. Wildcards are supported.")]
         [Input("globalNumericTolerance", "Fallback numeric tolerance to be used if no matching customNumericTolerance is found.")]
@@ -93,7 +94,7 @@ namespace BH.Engine.Base
             {
                 double tolerance = NumericTolerance(customNumericTolerances, globalNumericTolerance, fullName, false);
                 if (tolerance != double.MaxValue)
-                    number = Query.RoundWithTolerance(number, tolerance);
+                    number = Query.Round(number, tolerance);
             }
 
             // 2) Check significantFigures.
@@ -111,6 +112,7 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Compute the approximation of an integer number given specific settings.")]
+        [Input("number", "Integer number to approximate.")]
         [Input("fullName", "Name of the number or of the property that holds this number. This name will be used to seek any matching custom tolerance/significant figure to apply for this approximation.")]
         [Input("customSignificantFigures", "Named custom significant figures to be used for this approximation. If the `fullName` input matches any of these, it will be used. Wildcards are supported.")]
         [Input("globalSignificantFigures", "Fallback significant figures to be used if no matching customNumericTolerance is found.")]
@@ -132,6 +134,8 @@ namespace BH.Engine.Base
 
             return number;
         }
+
+        /***************************************************/
     }
 }
 
