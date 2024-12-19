@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -153,5 +153,6 @@ namespace BH.Engine.Base
         //ToDo: Discuss whether we want this to be true by default and have BHoM_UI switch it off on load, or keep as is. FYI @alelom
     }
 }
+
 
 
