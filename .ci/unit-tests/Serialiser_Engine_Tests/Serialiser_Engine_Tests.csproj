@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <FileVersion>8.0.0.0</FileVersion>
+    <FileVersion>8.1.0.0</FileVersion>
     <AssemblyVersion>8.0.0.0</AssemblyVersion>
     <Description>https://github.com/BHoM/BHoM_Engine</Description>
     <IsPackable>false</IsPackable>

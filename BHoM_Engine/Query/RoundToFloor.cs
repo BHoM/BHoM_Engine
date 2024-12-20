@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -32,7 +32,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("8.0", "BH.Engine.Base.Query.RoundWithTolerance(System.Double, System.Double)")]
         [Description("Rounds a number using the given tolerance, rounding to floor to the nearest tolerance multiplier." +
             "Supports any fractional, integer, positive or negative numbers." +
             "\nSome examples:" +
@@ -67,7 +66,6 @@ namespace BH.Engine.Base
         // NOTE: Although we could be satisfied with just one method "RoundToFloor" from the UI perspective,
         // we also need a dedicated method for Integers, to avoid a performance hit when using this method from other parts of the code, e.g. in Hash().
 
-        [PreviousVersion("8.0", "BH.Engine.Base.Query.RoundWithTolerance(System.Int32, System.Double)")]
         [Description("Rounds an integer number using the given tolerance, rounding to floor to the nearest tolerance multiplier." +
             "\nSome examples:" +
             "\n\t RoundToFloor(12, 20) ==> 0" +
@@ -100,3 +98,4 @@ namespace BH.Engine.Base
         /***************************************************/
     }
 }
+
