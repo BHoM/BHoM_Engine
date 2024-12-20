@@ -32,6 +32,7 @@ using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
 using BH.Engine.Structure;
+using BH.oM.Quantities.Attributes;
 
 
 namespace BH.Engine.Structure
@@ -45,10 +46,10 @@ namespace BH.Engine.Structure
         [Description("Creates a RetainingWall from a Stem, Footing and properties.")]
         [Input("stem", "The Stem of the RetainingWall.")]
         [Input("footing", "The Footing of the RetainingWall.")]
-        [Input("retainedHeight", "The retained height of soil measured from the bottom of the wall Footing.")]
-        [Input("coverDepth", "The distance from top of Footing to finished floor level on the exposed face.")]
-        [Input("retentionAngle", "A property of the material being retained measured from the horizontal plane.")]
-        [Input("groundWaterDepth", "The distance from the base of the Footing to ground water level.")]
+        [Input("retainedHeight", "The retained height of soil measured from the bottom of the wall Footing.", typeof(Length))]
+        [Input("coverDepth", "The distance from top of Footing to finished floor level on the exposed face.", typeof(Length))]
+        [Input("retentionAngle", "A property of the material being retained measured from the horizontal plane.", typeof(Angle))]
+        [Input("groundWaterDepth", "The distance from the base of the Footing to ground water level.", typeof(Length))]
         [Output("retainingWall", "The created RetainingWall containing the stem and footing.")]
         public static RetainingWall RetainingWall(Stem stem, PadFoundation footing, double retainedHeight, double coverDepth, double retentionAngle, double groundWaterDepth = 0)
         {
@@ -71,14 +72,14 @@ namespace BH.Engine.Structure
 
         [Description("Create RetainingWall from a Line and defining properties.")]
         [Input("line", "A Line parallell to the XY plane to build the RetainingWall from.")]
-        [Input("retainedHeight", "The retained height of soil measured from the bottom of the wall Footing.")]
-        [Input("normal", "Normal to the surface of the stem denoting the direction of the retained face.")]
-        [Input("stemThickness", "Thickness at the top and bottom of the stem.")]
-        [Input("toeLength", "Length of the toe of the footing.")]
-        [Input("heelLength", "Length of the heel of the footing.")]
-        [Input("footingThickness", "Thickness of the footing.")]
-        [Input("coverDepth", "The distance from top of Footing to finished floor level on the exposed face.")]
-        [Input("retentionAngle", "A property of the material being retained measured from the horizontal plane.")]
+        [Input("retainedHeight", "The retained height of soil measured from the bottom of the wall Footing.", typeof(Length))]
+        [Input("normal", "Normal to the surface of the stem denoting the direction of the retained face.", typeof(Vector))]
+        [Input("stemThickness", "Thickness at the top and bottom of the stem.", typeof(Length))]
+        [Input("toeLength", "Length of the toe of the footing.", typeof(Length))]
+        [Input("heelLength", "Length of the heel of the footing.", typeof(Length))]
+        [Input("footingThickness", "Thickness of the footing.", typeof(Length))]
+        [Input("coverDepth", "The distance from top of Footing to finished floor level on the exposed face.", typeof(Length))]
+        [Input("retentionAngle", "A property of the material being retained measured from the horizontal plane.", typeof(Angle))]
         [Output("retainingWall", "RetainingWall with specified properties.")]
         public static RetainingWall RetainingWall(Line line, double retainedHeight, Vector normal, double stemThickness, double toeLength,
             double heelLength, ConstantThickness footingThickness, double coverDepth, double retentionAngle)
@@ -95,9 +96,11 @@ namespace BH.Engine.Structure
             PolyCurve stemOutline = new PolyCurve();
             PolyCurve footingOutline = new PolyCurve();
 
+            Vector unitNormal = normal.Normalise();
+
             //Create the footing outline. 
-            Line toeLine = line.Translate(normal * (toeLength + stemThickness / 2));
-            Line heelLine = line.Translate(normal * (heelLength + stemThickness / 2) * -1).Reverse();
+            Line toeLine = line.Translate(unitNormal * (toeLength + stemThickness / 2));
+            Line heelLine = line.Translate(unitNormal * (heelLength + stemThickness / 2) * -1).Reverse();
 
             footingOutline.Curves = new List<ICurve> { toeLine, Geometry.Create.Line(toeLine.End, heelLine.Start), heelLine, Geometry.Create.Line(heelLine.End, toeLine.Start) };
 
@@ -106,7 +109,7 @@ namespace BH.Engine.Structure
 
             stemOutline.Curves = new List<ICurve> { line, Geometry.Create.Line(line.End, topLine.Start), topLine, Geometry.Create.Line(topLine.End, line.Start) };
 
-            return RetainingWall(Create.Stem(stemOutline, stemThickness, normal), Create.PadFoundation(footingOutline, footingThickness), retainedHeight, coverDepth, retentionAngle);
+            return RetainingWall(Create.Stem(stemOutline, stemThickness, unitNormal), Create.PadFoundation(footingOutline, footingThickness), retainedHeight, coverDepth, retentionAngle);
         }
 
         /***************************************************/
