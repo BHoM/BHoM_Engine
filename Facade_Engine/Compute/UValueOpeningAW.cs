@@ -66,9 +66,14 @@ namespace BH.Engine.Facade
             {
                 Base.Compute.RecordWarning($"Opening does not have valid OpeningType assigned. U-value calculation methods for vision opening have been applied.");
             }
+            if (opening.Type == OpeningType.CurtainWallSpandrel)
+            {
+                isSpandrel = true;
+            }
 
             List<IFragment> glassUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueGlassCentre));
             List<IFragment> glassEdgeUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueGlassEdge));
+            List<IFragment> spandrelEdgeUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueSpandrelEdge));
             List<IFragment> contUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueContinuous));
             List<IFragment> cavityUValues = opening.OpeningConstruction.GetAllFragments(typeof(UValueCavity));
             double contUValue = 0;
@@ -182,17 +187,30 @@ namespace BH.Engine.Facade
                 frameUValues.Add(frameUValue);
 
                 // Use the FrameEdge's UValueGlassEdge if it has one, otherwise use the Glass Construction's Frame Edge.
-                List<IFragment> f_edgeUValues = frameEdges[i].FrameEdgeProperty.GetAllFragments(typeof(UValueGlassEdge));
+
+                List<IFragment> f_edgeUValues;
+                double frameEdgeUValue = 0;
+                if (isSpandrel)
+                {
+                   f_edgeUValues = frameEdges[i].FrameEdgeProperty.GetAllFragments(typeof(UValueSpandrelEdge));
+                   frameEdgeUValue = (f_edgeUValues[0] as UValueSpandrelEdge).UValue;
+                }
+                else
+                {
+                   f_edgeUValues = frameEdges[i].FrameEdgeProperty.GetAllFragments(typeof(UValueGlassEdge));
+                   frameEdgeUValue = (f_edgeUValues[0] as UValueGlassEdge).UValue;
+                }
+
                 if (f_edgeUValues.Count > 1)
                 {
                     BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one Edge U-value assigned to a FrameEdge.");
                     return null;
                 }
-                double frameEdgeUValue = 0;
                 if (f_edgeUValues.Count <= 0)
+                { 
                     frameEdgeUValue = glassEdgeUValue;
-                else
-                    frameEdgeUValue = (f_edgeUValues[0] as UValueGlassEdge).UValue;
+                }
+                    
 
                 // Checks if any edges have no valid UValue. THis is okay if no glass U Value is provided, but indicates invalid data if there is a glass U Value without a corresponding edge UValue.
                 if ((glassUValues.Count == 1) && (frameEdgeUValue == 0))
