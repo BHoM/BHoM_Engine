@@ -24,7 +24,6 @@ using System.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Ground;
 
@@ -37,21 +36,21 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the IContaminantProperty matching the type provided..")]
-        [Input("sample", "The ContaminantSample to retrieve the property from.")]
-        [Input("type", "The type that inherits IContaminantProperty to search the ContaminantSample for.")]
-        [Output("property", "The IContaminantProperty found on the ContaminantSample.")]
-        public static IContaminantProperty ContaminantProperty(this ContaminantSample sample, Type type)
+        [Description("Returns the IStratumProperty matching the type provided..")]
+        [Input("sample", "The IStratumProperty to retrieve the property from.")]
+        [Input("type", "The type that inherits IStratumProperty to search the Stratum for.")]
+        [Output("property", "The IStratumProperty found on the Stratum.")]
+        public static IStratumProperty StratumProperty(this Stratum stratum, Type type)
         {
-            if (sample.IsValid())
+            if (stratum.IsValid())
             {
-                List<IContaminantProperty> contaminantProperties = sample.ContaminantProperties;
+                List<IStratumProperty> stratumProperties = stratum.Properties;
 
-                if (contaminantProperties.Select(x => x.GetType()).Contains(type))
-                    return (IContaminantProperty)Base.Query.FilterByType(contaminantProperties, type).First();
+                if (stratumProperties.Select(x => x.GetType()).Contains(type))
+                    return (IStratumProperty)Base.Query.FilterByType(stratumProperties, type).First();
                 else
                 {
-                    Base.Compute.RecordError($"The ContaminantSample does not contain {type}.");
+                    Base.Compute.RecordError($"The Stratum does not contain {type}.");
                     return null;
                 }
             }

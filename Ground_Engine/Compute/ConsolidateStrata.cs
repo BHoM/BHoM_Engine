@@ -45,7 +45,7 @@ namespace BH.Engine.Ground
         [Input("propertyCompare", "The property of the Strata to consolidate such as ObservedGeology, InterpretedGeology or Legend.")]
         [Input("decimals", "The number of decimals to display the depth ranges.")]
         [Output("b", "The consolidated Borehole.")]
-        public static Borehole ConsolidateStrata(Borehole borehole, string propertyCompare, int decimals)
+        public static Borehole ConsolidateStrata(Borehole borehole, string propertyCompare, int decimals = 2)
         {
             if (borehole.IsValid())
             {
