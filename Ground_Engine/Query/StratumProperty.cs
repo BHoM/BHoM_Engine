@@ -37,7 +37,7 @@ namespace BH.Engine.Ground
         /***************************************************/
 
         [Description("Returns the IStratumProperty matching the type provided..")]
-        [Input("sample", "The IStratumProperty to retrieve the property from.")]
+        [Input("stratum", "The IStratumProperty to retrieve the property from.")]
         [Input("type", "The type that inherits IStratumProperty to search the Stratum for.")]
         [Output("property", "The IStratumProperty found on the Stratum.")]
         public static IStratumProperty StratumProperty(this Stratum stratum, Type type)
