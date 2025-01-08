@@ -23,6 +23,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
@@ -85,6 +88,9 @@ namespace BH.Engine.Base
             // Subscribe to the assembly load event.
             AppDomain.CurrentDomain.AssemblyLoad += ReflectAssemblyOnLoad;
 
+            // Dedicated assembly resolution mechanism to minimise issues related with dependency incompatibility
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ResolveBHoMAssembly);
+
             // Reflect the assemblies that have already been loaded.
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
             {
@@ -100,6 +106,38 @@ namespace BH.Engine.Base
         private static void ReflectAssemblyOnLoad(object sender, AssemblyLoadEventArgs args)
         {
             Compute.ExtractAssembly(args?.LoadedAssembly);
+        }
+
+        /***************************************************/
+
+        private static Assembly ResolveBHoMAssembly(object sender, ResolveEventArgs args)
+        {
+            // Check whether the issue was caused by a BHoM call
+            bool bh = false;
+            StackTrace stackTrace = new StackTrace();
+            foreach (StackFrame frame in stackTrace.GetFrames())
+            {
+                Type type = frame?.GetMethod()?.DeclaringType;
+                if (type != null && type.Namespace.StartsWith("BH.") && BHoMAssemblies.Values.Contains(type.Assembly))
+                {
+                    bh = true;
+                    break;
+                }
+            }
+
+            // If it was, try loading the assembly from BHoM folder
+            if (bh)
+            {
+                string[] split = args.Name.Split(',');
+                if (split.Length > 1)
+                {
+                    string assemblyPath = Path.Combine(BH.Engine.Base.Query.BHoMFolder(), $"{split[0]}.dll");
+                    if (File.Exists(assemblyPath))
+                        return Assembly.LoadFrom(assemblyPath);
+                }
+            }
+
+            return null;
         }
 
         /***************************************************/
