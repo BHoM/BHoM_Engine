@@ -89,7 +89,7 @@ namespace BH.Engine.Base
             AppDomain.CurrentDomain.AssemblyLoad += ReflectAssemblyOnLoad;
 
             // Dedicated assembly resolution mechanism to minimise issues related with dependency incompatibility
-            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ResolveBHoMAssembly);
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveBHoMAssembly;
 
             // Reflect the assemblies that have already been loaded.
             foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
