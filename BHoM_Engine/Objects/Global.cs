@@ -112,29 +112,29 @@ namespace BH.Engine.Base
 
         private static Assembly ResolveBHoMAssembly(object sender, ResolveEventArgs args)
         {
-            // Check whether the issue was caused by a BHoM call
-            bool bh = false;
-            StackTrace stackTrace = new StackTrace();
-            foreach (StackFrame frame in stackTrace.GetFrames())
-            {
-                Type type = frame?.GetMethod()?.DeclaringType;
-                if (type != null && type.Namespace.StartsWith("BH.") && BHoMAssemblies.Values.Contains(type.Assembly))
-                {
-                    bh = true;
-                    break;
-                }
-            }
+            if (string.IsNullOrEmpty(args.Name))
+                return null;
 
+            string asmName = new AssemblyName(args.Name).Name;
+            if (asmName.EndsWith(".resources"))  //ignore resource files
+                return null;
+
+            Assembly callingAssembly = Assembly.GetCallingAssembly();
+            string callingAssemblyLocation = callingAssembly?.Location;
+
+            if(string.IsNullOrEmpty(callingAssemblyLocation)) 
+                return null;
+
+            string assemblyLocation = Path.GetDirectoryName(callingAssemblyLocation);
+
+            // Check whether the issue was requsted by a dll in the BHoMFolder
             // If it was, try loading the assembly from BHoM folder
-            if (bh)
+            if (assemblyLocation == Query.BHoMFolder())
             {
-                string[] split = args.Name.Split(',');
-                if (split.Length > 1)
-                {
-                    string assemblyPath = Path.Combine(BH.Engine.Base.Query.BHoMFolder(), $"{split[0]}.dll");
-                    if (File.Exists(assemblyPath))
-                        return Assembly.LoadFrom(assemblyPath);
-                }
+                string assemblyPath = Path.Combine(Query.BHoMFolder(), $"{asmName}.dll");
+                if (File.Exists(assemblyPath))
+                    return Assembly.LoadFrom(assemblyPath);
+
             }
 
             return null;
