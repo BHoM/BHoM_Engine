@@ -28,6 +28,7 @@ using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using BH.Engine.Base;
 using BH.oM.Structure.Constraints;
+using System;
 
 
 namespace BH.Engine.Structure
@@ -51,6 +52,34 @@ namespace BH.Engine.Structure
             Node tempNode = flipped.Start;
             flipped.Start = flipped.End;
             flipped.End = tempNode;
+
+            if (bar.IsVertical())
+                bar.OrientationAngle = -bar.OrientationAngle + Math.PI;
+            else
+                bar.OrientationAngle = -bar.OrientationAngle;
+
+            // Flip Offsets
+            if (bar.Offset != null)
+            {
+                Vector tempV = bar.Offset.Start;
+                bar.Offset.Start = bar.Offset.End;
+                bar.Offset.End = tempV;
+
+                if (bar.Offset.Start != null)
+                    bar.Offset.Start.X *= -1;
+
+                if (bar.Offset.End != null)
+                    bar.Offset.End.X *= -1;
+
+                if (!bar.IsVertical())
+                {
+                    if (bar.Offset.Start != null)
+                        bar.Offset.Start.Y *= -1;
+
+                    if (bar.Offset.End != null)
+                        bar.Offset.End.Y *= -1;
+                }
+            }
 
             BarRelease flippedRelease = bar.Release?.ShallowClone();
             if (flippedRelease != null)
