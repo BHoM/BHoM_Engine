@@ -40,9 +40,9 @@ namespace BH.Engine.Ground
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("A method that takes a Borehole, and consolidates the Strata sequentially by combining them based on a specific property.")]
+        [Description("A method that takes a Borehole, and consolidates the Strata sequentially by combining them based on a the property provided.")]
         [Input("borehole", "The Borehole to consolidate the strata for.")]
-        [Input("propertyCompare", "The property of the Strata to consolidate such as ObservedGeology, InterpretedGeology or Legend.")]
+        [Input("propertyCompare", "The property of the Strata to consolidate (e.g. ObservedGeology, InterpretedGeology or Legend).")]
         [Input("decimals", "The number of decimals to display the depth ranges.")]
         [Output("b", "The consolidated Borehole.")]
         public static Borehole ConsolidateStrata(Borehole borehole, string propertyCompare, int decimals = 2)
