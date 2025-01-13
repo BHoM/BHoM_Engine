@@ -203,7 +203,7 @@ namespace BH.Engine.Structure
         private static IProfile FlipProfile(TaperedProfile oldProfile)
         {
             List<IProfile> newProfiles = new List<IProfile>();
-            foreach (IProfile profile in oldProfile.Profiles.Values)
+            foreach (IProfile profile in oldProfile.Profiles.Values.Reverse())
             {
                 newProfiles.Add(IFlipProfile(profile as dynamic));
             }
