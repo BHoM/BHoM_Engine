@@ -364,6 +364,34 @@ namespace BH.Engine.Verification
             }
         }
 
+        /***************************************************/
+
+        public static string ReportMessage(this FormulaCondition condition, FormulaConditionResult result, FormulaConditionReportingConfig config = null)
+        {
+            if (condition == null || result == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not create report for the condition result because one of the required values was null.");
+                return null;
+            }
+
+            if (result.Passed == null)
+                return "Verification of condition was inconclusive.";
+
+            StringBuilder sb = new StringBuilder("Components:\n");
+            foreach (var kvp in result.Components)
+            {
+                if (config.ComponentConfigs.ContainsKey(kvp.Key))
+                    sb.Append($"{kvp.Key} = {kvp.Value.IFormattedValueString(config.ComponentConfigs[kvp.Key])}\n");
+            }
+
+            if ((bool)result.Passed)
+                sb.Append($"requirement of {condition.VerificationFormula} is met.");
+            else
+                sb.Append($"requirement of {condition.VerificationFormula} is not met.");
+
+            return sb.ToString();
+        }
+
 
         /***************************************************/
         /****              Private Methods              ****/

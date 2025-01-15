@@ -51,7 +51,7 @@ namespace BH.Engine.Verification
             object result;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(objects, nameof(VerifySpecification), new object[] { specification }, out result))
             {
-                BH.Engine.Base.Compute.RecordError($"Verification failed because specification of type {result.GetType().Name} is currently not supported.");
+                BH.Engine.Base.Compute.RecordError($"Verification failed because specification of type {specification.GetType().Name} is currently not supported.");
                 return null;
             }
 

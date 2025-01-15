@@ -21,14 +21,18 @@
  */
 
 using BH.Engine.Base.Objects;
+using BH.Engine.Verification.Objects;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Verification;
 using BH.oM.Verification.Conditions;
 using BH.oM.Verification.Results;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BH.Engine.Verification
 {
@@ -323,6 +327,39 @@ namespace BH.Engine.Verification
             return new ValueConditionResult(pass, value);
         }
 
+        /***************************************************/
+
+        public static FormulaConditionResult VerifyCondition(this object obj, FormulaCondition condition)
+        {
+            if (string.IsNullOrWhiteSpace(condition?.VerificationFormula))
+            {
+                BH.Engine.Base.Compute.RecordError("The formula condition is null or verification formula is null or empty.");
+                return new FormulaConditionResult(null, new Dictionary<string, object>());
+            }
+
+            if (condition.CalculationFormulae.Any(x => string.IsNullOrWhiteSpace(x.Value)))
+            {
+                BH.Engine.Base.Compute.RecordError("At least one of the calculation formulae is null or empty.");
+                return new FormulaConditionResult(null, new Dictionary<string, object>());
+            }
+
+            if (condition.Inputs.Any(x => x.Value == null))
+            {
+                BH.Engine.Base.Compute.RecordError("At least one of the inputs is null.");
+                return new FormulaConditionResult(null, new Dictionary<string, object>());
+            }
+
+            //TODO: rethink the dirty workaround with (object, bool)!!
+            Dictionary<string, (object, bool)> components = condition.Inputs.ToDictionary(x => x.Key, x => ((object)x.Value, true));
+            foreach (var a in condition.CalculationFormulae)
+            {
+                components.Add(a.Key, ((object)a.Value, false));
+            }
+
+            object verification = condition.VerificationFormula.Solve(obj, components, condition.Tolerance);
+            return new FormulaConditionResult((verification as bool?), components.ToDictionary(x => x.Key, x => x.Value.Item1));
+        }
+
 
         /***************************************************/
         /****              Private Methods              ****/
@@ -334,6 +371,270 @@ namespace BH.Engine.Verification
                 return set.Contains(value, new HashComparer<object>(comparisonConfig));
             else
                 return set.Contains(value);
+        }
+
+        /***************************************************/
+
+        private static object Solve(this string formula, object obj, Dictionary<string, (object, bool)> variables, double tolerance)
+        {
+            try
+            {
+                // Weird setup of the globals class because neither dynamic nor anonymous types work with C# scripts
+                Type genericType = typeof(FormulaVariables<,,,,,,,,,>);
+
+                // Collect variables used in the equation
+                string formulaToSolve = formula;
+                var usedVariables = new List<(string, object)>();
+                int k = 1;
+                foreach (var key in variables.Keys.OrderByDescending(x => x))
+                {
+                    if (formulaToSolve.Contains(key))
+                    {
+                        // Update the equation with globals property name in Variable$$ format
+                        string propName = $"Variable{k}";
+                        formulaToSolve = formulaToSolve.Replace(key, propName);
+                        k++;
+
+                        // Make sure the variable is calculated - if not yet, then calculate
+                        (object, bool) kvp = variables[key];
+                        object value = kvp.Item1;
+                        if (kvp.Item2)
+                        {
+                            if (value is IValueSource vs)
+                            {
+                                value = obj.IValueFromSource(vs);
+                                if (value == null || (value is double && double.IsNaN((double)value)))
+                                {
+                                    BH.Engine.Base.Compute.RecordError($"Extraction of value from {obj.ILabel()} based on {vs.ILabel()} failed.");
+                                    return null;
+                                }
+
+                                variables[key] = (value, true);
+                            }
+                        }
+                        else
+                        {
+                            value = ((string)value).Solve(obj, variables, tolerance);
+                            variables[key] = (value, true);
+                        }
+
+
+                        // Cast enums to strings in the equation
+                        if (value?.GetType().IsEnum == true)
+                            value = value.ToString();
+
+                        usedVariables.Add((key, value));
+                    }
+                }
+
+                // Create globals object based on the variables
+                Type[] variableTypes = usedVariables.Select(x => x.Item2?.GetType() ?? typeof(object)).ToArray();
+                variableTypes = variableTypes.Concat(Enumerable.Repeat(typeof(object), 10 - variableTypes.Length)).ToArray();
+                Type constructedType = genericType.MakeGenericType(variableTypes);
+                object globals = Activator.CreateInstance(constructedType);
+
+                // Set the properties of globals object based on variables
+                k = 1;
+                foreach (var kvp in usedVariables)
+                {
+                    string propName = $"Variable{k}";
+                    constructedType.GetProperty(propName).SetValue(globals, kvp.Item2);
+                    k++;
+                }
+
+                // Temporarily replace strings with placeholders
+                // This way we make sure the strings will not changed
+                Dictionary<string, string> stringReplacements = new Dictionary<string, string>();
+                string stringRegex = @"'([^']*)'";
+                int stringCount = 0;
+                foreach (var match in Regex.Matches(formulaToSolve, stringRegex).Cast<Match>().Select(x => x.Value).Distinct().OrderByDescending(x => x.Length))
+                {
+                    stringCount++;
+                    string replacement = $"\"%%TempString{stringCount}\"";
+                    formulaToSolve = formulaToSolve.Replace(match, replacement);
+                    stringReplacements.Add(replacement, match.Replace("'", "\""));
+                }
+
+                // Trim trailing whitespaces, lowercase ifs and elses etc.
+                formulaToSolve = formulaToSolve.Trim();
+                formulaToSolve = Regex.Replace(formulaToSolve, "if", "if", RegexOptions.IgnoreCase);
+                formulaToSolve = Regex.Replace(formulaToSolve, "else", "else", RegexOptions.IgnoreCase);
+                formulaToSolve = formulaToSolve.Replace("and", "&&");
+                formulaToSolve = formulaToSolve.Replace("or", "||");
+
+                // Wrap enum values in quotes (compared as strings)
+                string toWrapPattern = @"\b(?!if\b|else\b|Variable\d+|TempString\d+)(?=\w*[a-zA-Z])\w+\b";
+                formulaToSolve = Regex.Replace(formulaToSolve, toWrapPattern, "\"$&\"");
+
+                // Conditional statements need a bit more attention
+                if (formulaToSolve.StartsWith("if"))
+                {
+                    // Convert the pseudocode into valid C# code
+                    string[] conditions = formulaToSolve.Split(',');
+                    string csharpCode = "object result;\n";
+
+                    foreach (string condition in conditions)
+                    {
+                        string trimmedCondition = condition.Trim();
+
+                        int ii = 0;
+                        if (trimmedCondition.StartsWith("if"))
+                            ii = 3;
+                        else if (trimmedCondition.StartsWith("else if"))
+                            ii = 7;
+
+                        if (ii != 0)
+                        {
+                            int colonIndex = condition.IndexOf(':');
+                            trimmedCondition = trimmedCondition.Substring(0, ii) + "(" + trimmedCondition.Substring(ii, colonIndex - ii) + ")" + trimmedCondition.Substring(colonIndex);
+                        }
+
+                        csharpCode += trimmedCondition.Replace(":", "{ result =") + "; }\n";
+                    }
+
+                    csharpCode += "return result;";
+                    formulaToSolve = csharpCode;
+                }
+
+                formulaToSolve = formulaToSolve.IntroduceTolerance(tolerance);
+
+                // Bring back the original strings
+                foreach (var key in stringReplacements.Keys.OrderByDescending(x => x.Length))
+                {
+                    formulaToSolve = formulaToSolve.Replace(key, stringReplacements[key]);
+                }
+
+                return CSharpScript.EvaluateAsync(formulaToSolve, globals: globals).Result;
+            }
+            catch
+            {
+                BH.Engine.Base.Compute.RecordError($"Formula {formula} could not be solved, please make sure it does not contain errors.");
+                return null;
+            }
+        }
+
+        /***************************************************/
+
+        private static string ComparisonSign(this ValueComparisonType comparison)
+        {
+            switch (comparison)
+            {
+                case ValueComparisonType.EqualTo:
+                    return "==";
+                case ValueComparisonType.NotEqualTo:
+                    return "!=";
+                case ValueComparisonType.GreaterThan:
+                    return ">";
+                case ValueComparisonType.GreaterThanOrEqualTo:
+                    return ">=";
+                case ValueComparisonType.LessThan:
+                    return "<";
+                case ValueComparisonType.LessThanOrEqualTo:
+                    return "<=";
+                default:
+                    return "";
+            }
+        }
+
+        /***************************************************/
+
+        private static string ComparisonReplacement(string left, string right, ValueComparisonType comparison, double tolerance)
+        {
+            switch (comparison)
+            {
+                case ValueComparisonType.EqualTo:
+                    return $"(System.Math.Abs({left} - {right}) <= {tolerance})";
+                case ValueComparisonType.NotEqualTo:
+                    return $"(System.Math.Abs({left} - {right}) > {tolerance})";
+                case ValueComparisonType.GreaterThan:
+                    return $"({left} - {right} > {tolerance})";
+                case ValueComparisonType.GreaterThanOrEqualTo:
+                    return $"({left} - {right} >= -{tolerance})";
+                case ValueComparisonType.LessThan:
+                    return $"({left} - {right} < -{tolerance})";
+                case ValueComparisonType.LessThanOrEqualTo:
+                    return $"({left} - {right} <= {tolerance})";
+                default:
+                    return null;
+            }
+        }
+
+        /***************************************************/
+
+        private static string IntroduceTolerance(this string equation, double tolerance)
+        {
+            equation = equation.IntroduceTolerance(ValueComparisonType.GreaterThan, tolerance);
+            equation = equation.IntroduceTolerance(ValueComparisonType.GreaterThanOrEqualTo, tolerance);
+            equation = equation.IntroduceTolerance(ValueComparisonType.LessThan, tolerance);
+            equation = equation.IntroduceTolerance(ValueComparisonType.LessThanOrEqualTo, tolerance);
+            equation = equation.IntroduceTolerance(ValueComparisonType.EqualTo, tolerance);
+            equation = equation.IntroduceTolerance(ValueComparisonType.NotEqualTo, tolerance);
+            return equation;
+        }
+
+        /***************************************************/
+
+        private static string IntroduceTolerance(this string equation, ValueComparisonType comparison, double tolerance)
+        {
+            string comparisonSign = comparison.ComparisonSign();
+            if (string.IsNullOrWhiteSpace(comparisonSign))
+                return equation;
+
+            Dictionary<Match, string> replacements = new Dictionary<Match, string>();
+            string regex = @"([^&|<>=!{};]+)\s*(" + comparisonSign + @")\s*([^&|<>=!{};]+)";
+
+            foreach (Match match in Regex.Matches(equation, regex))
+            {
+                string left = match.Groups[1].Value;
+                string right = match.Groups[3].Value;
+
+                int leftCutoff = -1;
+                int rightCutoff = -1;
+
+                if (left.Contains("return "))
+                {
+                    leftCutoff = left.IndexOf("return ") + 6;
+                    left = left.Substring(leftCutoff + 1);
+                }
+
+                if (left.Count(c => c == '(') > left.Count(c => c == ')'))
+                {
+                    int newCutoff = left.IndexOf('(');
+                    if (leftCutoff == -1)
+                        leftCutoff = newCutoff;
+                    else
+                        leftCutoff += newCutoff;
+
+                    left = left.Substring(newCutoff + 1);
+                }
+
+                if (right.Count(c => c == ')') > right.Count(c => c == '('))
+                {
+                    rightCutoff = right.LastIndexOf(')');
+                    right = right.Substring(0, rightCutoff);
+                    //right = right.Substring(0, right.Length - rightCutoff);
+                }
+
+                if (left.Contains('"') || right.Contains('"'))
+                    continue;
+
+                string replacement = ComparisonReplacement(left, right, comparison, tolerance);
+                if (leftCutoff != -1)
+                    replacement = match.Groups[1].Value.Substring(0, leftCutoff + 1) + replacement;
+
+                if (rightCutoff != -1)
+                    replacement = replacement + match.Groups[3].Value.Substring(rightCutoff);
+
+                replacements[match] = replacement;
+            }
+
+            string result = equation;
+            foreach (var kvp in replacements.OrderByDescending(x => x.Key.Index))
+            {
+                result = result.Remove(kvp.Key.Index, kvp.Key.Length).Insert(kvp.Key.Index, kvp.Value);
+            }
+
+            return result;
         }
 
         /***************************************************/
