@@ -366,6 +366,11 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Generates a human readable report based on " + nameof(FormulaCondition) + " check result combined with reporting config.")]
+        [Input("condition", "Condition, from which the result was generated.")]
+        [Input("result", "Condition check result to generate report for.")]
+        [Input("config", "Reporting config to apply when generating the report.")]
+        [Output("report", "Human readable report generated based on the input condition check result combined with reporting config.")]
         public static string ReportMessage(this FormulaCondition condition, FormulaConditionResult result, FormulaConditionReportingConfig config = null)
         {
             if (condition == null || result == null)

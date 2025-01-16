@@ -329,6 +329,10 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Verifies an object against " + nameof(FormulaCondition) + " and returns a result object containing details of the check.")]
+        [Input("obj", "Object to check against the condition.")]
+        [Input("condition", "Condition to check the object against.")]
+        [Output("result", "Object containing the check result as a boolean as well as details of the check (extracted value etc.).")]
         public static FormulaConditionResult VerifyCondition(this object obj, FormulaCondition condition)
         {
             if (string.IsNullOrWhiteSpace(condition?.VerificationFormula))
@@ -612,7 +616,6 @@ namespace BH.Engine.Verification
                 {
                     rightCutoff = right.LastIndexOf(')');
                     right = right.Substring(0, rightCutoff);
-                    //right = right.Substring(0, right.Length - rightCutoff);
                 }
 
                 if (left.Contains('"') || right.Contains('"'))
