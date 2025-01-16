@@ -386,13 +386,19 @@ namespace BH.Engine.Verification
             foreach (var kvp in result.Components)
             {
                 if (config.ComponentConfigs.ContainsKey(kvp.Key))
-                    sb.Append($"{kvp.Key} = {kvp.Value.IFormattedValueString(config.ComponentConfigs[kvp.Key])}\n");
+                {
+                    string label = kvp.Key;
+                    if (!string.IsNullOrWhiteSpace(config.ComponentConfigs[kvp.Key].ValueSourceLabelOverride))
+                        label = $"{config.ComponentConfigs[kvp.Key].ValueSourceLabelOverride} ({kvp.Key})";
+
+                    sb.Append($"{label} = {kvp.Value.IFormattedValueString(config.ComponentConfigs[kvp.Key])}\n");
+                }
             }
 
             if ((bool)result.Passed)
-                sb.Append($"requirement of {condition.VerificationFormula} is met.");
+                sb.Append($"requirement of {condition.VerificationFormula.Equation} is met.");
             else
-                sb.Append($"requirement of {condition.VerificationFormula} is not met.");
+                sb.Append($"requirement of {condition.VerificationFormula.Equation} is not met.");
 
             return sb.ToString();
         }

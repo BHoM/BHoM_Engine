@@ -335,13 +335,13 @@ namespace BH.Engine.Verification
         [Output("result", "Object containing the check result as a boolean as well as details of the check (extracted value etc.).")]
         public static FormulaConditionResult VerifyCondition(this object obj, FormulaCondition condition)
         {
-            if (string.IsNullOrWhiteSpace(condition?.VerificationFormula))
+            if (string.IsNullOrWhiteSpace(condition?.VerificationFormula?.Equation))
             {
                 BH.Engine.Base.Compute.RecordError("The formula condition is null or verification formula is null or empty.");
                 return new FormulaConditionResult(null, new Dictionary<string, object>());
             }
 
-            if (condition.CalculationFormulae.Any(x => string.IsNullOrWhiteSpace(x.Value)))
+            if (condition.CalculationFormulae.Any(x => string.IsNullOrWhiteSpace(x.Value?.Equation)))
             {
                 BH.Engine.Base.Compute.RecordError("At least one of the calculation formulae is null or empty.");
                 return new FormulaConditionResult(null, new Dictionary<string, object>());
@@ -353,15 +353,14 @@ namespace BH.Engine.Verification
                 return new FormulaConditionResult(null, new Dictionary<string, object>());
             }
 
-            //TODO: rethink the dirty workaround with (object, bool)!!
-            Dictionary<string, (object, bool)> components = condition.Inputs.ToDictionary(x => x.Key, x => ((object)x.Value, true));
-            foreach (var a in condition.CalculationFormulae)
+            Dictionary<string, object> components = condition.Inputs.ToDictionary(x => x.Key, x => (object)x.Value);
+            foreach (var formula in condition.CalculationFormulae)
             {
-                components.Add(a.Key, ((object)a.Value, false));
+                components.Add(formula.Key, (object)formula.Value);
             }
 
-            object verification = condition.VerificationFormula.Solve(obj, components, condition.Tolerance);
-            return new FormulaConditionResult((verification as bool?), components.ToDictionary(x => x.Key, x => x.Value.Item1));
+            object verification = condition.VerificationFormula.Solve(obj, components);
+            return new FormulaConditionResult((verification as bool?), components.Where(x => !(x.Value is IValueSource) && !(x.Value is Formula)).ToDictionary(x => x.Key, x => x.Value));
         }
 
 
@@ -379,7 +378,7 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
-        private static object Solve(this string formula, object obj, Dictionary<string, (object, bool)> variables, double tolerance)
+        private static object Solve(this Formula formula, object obj, Dictionary<string, object> variables)
         {
             try
             {
@@ -387,7 +386,7 @@ namespace BH.Engine.Verification
                 Type genericType = typeof(FormulaVariables<,,,,,,,,,>);
 
                 // Collect variables used in the equation
-                string formulaToSolve = formula;
+                string formulaToSolve = formula.Equation;
                 var usedVariables = new List<(string, object)>();
                 int k = 1;
                 foreach (var key in variables.Keys.OrderByDescending(x => x))
@@ -400,28 +399,26 @@ namespace BH.Engine.Verification
                         k++;
 
                         // Make sure the variable is calculated - if not yet, then calculate
-                        (object, bool) kvp = variables[key];
-                        object value = kvp.Item1;
-                        if (kvp.Item2)
+                        object value = variables[key];
+                        if (value is IValueSource vs)
                         {
-                            if (value is IValueSource vs)
+                            value = obj.IValueFromSource(vs);
+                            if (value == null || (value is double && double.IsNaN((double)value)))
                             {
-                                value = obj.IValueFromSource(vs);
-                                if (value == null || (value is double && double.IsNaN((double)value)))
-                                {
-                                    BH.Engine.Base.Compute.RecordError($"Extraction of value from {obj.ILabel()} based on {vs.ILabel()} failed.");
-                                    return null;
-                                }
-
-                                variables[key] = (value, true);
+                                BH.Engine.Base.Compute.RecordError($"Extraction of value from {obj.ILabel()} based on {vs.ILabel()} failed.");
+                                return null;
                             }
-                        }
-                        else
-                        {
-                            value = ((string)value).Solve(obj, variables, tolerance);
-                            variables[key] = (value, true);
-                        }
 
+                            variables[key] = value;
+                        }
+                        else if (value is Formula f)
+                        {
+                            value = f.Solve(obj, variables);
+                            if (value == null || (value is double && double.IsNaN((double)value)))
+                                return null;
+                            
+                            variables[key] = value;
+                        }
 
                         // Cast enums to strings in the equation
                         if (value?.GetType().IsEnum == true)
@@ -500,7 +497,23 @@ namespace BH.Engine.Verification
                     formulaToSolve = csharpCode;
                 }
 
-                formulaToSolve = formulaToSolve.IntroduceTolerance(tolerance);
+                if (formula.Tolerance != null)
+                {
+                    if (formula.Tolerance is double tolerance)
+                    {
+                        if (double.IsNaN(tolerance) || tolerance < 0)
+                        {
+                            BH.Engine.Base.Compute.RecordError($"Formula {formula.Equation} could not be solved because of invalid value of tolerance - it needs to be a positive number.");
+                            return null;
+                        }
+                        formulaToSolve = formulaToSolve.IntroduceTolerance(tolerance);
+                    }
+                    else
+                    {
+                        BH.Engine.Base.Compute.RecordError($"Formula {formula.Equation} could not be solved because of unsupported type of tolerance.");
+                        return null;
+                    }
+                }
 
                 // Bring back the original strings
                 foreach (var key in stringReplacements.Keys.OrderByDescending(x => x.Length))
@@ -512,7 +525,7 @@ namespace BH.Engine.Verification
             }
             catch
             {
-                BH.Engine.Base.Compute.RecordError($"Formula {formula} could not be solved, please make sure it does not contain errors.");
+                BH.Engine.Base.Compute.RecordError($"Formula {formula.Equation} could not be solved, please make sure it does not contain errors.");
                 return null;
             }
         }
