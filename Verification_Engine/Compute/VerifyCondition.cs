@@ -404,10 +404,7 @@ namespace BH.Engine.Verification
                         {
                             value = obj.IValueFromSource(vs);
                             if (value == null || (value is double && double.IsNaN((double)value)))
-                            {
-                                BH.Engine.Base.Compute.RecordError($"Extraction of value from {obj.ILabel()} based on {vs.ILabel()} failed.");
                                 return null;
-                            }
 
                             variables[key] = value;
                         }
