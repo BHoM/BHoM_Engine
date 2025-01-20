@@ -37,6 +37,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BH.Engine.Spatial;
 using System.Data;
+using Mono.Reflection;
 
 
 namespace BH.Engine.Structure
@@ -62,34 +63,10 @@ namespace BH.Engine.Structure
             flipped.Start = flipped.End;
             flipped.End = tempNode;
 
-            // Flip orientation angle
             if (bar.IsVertical())
                 flipped.OrientationAngle = -bar.OrientationAngle + Math.PI;
             else
                 flipped.OrientationAngle = -bar.OrientationAngle;
-
-            // Flip Offsets
-            if (bar.Offset != null)
-            {
-                Vector tempV = bar.Offset.Start;
-                flipped.Offset.Start = bar.Offset.End;
-                flipped.Offset.End = tempV;
-
-                if (bar.Offset.Start != null)
-                    flipped.Offset.Start.X *= -1;
-
-                if (bar.Offset.End != null)
-                    flipped.Offset.End.X *= -1;
-
-                if (!bar.IsVertical())
-                {
-                    if (bar.Offset.Start != null)
-                        flipped.Offset.Start.Y *= -1;
-
-                    if (bar.Offset.End != null)
-                        flipped.Offset.End.Y *= -1;
-                }
-            }
 
             // Flip releases
             BarRelease flippedRelease = bar.Release?.ShallowClone();
@@ -104,7 +81,7 @@ namespace BH.Engine.Structure
             // Flip section property
             if (bar.SectionProperty != null)
             {
-                ISectionProperty flippedSectionProperty = FlipSection(bar.SectionProperty);
+                ISectionProperty flippedSectionProperty = Flip(bar.SectionProperty);
                 flipped.SectionProperty = flippedSectionProperty;
             }
 
@@ -144,7 +121,7 @@ namespace BH.Engine.Structure
             return flipped;
         }
 
-        public static ISectionProperty FlipSection(ISectionProperty section)
+        private static ISectionProperty Flip(this ISectionProperty section)
         {
             if (section is IGeometricalSection geometricalSection)
             {
@@ -199,6 +176,10 @@ namespace BH.Engine.Structure
         {
             return Spatial.Create.GeneralisedTSectionProfile(oldProfile.Height, oldProfile.WebThickness, oldProfile.RightOutstandWidth, oldProfile.RightOutstandThickness,
                 oldProfile.LeftOutstandWidth, oldProfile.LeftOutstandThickness, oldProfile.MirrorAboutLocalY);
+        }
+        private static IProfile FlipProfile(KiteProfile oldProfile)
+        {
+            return oldProfile;
         }
         private static IProfile FlipProfile(TaperedProfile oldProfile)
         {
