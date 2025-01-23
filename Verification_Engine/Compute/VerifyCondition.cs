@@ -461,7 +461,7 @@ namespace BH.Engine.Verification
                 formulaToSolve = formulaToSolve.Replace("or", "||");
 
                 // Wrap enum values in quotes (compared as strings)
-                string toWrapPattern = @"\b(?!if\b|else\b|Variable\d+|TempString\d+)(?=\w*[a-zA-Z])\w+\b";
+                string toWrapPattern = @"\b(?!\bif\b|\belse\b|\bVariable\d+|\bTempString\d+\b|\bnull\b)(?=\w*[a-zA-Z])\w+\b";
                 formulaToSolve = Regex.Replace(formulaToSolve, toWrapPattern, "\"$&\"");
 
                 // Conditional statements need a bit more attention
