@@ -12,11 +12,13 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\Build\</OutputPath>
+	  <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+	  <OutputPath>..\Build\</OutputPath>
+	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
+	  <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)Microsoft.CodeAnalysis.CSharp.Scripting.dll&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)Microsoft.CodeAnalysis.Scripting.dll&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
   </Target>
 
   <ItemGroup>
@@ -26,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.4.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
   </ItemGroup>
 
