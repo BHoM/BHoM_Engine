@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -37,23 +37,23 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the geometry of a ConcreteSection as its profile outlines and reinforcement in the global XY plane. Method required for automatic display in UI packages.")]
-        [Input("section", "ConcreteSection to get outline and reinforcement geometry from.")]
-        [Output("outlines", "The geometry of the ConcreteSection as its outline and reinforment curves in the global XY.")]
-        public static CompositeGeometry Geometry(this ConcreteSection section)
-        {
-            if (section?.SectionProfile?.Edges == null)
-                return null;
+        //[Description("Gets the geometry of a ConcreteSection as its profile outlines and reinforcement in the global XY plane. Method required for automatic display in UI packages.")]
+        //[Input("section", "ConcreteSection to get outline and reinforcement geometry from.")]
+        //[Output("outlines", "The geometry of the ConcreteSection as its outline and reinforment curves in the global XY.")]
+        //public static CompositeGeometry Geometry(this ConcreteSection section)
+        //{
+        //    if (section?.SectionProfile?.Edges == null)
+        //        return null;
 
-            if (section.SectionProfile.Edges.Count == 0)
-                return null;
+        //    if (section.SectionProfile.Edges.Count == 0)
+        //        return null;
 
-            CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.SectionProfile.Edges);
-            //if(section.Reinforcement != null)
-            //geom.Elements.AddRange(section.Layout().Elements);
+        //    CompositeGeometry geom = Engine.Geometry.Create.CompositeGeometry(section.SectionProfile.Edges);
+        //    //if(section.Reinforcement != null)
+        //    //geom.Elements.AddRange(section.Layout().Elements);
 
-            return geom;
-        }
+        //    return geom;
+        //}
 
         /***************************************************/
 
@@ -101,26 +101,33 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets the geometry of a PadFoundation as a single curve. Method required for automatic display in UI packages.")]
-        [Input("padFoundation", "Pile to get the line geometry from.")]
-        [Output("curve", "The curve defining the PadFoundation.")]
-        public static IGeometry Geometry(this PadFoundation padFoundation)
-        {
-            return padFoundation.IsNull() ? null : padFoundation.TopOutline;
-        }
-
         [Description("Gets the geometry of a PileFoundation. Method required for automatic display in UI packages.")]
         [Input("pileFoundation", "PileFoundation to get the line geometry from.")]
         [Output("curve", "The geometry defining the PadFoundation.")]
         public static IGeometry Geometry(this PileFoundation pileFoundation)
         {
             List<IGeometry> geometry = new List<IGeometry>();
-            geometry.Add(pileFoundation.PileCap.Geometry());
+            geometry.Add(Analytical.Query.Geometry(pileFoundation.PileCap));
             geometry.AddRange(pileFoundation.Piles.Select(x => x.Geometry()));
 
             return Engine.Geometry.Create.CompositeGeometry(geometry);
         }
 
+        /***************************************************/
+
+        [Description("Gets the geometry of a RetainingWall. Method required for automatic display in UI packages.")]
+        [Input("retainingWall", "RetainingWall to get the geometry from.")]
+        [Output("geom", "The geometry defining the RetainingWall.")]
+        public static IGeometry Geometry(this RetainingWall retainingWall)
+        {
+            List<IGeometry> geometry = new List<IGeometry>
+            {
+                new PlanarSurface(retainingWall.Stem.Perimeter, null),
+                new PlanarSurface(retainingWall.Footing.Perimeter, null)
+            };
+
+            return Engine.Geometry.Create.CompositeGeometry(geometry);
+        }
 
         /***************************************************/
         /**** Public Methods - Interface                ****/
@@ -147,7 +154,3 @@ namespace BH.Engine.Structure
     }
 
 }
-
-
-
-

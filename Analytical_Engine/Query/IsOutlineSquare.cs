@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -40,37 +40,16 @@ namespace BH.Engine.Analytical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether a panel's outline is a square.")]
+        [Description("Determines whether a Panel's outline is a square.")]
         [Input("panel", "The IPanel to check if the outline is a square.")]
-        [Output("bool", "True for panels with a square outline or false for panels with a non square outline.")]
+        [Output("bool", "True for Panels with a square outline or false for Panels with a non square outline.")]
         public static bool IsOutlineSquare<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
             PolyCurve polycurve = ExternalPolyCurve(panel);
-            if (polycurve == null)
-                return false;
 
-            if (polycurve.SubParts().Any(x => !x.IIsLinear()))
-                return false;
-
-            List<Point> points = polycurve.DiscontinuityPoints();
-            if (points.Count != 4)
-                return false;
-            if (!points.IsCoplanar())
-                return false;
-
-            List<Vector> vectors = VectorsBetweenPoints(points);
-
-            List<double> angles = AnglesBetweenVectors(vectors);
-
-            //Check the three angles are pi/2 degrees within tolerance
-            if (angles.Any(x => Math.Abs(Math.PI / 2 - x) > Tolerance.Angle))
-                return false;
-
-            //Check all lengths are the same within tolerance
-            double length = vectors.First().Length();
-            return vectors.Skip(0).All(x => (Math.Abs(x.Length() - length) < Tolerance.Distance)) ? true : false;
+            return polycurve.IsSquare();
         }
 
         /***************************************************/
@@ -78,6 +57,7 @@ namespace BH.Engine.Analytical
     }
 
 }
+
 
 
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -69,8 +69,26 @@ namespace BH.Engine.Structure
 
             return flipped;
         }
+
+        [Description("Flips the normal of the Stem.")]
+        [Input("stem", "The Stem to flip.")]
+        [Output("stem", "The Stem with flipped Normal.")]
+        public static Stem Flip(this Stem stem)
+        {
+            if (stem.IsNull())
+                return null;
+            if (stem.Normal.IsNull("The Normal of the Stem is null and could not be flipped.","Flip"))
+                return null;
+
+            Stem flipped = stem.ShallowClone();
+
+            flipped.Normal = flipped.Normal * -1;
+
+            return flipped;
+        }
     }
 }
+
 
 
 

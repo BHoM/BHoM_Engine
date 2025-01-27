@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -40,8 +40,11 @@ namespace BH.Engine.Diffing
         [Output("equal", "True if the two objects are the same within the scope defined by the provided ComparisonConfig, otherwise false.")]
         public static bool IsEqual(this object obj1, object obj2, BaseComparisonConfig comparisonConfig = null)
         {
+            if (obj1 == obj2)
+                return true;
+
             if (obj1 == null || obj2 == null)
-                return obj1 == obj2;
+                return false;
 
             if (obj1.GetType() != obj2.GetType())
                 return false;
@@ -52,3 +55,4 @@ namespace BH.Engine.Diffing
         /***************************************************/
     }
 }
+

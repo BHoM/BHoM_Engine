@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -61,7 +61,16 @@ namespace BH.Engine.Base
             {
                 Type paramType = paramTypes[i];
                 if (paramType.IsGenericType || paramType.IsGenericParameter)
-                    MatchGenericParameters(paramTypes[i], inputTypes[i], ref dic);
+                {
+                    Type inputType = inputTypes[i];
+                    if (inputType != null)
+                        MatchGenericParameters(paramTypes[i], inputType, ref dic);
+                    else
+                    {
+                        BH.Engine.Base.Compute.RecordError("Can't find generic method for a null generic type argument.");
+                        return null;
+                    }
+                }
             }
 
             // Actually make the generic method
@@ -114,6 +123,7 @@ namespace BH.Engine.Base
         /***************************************************/
     }
 }
+
 
 
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -68,7 +68,15 @@ namespace BH.Engine.Facade
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has more than one U-value assigned.");
                 return null;
             }
+
             double uValue = (uValues[0] as UValueGlassCentre).UValue;
+
+            List<IFragment> uValuesCont = opening.OpeningConstruction.GetAllFragments(typeof(UValueContinuous));
+            if (uValuesCont.Count == 1)
+            {
+                double contUValue = (uValuesCont[0] as UValueContinuous).UValue;
+                uValue = 1 / (1 / uValue + 1 / contUValue);
+            }
 
             List<FrameEdge> frameEdges = opening.Edges;
             List<double> psiValues = new List<double>();
@@ -109,5 +117,6 @@ namespace BH.Engine.Facade
 
     }
 }
+
 
 

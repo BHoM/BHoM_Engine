@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -35,7 +35,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("7.2", "BH.Engine.Base.Create.GenericType(System.String, System.Boolean)")]
         [Description("Creates a generic BHoM type that matches the given name.")]
         [Input("name", "Name to be searched for among all BHoM generic types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
@@ -62,7 +61,6 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [PreviousVersion("7.2", "BH.Engine.Base.Create.GenericType(System.String, System.Collections.Generic.List<System.String>, System.Boolean)")]
         [Description("Creates a generic BHoM type that matches the given name.")]
         [Input("name", "Name to be searched for among all BHoM generic types.")]
         [Input("arguments", "Generic parameters of the type to create.")]
@@ -220,6 +218,7 @@ namespace BH.Engine.Base
 
     }
 }
+
 
 
 

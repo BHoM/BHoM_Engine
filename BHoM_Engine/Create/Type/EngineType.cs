@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -38,8 +38,9 @@ namespace BH.Engine.Base
         [Description("Creates an Engine type that matches the given name.")]
         [Input("name", "Name to be searched for among all Engine types.")]
         [Input("silent", "If true, the error about no type found will be suppressed, otherwise it will be raised.")]
+        [Input("takeFirstIfMultiple", "Defines what happens in case of finding multiple matching types. If true, first type found will be returned, otherwise null.")]
         [Output("type", "BHoM Engine type that matches the given name.")]
-        public static Type EngineType(string name, bool silent = false)
+        public static Type EngineType(string name, bool silent = false, bool takeFirstIfMultiple = false)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -47,16 +48,42 @@ namespace BH.Engine.Base
                 return null;
             }
 
-            List<Type> methodTypeList = Query.EngineTypeList();
+            // Try finding any types based on the assembly qualified name. This checks both assembly name as well as version
+            List<Type> types = Global.EngineTypeList.Where(x => x.AssemblyQualifiedName == name).ToList();
+            
+            // If not found, look also based on unqualified name
+            if (types.Count == 0)
+            {
+                string unQualifiedName, assemblyName;
+                if (name.Contains(","))
+                {
+                    string[] split = name.Split(',');
+                    unQualifiedName = split[0];
+                    assemblyName = split[1].Trim(); //Assembly name is second part. Trim to remove whitespace
+                }
+                else
+                { 
+                    unQualifiedName = name;
+                    assemblyName = null;
+                }
 
-            List<Type> types = methodTypeList.Where(x => x.AssemblyQualifiedName.StartsWith(name)).ToList();
+                types = Global.EngineTypeList.Where(x => x.FullName == unQualifiedName).ToList();
 
-            if (types.Count == 1)
+                //If more than one type found, and assembly name was found, try use it to further filter
+                if (types.Count > 1 && assemblyName != null)
+                {
+                    List<Type> assemblyMatches = types.Where(x => x.Assembly.GetName().Name == assemblyName).ToList();
+                    if (assemblyMatches.Any())   //If any matches are found, use them
+                        types = assemblyMatches;
+                }
+            }
+
+            if (types.Count == 1 || (takeFirstIfMultiple && types.Count > 1))
                 return types[0];
             else
             {
                 //Unique method not found in list, check if it can be extracted using the system Type
-                Type type = System.Type.GetType(name, silent);
+                Type type = System.Type.GetType(name, false);
                 if (type == null && !silent)
                 {
                     if (types.Count == 0)
@@ -80,6 +107,7 @@ namespace BH.Engine.Base
         /***************************************************/
     }
 }
+
 
 
 

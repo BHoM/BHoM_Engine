@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -48,11 +48,11 @@ namespace BH.Engine.Ground
         [Input("observedGeology", "Observed geologies expressed as a GeologicalUnit (GEOL_GEOL).")]
         [Input("interpretedGeology", "Interpreted geologies expressed as an EngineeringMaterial (GEOL_GEO2).")]
         [Input("optionalInterpretedGeology", "The optional interpreted geology expressed as an EngineeringMaterial(GEOL_GEO3).")]
-        [Input("blankGeology", "The geology to use where blank spaces occur in the observedGeology parameter.")]
         [Input("properties", "A list of properties related to the borehole.")]
         [Output("stratum", "Stratum object containing information for each strata including descriptions, legend codes and optional geological properties.")]
+        
         public static Stratum Stratum(string id, double top, double bottom, string logDescription, string legend,
-            string observedGeology, string interpretedGeology = "", string optionalInterpretedGeology = "", string blankGeology = "", List<IStratumProperty> properties = null)
+            string observedGeology, string interpretedGeology = "", string optionalInterpretedGeology = "", List<IStratumProperty> properties = null)
         {
             if(id == "")
             {
@@ -64,12 +64,6 @@ namespace BH.Engine.Ground
             {
                 Base.Compute.RecordError("The LogDescription is empty.");
                 return null;
-            }
-
-            if (!blankGeology.Trim().IsNullOrEmpty())
-            {
-                if (observedGeology.Trim().IsNullOrEmpty())
-                    observedGeology = blankGeology;
             }
 
             return new Stratum()
@@ -89,6 +83,7 @@ namespace BH.Engine.Ground
         /***************************************************/
     }
 }
+
 
 
 

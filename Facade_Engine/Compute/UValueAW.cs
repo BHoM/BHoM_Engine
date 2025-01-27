@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -55,28 +55,36 @@ namespace BH.Engine.Facade
             foreach (IFacadeObject obj in objs)
             {
                 double area = 0;
-                double uValue = 0;
+                double? uValue = 0;
                 if (obj is Panel panel)
                 {
                     area = panel.Area();
-                    uValue = UValuePanelAW(panel).UValue;
+                    uValue = UValuePanelAW(panel)?.UValue;
                 }
                 else if (obj is Opening opening)
                 {
                     area = opening.Area();
-                    uValue = UValueOpeningAW(opening).UValue;
+                    uValue = UValueOpeningAW(opening)?.UValue;
                 }
                 else
                 {
                     Base.Compute.RecordWarning($"Object {obj.BHoM_Guid} is of a type currently not supported for UValue methods. It has been excluded from the calculation.");
                     continue;
                 }
-                uValueProduct += uValue * area;
+
+                if (uValue == null)
+                {
+                    Base.Compute.RecordWarning($"UValue calculation failed for Object {obj.BHoM_Guid}. It has been excluded from the calculation.");
+                    continue;
+                }
+
+                uValueProduct += uValue.Value * area;
                 totalArea += area;
             }
-            if (totalArea == 0)
+
+            if (totalArea == 0 || uValueProduct == 0)
             {
-                Base.Compute.RecordError("Objects have a total calculated area of 0. Ensure Objects are valid with associated edges defining their geometry and try again.");
+                Base.Compute.RecordError("No valid objects for UValue calculation were provided. Ensure Objects are valid with required UValue properties and associated edges defining their geometry and try again.");
                 return null;
             }
 
@@ -89,4 +97,5 @@ namespace BH.Engine.Facade
 
     }
 }
+
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -35,6 +35,7 @@ using BH.oM.Facade.Results;
 
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
+using BH.oM.Physical.Constructions;
 
 namespace BH.Engine.Facade
 {
@@ -55,22 +56,65 @@ namespace BH.Engine.Facade
                 return null;
             }
 
-            List<IFragment> glassUValues = panel.Construction.GetAllFragments(typeof(UValueGlassCentre));
+            double panelArea = panel.Area();
+            if (panelArea == 0)
+            {
+                BH.Engine.Base.Compute.RecordError($"Panel {panel.BHoM_Guid} has a calculated area of 0. Ensure the panel is valid with associated edges defining its geometry and try again.");
+                return null;
+            }
+
+            double panelUValue = panel.PanelEffectiveUValue();
+            if (panelUValue == double.NaN)
+                return null;
+
+            double effectiveUValue = panelUValue;
+            List<Opening> panelOpenings = panel.Openings;
+            if (panelOpenings.Count > 0)
+            {
+                double uValueProduct = panelUValue * panelArea;
+                double totalArea = panelArea;
+                foreach (Opening opening in panelOpenings)
+                {
+                    double area = opening.Area();
+                    uValueProduct += opening.UValueOpeningAW().UValue * area;
+                    totalArea += area;
+                }
+                if (totalArea == 0)
+                {
+                    Base.Compute.RecordError("Openings have a total calculated area of 0. Ensure Openings are valid with associated edges defining their geometry and try again.");
+                    return null;
+                }
+                effectiveUValue = uValueProduct / totalArea;
+            }
+
+            OverallUValue result = new OverallUValue(effectiveUValue, new List<IComparable> { panel.BHoM_Guid });
+            return result;
+        }
+
+        /***************************************************/
+        /**** Helper Methods                            ****/
+        /***************************************************/
+
+        private static double PanelEffectiveUValue(this Panel panel)
+        {
+            IConstruction construction = panel.Construction;
+            
+            List<IFragment> glassUValues = construction.GetAllFragments(typeof(UValueGlassCentre));
             if (glassUValues.Count > 0)
             {
                 BH.Engine.Base.Compute.RecordError($"Panel {panel.BHoM_Guid} has Glass U-value assigned. Panels can only receive Continuous U-value and/or Cavity U-value.");
-                return null;
+                return double.NaN;
             }
 
-            List<IFragment> glassEdgeUValues = panel.Construction.GetAllFragments(typeof(UValueGlassEdge));
+            List<IFragment> glassEdgeUValues = construction.GetAllFragments(typeof(UValueGlassEdge));
             if (glassEdgeUValues.Count > 0)
             {
                 BH.Engine.Base.Compute.RecordError($"Panel {panel.BHoM_Guid} has Glass edge U-value assigned. Panels can only receive Continuous U-value");
-                return null;
+                return double.NaN;
             }
 
-            List<IFragment> contUValues = panel.Construction.GetAllFragments(typeof(UValueContinuous));
-            List<IFragment> cavityUValues = panel.Construction.GetAllFragments(typeof(UValueCavity));
+            List<IFragment> contUValues = construction.GetAllFragments(typeof(UValueContinuous));
+            List<IFragment> cavityUValues = construction.GetAllFragments(typeof(UValueCavity));
             double contUValue = 0;
             double cavityUValue = 0;
             double panelUValue = 0;
@@ -78,17 +122,17 @@ namespace BH.Engine.Facade
             if ((contUValues.Count <= 0) && (cavityUValues.Count <= 0))
             {
                 Base.Compute.RecordError($"Panel {panel.BHoM_Guid} does not have Continuous U-value or Cavity U-value assigned.");
-                return null;
+                return double.NaN;
             }
             if (contUValues.Count > 1)
             {
                 Base.Compute.RecordError($"Panel {panel.BHoM_Guid} has more than one Continuous U-value assigned.");
-                return null;
+                return double.NaN;
             }
             if (cavityUValues.Count > 1)
             {
                 Base.Compute.RecordError($"Panel {panel.BHoM_Guid} has more than one Cavity U-value assigned.");
-                return null;
+                return double.NaN;
             }
             if ((contUValues.Count == 1) && (cavityUValues.Count == 1))
             {
@@ -118,38 +162,11 @@ namespace BH.Engine.Facade
                     continue;
                 }
             }
-
-            double panelArea = panel.Area();
-            if (panelArea == 0)
-            {
-                BH.Engine.Base.Compute.RecordError($"Panel {panel.BHoM_Guid} has a calculated area of 0. Ensure the panel is valid with associated edges defining its geometry and try again.");
-            }
-            double effectiveUValue = panelUValue;
-
-            List<Opening> panelOpenings = panel.Openings;
-            if (panelOpenings.Count > 0)
-            {
-                double uValueProduct = panelUValue * panelArea;
-                double totalArea = panelArea;
-                foreach (Opening opening in panelOpenings)
-                {
-                    double area = opening.Area();
-                    uValueProduct += opening.UValueOpeningAW().UValue * area;
-                    totalArea += area;
-                }
-                if (totalArea == 0)
-                {
-                    Base.Compute.RecordError("Openings have a total calculated area of 0. Ensure Openings are valid with associated edges defining their geometry and try again.");
-                    return null;
-                }
-                effectiveUValue = uValueProduct / totalArea;
-            }
-            OverallUValue result = new OverallUValue(effectiveUValue, new List<IComparable> { panel.BHoM_Guid });
-            return result;
+            return panelUValue;
         }
 
-        /***************************************************/
 
     }
 }
+
 

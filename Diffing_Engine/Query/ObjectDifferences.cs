@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -87,6 +87,8 @@ namespace BH.Engine.Diffing
             kellermanComparer.Config.TypesToIgnore.Add(typeof(RevisionFragment)); // Never include the changes in RevisionFragment.
             kellermanComparer.Config.TypesToIgnore.AddRange(cc.TypeExceptions);
             kellermanComparer.Config.MembersToIgnore = cc.PropertyExceptions;
+            kellermanComparer.Config.CompareStaticFields = false;
+            kellermanComparer.Config.CompareStaticProperties = false;
 
             // Kellerman configuration for tolerance.
             // Setting Custom Tolerance for specific properties is complex with Kellerman. 
@@ -317,3 +319,4 @@ namespace BH.Engine.Diffing
         /***************************************************/
     }
 }
+

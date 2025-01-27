@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -35,7 +35,6 @@ namespace BH.Engine.Structure
         /****            IElement1D            ****/
         /******************************************/
 
-        [PreviousVersion("7.2", "BH.Engine.Analytical.Query.Elements0D(BH.oM.Structure.Elements.Pile)")]
         [Description("Gets the Element0Ds of a Pile, which for the case of a Pile means getting the StartNode and EndNode. Method necessary for IElement pattern.")]
         [Input("pile", "The Pile to extract IElement0ds from.")]
         [Output("element0Ds", "The list of Elements0D of the Pile, i.e. the StartNode and EndNode.")]
@@ -47,6 +46,7 @@ namespace BH.Engine.Structure
         /******************************************/
     }
 }
+
 
 
 

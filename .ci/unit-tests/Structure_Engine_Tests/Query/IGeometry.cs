@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -28,16 +28,17 @@ using Shouldly;
 using BH.oM.Test.NUnit;
 using System.Reflection;
 
-namespace BH.Tests.Engine.Structure.Query
-{
-    public class IGeometryTests : NUnitTest
-    {
-        [Test]
-        public void ConcreteSection()
-        {
-            ConcreteSection concreteSection = (ConcreteSection)Create.RandomObject(typeof(ConcreteSection));
-            IGeometry geom = concreteSection.IGeometry();
-            geom.ShouldNotBeNull();
-        }
-    }
-}
+//namespace BH.Tests.Engine.Structure.Query
+//{
+//    public class IGeometryTests : NUnitTest
+//    {
+//        [Test]
+//        public void ConcreteSection()
+//        {
+//            ConcreteSection concreteSection = (ConcreteSection)Create.RandomObject(typeof(ConcreteSection));
+//            IGeometry geom = concreteSection.IGeometry();
+//            geom.ShouldNotBeNull();
+//        }
+//    }
+//}
+

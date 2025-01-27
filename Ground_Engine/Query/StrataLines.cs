@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -46,25 +46,29 @@ namespace BH.Engine.Ground
         [Output("strata", "A list of lines representing the strata from the Borehole.")]
         public static List<Line> StrataLines(this Borehole borehole)
         {
-            // Null checks
-            if (Query.IsValid(borehole))
-                return null;
-
-            Vector direction = Geometry.Create.Vector(borehole.Top, borehole.Bottom).Normalise();
             List<Line> lines = new List<Line>();
-            foreach(Stratum stratum in borehole.Strata)
+
+            // Null checks
+            if (IsValid(borehole))
             {
-                Point start = borehole.Top.Translate(direction * stratum.Top);
-                Point bottom = borehole.Top.Translate(direction * stratum.Bottom);
-                Line line = new Line() { Start = start, End = bottom };
-                lines.Add(line);
+                Vector direction = Geometry.Create.Vector(borehole.Top, borehole.Bottom).Normalise();
+                foreach (Stratum stratum in borehole.Strata)
+                {
+                    Point start = borehole.Top.Translate(direction * stratum.Top);
+                    Point bottom = borehole.Top.Translate(direction * stratum.Bottom);
+                    Line line = new Line() { Start = start, End = bottom };
+                    lines.Add(line);
+                }
             }
+            else
+                return null;
 
             return lines;
         }
 
     }
 }
+
 
 
 

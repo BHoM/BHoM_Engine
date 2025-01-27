@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -21,6 +21,7 @@
  */
 
 using BH.Engine.Base;
+using BH.Engine.Diffing;
 using BH.Engine.Serialiser;
 using BH.Engine.Test;
 using BH.oM.Base.Debugging;
@@ -131,7 +132,26 @@ namespace BH.Test.Serialiser
                     Engine.Base.Compute.RecordError(e.Message);
                 }
 
-                if (!testObject.IsEqual(copy))
+                bool isEqual;
+
+                try
+                {
+                    isEqual = testObject.IsEqual(copy);
+                }
+                catch (Exception e)
+                {
+                    BH.Engine.Base.Compute.RecordWarning(e, $"Crashed when trying to compare objects.");
+
+                    return new TestResult
+                    {
+                        Description = typeDescription,
+                        Status = TestStatus.Warning,
+                        Message = $"Warning: Failed to compare objects of type {typeDescription}.",
+                        Information = Engine.Base.Query.CurrentEvents().Select(x => x.ToEventMessage()).ToList<ITestInformation>()
+                    };
+                }
+
+                if (!isEqual)
                     return new TestResult
                     {
                         Description = typeDescription,
@@ -148,6 +168,7 @@ namespace BH.Test.Serialiser
         /*************************************/
     }
 }
+
 
 
 

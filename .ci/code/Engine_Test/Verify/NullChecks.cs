@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -22,7 +22,6 @@
 
 using BH.Engine.Reflection;
 using BH.Engine.Base;
-using BH.Engine.Serialiser;
 using BH.Engine.Test;
 using BH.oM.Base.Debugging;
 using BH.oM.Test;
@@ -226,5 +225,6 @@ namespace BH.Test.Engine
         /*************************************/
     }
 }
+
 
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -294,6 +294,27 @@ namespace BH.Engine.Structure
             double volPerAreaRibZone = property.RibHeight * (property.RibThickness / property.RibSpacing);
             return property.TopThickness + volPerAreaRibZone;
         }
+
+        /***************************************************/
+
+        [Description("Gets the volume per area of the property for the purpose of calculating solid volume.")]
+        [Input("property", "The property to evaluate the volume per area of.")]
+        [Output("volumePerArea", "The volume per area of the property for the purpose of calculating solid volume.", typeof(Length))]
+        public static double VolumePerArea(this BuiltUpDoubleRibbed property)
+        {
+            if (property.IsNull())
+                return double.NaN;
+
+            if (property.RibThickness <= 0 || property.RibSpacing < property.RibThickness * 2)
+            {
+                Base.Compute.RecordError($"The {nameof(BuiltUpDoubleRibbed.RibThickness)} is 0 or {nameof(BuiltUpDoubleRibbed.RibSpacing)} smaller than twice the {nameof(BuiltUpDoubleRibbed.RibThickness)}. The {nameof(BuiltUpDoubleRibbed)} is invalid and volume cannot be computed.");
+                return double.NaN;
+            }
+
+            double volPerAreaRibZone = property.RibHeight * (property.RibThickness * 2 / property.RibSpacing);
+            return property.TopThickness + volPerAreaRibZone;
+        }
+
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
         /***************************************************/
@@ -322,6 +343,7 @@ namespace BH.Engine.Structure
     }
 
 }
+
 
 
 

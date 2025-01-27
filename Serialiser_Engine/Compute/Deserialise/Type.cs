@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -46,7 +46,7 @@ namespace BH.Engine.Serialiser
                 return null;
             else if (bson.IsString)
             {
-                Type type = BH.Engine.Base.Create.Type(bson.AsString, true);
+                Type type = BH.Engine.Base.Create.Type(bson.AsString, true, true);
                 if (type != null)
                     return type;
                 else
@@ -149,7 +149,7 @@ namespace BH.Engine.Serialiser
             if (fullName.IsOmNamespace())
                 type = Base.Create.Type(fullName, true, true);
             else if (fullName.IsEngineNamespace())
-                type = Base.Create.EngineType(fullName, true);
+                type = Base.Create.EngineType(fullName, true, true);
             else
                 type = Type.GetType(fullName);
 
@@ -167,4 +167,5 @@ namespace BH.Engine.Serialiser
 
     }
 }
+
 

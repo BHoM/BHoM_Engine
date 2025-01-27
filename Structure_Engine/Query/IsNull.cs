@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -590,12 +590,12 @@ namespace BH.Engine.Structure
                 ErrorMessage(methodName, "PadFoundation", msg);
                 return true;
             }
-            else if (padFoundation.TopOutline == null)
+            else if (padFoundation.Perimeter == null)
             {
                 ErrorMessage(methodName, " Edges", msg);
                 return true;
             }
-            else if (padFoundation.TopOutline.IsNull())
+            else if (padFoundation.Perimeter.IsNull())
                 return true;
 
             return false;
@@ -634,6 +634,47 @@ namespace BH.Engine.Structure
             else if (pileFoundation.PileCap.IsNull())
                 return true;
             else if (pileFoundation.Piles.Any(x => x.IsNull()))
+                return true;
+
+            return false;
+        }
+
+        [Description("Checks if a Stem is null and outputs relevant error message.")]
+        [Input("stem", "The Stem to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the Stem is null.")]
+        public static bool IsNull(this Stem stem, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (stem == null)
+            {
+                ErrorMessage(methodName, "Stem", msg);
+                return true;
+            }
+            else if (stem.Perimeter == null)
+            {
+                ErrorMessage(methodName, " Edges", msg);
+                return true;
+            }
+
+            return false;
+        }
+
+        [Description("Checks if a RetainingWall is null and outputs relevant error message.")]
+        [Input("retainingWall", "The RetainingWall to test for null.")]
+        [Input("methodName", "The name of the method to reference in the error message.")]
+        [Input("msg", "Optional message to be returned in addition to the generated error message.")]
+        [Output("isNull", "True if the RetainingWall is null.")]
+        public static bool IsNull(this RetainingWall retainingWall, [CallerMemberName] string methodName = "Method", string msg = "")
+        {
+            if (retainingWall == null)
+            {
+                ErrorMessage(methodName, "RetainingWall", msg);
+                return true;
+            }
+            else if (retainingWall.Stem.IsNull())
+                return true;
+            else if (retainingWall.Footing.IsNull())
                 return true;
 
             return false;
@@ -690,6 +731,3 @@ namespace BH.Engine.Structure
 
     }
 }
-
-
-

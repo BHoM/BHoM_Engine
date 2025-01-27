@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -39,7 +39,7 @@ namespace BH.Engine.Facade
         /***************************************************/
 
         [Description("Creates an offset of a curve. Works only on planar curves")]
-        [Input("polyCurve", "Curve to offset")]
+        [Input("curve", "Curve to offset")]
         [Input("offsets", "Offset distances (Length must match count of curves in the PolyCurve). Positive value offsets outside of a curve. If normal is given then offsets to the right with normal pointing up and direction of a curve pointing forward")]
         [Input("normal", "Normal of a plane for offset operation, not needed for closed curves")]
         [Output("curve", "Resulting offset")]
@@ -574,6 +574,7 @@ namespace BH.Engine.Facade
         /***************************************************/
     }
 }
+
 
 
 
