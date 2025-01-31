@@ -322,6 +322,7 @@ namespace BH.Engine.Verification
                 return null;
             }
 
+            //TODO: should return null in case the property does not exist??
             object value = obj.ValueFromSource(condition);
             bool? pass = value.CompareValues(condition.ReferenceValue, condition.ComparisonType, condition.Tolerance);
             return new ValueConditionResult(pass, value);
@@ -402,7 +403,7 @@ namespace BH.Engine.Verification
                         object value = variables[key];
                         if (value is IValueSource vs)
                         {
-                            value = obj.IValueFromSource(vs);
+                            value = obj.ValueFromSource(vs);
                             if (value == null || (value is double && double.IsNaN((double)value)))
                                 return null;
 
