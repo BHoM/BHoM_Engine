@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.Engine.Base.Objects;
 using BH.Engine.Verification.Objects;
 using BH.oM.Base;
@@ -179,26 +180,33 @@ namespace BH.Engine.Verification
             }
 
             // Try to extract the value from value source
-            Output<bool?, object> valueFromSource = obj.TryGetValueFromSource(condition);
-            bool? pass = valueFromSource?.Item1;
-            object value = valueFromSource?.Item2;
+            Output<bool, object> valueFromSource = obj.TryGetValueFromSource(condition);
+            bool found = valueFromSource?.Item1 == true;
+            if (!found)
+                return new ValueConditionResult(null, null);
 
             // If value found, check the actual condition
-            if (pass == true)
+            object value = valueFromSource.Item2;
+            bool? pass = false;
+            
+            double tolerance;
+            double.TryParse(condition.Tolerance.ToString(), out tolerance);
+            if (double.IsNaN(tolerance) || tolerance == 0)
             {
-                pass = false;
-                double numericalValue;
-                double tolerance;
-                double.TryParse(condition.Tolerance.ToString(), out tolerance);
-
-                if (double.TryParse(value?.ToString(), out numericalValue))
-                    pass = Query.IsInDomain(numericalValue, condition.Domain, tolerance);
-                else if (value is DateTime)
-                {
-                    DateTime? dt = value as DateTime?;
-                    pass = Query.IsInDomain(dt.Value.Ticks, condition.Domain, tolerance);
-                }
+                BH.Engine.Base.Compute.RecordNote("Tolerance has not been set, default value of 1e-6 is being used.");
+                tolerance = 1e-6;
             }
+
+            double numericalValue;
+            if (double.TryParse(value?.ToString(), out numericalValue))
+                pass = Query.IsInDomain(numericalValue, condition.Domain, tolerance);
+            else if (value is DateTime)
+            {
+                DateTime? dt = value as DateTime?;
+                pass = Query.IsInDomain(dt.Value.Ticks, condition.Domain, tolerance);
+            }
+            else
+                pass = null;
 
             return new ValueConditionResult(pass, value);
         }
@@ -252,18 +260,18 @@ namespace BH.Engine.Verification
             }
 
             // Try to extract the value from value source
-            Output<bool?, object> valueFromSource = obj.TryGetValueFromSource(condition);
-            bool? pass = valueFromSource?.Item1;
-            object value = valueFromSource?.Item2;
+            Output<bool, object> valueFromSource = obj.TryGetValueFromSource(condition);
+            bool found = valueFromSource?.Item1 == true;
+            if (!found)
+                return new ValueConditionResult(null, null);
 
             // If value found, check the actual condition
-            if (pass == true)
-            {
-                if (value is IEnumerable<object> ienumerable)
-                    pass = ienumerable.All(x => x.IsInSet(condition.Set, condition.ComparisonConfig));
-                else
-                    pass = value.IsInSet(condition.Set, condition.ComparisonConfig);
-            }
+            object value = valueFromSource?.Item2;
+            bool? pass;
+            if (value is IEnumerable<object> ienumerable)
+                pass = ienumerable.All(x => x.IsInSet(condition.Set, condition.ComparisonConfig));
+            else
+                pass = value.IsInSet(condition.Set, condition.ComparisonConfig);
 
             return new ValueConditionResult(pass, value);
         }
@@ -335,8 +343,17 @@ namespace BH.Engine.Verification
                 return null;
             }
 
-            Output<bool?, object> valueFromSource = obj.TryGetValueFromSource(condition);
-            return new ValueConditionResult(valueFromSource?.Item1, valueFromSource?.Item2); 
+            Output<bool, object> valueFromSource = obj.TryGetValueFromSource(condition);
+            bool found = valueFromSource?.Item1 == true;
+            if (!found)
+                return new ValueConditionResult(null, null);
+
+            object value = valueFromSource.Item2;
+            bool? pass = (value is double valueDouble && !double.IsNaN(valueDouble))
+                      || !value.GetType().IsNullable()
+                      || value != null;
+
+            return new ValueConditionResult(pass, valueFromSource.Item2); 
         }
 
         /***************************************************/
@@ -360,14 +377,15 @@ namespace BH.Engine.Verification
             }
 
             // Try to extract the value from value source
-            Output<bool?, object> valueFromSource = obj.TryGetValueFromSource(condition);
-            bool? pass = valueFromSource?.Item1;
+            Output<bool, object> valueFromSource = obj.TryGetValueFromSource(condition);
+            bool found = valueFromSource?.Item1 == true;
+            if (!found)
+                return new ValueConditionResult(null, null);
+            
             object value = valueFromSource?.Item2;
 
             // If value found, check the actual condition
-            if (pass == true)
-                pass = value.CompareValues(condition.ReferenceValue, condition.ComparisonType, condition.Tolerance);
-
+            bool? pass = value.CompareValues(condition.ReferenceValue, condition.ComparisonType, condition.Tolerance);
             return new ValueConditionResult(pass, value);
         }
 
@@ -446,7 +464,7 @@ namespace BH.Engine.Verification
                         object value = variables[key];
                         if (value is IValueSource vs)
                         {
-                            Output<bool?, object> valueFromSource = obj.ITryGetValueFromSource(vs);
+                            Output<bool, object> valueFromSource = obj.ITryGetValueFromSource(vs);
                             if (value == null || (value is double && double.IsNaN((double)value)))
                                 return null;
 

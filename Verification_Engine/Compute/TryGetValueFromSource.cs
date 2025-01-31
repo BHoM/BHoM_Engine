@@ -43,28 +43,28 @@ namespace BH.Engine.Verification
         //[Input("valueSource", "Object defining how to extract the value from the input object.")]
         //[Input("errorIfNotFound", "If true, error will be raised in case the value could not be found, otherwise not.")]
         //[Output("value", "Value extracted from the input object based on the provided instruction.")]
-        public static Output<bool?, object> ITryGetValueFromSource(this object obj, IValueSource valueSource, bool errorIfNotFound = false)
+        public static Output<bool, object> ITryGetValueFromSource(this object obj, IValueSource valueSource, bool errorIfNotFound = false)
         {
             if (obj == null)
             {
                 BH.Engine.Base.Compute.RecordError("Could not extract value from a null object.");
-                return Inconclusive();
+                return ValueNotFound();
             }
 
             if (valueSource == null)
             {
                 BH.Engine.Base.Compute.RecordError("Could not extract value based on a null value source.");
-                return Inconclusive();
+                return ValueNotFound();
             }
 
             object result;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(obj, nameof(TryGetValueFromSource), new object[] { valueSource, errorIfNotFound }, out result))
             {
                 BH.Engine.Base.Compute.RecordError($"Extraction failed because value source of type {valueSource.GetType().Name} is currently not supported.");
-                return Inconclusive();
+                return ValueNotFound();
             }
 
-            return result as Output<bool?, object>;
+            return result as Output<bool, object>;
         }
 
 
@@ -77,7 +77,7 @@ namespace BH.Engine.Verification
         //[Input("valueCondition", "Condition containing an object defining how to extract the value from the input object.")]
         //[Input("errorIfNotFound", "If true, error will be raised in case the value could not be found, otherwise not.")]
         //[Output("value", "Value extracted from the input object based on the provided instruction.")]
-        public static Output<bool?, object> TryGetValueFromSource(this object obj, IValueCondition valueCondition, bool errorIfNotFound = false)
+        public static Output<bool, object> TryGetValueFromSource(this object obj, IValueCondition valueCondition, bool errorIfNotFound = false)
         {
             return obj.ITryGetValueFromSource(valueCondition.ValueSource, errorIfNotFound);
         }
@@ -89,18 +89,18 @@ namespace BH.Engine.Verification
         //[Input("valueSource", "Object defining how to extract the value from the input object.")]
         //[Input("errorIfNotFound", "If true, error will be raised in case the value could not be found, otherwise not.")]
         //[Output("value", "Value extracted from the input object based on the provided instruction.")]
-        public static Output<bool?, object> TryGetValueFromSource(this object obj, PropertyValueSource valueSource, bool errorIfNotFound = false)
+        public static Output<bool, object> TryGetValueFromSource(this object obj, PropertyValueSource valueSource, bool errorIfNotFound = false)
         {
             if (obj == null)
             {
                 BH.Engine.Base.Compute.RecordError("Could not extract value from a null object.");
-                return Inconclusive();
+                return ValueNotFound();
             }
 
             if (valueSource == null)
             {
                 BH.Engine.Base.Compute.RecordError("Could not extract value based on a null value source.");
-                return Inconclusive();
+                return ValueNotFound();
             }
 
             return obj.TryGetValueFromSource(valueSource.PropertyName, errorIfNotFound);
@@ -114,11 +114,11 @@ namespace BH.Engine.Verification
         // Re-written from BH.Engine.Reflection.Query.PropertyValue for additional features.
         // Imporantly, if this does not find the value in any property or CustomData, then it invokes RunExtensionMethod
         // with the last segment of the source path (segments = separated by dots).
-        private static Output<bool?, object> TryGetValueFromSource(this object obj, string sourceName, bool errorIfNotFound = false)
+        private static Output<bool, object> TryGetValueFromSource(this object obj, string sourceName, bool errorIfNotFound = false)
         {
             // If source name not set, compare entire object
             if (obj == null || sourceName == null)
-                return Inconclusive();
+                return ValueNotFound();
 
             // Try get the value from nested properties
             if (sourceName.Contains("."))
@@ -135,7 +135,7 @@ namespace BH.Engine.Verification
             }
 
             // Get the object if indexing applied
-            if (m_IndexedPropertyPattern.IsMatch(sourceName))
+            if (sourceName.Contains('[') || sourceName.Contains(']'))
             {
                 // Check if there is no nested or open brackets or any characters between brackets
                 char expected = '[';
@@ -171,7 +171,7 @@ namespace BH.Engine.Verification
                 string propName = sourceName.Substring(0, nameCount);
                 obj = obj.TryGetValueFromSource(propName);
                 if (obj == null)
-                    return NoValue();
+                    return ValueNotFound();
 
                 foreach (string match in m_IndexerPattern.Matches(sourceName).Cast<Match>().Select(x => x.Value))
                 {
@@ -182,7 +182,7 @@ namespace BH.Engine.Verification
                         if (int.TryParse(trimmed, out index) && index >= 0 && list.Count > index)
                             obj = list[index];
                         else
-                            return NoValue();
+                            return ValueNotFound();
                     }
                     else if (obj is IDictionary dictionary)
                     {
@@ -206,10 +206,10 @@ namespace BH.Engine.Verification
                             continue;
                         }
 
-                        return NoValue();
+                        return ValueNotFound();
                     }
                     else
-                        return NoValue();
+                        return ValueNotFound();
                 }
 
                 return ValueFound(obj);
@@ -230,15 +230,15 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
-        private static Output<bool?, object> InvalidPropertyError(string sourceName)
+        private static Output<bool, object> InvalidPropertyError(string sourceName)
         {
             BH.Engine.Base.Compute.RecordError($"{sourceName} is not a valid property, indexer or method name.");
-            return Inconclusive();
+            return ValueNotFound();
         }
 
         /***************************************************/
 
-        private static Output<bool?, object> GetValue(this IBHoMObject bhomObj, string sourceName, bool errorIfNotFound = false)
+        private static Output<bool, object> GetValue(this IBHoMObject bhomObj, string sourceName, bool errorIfNotFound = false)
         {
             object value = null;
 
@@ -255,7 +255,7 @@ namespace BH.Engine.Verification
                 else if (allFragmentsOfType.Count > 1)
                 {
                     BH.Engine.Base.Compute.RecordError($"Value extraction failed due to ambiguity: {allFragmentsOfType.Count} fragments of type {sourceName} found. BHoM_Guid: {bhomObj.BHoM_Guid}");
-                    return Inconclusive();
+                    return ValueNotFound();
                 }
             }
 
@@ -264,7 +264,7 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
-        private static Output<bool?, object> GetValue(this object obj, string sourceName, bool errorIfNotFound)
+        private static Output<bool, object> GetValue(this object obj, string sourceName, bool errorIfNotFound)
         {
             // Try extracting the property using an Extension method.
             object value;
@@ -273,7 +273,7 @@ namespace BH.Engine.Verification
                 if (errorIfNotFound)
                     BH.Engine.Base.Compute.RecordError($"No property, CustomData or extension method named `{sourceName}` found for {obj.GetType().Name}.");
 
-                return NoValue();
+                return ValueNotFound();
             }
 
             return ValueFound(value);
@@ -282,25 +282,17 @@ namespace BH.Engine.Verification
         /***************************************************/
 
         [Description("Called when the method terminated correctly and value was found.")]
-        private static Output<bool?, object> ValueFound(object value)
+        private static Output<bool, object> ValueFound(object value)
         {
-            return new Output<bool?, object> { Item1 = true, Item2 = value };
+            return new Output<bool, object> { Item1 = true, Item2 = value };
         }
 
         /***************************************************/
 
         [Description("Called when the method terminated correctly, but value not found.")]
-        private static Output<bool?, object> NoValue()
+        private static Output<bool, object> ValueNotFound()
         {
-            return new Output<bool?, object> { Item1 = false, Item2 = null };
-        }
-
-        /***************************************************/
-
-        [Description("Called when the method terminated incorrectly, i.e. invalid inputs etc.")]
-        private static Output<bool?, object> Inconclusive()
-        {
-            return new Output<bool?, object> { Item1 = null, Item2 = null };
+            return new Output<bool, object> { Item1 = false, Item2 = null };
         }
 
         /***************************************************/
@@ -310,7 +302,7 @@ namespace BH.Engine.Verification
         /****               Private Fields              ****/
         /***************************************************/
 
-        private static readonly Regex m_IndexedPropertyPattern = new Regex("^[a-zA-Z0-9]+\\[[^\\]]+\\]");
+        //private static readonly Regex m_IndexedPropertyPattern = new Regex("^[a-zA-Z0-9]+\\[[^\\]]+\\]");
         private static readonly Regex m_IndexerPattern = new Regex("\\[[^\\]]+\\]");
 
         /***************************************************/
