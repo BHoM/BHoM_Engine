@@ -63,7 +63,7 @@ namespace BH.Engine.Verification
             {
                 double numTolerance;
                 if (!double.TryParse(tolerance?.ToString(), out numTolerance))
-                    numTolerance = 1e-03;
+                    numTolerance = 1e-6;
 
                 return NumericalComparison(numericalValue, referenceNumValue, numTolerance, comparisonType);
             }
