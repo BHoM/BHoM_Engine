@@ -229,6 +229,31 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Generates a human readable report based on " + nameof(HasValue) + " condition check result combined with reporting config.")]
+        [Input("condition", "Condition, from which the result was generated.")]
+        [Input("result", "Condition check result to generate report for.")]
+        [Input("config", "Reporting config to apply when generating the report.")]
+        [Output("report", "Human readable report generated based on the input condition check result combined with reporting config.")]
+        public static string ReportMessage(this HasValue condition, ValueConditionResult result, IValueConditionReportingConfig config = null)
+        {
+            if (condition == null || result == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not create report for the condition result because one of the required values was null.");
+                return null;
+            }
+
+            if (result.Passed == null)
+                return "Verification of condition was inconclusive.";
+
+            string sourceLabel = condition.ValueSourceLabel(config);
+            if (result.Passed.Value)
+                return $"The object has value of {sourceLabel}.";
+            else
+                return $"The object does not have value of {sourceLabel}.";
+        }
+
+        /***************************************************/
+
         [Description("Generates a human readable report based on " + nameof(IsInDomain) + " condition check result combined with reporting config.")]
         [Input("condition", "Condition, from which the result was generated.")]
         [Input("result", "Condition check result to generate report for.")]
