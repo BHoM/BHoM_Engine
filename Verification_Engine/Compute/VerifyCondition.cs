@@ -349,10 +349,13 @@ namespace BH.Engine.Verification
                 return new ValueConditionResult(null, null);
 
             object value = valueFromSource.Item2;
-            bool? pass = (value is double valueDouble && !double.IsNaN(valueDouble))
-                      || (value is string valueString && !string.IsNullOrEmpty(valueString))
-                      || !value.GetType().IsNullable()
-                      || value != null;
+            bool? pass;
+            if (value is double valueDouble)
+                pass = !double.IsNaN(valueDouble);
+            else if (value is string valueString)
+                pass = !string.IsNullOrEmpty(valueString);
+            else
+                pass = !(value.GetType().IsNullable() && value != null);
 
             return new ValueConditionResult(pass, valueFromSource.Item2); 
         }
