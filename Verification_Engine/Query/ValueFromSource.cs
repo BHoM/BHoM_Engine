@@ -43,9 +43,9 @@ namespace BH.Engine.Verification
         [Input("valueSource", "Object defining how to extract the value from the input object.")]
         [Input("errorIfNotFound", "If true, error will be raised in case the value could not be found, otherwise not.")]
         [Output("value", "Value extracted from the input object based on the provided instruction.")]
-        public static object ValueFromSource(this object obj, IValueSource valueSource, bool errorIfNotFound = false)
+        public static object ValueFromSource(this object obj, IValueSource valueSource)
         {
-            return obj?.ITryGetValueFromSource(valueSource, errorIfNotFound)?.Item2;
+            return obj?.ITryGetValueFromSource(valueSource)?.Item2;
         }
 
 
@@ -58,9 +58,9 @@ namespace BH.Engine.Verification
         [Input("valueCondition", "Condition containing an object defining how to extract the value from the input object.")]
         [Input("errorIfNotFound", "If true, error will be raised in case the value could not be found, otherwise not.")]
         [Output("value", "Value extracted from the input object based on the provided instruction.")]
-        public static object ValueFromSource(this object obj, IValueCondition valueCondition, bool errorIfNotFound = false)
+        public static object ValueFromSource(this object obj, IValueCondition valueCondition)
         {
-            return obj?.ValueFromSource(valueCondition?.ValueSource, errorIfNotFound);
+            return obj?.ValueFromSource(valueCondition?.ValueSource);
         }
 
         /***************************************************/
