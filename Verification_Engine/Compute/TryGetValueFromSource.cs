@@ -48,13 +48,13 @@ namespace BH.Engine.Verification
             if (obj == null)
             {
                 BH.Engine.Base.Compute.RecordError("Could not extract value from a null object.");
-                return ValueNotFound();
+                return null;
             }
 
             if (valueSource == null)
             {
                 BH.Engine.Base.Compute.RecordError("Could not extract value based on a null value source.");
-                return ValueNotFound();
+                return null;
             }
 
             object result;
@@ -94,13 +94,13 @@ namespace BH.Engine.Verification
             if (obj == null)
             {
                 BH.Engine.Base.Compute.RecordError("Could not extract value from a null object.");
-                return ValueNotFound();
+                return null;
             }
 
-            if (valueSource == null)
+            if (string.IsNullOrWhiteSpace(valueSource?.PropertyName))
             {
-                BH.Engine.Base.Compute.RecordError("Could not extract value based on a null value source.");
-                return ValueNotFound();
+                BH.Engine.Base.Compute.RecordError("Could not extract value based on an empty value source.");
+                return null;
             }
 
             return obj.TryGetValueFromSource(valueSource.PropertyName);
