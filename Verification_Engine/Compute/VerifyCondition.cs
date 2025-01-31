@@ -178,19 +178,26 @@ namespace BH.Engine.Verification
                 return null;
             }
 
-            bool pass = false;
+            // Try to extract the value from value source
+            Output<bool?, object> valueFromSource = obj.TryGetValueFromSource(condition);
+            bool? pass = valueFromSource?.Item1;
+            object value = valueFromSource?.Item2;
 
-            object value = obj.ValueFromSource(condition);
-            double numericalValue;
-            double tolerance;
-            double.TryParse(condition.Tolerance.ToString(), out tolerance);
-
-            if (double.TryParse(value?.ToString(), out numericalValue))
-                pass = Query.IsInDomain(numericalValue, condition.Domain, tolerance);
-            else if (obj is DateTime)
+            // If value found, check the actual condition
+            if (pass == true)
             {
-                DateTime? dt = obj as DateTime?;
-                pass = Query.IsInDomain(dt.Value.Ticks, condition.Domain, tolerance);
+                pass = false;
+                double numericalValue;
+                double tolerance;
+                double.TryParse(condition.Tolerance.ToString(), out tolerance);
+
+                if (double.TryParse(value?.ToString(), out numericalValue))
+                    pass = Query.IsInDomain(numericalValue, condition.Domain, tolerance);
+                else if (value is DateTime)
+                {
+                    DateTime? dt = value as DateTime?;
+                    pass = Query.IsInDomain(dt.Value.Ticks, condition.Domain, tolerance);
+                }
             }
 
             return new ValueConditionResult(pass, value);
@@ -244,13 +251,19 @@ namespace BH.Engine.Verification
                 return null;
             }
 
-            object value = obj.ValueFromSource(condition);
-            bool? pass = false;
-            if (value.IsInSet(condition.Set, condition.ComparisonConfig))
-                pass = true;
+            // Try to extract the value from value source
+            Output<bool?, object> valueFromSource = obj.TryGetValueFromSource(condition);
+            bool? pass = valueFromSource?.Item1;
+            object value = valueFromSource?.Item2;
 
-            if (value is IEnumerable<object> ienumerable)
-                pass = ienumerable.All(x => x.IsInSet(condition.Set, condition.ComparisonConfig));
+            // If value found, check the actual condition
+            if (pass == true)
+            {
+                if (value is IEnumerable<object> ienumerable)
+                    pass = ienumerable.All(x => x.IsInSet(condition.Set, condition.ComparisonConfig));
+                else
+                    pass = value.IsInSet(condition.Set, condition.ComparisonConfig);
+            }
 
             return new ValueConditionResult(pass, value);
         }
@@ -304,6 +317,30 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Verifies an object against " + nameof(HasValue) + " condition and returns a result object containing details of the check.")]
+        [Input("obj", "Object to check against the condition.")]
+        [Input("condition", "Condition to check the object against.")]
+        [Output("result", "Object containing the check result as a boolean as well as details of the check (object type etc.).")]
+        public static ValueConditionResult VerifyCondition(this object obj, HasValue condition)
+        {
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition against a null object.");
+                return null;
+            }
+
+            if (condition == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition because it was null.");
+                return null;
+            }
+
+            Output<bool?, object> valueFromSource = obj.TryGetValueFromSource(condition);
+            return new ValueConditionResult(valueFromSource?.Item1, valueFromSource?.Item2); 
+        }
+
+        /***************************************************/
+
         [Description("Verifies an object against " + nameof(ValueCondition) + " and returns a result object containing details of the check.")]
         [Input("obj", "Object to check against the condition.")]
         [Input("condition", "Condition to check the object against.")]
@@ -322,9 +359,15 @@ namespace BH.Engine.Verification
                 return null;
             }
 
-            //TODO: should return null in case the property does not exist??
-            object value = obj.ValueFromSource(condition);
-            bool? pass = value.CompareValues(condition.ReferenceValue, condition.ComparisonType, condition.Tolerance);
+            // Try to extract the value from value source
+            Output<bool?, object> valueFromSource = obj.TryGetValueFromSource(condition);
+            bool? pass = valueFromSource?.Item1;
+            object value = valueFromSource?.Item2;
+
+            // If value found, check the actual condition
+            if (pass == true)
+                pass = value.CompareValues(condition.ReferenceValue, condition.ComparisonType, condition.Tolerance);
+
             return new ValueConditionResult(pass, value);
         }
 
@@ -403,7 +446,7 @@ namespace BH.Engine.Verification
                         object value = variables[key];
                         if (value is IValueSource vs)
                         {
-                            value = obj.ValueFromSource(vs);
+                            Output<bool?, object> valueFromSource = obj.ITryGetValueFromSource(vs);
                             if (value == null || (value is double && double.IsNaN((double)value)))
                                 return null;
 
