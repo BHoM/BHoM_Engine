@@ -44,20 +44,71 @@ namespace BH.Engine.Verification
         [Output("result", "True if comparison of the input values meets the comparison requirement, otherwise false. Null in case of inconclusive comparison.")]
         public static bool? CompareValues(this object value, object referenceValue, ValueComparisonType comparisonType, object tolerance)
         {
-            // Basic cases (check for nullity)
+            // Null comparisons
             if (referenceValue == null && value == null)
                 return true;
             else if (referenceValue == null || value == null)
                 return false;
 
+            // Type comparison
             if (value is Type && referenceValue is Type)
-                return value == referenceValue;
+            {
+                if (!comparisonType.IsEqualityComparisonType())
+                    return null;
 
-            // Try enum comparison
+                return (value == referenceValue) == (comparisonType == ValueComparisonType.EqualTo);
+            }
+
+            // Bool comparison
+            if (value is bool || referenceValue is bool)
+            {
+                if (!comparisonType.IsEqualityComparisonType())
+                    return null;
+
+                if (value is string valueString)
+                    value = valueString.ToLower() == "true" || valueString.ToLower() == "yes";
+                else if (value is int valueInt)
+                {
+                    if (valueInt == 0)
+                        value = false;
+                    else if (valueInt == 1)
+                        value = true;
+                    else
+                        return null;
+                }
+
+                if (referenceValue is string referenceValueString)
+                    referenceValue = referenceValueString.ToLower() == "true" || referenceValueString.ToLower() == "yes";
+                else if (referenceValue is int referenceValueInt)
+                {
+                    if (referenceValueInt == 0)
+                        referenceValue = false;
+                    else if (referenceValueInt == 1)
+                        referenceValue = true;
+                    else
+                        return null;
+                }
+
+                return (value == referenceValue) == (comparisonType == ValueComparisonType.EqualTo);
+            }
+
+            // Enum comparison
             if (value is Enum || referenceValue is Enum)
-                return value.GetType() == referenceValue.GetType() && (int)value == (int)referenceValue;
+            {
+                if (value.GetType() == referenceValue.GetType() && comparisonType.IsNumberComparisonType())
+                    return NumericalComparison((int)value, (int)referenceValue, comparisonType, 1e-6);
 
-            // Try a numerical comparison
+                if (value is string || referenceValue is string)
+                {
+                    string valueString = value.ToString();
+                    string referenceString = referenceValue.ToString();
+                    return StringComparison(valueString, referenceString, comparisonType);
+                }
+
+                return null;
+            }
+
+            // Numerical comparison
             double numericalValue, referenceNumValue;
             if (double.TryParse(value?.ToString(), out numericalValue) && double.TryParse(referenceValue?.ToString(), out referenceNumValue))
             {
@@ -65,15 +116,15 @@ namespace BH.Engine.Verification
                 if (!double.TryParse(tolerance?.ToString(), out numTolerance))
                     numTolerance = 1e-6;
 
-                return NumericalComparison(numericalValue, referenceNumValue, numTolerance, comparisonType);
+                return NumericalComparison(numericalValue, referenceNumValue, comparisonType, numTolerance);
             }
 
-            // Try string comparison
+            // String comparison
             if (value is string && referenceValue is string)
                 return StringComparison((string)value, (string)referenceValue, comparisonType);
 
             // Consider some other way to compare objects.
-            if (comparisonType == ValueComparisonType.EqualTo || comparisonType == ValueComparisonType.NotEqualTo)
+            if (comparisonType.IsEqualityComparisonType())
             {
                 bool? passed;
 
@@ -81,7 +132,7 @@ namespace BH.Engine.Verification
                 if (referenceValue is Type)
                 {
                     IsOfType typeCondition = new IsOfType() { Type = referenceValue as Type };
-                    passed = value.IPasses(typeCondition);
+                    passed = value.Passes(typeCondition);
                 }
                 else
                     passed = CompareObjectEquality(value, referenceValue, tolerance);
@@ -121,7 +172,7 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
-        private static bool? NumericalComparison(double value, double referenceValue, double tolerance, ValueComparisonType condition)
+        private static bool? NumericalComparison(double value, double referenceValue, ValueComparisonType condition, double tolerance)
         {
             switch (condition)
             {
