@@ -66,12 +66,12 @@ namespace BH.Engine.Facade
                     return true;
                 }
 
-                // Check that lines overlap using domain bounds
+                // Check that lines overlap using domain bounds, with tolerance to allow for slight discrepancies in overlapping geo
                 foreach (Point pt in curve1.ControlPoints())
                 {
-                    if (pt.X <= Math.Max(s2.X, e2.X) && pt.X >= Math.Min(s2.X, e2.X) &&
-                        pt.Y <= Math.Max(s2.Y, e2.Y) && pt.Y >= Math.Min(s2.Y, e2.Y) &&
-                        pt.Z <= Math.Max(s2.Z, e2.Z) && pt.Z >= Math.Min(s2.Z, e2.Z) &&
+                    if (pt.X <= Math.Max(s2.X, e2.X) + tolerance && pt.X >= Math.Min(s2.X, e2.X) - tolerance &&
+                        pt.Y <= Math.Max(s2.Y, e2.Y) + tolerance && pt.Y >= Math.Min(s2.Y, e2.Y) - tolerance &&
+                        pt.Z <= Math.Max(s2.Z, e2.Z) + tolerance && pt.Z >= Math.Min(s2.Z, e2.Z) - tolerance &&
                         pt.Distance(s2) > tolerance &&
                         pt.Distance(e2) > tolerance)
                     {
@@ -81,9 +81,9 @@ namespace BH.Engine.Facade
 
                 foreach (Point pt in curve2.ControlPoints())
                 {
-                    if (pt.X <= Math.Max(s1.X, e1.X) && pt.X >= Math.Min(s1.X, e1.X) &&
-                        pt.Y <= Math.Max(s1.Y, e1.Y) && pt.Y >= Math.Min(s1.Y, e1.Y) &&
-                        pt.Z <= Math.Max(s1.Z, e1.Z) && pt.Z >= Math.Min(s1.Z, e1.Z) &&
+                    if (pt.X <= Math.Max(s1.X, e1.X) + tolerance && pt.X >= Math.Min(s1.X, e1.X) - tolerance &&
+                        pt.Y <= Math.Max(s1.Y, e1.Y) + tolerance && pt.Y >= Math.Min(s1.Y, e1.Y) - tolerance &&
+                        pt.Z <= Math.Max(s1.Z, e1.Z) + tolerance && pt.Z >= Math.Min(s1.Z, e1.Z) - tolerance &&
                         pt.Distance(s1) > tolerance &&
                         pt.Distance(e1) > tolerance)
                     {
