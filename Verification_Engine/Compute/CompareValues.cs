@@ -46,9 +46,23 @@ namespace BH.Engine.Verification
         {
             // Null comparisons
             if (referenceValue == null && value == null)
-                return true;
+            {
+                if (comparisonType == ValueComparisonType.EqualTo)
+                    return true;
+                else if (comparisonType == ValueComparisonType.NotEqualTo)
+                    return false;
+                else
+                    return null;
+            }
             else if (referenceValue == null || value == null)
-                return false;
+            {
+                if (comparisonType == ValueComparisonType.EqualTo)
+                    return false;
+                else if (comparisonType == ValueComparisonType.NotEqualTo)
+                    return true;
+                else
+                    return null;
+            }
 
             // Type comparison
             if (value is Type || referenceValue is Type)

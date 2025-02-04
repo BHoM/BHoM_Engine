@@ -350,7 +350,9 @@ namespace BH.Engine.Verification
 
             object value = valueFromSource.Item2;
             bool? pass;
-            if (value is double valueDouble)
+            if (value == null)
+                pass = false;
+            else if (value is double valueDouble)
                 pass = !double.IsNaN(valueDouble);
             else if (value is string valueString)
                 pass = !string.IsNullOrEmpty(valueString);

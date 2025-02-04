@@ -174,7 +174,11 @@ namespace BH.Engine.Verification
                 return null;
             }
 
-            return !obj.IPasses(condition.Condition);
+            bool? toInvert = obj.IPasses(condition.Condition);
+            if (toInvert != null)
+                toInvert = !toInvert;
+
+            return toInvert;
         }
 
         /***************************************************/
