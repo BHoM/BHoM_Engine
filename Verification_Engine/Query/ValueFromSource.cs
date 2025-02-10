@@ -20,15 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Verification.Conditions;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace BH.Engine.Verification
 {
@@ -41,7 +35,6 @@ namespace BH.Engine.Verification
         [Description("Extracts a value from an object based on the instruction embedded in the provided " + nameof(IValueSource) + ".")]
         [Input("obj", "Object to extract the value from.")]
         [Input("valueSource", "Object defining how to extract the value from the input object.")]
-        [Input("errorIfNotFound", "If true, error will be raised in case the value could not be found, otherwise not.")]
         [Output("value", "Value extracted from the input object based on the provided instruction.")]
         public static object ValueFromSource(this object obj, IValueSource valueSource)
         {
@@ -56,7 +49,6 @@ namespace BH.Engine.Verification
         [Description("Extracts a value from an object based on the instruction embedded in the provided " + nameof(IValueCondition) + ".")]
         [Input("obj", "Object to extract the value from.")]
         [Input("valueCondition", "Condition containing an object defining how to extract the value from the input object.")]
-        [Input("errorIfNotFound", "If true, error will be raised in case the value could not be found, otherwise not.")]
         [Output("value", "Value extracted from the input object based on the provided instruction.")]
         public static object ValueFromSource(this object obj, IValueCondition valueCondition)
         {
