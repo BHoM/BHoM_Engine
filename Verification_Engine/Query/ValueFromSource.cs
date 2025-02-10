@@ -38,7 +38,19 @@ namespace BH.Engine.Verification
         [Output("value", "Value extracted from the input object based on the provided instruction.")]
         public static object ValueFromSource(this object obj, IValueSource valueSource)
         {
-            return obj?.ITryGetValueFromSource(valueSource)?.Item2;
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not extract value from a null object.");
+                return null;
+            }
+
+            if (valueSource == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not extract value based on a null value source.");
+                return null;
+            }
+
+            return obj.ITryGetValueFromSource(valueSource)?.Item2;
         }
 
 
@@ -52,7 +64,19 @@ namespace BH.Engine.Verification
         [Output("value", "Value extracted from the input object based on the provided instruction.")]
         public static object ValueFromSource(this object obj, IValueCondition valueCondition)
         {
-            return obj?.ValueFromSource(valueCondition?.ValueSource);
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not extract value from a null object.");
+                return null;
+            }
+
+            if (valueCondition?.ValueSource == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not extract value based on a null value source.");
+                return null;
+            }
+
+            return obj.ValueFromSource(valueCondition.ValueSource);
         }
 
         /***************************************************/

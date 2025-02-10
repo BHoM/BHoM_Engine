@@ -79,6 +79,18 @@ namespace BH.Engine.Verification
         [MultiOutput(1, "value", "Value extracted from the input object based on the provided instruction.")]
         public static Output<bool, object> TryGetValueFromSource(this object obj, IValueCondition valueCondition)
         {
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not extract value from a null object.");
+                return null;
+            }
+
+            if (valueCondition?.ValueSource == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not extract value based on a null value source.");
+                return null;
+            }
+
             return obj.ITryGetValueFromSource(valueCondition.ValueSource);
         }
 
