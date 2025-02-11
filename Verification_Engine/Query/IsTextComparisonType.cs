@@ -35,7 +35,7 @@ namespace BH.Engine.Verification
 
         [Description("Checks whether the provided " + nameof(ValueComparisonType) + " can be applied to text values.")]
         [Input("comparisonType", nameof(ValueComparisonType) + " to check against applicability to text values.")]
-        [Input("isText", "True if the input " + nameof(ValueComparisonType) + " can be applied to text values, otherwise false.")]
+        [Output("isText", "True if the input " + nameof(ValueComparisonType) + " can be applied to text values, otherwise false.")]
         public static bool IsTextComparisonType(this ValueComparisonType comparisonType)
         {
             return m_TextComparisonTypes.Contains(comparisonType);

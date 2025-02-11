@@ -35,7 +35,7 @@ namespace BH.Engine.Verification
 
         [Description("Checks whether the provided " + nameof(ValueComparisonType) + " can be applied in equality comparisons.")]
         [Input("comparisonType", nameof(ValueComparisonType) + " to check against applicability in equality comparisons.")]
-        [Input("isEquality", "True if the input " + nameof(ValueComparisonType) + " can be applied in equality comparisons, otherwise false.")]
+        [Output("isEquality", "True if the input " + nameof(ValueComparisonType) + " can be applied in equality comparisons, otherwise false.")]
         public static bool IsEqualityComparisonType(this ValueComparisonType comparisonType)
         {
             return m_EqualityComparisonTypes.Contains(comparisonType);

@@ -35,7 +35,7 @@ namespace BH.Engine.Verification
 
         [Description("Checks whether the provided " + nameof(ValueComparisonType) + " can be applied to numerical values.")]
         [Input("comparisonType", nameof(ValueComparisonType) + " to check against applicability to numerical values.")]
-        [Input("isNumber", "True if the input " + nameof(ValueComparisonType) + " can be applied to numerical values, otherwise false.")]
+        [Output("isNumber", "True if the input " + nameof(ValueComparisonType) + " can be applied to numerical values, otherwise false.")]
         public static bool IsNumberComparisonType(this ValueComparisonType comparisonType)
         {
             return m_NumberComparisonTypes.Contains(comparisonType);
