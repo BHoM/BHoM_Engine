@@ -96,6 +96,12 @@ namespace BH.Engine.Diffing
             kellermanComparer.Config.DoublePrecision = 0;
             kellermanComparer.Config.DecimalPrecision = 0;
 
+            //Include local copies of the DataTable comparers, as they are ruled out by netstandard builds in the NugetPackage.
+            //See: https://github.com/BHoM/BHoM_Engine/issues/3455
+            kellermanComparer.Config.CustomComparers.Add(new DataTableComparer(kellerman.RootComparerFactory.GetRootComparer()));
+            kellermanComparer.Config.CustomComparers.Add(new DataRowComparer(kellerman.RootComparerFactory.GetRootComparer()));
+            kellermanComparer.Config.CustomComparers.Add(new DataColumnComparer(kellerman.RootComparerFactory.GetRootComparer()));
+
             // Perform the comparison using the Kellerman library.
             kellerman.ComparisonResult kellermanResult = kellermanComparer.Compare(pastObject, followingObject);
 
