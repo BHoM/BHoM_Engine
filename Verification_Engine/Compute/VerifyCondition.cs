@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.Engine.Base.Objects;
 using BH.Engine.Verification.Objects;
 using BH.oM.Base;
@@ -178,20 +179,34 @@ namespace BH.Engine.Verification
                 return null;
             }
 
-            bool pass = false;
+            // Try to extract the value from value source
+            Output<bool, object> valueFromSource = obj.TryGetValueFromSource(condition);
+            bool found = valueFromSource?.Item1 == true;
+            if (!found)
+                return new ValueConditionResult(null, null);
 
-            object value = obj.ValueFromSource(condition);
-            double numericalValue;
+            // If value found, check the actual condition
+            object value = valueFromSource.Item2;
+            bool? pass = false;
+            
             double tolerance;
             double.TryParse(condition.Tolerance.ToString(), out tolerance);
+            if (double.IsNaN(tolerance) || tolerance == 0)
+            {
+                BH.Engine.Base.Compute.RecordNote("Tolerance has not been set, default value of 1e-6 is being used.");
+                tolerance = 1e-6;
+            }
 
+            double numericalValue;
             if (double.TryParse(value?.ToString(), out numericalValue))
                 pass = Query.IsInDomain(numericalValue, condition.Domain, tolerance);
-            else if (obj is DateTime)
+            else if (value is DateTime)
             {
-                DateTime? dt = obj as DateTime?;
+                DateTime? dt = value as DateTime?;
                 pass = Query.IsInDomain(dt.Value.Ticks, condition.Domain, tolerance);
             }
+            else
+                pass = null;
 
             return new ValueConditionResult(pass, value);
         }
@@ -244,13 +259,19 @@ namespace BH.Engine.Verification
                 return null;
             }
 
-            object value = obj.ValueFromSource(condition);
-            bool? pass = false;
-            if (value.IsInSet(condition.Set, condition.ComparisonConfig))
-                pass = true;
+            // Try to extract the value from value source
+            Output<bool, object> valueFromSource = obj.TryGetValueFromSource(condition);
+            bool found = valueFromSource?.Item1 == true;
+            if (!found)
+                return new ValueConditionResult(null, null);
 
+            // If value found, check the actual condition
+            object value = valueFromSource?.Item2;
+            bool? pass;
             if (value is IEnumerable<object> ienumerable)
                 pass = ienumerable.All(x => x.IsInSet(condition.Set, condition.ComparisonConfig));
+            else
+                pass = value.IsInSet(condition.Set, condition.ComparisonConfig);
 
             return new ValueConditionResult(pass, value);
         }
@@ -304,6 +325,45 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
+        [Description("Verifies an object against " + nameof(HasValue) + " condition and returns a result object containing details of the check.")]
+        [Input("obj", "Object to check against the condition.")]
+        [Input("condition", "Condition to check the object against.")]
+        [Output("result", "Object containing the check result as a boolean as well as details of the check (object type etc.).")]
+        public static ValueConditionResult VerifyCondition(this object obj, HasValue condition)
+        {
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition against a null object.");
+                return null;
+            }
+
+            if (condition == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify condition because it was null.");
+                return null;
+            }
+
+            Output<bool, object> valueFromSource = obj.TryGetValueFromSource(condition);
+            bool found = valueFromSource?.Item1 == true;
+            if (!found)
+                return new ValueConditionResult(null, null);
+
+            object value = valueFromSource.Item2;
+            bool? pass;
+            if (value == null)
+                pass = false;
+            else if (value is double valueDouble)
+                pass = !double.IsNaN(valueDouble);
+            else if (value is string valueString)
+                pass = !string.IsNullOrEmpty(valueString);
+            else
+                pass = !(value.GetType().IsNullable() && value != null);
+
+            return new ValueConditionResult(pass, valueFromSource.Item2); 
+        }
+
+        /***************************************************/
+
         [Description("Verifies an object against " + nameof(ValueCondition) + " and returns a result object containing details of the check.")]
         [Input("obj", "Object to check against the condition.")]
         [Input("condition", "Condition to check the object against.")]
@@ -322,7 +382,15 @@ namespace BH.Engine.Verification
                 return null;
             }
 
-            object value = obj.ValueFromSource(condition);
+            // Try to extract the value from value source
+            Output<bool, object> valueFromSource = obj.TryGetValueFromSource(condition);
+            bool found = valueFromSource?.Item1 == true;
+            if (!found)
+                return new ValueConditionResult(null, null);
+            
+            object value = valueFromSource?.Item2;
+
+            // If value found, check the actual condition
             bool? pass = value.CompareValues(condition.ReferenceValue, condition.ComparisonType, condition.Tolerance);
             return new ValueConditionResult(pass, value);
         }
@@ -402,7 +470,7 @@ namespace BH.Engine.Verification
                         object value = variables[key];
                         if (value is IValueSource vs)
                         {
-                            value = obj.IValueFromSource(vs);
+                            Output<bool, object> valueFromSource = obj.ITryGetValueFromSource(vs);
                             if (value == null || (value is double && double.IsNaN((double)value)))
                                 return null;
 

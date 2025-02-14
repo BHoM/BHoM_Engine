@@ -44,48 +44,84 @@ namespace BH.Engine.Verification
         [Output("result", "True if comparison of the input values meets the comparison requirement, otherwise false. Null in case of inconclusive comparison.")]
         public static bool? CompareValues(this object value, object referenceValue, ValueComparisonType comparisonType, object tolerance)
         {
-            // Basic cases (check for nullity)
+            // Null comparisons
             if (referenceValue == null && value == null)
-                return true;
+            {
+                if (comparisonType == ValueComparisonType.EqualTo)
+                    return true;
+                else if (comparisonType == ValueComparisonType.NotEqualTo)
+                    return false;
+                else
+                    return null;
+            }
             else if (referenceValue == null || value == null)
-                return false;
+            {
+                if (comparisonType == ValueComparisonType.EqualTo)
+                    return false;
+                else if (comparisonType == ValueComparisonType.NotEqualTo)
+                    return true;
+                else
+                    return null;
+            }
 
-            if (value is Type && referenceValue is Type)
-                return value == referenceValue;
+            // Type comparison
+            if (value is Type || referenceValue is Type)
+            {
+                if (!comparisonType.IsEqualityComparisonType())
+                    return null;
 
-            // Try enum comparison
+                Type valueType = value is string ? BH.Engine.Base.Create.Type((string)value) : value as Type;
+                Type referenceValueType = referenceValue is string ? BH.Engine.Base.Create.Type((string)referenceValue) : referenceValue as Type;
+                return (valueType == referenceValueType) == (comparisonType == ValueComparisonType.EqualTo);
+            }
+
+            // Bool comparison
+            if (value is bool || referenceValue is bool)
+            {
+                if (!comparisonType.IsEqualityComparisonType())
+                    return null;
+
+                bool? valueBool = value.ToBool();
+                bool? referenceValueBool = referenceValue.ToBool();
+
+                return (valueBool == referenceValueBool) == (comparisonType == ValueComparisonType.EqualTo);
+            }
+
+            // Enum comparison
             if (value is Enum || referenceValue is Enum)
-                return value.GetType() == referenceValue.GetType() && (int)value == (int)referenceValue;
+            {
+                if ((value.GetType() == referenceValue.GetType() || value is int || referenceValue is int) && comparisonType.IsNumberComparisonType())
+                    return NumericalComparison((int)value, (int)referenceValue, comparisonType, 1e-6);
 
-            // Try a numerical comparison
+                if (value is string || referenceValue is string)
+                {
+                    string valueString = value.ToString();
+                    string referenceString = referenceValue.ToString();
+                    return StringComparison(valueString, referenceString, comparisonType);
+                }
+
+                return null;
+            }
+
+            // Numerical comparison
             double numericalValue, referenceNumValue;
             if (double.TryParse(value?.ToString(), out numericalValue) && double.TryParse(referenceValue?.ToString(), out referenceNumValue))
             {
                 double numTolerance;
                 if (!double.TryParse(tolerance?.ToString(), out numTolerance))
-                    numTolerance = 1e-03;
+                    numTolerance = 1e-6;
 
-                return NumericalComparison(numericalValue, referenceNumValue, numTolerance, comparisonType);
+                return NumericalComparison(numericalValue, referenceNumValue, comparisonType, numTolerance);
             }
 
-            // Try string comparison
+            // String comparison
             if (value is string && referenceValue is string)
                 return StringComparison((string)value, (string)referenceValue, comparisonType);
 
             // Consider some other way to compare objects.
-            if (comparisonType == ValueComparisonType.EqualTo || comparisonType == ValueComparisonType.NotEqualTo)
+            if (comparisonType.IsEqualityComparisonType())
             {
-                bool? passed;
-
-                // If the referenceValue is a Type, convert this ValueCondition to a IsOfType condition.
-                if (referenceValue is Type)
-                {
-                    IsOfType typeCondition = new IsOfType() { Type = referenceValue as Type };
-                    passed = value.IPasses(typeCondition);
-                }
-                else
-                    passed = CompareObjectEquality(value, referenceValue, tolerance);
-
+                bool? passed = CompareObjectEquality(value, referenceValue, tolerance);
                 if (passed != null && comparisonType == ValueComparisonType.NotEqualTo)
                     passed = !passed;
 
@@ -121,7 +157,7 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
-        private static bool? NumericalComparison(double value, double referenceValue, double tolerance, ValueComparisonType condition)
+        private static bool? NumericalComparison(double value, double referenceValue, ValueComparisonType condition, double tolerance)
         {
             switch (condition)
             {
@@ -163,6 +199,33 @@ namespace BH.Engine.Verification
                     BH.Engine.Base.Compute.RecordWarning($"Comparison of type {condition} is not supported for strings.");
                     return null;
             }
+        }
+
+        /***************************************************/
+
+        private static bool? ToBool(this object obj)
+        {
+            if (obj is bool)
+                return (bool)obj;
+
+            if (obj is string valueString)
+            {
+                if (valueString.ToLower() == "true" || valueString.ToLower() == "yes" || valueString.Trim() == "1")
+                    return true;
+                else if (valueString.ToLower() == "false" || valueString.ToLower() == "no" || valueString.Trim() == "0")
+                    return false;
+            }
+
+            double valueDouble;
+            if (double.TryParse(obj.ToString(), out valueDouble))
+            {
+                if (valueDouble == 0)
+                    return false;
+                else if (valueDouble == 1)
+                    return true;
+            }
+
+            return null;
         }
 
         /***************************************************/
