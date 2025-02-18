@@ -117,7 +117,7 @@ namespace BH.Engine.Serialiser
                         {
                             object propertyValue = item.Value.IDeserialise(prop.PropertyType, prop.GetValue(value), version, isUpgraded);
 
-                            if (CanSetValueToProperty(prop.PropertyType, propertyValue))
+                            if (CanSetValueToProperty(prop.PropertyType, propertyValue, item.Value))
                             {
                                 prop.SetValue(value, propertyValue);
                             }
@@ -152,10 +152,10 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        private static bool CanSetValueToProperty(Type propType, object value)
+        private static bool CanSetValueToProperty(Type propType, object value, BsonValue bsonValue)
         {
             if (value == null)
-                return !propType.IsValueType || Nullable.GetUnderlyingType(propType) != null;
+                return (!propType.IsValueType || Nullable.GetUnderlyingType(propType) != null) && (bsonValue == null || bsonValue.IsBsonNull);
             else
                 return propType.IsAssignableFrom(value.GetType());
         }
