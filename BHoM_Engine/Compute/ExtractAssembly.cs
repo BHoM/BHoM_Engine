@@ -164,7 +164,7 @@ namespace BH.Engine.Base
                         // Get only the BHoM methods
                         if (!type.IsInterface && type.IsAbstract)
                         {
-                            foreach (MethodInfo info in type.GetMethods(bindingBHoM).Where(x => x.IsLegal()))
+                            foreach (MethodInfo info in type.GetMethods(bindingBHoM).Where(x => x.IsLegal() && !x.IsSpecialName))
                             {
                                 Global.BHoMMethodList.Add(info);
                             }
