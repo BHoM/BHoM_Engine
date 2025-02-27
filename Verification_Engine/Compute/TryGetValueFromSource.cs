@@ -128,6 +128,9 @@ namespace BH.Engine.Verification
         // with the last segment of the source path (segments = separated by dots).
         private static Output<bool, object> TryGetValueFromSource(this object obj, string sourceName)
         {
+            if (obj is Output<bool, object> objAsOutput)
+                obj = objAsOutput.Item2;
+
             // If source name not set, compare entire object
             if (obj == null || sourceName == null)
                 return ValueNotFound();
@@ -294,6 +297,9 @@ namespace BH.Engine.Verification
         [Description("Called when the method terminated correctly and value was found.")]
         private static Output<bool, object> ValueFound(object value)
         {
+            if (value is Output<bool, object> valueAsOutput)
+                value = valueAsOutput.Item2;
+
             return new Output<bool, object> { Item1 = true, Item2 = value };
         }
 
