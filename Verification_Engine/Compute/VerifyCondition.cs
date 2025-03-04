@@ -470,7 +470,7 @@ namespace BH.Engine.Verification
                         object value = variables[key];
                         if (value is IValueSource vs)
                         {
-                            Output<bool, object> valueFromSource = obj.ITryGetValueFromSource(vs);
+                            value = obj.ITryGetValueFromSource(vs)?.Item2;
                             if (value == null || (value is double && double.IsNaN((double)value)))
                                 return null;
 
