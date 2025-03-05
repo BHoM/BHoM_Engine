@@ -136,11 +136,14 @@ namespace BH.Engine.Verification
             if (sourceName.Contains("."))
             {
                 string[] props = sourceName.Split(new char[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+                Output<bool, object> nested = null;
                 foreach (string innerProp in props)
                 {
-                    obj = obj.TryGetValueFromSource(innerProp);
-                    if (obj == null)
-                        break;
+                    nested = obj.TryGetValueFromSource(innerProp);
+                    if (nested == null || !nested.Item1)
+                        return ValueNotFound();
+                    else
+                        obj = nested.Item2;
                 }
 
                 return ValueFound(obj);
@@ -181,9 +184,11 @@ namespace BH.Engine.Verification
 
                 int nameCount = sourceName.IndexOf('[');
                 string propName = sourceName.Substring(0, nameCount);
-                obj = obj.TryGetValueFromSource(propName);
-                if (obj == null)
+                var indexed = obj.TryGetValueFromSource(propName);
+                if (indexed == null || !indexed.Item1)
                     return ValueNotFound();
+
+                obj = indexed.Item2;
 
                 foreach (string match in m_IndexerPattern.Matches(sourceName).Cast<Match>().Select(x => x.Value))
                 {
