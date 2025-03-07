@@ -79,13 +79,14 @@ namespace BH.Engine.Structure
             else
             {
                 CompositeGeometry compositeGeometry = new CompositeGeometry();
+                Vector localZ = centralPlanarSurface.Normal().Normalise();
+                double thickness = panel.Property.ITotalThickness();
 
-                double thickness = panel.Property.IVolumePerArea();
-                Vector translateVect = new Vector() { Z = -thickness / 2 };
-                Vector extrudeVect = new Vector() { Z = thickness };
+                Vector translateVect = localZ * -thickness / 2;
+                Vector extrudeVect = localZ * thickness;
 
-                Vector upHalf = new Vector() { X = 0, Y = 0, Z = thickness / 2 };
-                Vector downHalf = new Vector() { X = 0, Y = 0, Z = -thickness / 2 };
+                Vector upHalf = localZ * thickness / 2;
+                Vector downHalf = localZ * -thickness / 2;
 
                 PlanarSurface topSrf = centralPlanarSurface.ITranslate(upHalf) as PlanarSurface;
                 PlanarSurface botSrf = centralPlanarSurface.ITranslate(downHalf) as PlanarSurface;
