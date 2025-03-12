@@ -30,6 +30,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using BH.Engine.Base;
+using BH.oM.Quantities;
 
 namespace BH.Engine.Reflection
 {
@@ -147,6 +148,14 @@ namespace BH.Engine.Reflection
                 return desc;
             }
 
+            // If this is a Quantity, return the description of the QuantityAttribute
+            if (typeof(IQuantity).IsAssignableFrom(type))
+            {
+                Type attributeType = type.GenericTypeArguments.FirstOrDefault();
+                if (attributeType != null)
+                    return Description(Activator.CreateInstance(attributeType) as QuantityAttribute);
+            }
+
             //Add the default description
             desc += "This is a " + type.ToText(type.Namespace.StartsWith("BH."));
 
@@ -199,6 +208,8 @@ namespace BH.Engine.Reflection
                 return Description(item as Type);
             else if (item is MemberInfo)
                 return Description(item as MemberInfo);
+            else if (item is Enum)
+                return Description(item as Enum);
             else
                 return "";
         }
@@ -247,6 +258,19 @@ namespace BH.Engine.Reflection
                 description += $" It supports files with following extensions: {string.Join(", ", filePath.FileExtensions)}.";
 
             return description;
+        }
+
+        /***************************************************/
+
+        public static string Description(Enum e)
+        {
+            FieldInfo fi = e.GetType().GetField(e.ToString());
+            DescriptionAttribute[] descriptions = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
+
+            if (descriptions != null && descriptions.Count() > 0)
+                return descriptions.First().Description;
+            else
+                return "";
         }
 
 

@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace BH.Engine.Base
 {
@@ -192,31 +193,87 @@ namespace BH.Engine.Base
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static bool SetValue(this IBHoMObject obj, string propName, object value)
+        private static bool SetValue(this IObject obj, string propName, object value)
         {
-            if (obj == null) return false;
+            if (obj == null || propName == null)
+                return false;
 
-            if (value is IFragment)
+            // Handle fragments
+            if (value is IFragment && obj is IBHoMObject)
             {
-                obj.Fragments.Add(value as IFragment);
-                Compute.RecordWarning("The object does not contain any property with the name " + propName + ". The value is being set as a fragment.");
+                (obj as IBHoMObject).Fragments.Add(value as IFragment);
+                return true;
+            }
+            
+            // Handle dynamic objects
+            if(obj is IDynamicObject)
+            {
+                if (obj is IDynamicPropertyProvider)
+                {
+                    object result = null;
+                    bool success = Compute.TryRunExtensionMethod(obj, "SetProperty", new object[] { propName, value }, out result);
+
+                    if (success)
+                        return true;
+                }
+                else
+                {
+                    List<PropertyInfo> dynamicProperties = obj.GetType().GetProperties()
+                    .Where(x => x.GetCustomAttribute<DynamicPropertyAttribute>() != null && typeof(IDictionary).IsAssignableFrom(x.PropertyType) && x.PropertyType.GenericTypeArguments.First().IsEnum)
+                    .ToList();
+
+                    // Try to save into a dynamic property
+                    foreach (PropertyInfo prop in dynamicProperties)
+                    {
+                        if (SetValue(prop.GetValue(obj) as dynamic, propName, value))
+                            return true;
+                    }
+                }
+            }
+
+            // Add to custom data if BHoM object
+            if (obj is IBHoMObject)
+            {
+                // Fallback to storing into CustomData
+                IBHoMObject bhom = obj as IBHoMObject;
+                
+                bhom.CustomData[propName] = value;
+                if (!(obj is CustomObject))
+                    Compute.RecordWarning("The object does not contain any property with the name " + propName + ". The value is being set as custom data.");
+
+                return true;
             }
             else
             {
-                obj.CustomData[propName] = value;
-                if (!(obj is CustomObject))
-                    Compute.RecordWarning("The object does not contain any property with the name " + propName + ". The value is being set as custom data.");
-            }
+                Compute.RecordWarning("The objects does not contain any property with the name " + propName + ".");
+                return false;
+            }                
+        }
 
+        /***************************************************/
+
+        private static bool SetValue<T>(this Dictionary<string, T> dic, string propName, object value)
+        {
+            dic[propName] = (T)(value as dynamic);
             return true;
         }
 
         /***************************************************/
 
-        private static bool SetValue(this IDictionary dic, string propName, object value)
+        private static bool SetValue<K, T>(this Dictionary<K, T> dic, string propName, object value) where K : struct, Enum
         {
-            dic[propName] = value;
-            return true;
+            K key;
+            if (!Enum.TryParse(propName, out key))
+            {
+                Compute.RecordError($"cannot convert {propName} into an enum of type {typeof(K)}");
+                return false;
+            }
+            else
+            {
+                dic[key] = (T)(value as dynamic);
+                return true;
+            }
+                
         }
 
         /***************************************************/
