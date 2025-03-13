@@ -37,7 +37,7 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the IContaminantProperty matching the type provided..")]
+        [Description("Returns the IContaminantProperty matching the type provided.")]
         [Input("sample", "The ContaminantSample to retrieve the property from.")]
         [Input("type", "The type that inherits IContaminantProperty to search the ContaminantSample for.")]
         [Output("property", "The IContaminantProperty found on the ContaminantSample.")]
@@ -51,7 +51,7 @@ namespace BH.Engine.Ground
                     return (IContaminantProperty)Base.Query.FilterByType(contaminantProperties, type).First();
                 else
                 {
-                    Base.Compute.RecordError($"The ContaminantSample does not contain {type}.");
+                    Base.Compute.RecordWarning($"The ContaminantSample does not contain {type}.");
                     return null;
                 }
             }

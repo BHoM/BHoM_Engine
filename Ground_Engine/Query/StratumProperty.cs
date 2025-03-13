@@ -50,7 +50,7 @@ namespace BH.Engine.Ground
                     return (IStratumProperty)Base.Query.FilterByType(stratumProperties, type).First();
                 else
                 {
-                    Base.Compute.RecordError($"The Stratum does not contain {type}.");
+                    Base.Compute.RecordWarning($"The Stratum does not contain {type}.");
                     return null;
                 }
             }
