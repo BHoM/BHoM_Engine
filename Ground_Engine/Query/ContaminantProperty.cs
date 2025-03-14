@@ -27,6 +27,7 @@ using System.Linq;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Ground;
+using BH.Engine.Base;
 
 
 namespace BH.Engine.Ground
@@ -45,14 +46,17 @@ namespace BH.Engine.Ground
         {
             if (sample.IsValid())
             {
-                List<IContaminantProperty> contaminantProperties = sample.ContaminantProperties;
+                List<IContaminantProperty> props = sample.ContaminantProperties.Where(x => x.GetType() == type).ToList();
 
-                if (contaminantProperties.Select(x => x.GetType()).Contains(type))
-                    return (IContaminantProperty)Base.Query.FilterByType(contaminantProperties, type).First();
+                if (props.IsNullOrEmpty($"The ContaminantSample does not contain a property of {type}."))
+                    return null;
                 else
                 {
-                    Base.Compute.RecordWarning($"The ContaminantSample does not contain {type}.");
-                    return null;
+                    if (props.Count > 1)
+                        Base.Compute.RecordWarning($"Ambigous match as ContaminantSample contains more than one property of type {type}. " +
+                            $"First one is returned.");
+
+                    return props.First();
                 }
             }
             else

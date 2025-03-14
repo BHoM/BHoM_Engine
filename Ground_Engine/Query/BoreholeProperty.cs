@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Base.Attributes;
 using BH.oM.Ground;
+using BH.Engine.Base;
 
 
 namespace BH.Engine.Ground
@@ -44,14 +45,16 @@ namespace BH.Engine.Ground
         {
             if (borehole.IsValid())
             {
-                List<IBoreholeProperty> boreholeProperties = borehole.BoreholeProperties;
+                List<IBoreholeProperty> props = borehole.BoreholeProperties.Where(x => x.GetType() == type).ToList();
 
-                if (boreholeProperties.Select(x => x.GetType()).Contains(type))
-                    return (IBoreholeProperty)Base.Query.FilterByType(boreholeProperties, type).First();
+                if (props.IsNullOrEmpty($"The Borehole does not contain a property of {type}."))
+                    return null;
                 else
                 {
-                    Base.Compute.RecordWarning($"The Borehole does not contain {type}.");
-                    return null;
+                    if(props.Count > 1)
+                        Base.Compute.RecordWarning($"Ambigous match as Borehole contains more than one property of type {type}. First one is returned.");
+
+                    return props.First();
                 }
             }
             else

@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using BH.oM.Base.Attributes;
 using BH.oM.Ground;
+using BH.Engine.Base;
 
 
 namespace BH.Engine.Ground
@@ -44,14 +45,17 @@ namespace BH.Engine.Ground
         {
             if (stratum.IsValid())
             {
-                List<IStratumProperty> stratumProperties = stratum.Properties;
+                List<IStratumProperty> props = stratum.Properties.Where(x => x.GetType() == type).ToList();
 
-                if (stratumProperties.Select(x => x.GetType()).Contains(type))
-                    return (IStratumProperty)Base.Query.FilterByType(stratumProperties, type).First();
+                if (props.IsNullOrEmpty($"The Stratum does not contain a property of {type}."))
+                    return null;
                 else
                 {
-                    Base.Compute.RecordWarning($"The Stratum does not contain {type}.");
-                    return null;
+                    if (props.Count > 1)
+                        Base.Compute.RecordWarning($"Ambigous match as Stratum contains more than one property of type {type}. " +
+                            $"First one is returned.");
+
+                    return props.First();
                 }
             }
             else
