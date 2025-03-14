@@ -24,7 +24,6 @@ using System.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Ground;
 using BH.Engine.Base;
@@ -38,22 +37,22 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the IContaminantProperty matching the type provided.")]
-        [Input("sample", "The ContaminantSample to retrieve the property from.")]
-        [Input("type", "The type that inherits IContaminantProperty to search the ContaminantSample for.")]
-        [Output("property", "The IContaminantProperty found on the ContaminantSample.")]
-        public static IContaminantProperty ContaminantProperty(this ContaminantSample sample, Type type)
+        [Description("Returns the IStratumProperty matching the type provided..")]
+        [Input("stratum", "The IStratumProperty to retrieve the property from.")]
+        [Input("type", "The type that inherits IStratumProperty to search the Stratum for.")]
+        [Output("property", "The IStratumProperty found on the Stratum.")]
+        public static IStratumProperty StratumProperty(this Stratum stratum, Type type)
         {
-            if (sample.IsValid())
+            if (stratum.IsValid())
             {
-                List<IContaminantProperty> props = sample.ContaminantProperties.Where(x => x.GetType() == type).ToList();
+                List<IStratumProperty> props = stratum.Properties.Where(x => x.GetType() == type).ToList();
 
-                if (props.IsNullOrEmpty($"The ContaminantSample does not contain a property of {type}."))
+                if (props.IsNullOrEmpty($"The Stratum does not contain a property of {type}."))
                     return null;
                 else
                 {
                     if (props.Count > 1)
-                        Base.Compute.RecordWarning($"Ambigous match as ContaminantSample contains more than one property of type {type}. " +
+                        Base.Compute.RecordWarning($"Ambigous match as Stratum contains more than one property of type {type}. " +
                             $"First one is returned.");
 
                     return props.First();

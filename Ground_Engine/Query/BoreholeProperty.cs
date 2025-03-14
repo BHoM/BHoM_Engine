@@ -24,7 +24,6 @@ using System.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Ground;
 using BH.Engine.Base;
@@ -38,23 +37,22 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the IContaminantProperty matching the type provided.")]
-        [Input("sample", "The ContaminantSample to retrieve the property from.")]
-        [Input("type", "The type that inherits IContaminantProperty to search the ContaminantSample for.")]
-        [Output("property", "The IContaminantProperty found on the ContaminantSample.")]
-        public static IContaminantProperty ContaminantProperty(this ContaminantSample sample, Type type)
+        [Description("Returns the IBoreholeProperty matching the type provided..")]
+        [Input("borehole", "The IBoreholeProperty to retrieve the property from.")]
+        [Input("type", "The type that inherits IBoreholeProperty to search the Stratum for.")]
+        [Output("property", "The IBoreholeProperty found on the Stratum.")]
+        public static IBoreholeProperty BoreholeProperty(this Borehole borehole, Type type)
         {
-            if (sample.IsValid())
+            if (borehole.IsValid())
             {
-                List<IContaminantProperty> props = sample.ContaminantProperties.Where(x => x.GetType() == type).ToList();
+                List<IBoreholeProperty> props = borehole.BoreholeProperties.Where(x => x.GetType() == type).ToList();
 
-                if (props.IsNullOrEmpty($"The ContaminantSample does not contain a property of {type}."))
+                if (props.IsNullOrEmpty($"The Borehole does not contain a property of {type}."))
                     return null;
                 else
                 {
-                    if (props.Count > 1)
-                        Base.Compute.RecordWarning($"Ambigous match as ContaminantSample contains more than one property of type {type}. " +
-                            $"First one is returned.");
+                    if(props.Count > 1)
+                        Base.Compute.RecordWarning($"Ambigous match as Borehole contains more than one property of type {type}. First one is returned.");
 
                     return props.First();
                 }
