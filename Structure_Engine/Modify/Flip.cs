@@ -86,6 +86,27 @@ namespace BH.Engine.Structure
                 flipped.SectionProperty = flippedSectionProperty;
             }
 
+            // Flip offsets
+            if (bar.Offset != null)
+            {
+                Offset flippedOffset = new Offset()
+                {
+                    Start = new Vector()
+                    {
+                        X = -bar.Offset.End.X,
+                        Y = bar.Offset.End.Y,
+                        Z = bar.Offset.End.Z
+                    },
+                    End = new Vector()
+                    {
+                        X = -bar.Offset.Start.X,
+                        Y = bar.Offset.Start.Y,
+                        Z = bar.Offset.Start.Z
+                    }
+                };
+            }
+
+
             return flipped;
         }
 
@@ -197,7 +218,7 @@ namespace BH.Engine.Structure
 
         private static IProfile FlipProfile(KiteProfile oldProfile)
         {
-            return Spatial.Create.KiteProfile(oldProfile.Width1*Math.Tan(oldProfile.Angle1/2), Math.PI - oldProfile.Angle1, oldProfile.Thickness);
+            return Spatial.Create.KiteProfile(oldProfile.Width1 * Math.Tan(oldProfile.Angle1 / 2), Math.PI - oldProfile.Angle1, oldProfile.Thickness);
         }
 
         /***************************************************/
