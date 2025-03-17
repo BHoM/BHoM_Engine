@@ -94,13 +94,13 @@ namespace BH.Engine.Structure
                     Start = new Vector()
                     {
                         X = -bar.Offset.End.X,
-                        Y = bar.Offset.End.Y,
+                        Y = -bar.Offset.End.Y,
                         Z = bar.Offset.End.Z
                     },
                     End = new Vector()
                     {
                         X = -bar.Offset.Start.X,
-                        Y = bar.Offset.Start.Y,
+                        Y = -bar.Offset.Start.Y,
                         Z = bar.Offset.Start.Z
                     }
                 };
