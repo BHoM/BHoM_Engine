@@ -28,6 +28,7 @@ using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using BH.Engine.Base;
 using BH.oM.Structure.Constraints;
+using BH.oM.Structure.Offsets;
 using System;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Spatial.ShapeProfiles;
@@ -150,10 +151,7 @@ namespace BH.Engine.Structure
 
         private static IProfile IFlipProfile(IProfile profile)
         {
-            if (profile is BoxProfile || profile is ICellularOpening || profile is CircleProfile || profile is FabricatedBoxProfile ||
-                    profile is FabricatedISectionProfile || profile is GeneralisedFabricatedBoxProfile || profile is ISectionProfile || profile is KiteProfile
-                    || profile is RectangleProfile || profile is TaperFlangeISectionProfile || profile is TSectionProfile ||
-                    profile is TubeProfile || profile is VoidedISectionProfile)
+            if (profile.Symmetric() == Symmetry.DoublySymmetrical)
             {
                 return profile;
             }
@@ -199,8 +197,7 @@ namespace BH.Engine.Structure
 
         private static IProfile FlipProfile(KiteProfile oldProfile)
         {
-            Base.Compute.RecordWarning("Kite profile will not be flipped.");
-            return oldProfile;
+            return Spatial.Create.KiteProfile(oldProfile.Width1*Math.Tan(oldProfile.Angle1/2), Math.PI - oldProfile.Angle1, oldProfile.Thickness);
         }
 
         /***************************************************/
@@ -228,8 +225,8 @@ namespace BH.Engine.Structure
 
         private static IProfile FlipProfile(IProfile oldProfile)
         {
-            Base.Compute.RecordError("The given shape profile does not have a FlipProfile method implemented.");
-            return null;
+            Base.Compute.RecordWarning("The given shape profile does not have a FlipProfile method implemented, the original profile is returned.");
+            return oldProfile;
         }
 
         /***************************************************/
