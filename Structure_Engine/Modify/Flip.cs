@@ -48,7 +48,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Flips the StartNode and EndNode of the Bar, i.e. the StartNode is set to the EndNode and vice versa. No modification is being made to releases, orientation angle, offsets etc.")]
+        [Description("Flips the Bar geometry and the properties including releases, sectionproperty and orientation angle.")]
         [Input("bar", "The Bar to flip.")]
         [Output("bar", "The Bar with flipped end Nodes.")]
         public static Bar Flip(this Bar bar)
@@ -104,6 +104,8 @@ namespace BH.Engine.Structure
             return flipped;
         }
 
+        /***************************************************/
+
         [Description("Flips the normal of the Stem.")]
         [Input("stem", "The Stem to flip.")]
         [Output("stem", "The Stem with flipped Normal.")]
@@ -121,6 +123,8 @@ namespace BH.Engine.Structure
             return flipped;
         }
 
+        /***************************************************/
+
         private static ISectionProperty Flip(this ISectionProperty section)
         {
             if (section is IGeometricalSection geometricalSection)
@@ -137,10 +141,12 @@ namespace BH.Engine.Structure
             }
             else
             {
-                Base.Compute.RecordError("The given shape profile is not an IGeometricalSection.");
-                return null;
+                Base.Compute.RecordWarning("The given shape profile is not an IGeometricalSection.");
+                return section;
             }
         }
+
+        /***************************************************/
 
         private static IProfile IFlipProfile(IProfile profile)
         {
@@ -156,31 +162,49 @@ namespace BH.Engine.Structure
                 return FlipProfile(profile as dynamic);
             }
         }
+
+        /***************************************************/
+
         private static IProfile FlipProfile(AngleProfile oldProfile)
         {
             return Spatial.Create.AngleProfile(oldProfile.Height, oldProfile.Width, oldProfile.WebThickness, oldProfile.FlangeThickness, oldProfile.RootRadius,
                 oldProfile.ToeRadius, !oldProfile.MirrorAboutLocalZ, oldProfile.MirrorAboutLocalY);
         }
 
+        /***************************************************/
+
         private static IProfile FlipProfile(ChannelProfile oldProfile)
         {
             return Spatial.Create.ChannelProfile(oldProfile.Height, oldProfile.FlangeWidth, oldProfile.WebThickness, oldProfile.FlangeThickness,
                 oldProfile.RootRadius, oldProfile.ToeRadius, !oldProfile.MirrorAboutLocalZ);
         }
+
+        /***************************************************/
+
         private static IProfile FlipProfile(FreeFormProfile oldProfile)
         {
             List<ICurve> curves = oldProfile.Edges.ToList();
             return Spatial.Create.FreeFormProfile(curves.Select(x => x.IMirror(Geometry.Create.Plane(new Point(), Vector.XAxis))));
         }
+
+        /***************************************************/
+
         private static IProfile FlipProfile(GeneralisedTSectionProfile oldProfile)
         {
             return Spatial.Create.GeneralisedTSectionProfile(oldProfile.Height, oldProfile.WebThickness, oldProfile.RightOutstandWidth, oldProfile.RightOutstandThickness,
                 oldProfile.LeftOutstandWidth, oldProfile.LeftOutstandThickness, oldProfile.MirrorAboutLocalY);
         }
+
+        /***************************************************/
+
         private static IProfile FlipProfile(KiteProfile oldProfile)
         {
+            Base.Compute.RecordWarning("Kite profile will not be flipped.");
             return oldProfile;
         }
+
+        /***************************************************/
+
         private static IProfile FlipProfile(TaperedProfile oldProfile)
         {
             List<IProfile> newProfiles = new List<IProfile>();
@@ -191,16 +215,25 @@ namespace BH.Engine.Structure
 
             return Spatial.Create.TaperedProfile(oldProfile.Profiles.Keys.ToList(), newProfiles, oldProfile.InterpolationOrder);
         }
+
+        /***************************************************/
+
         private static IProfile FlipProfile(TaperFlangeChannelProfile oldProfile)
         {
             return Spatial.Create.TaperFlangeChannelProfile(oldProfile.Height, oldProfile.FlangeWidth, oldProfile.WebThickness, oldProfile.FlangeThickness, oldProfile.FlangeSlope,
                 oldProfile.RootRadius, oldProfile.ToeRadius, !oldProfile.MirrorAboutLocalZ);
         }
+
+        /***************************************************/
+
         private static IProfile FlipProfile(IProfile oldProfile)
         {
             Base.Compute.RecordError("The given shape profile does not have a FlipProfile method implemented.");
             return null;
         }
+
+        /***************************************************/
+
     }
 }
 
