@@ -226,12 +226,21 @@ namespace BH.Engine.Structure
         private static IProfile FlipProfile(TaperedProfile oldProfile)
         {
             List<IProfile> newProfiles = new List<IProfile>();
-            foreach (IProfile profile in oldProfile.Profiles.Values.Reverse())
+            List<double> newPositions = new List<double>();
+            List<double> keys = oldProfile.Profiles.Keys.ToList();
+
+            for (int i = 0; i < oldProfile.Profiles.Values.Count; i++)
             {
-                newProfiles.Add(IFlipProfile(profile as dynamic));
+                double key = keys[i];
+                newPositions.Add(1 - key);
+                oldProfile.Profiles.TryGetValue(key, out IProfile newProfile);
+                newProfiles.Add(FlipProfile(newProfile as dynamic));
             }
 
-            return Spatial.Create.TaperedProfile(oldProfile.Profiles.Keys.ToList(), newProfiles, oldProfile.InterpolationOrder);
+            newProfiles.Reverse();
+            newPositions.Reverse();
+
+            return Spatial.Create.TaperedProfile(newPositions, newProfiles, oldProfile.InterpolationOrder);
         }
 
         /***************************************************/

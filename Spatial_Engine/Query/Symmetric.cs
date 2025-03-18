@@ -44,7 +44,6 @@ namespace BH.Engine.Spatial
         [Output("s", "The level of symmetry..")]
         public static Symmetry ISymmetric(this IProfile profile, double tolerance = Tolerance.Distance)
         {
-            // Check null
             if (profile.IsNull())
                 return Symmetry.Asymmetric;
 
@@ -128,6 +127,8 @@ namespace BH.Engine.Spatial
             List<Symmetry> distinct = symmetries.Distinct().ToList();
 
             if (distinct.Count() > 1)
+                return Symmetry.Asymmetric;
+            else if (distinct.First() == Symmetry.Asymmetric)
                 return Symmetry.Asymmetric;
             else if (distinct.First() == Symmetry.SinglySymmetricMinor)
                 return Symmetry.SinglySymmetricMinor;
