@@ -172,7 +172,7 @@ namespace BH.Engine.Structure
 
         private static IProfile IFlipProfile(IProfile profile)
         {
-            if (profile.Symmetric() == Symmetry.DoublySymmetrical)
+            if (profile.ISymmetric() == Symmetry.DoublySymmetric)
             {
                 return profile;
             }
