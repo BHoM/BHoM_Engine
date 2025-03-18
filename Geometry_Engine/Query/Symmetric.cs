@@ -28,6 +28,7 @@ using System.Linq;
 using System.ComponentModel;
 using BH.oM.Quantities.Attributes;
 using BH.Engine.Base;
+using BH.oM.Data.Collections;
 
 namespace BH.Engine.Geometry
 {
@@ -37,23 +38,26 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        [Description("Checks whether the specified point is symmetric about the given plane against a list of provided points.")]
+        [Description("Checks whether the list of points are symmetric about the given plane.")]
         [Input("pts", "The list of points to check the symmetry against.")]
-        [Input("pt", "The point to mirror about the given plane.")]
         [Input("p", "The plane to check symmetry about.")]
         [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
         [Output("b", "True if the point is symmetric within tolerance, false if not.")]
-        public static bool Symmetric(List<Point> pts, Point pt, Plane p, double tolerance = Tolerance.Distance)
+        public static bool Symmetric(List<Point> pts, Plane p, double tolerance = Tolerance.Distance)
         {
-            if (pts.IsNullOrEmpty() || pt.IsNull() || p.IsNull())
+            if (pts.IsNullOrEmpty() || p.IsNull())
                 return false;
 
-            Point mirror = pt.Mirror(p);
-            Point closest = ClosestPoint(pts, mirror);
-            if (Distance(mirror, closest) > tolerance)
-                return false;
-            else
-                return true;
+            foreach(Point pt in pts)
+            {
+                Point mirror = pt.Mirror(p);
+                Point closest = ClosestPoint(pts, mirror);
+                if (Distance(mirror, closest) > tolerance)
+                    return false;
+            }
+
+            return true;
+
         }
 
         /***************************************************/
