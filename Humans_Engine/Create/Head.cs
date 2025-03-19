@@ -36,7 +36,7 @@ namespace BH.Engine.Humans
         {
             return new Head
             {
-                PairOfEyes = Create.pairOfEyes(eyeRefLocation,viewDirection)
+                PairOfEyes = Create.PairOfEyes(eyeRefLocation,viewDirection)
             };
         }
 
