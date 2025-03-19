@@ -59,7 +59,7 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        public static object FromBson(BsonDocument bson)
+        public static object FromBson(this BsonDocument bson)
         {       
             return Compute.IDeserialise(bson);
         }

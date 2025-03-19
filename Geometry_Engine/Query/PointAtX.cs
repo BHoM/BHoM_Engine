@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
         [Input("x", "The global x coordinate to evaluate the line at")]
         [Input("tol", "The tolerance for deciding the line is parallel to the Y-axis")]
         [Output("pt", "The Point at x on the line passing through the two points")]
-        public static Point PointAtX(Point a, Point b, double x, double tol = Tolerance.MicroDistance)
+        public static Point PointAtX(this Point a, Point b, double x, double tol = Tolerance.MicroDistance)
         {
             if (Math.Abs(b.X - a.X) < tol)
                 return null;

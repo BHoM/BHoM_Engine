@@ -39,7 +39,7 @@ namespace BH.Engine.Geometry
         [MultiOutput(0, "indices", "Index of the near points within the cloud")]
         [MultiOutput(1, "distance", "Distance to near points")]
         [MultiOutput(2, "nearPoints", "Near points within the cloud")]
-        public static Output<List<int>, List<double>, List<Point>> ClosestPoints(List<Point> clouds, Point samplePoint, int nPoints)
+        public static Output<List<int>, List<double>, List<Point>> ClosestPoints(this List<Point> clouds, Point samplePoint, int nPoints)
         {
             Point[] cloud = clouds.ToArray();
             // For each cloud point, get the distance to the sample point and populate the indices
