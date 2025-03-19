@@ -40,7 +40,7 @@ namespace BH.Engine.Graphics
         /***************************************************/
 
         [Description("Modifies a dataset by adding representation fragments to define a view of the data.")]
-        [Input("chart", "The configuration properties for the view representation.")]
+        [Input("view", "The configuration properties for the view representation.")]
         [Input("dataset", "Dataset to generate a view of.")]
         public static void IView(this IView view, Dataset dataset)
         {

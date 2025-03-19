@@ -32,23 +32,24 @@ namespace BH.Engine.Geometry
 {
     public static partial class Query
     {
-        [Description("Find the closest n-points in a point cloud")]
-        [Input("cloud", "Cloud of points")]
-        [Input("samplePoint", "Point about which to sample from the cloud")]
-        [Input("nPoints", "Number of near points to find")]
-        [MultiOutput(0, "indices", "Index of the near points within the cloud")]
-        [MultiOutput(1, "distance", "Distance to near points")]
-        [MultiOutput(2, "nearPoints", "Near points within the cloud")]
-        public static Output<List<int>, List<double>, List<Point>> ClosestPoints(this List<Point> clouds, Point samplePoint, int nPoints)
+        [PreviousInputNames("cloud", "clouds")]
+        [Description("Find the closest n-points in a point cloud.")]
+        [Input("cloud", "Cloud of points.")]
+        [Input("samplePoint", "Point about which to sample from the cloud.")]
+        [Input("nPoints", "Number of near points to find.")]
+        [MultiOutput(0, "indices", "Index of the near points within the cloud.")]
+        [MultiOutput(1, "distance", "Distance to near points.")]
+        [MultiOutput(2, "nearPoints", "Near points within the cloud.")]
+        public static Output<List<int>, List<double>, List<Point>> ClosestPoints(this List<Point> cloud, Point samplePoint, int nPoints)
         {
-            Point[] cloud = clouds.ToArray();
+            Point[] arrayCloud = cloud.ToArray();
             // For each cloud point, get the distance to the sample point and populate the indices
-            int[] nearPointIndices = new int[cloud.Length];
-            double[] nearPointDistances = new double[cloud.Length];
-            for (int i = 0; i < cloud.Length; i++)
+            int[] nearPointIndices = new int[arrayCloud.Length];
+            double[] nearPointDistances = new double[arrayCloud.Length];
+            for (int i = 0; i < arrayCloud.Length; i++)
             {
                 nearPointIndices[i] = i;
-                nearPointDistances[i] = cloud[i].Distance(samplePoint);
+                nearPointDistances[i] = arrayCloud[i].Distance(samplePoint);
             }
 
             // Sort the arrays based on distance
@@ -67,7 +68,7 @@ namespace BH.Engine.Geometry
             Point[] nearPoints = new Point[nPoints];
             for (int i = 0; i < sampleIndices.Length; i++)
             {
-                nearPoints[i] = cloud[sampleIndices[i]];
+                nearPoints[i] = arrayCloud[sampleIndices[i]];
             }
 
             // Return the n-closest cloud Points to the samplePoint
