@@ -70,7 +70,7 @@ namespace BH.Engine.Data
         /***************************************************/
 
         [Description("Queries if the value is in range of the domain.")]
-        [Input("domain1", "Domain to evaluate overlap with.")]
+        [Input("domain", "Domain to evaluate overlap with.")]
         [Input("val", "Value to query overlap with the domain.")]
         [Input("tolerance", "Numerical tolerance for the operation.")]
         [Output("true if the value is in the domain.")]

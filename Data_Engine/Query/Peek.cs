@@ -20,17 +20,19 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using BH.oM.Data.Collections;
 using System;
 
 namespace BH.Engine.Data
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("8.1", "BH.Engine.Data.Modify.Peek(BH.oM.Data.Collections.PriorityQueue<System.IComparable<System.Object>>)")]
         public static T Peek<T>(this PriorityQueue<T> queue) where T : IComparable<T>
         {
             T frontItem = queue.Data[0];

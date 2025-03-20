@@ -35,7 +35,6 @@ namespace BH.Engine.MEP
         [Description("Queries the solid volume of a Duct by multiplying the section profile's solid area by the element's length. Note this element contains a composite section and this query method returns a single summed value. If you want precise values per section profile, please use CompositeSolidVolumes.")]
         [Input("duct", "The Duct to query solid volume.")]
         [Output("solidVolume", "Combined SolidVolume of the Element's SectionProfiles.")]
-
         public static double SolidVolume(this Duct duct)
         {
             double length = duct.Length();
@@ -87,7 +86,6 @@ namespace BH.Engine.MEP
         [Description("Queries the solid volume of a Pipe by multiplying the section profile's solid area by the element's length. Note this element contains a composite section and this query method returns a single summed value. If you want precise values per section profile, please use CompositeSolidVolumes.")]
         [Input("pipe", "The Pipe to query solid volume.")]
         [Output("solidVolume", "Combined SolidVolume of the Element's SectionProfiles.")]
-
         public static double SolidVolume(this Pipe pipe)
         {
             double length = pipe.Length();
@@ -139,7 +137,6 @@ namespace BH.Engine.MEP
         [Description("Queries the solid volume of a WireSegment by multiplying the section profile's solid area by the element's length. Note this element contains a composite section and this query method returns a single summed value. If you want precise values per section profile, please use CompositeSolidVolumes.")]
         [Input("wireSegment", "The WireSegment to query solid volume.")]
         [Output("solidVolume", "Combined SolidVolume of the Element's SectionProfiles.")]
-
         public static double SolidVolume(this WireSegment wireSegment)
         {
             double length = wireSegment.Length();
@@ -188,10 +185,9 @@ namespace BH.Engine.MEP
 
         /***************************************************/
 
-        [Description("Queries the solid volume of a WireSegment by multiplying the section profile's solid area by the element's length. Note this element contains a composite section and this query method returns a single summed value. If you want precise values per section profile, please use CompositeSolidVolumes.")]
-        [Input("wireSegment", "The WireSegment to query solid volume.")]
+        [Description("Queries the solid volume of a CableTray by multiplying the section profile's solid area by the element's length. Note this element contains a composite section and this query method returns a single summed value. If you want precise values per section profile, please use CompositeSolidVolumes.")]
+        [Input("cableTray", "The CableTray to query solid volume.")]
         [Output("solidVolume", "Combined SolidVolume of the Element's SectionProfiles.")]
-
         public static double SolidVolume(this CableTray cableTray)
         {
             double length = cableTray.Length();

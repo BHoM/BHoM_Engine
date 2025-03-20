@@ -33,15 +33,16 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Graphics
 {
-    public static partial class Create
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Create a marker object.")]
+        [PreviousVersion("8.1", "BH.Engine.Graphics.Create.IMarker(BH.oM.Graphics.Components.IMarker, BH.oM.Geometry.Point, BH.oM.Geometry.Vector)")]
+        [Description("Queries a set of Marker curves from the provided marker as well as endpoint and direction.")]
         [Input("end", "Point where the marker is attached.")]
         [Input("direction", "Vector representing the direction of the marker.")]
-        [Output("marker curves", "COllection of curves to represent the marker.")]
+        [Output("marker curves", "Colection of curves to represent the marker.")]
         public static List<ICurve> IMarker(this IMarker marker, Point end, Vector direction)
         {
             if (marker == null || end == null || direction == null)
@@ -55,10 +56,11 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        [Description("Create a basic arrow marker object.")]
+        [PreviousVersion("8.1", "BH.Engine.Graphics.Create.Marker(BH.oM.Graphics.Components.BasicArrowMarker, BH.oM.Geometry.Point, BH.oM.Geometry.Vector)")]
+        [Description("Queries a set of Marker arrows from the provided marker as well as endpoint and direction.")]
         [Input("end", "Point where the marker is attached.")]
         [Input("direction", "Vector representing the direction of the marker.")]
-        [Output("marker curves", "COllection of curves to represent the marker.")]
+        [Output("marker curves", "Collection of curves to represent the marker.")]
         public static List<ICurve> Marker(this BasicArrowMarker marker, Point end, Vector direction)
         {
             if(marker == null || end == null || direction == null)
@@ -80,17 +82,18 @@ namespace BH.Engine.Graphics
             Point p2 = end + (back - perp);
 
             List<ICurve> head = new List<ICurve>();
-            head.Add(Geometry.Create.Line(p1, end));
-            head.Add(Geometry.Create.Line(p2, end));
+            head.Add(Engine.Geometry.Create.Line(p1, end));
+            head.Add(Engine.Geometry.Create.Line(p2, end));
 
             if (marker.Closed)
-                head.Add(Geometry.Create.Line(p1, p2));
+                head.Add(Engine.Geometry.Create.Line(p1, p2));
 
             return head;
         }
 
         /***************************************************/
 
+        [PreviousVersion("8.1", "BH.Engine.Graphics.Create.Marker(BH.oM.Graphics.Components.IMarker, BH.oM.Geometry.Point, BH.oM.Geometry.Vector)")]
         public static List<ICurve> Marker(this IMarker markerr, Point end, Vector direction)
         {
             return new List<ICurve>();
