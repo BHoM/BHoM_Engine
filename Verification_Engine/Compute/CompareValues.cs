@@ -24,7 +24,6 @@ using BH.Engine.Base.Objects;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Verification;
-using BH.oM.Verification.Conditions;
 using System;
 using System.ComponentModel;
 
@@ -33,7 +32,7 @@ namespace BH.Engine.Verification
     public static partial class Compute
     {
         /***************************************************/
-        /****              Public Methods               ****/
+        /****             Interface Methods             ****/
         /***************************************************/
 
         [Description("Compares two values using the provided comparison requirement and tolerance.")]
@@ -58,6 +57,9 @@ namespace BH.Engine.Verification
         }
 
 
+        /***************************************************/
+        /****              Public Methods               ****/
+        /***************************************************/
 
         [Description("Compares two values using the provided comparison requirement and tolerance.")]
         [Input("value", "Value to compare against the reference value.")]
