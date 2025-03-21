@@ -33,17 +33,21 @@ namespace BH.Tests.Engine.Base.Query
     public class IsNumericIntegralTypeTests
     {
         [Test]
+        [Description("Test method for IsNumericIntegralType that checks if the boolean toggle for enum types is functioning as intended when a enum type is provided.")]
         public void AreEnumsIntegral()
         {
             BH.Engine.Base.Query.IsNumericIntegralType(typeof(DOFType), false).ShouldBe(false);
             BH.Engine.Base.Query.IsNumericIntegralType(typeof(DOFType), true).ShouldBe(true);
 
+            //TODO: Fix this to be pointing at the IsNumericIntegralType method
             BH.Engine.Base.Query.IsNumeric(typeof(DOFType)).ShouldBe(true, "By default, IsNumericIntegralType() considers enums as a numeric integral type.");
         }
 
         [Test]
+        [Description("Test method for IsNumericIntegralType that checks if the boolean toggle for enum types is functioning as intended when a integer type is provided.")]
         public void AreIntsIntegral()
         {
+            //TODO: Fix this to be pointing at the IsNumericIntegralType method
             BH.Engine.Base.Query.IsNumeric(10.GetType(), true).ShouldBe(true);
             BH.Engine.Base.Query.IsNumeric(10.GetType(), false).ShouldBe(true);
 

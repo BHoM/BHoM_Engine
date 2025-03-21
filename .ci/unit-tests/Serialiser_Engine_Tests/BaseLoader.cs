@@ -33,6 +33,7 @@ namespace BH.Tests.Engine.Serialiser
     public class BaseLoader
     {
         [OneTimeSetUp]
+        [Description("Setup method that checks that the temporary log folder exists, and if it does not, creates it.")]
         public static void EnsureFolderExist()
         {
             if (!Directory.Exists(Helpers.TemporaryLogFolder()))
@@ -42,6 +43,7 @@ namespace BH.Tests.Engine.Serialiser
         }
 
         [OneTimeSetUp]
+        [Description("Setup method that ensures all BHoM assemblies are loaded.")]
         public static void EnsureAssembliesLoaded()
         {
             BH.Engine.Base.Compute.LoadAllAssemblies();
