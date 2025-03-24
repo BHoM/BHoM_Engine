@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace BH.Tests.Engine.Serialiser
 {
     public static partial class Helpers
     {
+        [Description("Method returning folder path for storing temporary logs from tests.")]
         public static string TemporaryLogFolder()
         {
             return "C:\\Temp\\SerialiserTests";
