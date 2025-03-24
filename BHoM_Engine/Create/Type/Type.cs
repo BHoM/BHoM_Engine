@@ -63,6 +63,7 @@ namespace BH.Engine.Base
                     return type;
 
                 type = System.Type.GetType(name);
+
                 if (type == null && name.EndsWith("&"))
                 {
                     type = Type(name.TrimEnd(new char[] { '&' }), true);
