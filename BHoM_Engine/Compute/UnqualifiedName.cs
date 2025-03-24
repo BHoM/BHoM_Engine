@@ -24,12 +24,10 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
-using Mono.Cecil;
-using Mono.Reflection;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
-namespace BH.Engine.Reflection
+namespace BH.Engine.Base
 {
     public static partial class Query
     {
@@ -37,6 +35,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("8.1", "BH.Engine.Reflection.Query.UnqualifiedName(System.String)")]
         [Description("Obtain the unqualified name for a given qualified name from a type.")]
         [Input("qualifiedName", "The qualified name to query the unqualified name from.")]
         [Output("unqualifiedName", "The unqualified name for the given name.")]

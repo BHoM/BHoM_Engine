@@ -61,6 +61,9 @@ namespace BH.Engine.Base
                 //No method found in dictionary, try System.Type
                 Type type = System.Type.GetType(name);
                 if (type == null)
+                    type = System.Type.GetType(Query.UnqualifiedName(name));    //Fallback for when deserialising a type from a later net runtime to a lower net runtime. Can be critical when going between softwares of different net runtimes.
+                    
+                if (type == null)
                 {
                     if (!silent)
                         Compute.RecordError($"A type corresponding to {name} cannot be found.");
