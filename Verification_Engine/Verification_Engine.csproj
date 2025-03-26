@@ -9,13 +9,11 @@
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
     <RootNamespace>BH.Engine.Verification</RootNamespace>
     <FileVersion>8.1.0.0</FileVersion>
+	<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+	<OutputPath>..\Build\</OutputPath>
+	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-	  <OutputPath>..\Build\</OutputPath>
-	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-  </PropertyGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
 	  <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)Microsoft.CodeAnalysis.CSharp.Scripting.dll&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y&#xD;&#xA;xcopy &quot;$(TargetDir)Microsoft.CodeAnalysis.Scripting.dll&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
