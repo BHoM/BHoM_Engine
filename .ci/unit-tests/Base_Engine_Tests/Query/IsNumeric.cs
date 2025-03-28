@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -33,6 +33,7 @@ namespace BH.Tests.Engine.Base.Query
     public class IsNumericTests
     {
         [Test]
+        [Description("Test method for IsNumeric that checks if the boolean toggle for enum types is functioning as intended when a enum type is provided.")]
         public void AreEnumsNumeric()
         {
             BH.Engine.Base.Query.IsNumeric(typeof(DOFType), false).ShouldBe(false);
@@ -42,6 +43,7 @@ namespace BH.Tests.Engine.Base.Query
         }
 
         [Test]
+        [Description("Test method for IsNumeric that checks if the boolean toggle for enum types is functioning as intended when a integer type is provided.")]
         public void AreIntegersNumeric()
         {
             BH.Engine.Base.Query.IsNumeric(10.GetType(), true).ShouldBe(true);
@@ -51,3 +53,4 @@ namespace BH.Tests.Engine.Base.Query
         }
     }
 }
+

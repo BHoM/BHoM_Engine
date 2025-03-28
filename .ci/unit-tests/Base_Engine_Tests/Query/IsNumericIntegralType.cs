@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -33,21 +33,24 @@ namespace BH.Tests.Engine.Base.Query
     public class IsNumericIntegralTypeTests
     {
         [Test]
+        [Description("Test method for IsNumericIntegralType that checks if the boolean toggle for enum types is functioning as intended when a enum type is provided.")]
         public void AreEnumsIntegral()
         {
             BH.Engine.Base.Query.IsNumericIntegralType(typeof(DOFType), false).ShouldBe(false);
             BH.Engine.Base.Query.IsNumericIntegralType(typeof(DOFType), true).ShouldBe(true);
 
-            BH.Engine.Base.Query.IsNumeric(typeof(DOFType)).ShouldBe(true, "By default, IsNumericIntegralType() considers enums as a numeric integral type.");
+            BH.Engine.Base.Query.IsNumericIntegralType(typeof(DOFType)).ShouldBe(true, "By default, IsNumericIntegralType() considers enums as a numeric integral type.");
         }
 
         [Test]
+        [Description("Test method for IsNumericIntegralType that checks if the boolean toggle for enum types is functioning as intended when a integer type is provided.")]
         public void AreIntsIntegral()
         {
-            BH.Engine.Base.Query.IsNumeric(10.GetType(), true).ShouldBe(true);
-            BH.Engine.Base.Query.IsNumeric(10.GetType(), false).ShouldBe(true);
+            BH.Engine.Base.Query.IsNumericIntegralType(10.GetType(), true).ShouldBe(true);
+            BH.Engine.Base.Query.IsNumericIntegralType(10.GetType(), false).ShouldBe(true);
 
-            BH.Engine.Base.Query.IsNumeric(10.GetType()).ShouldBe(true);
+            BH.Engine.Base.Query.IsNumericIntegralType(10.GetType()).ShouldBe(true);
         }
     }
 }
+

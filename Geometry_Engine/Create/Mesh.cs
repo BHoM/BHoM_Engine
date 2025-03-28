@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -92,7 +92,7 @@ namespace BH.Engine.Geometry
 
             double maxNormNoise = Math.Max(ellipse.Axis1.Length(), ellipse.Axis2.Length()) / 2;
 
-            foreach (List<Point> pts in PointGrid(start, ellipse.Axis1 / nb1, ellipse.Axis2 / nb2, nb1, nb2))
+            foreach (List<Point> pts in Compute.PointGrid(start, ellipse.Axis1 / nb1, ellipse.Axis2 / nb2, nb1, nb2))
             {
                 points.AddRange(pts.Select(x => x + 2 * maxNormNoise * (rnd.NextDouble() - 0.5) * normal));
             } 
@@ -118,6 +118,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
 
 
 

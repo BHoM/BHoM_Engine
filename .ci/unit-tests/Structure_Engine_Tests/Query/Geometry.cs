@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -36,6 +36,7 @@ namespace BH.Tests.Engine.Base.Query
         private static ConcreteSection concreteSection = (ConcreteSection)BH.Engine.Base.Create.RandomObject(typeof(ConcreteSection));
 
         [Test]
+        [Description("Checks that the geometry method for a concrete section returns a non-null geometry. Method run to ensure that there are no core issues with the method that would impact below tests.")]
         public static void CrossSectionGeometry3D()
         {
             var geom = BH.Engine.Structure.Query.Geometry(concreteSection);
@@ -43,6 +44,7 @@ namespace BH.Tests.Engine.Base.Query
         }
 
         [Test]
+        [Description("Checks that the running extension method in base engine via TryRunExtension method is working as intended.")]
         public static void CrossSectionIGeometryExtensionMethodNotNull()
         {
             var geom = BH.Engine.Base.Query.IGeometry(concreteSection);
@@ -62,3 +64,4 @@ namespace BH.Tests.Engine.Base.Query
         }
     }
 }
+

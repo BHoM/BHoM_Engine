@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -56,32 +56,6 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-
-        [Description("Creates a two dimensional grid of points along the two provided vectors.")]
-        [Input("start", "Base point of the grid.")]
-        [Input("dir1", "First direction of the grid. Spacing in this direction will be determined by the length of the vector.")]
-        [Input("dir2", "Second direction of the grid. Spacing in this direction will be determined by the length of the vector.")]
-        [Input("nbPts1", "Number of points along the first direction.")]
-        [Input("nbPts2", "Number of points along the second direction.")]
-        [Output("grid", "The created grid of points as a nested list, where each inner list corresponds to all values along the first vector.")]
-        public static List<List<Point>> PointGrid(Point start, Vector dir1, Vector dir2, int nbPts1, int nbPts2)
-        {
-            List<List<Point>> pts = new List<List<Point>>();
-            for (int i = 0; i < nbPts1; i++)
-            {
-                List<Point> row = new List<Point>();
-                for (int j = 0; j < nbPts2; j++)
-                {
-                    row.Add(start + i * dir1 + j * dir2);
-                }
-                pts.Add(row);
-            }
-
-            return pts;
-        }
-
-
-        /***************************************************/
         /**** Random Geometry                           ****/
         /***************************************************/
 
@@ -121,6 +95,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
 
 
 

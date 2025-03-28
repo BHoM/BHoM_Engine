@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -35,7 +35,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("8.0", "BH.Engine.Base.Query.ExtensionMethodHierarchy(System.Collections.Generic.IEnumerable<System.Reflection.MethodInfo>, System.Type)")]
         [Description("Builds a hierarchy of methods based on distance of each method's input parameter to the correspondent input type, first to first, second to second etc." +
             "\nThree levels of hierarchy are returned:" +
             "\n- first level of hierarchy groups the output by order of inputs, i.e. first sublist corresponds to first input type and first method parameter, second to second etc." +
@@ -168,3 +167,4 @@ namespace BH.Engine.Base
         /***************************************************/
     }
 }
+

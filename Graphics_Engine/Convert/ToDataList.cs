@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -33,7 +33,7 @@ namespace BH.Engine.Graphics
     public static partial class Convert
     {
         [Description("Attempts to convert an object to a collection of objects.")]
-        [Input("object", "The object to convert.")]
+        [Input("obj", "The object to convert.")]
         [Output("dataList", "A collection of objects, empty if the conversion was not possible.")]
         public static List<object> ToDataList(object obj)
         {
@@ -51,6 +51,7 @@ namespace BH.Engine.Graphics
         }
     }
 }
+
 
 
 

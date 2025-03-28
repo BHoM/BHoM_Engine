@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -33,7 +33,7 @@ namespace BH.Engine.Settings
     {
         [Description("Update settings in memory with the provided settings object. If the settings already exist in memory, they will be updated to the ones provided. If they do not exist in memory, they will be added.")]
         [Input("settings", "New settings to update or add to memory.")]
-        public static void UpdateSettings(ISettings settings)
+        public static void UpdateSettings(this ISettings settings)
         {
             if (settings == null)
             {
@@ -46,4 +46,5 @@ namespace BH.Engine.Settings
         }
     }
 }
+
 

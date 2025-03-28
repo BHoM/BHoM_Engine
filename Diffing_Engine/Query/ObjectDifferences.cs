@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -95,6 +95,12 @@ namespace BH.Engine.Diffing
             // So instead, we set the Kellerman precision to capture all variations, that is by using the value 0.
             kellermanComparer.Config.DoublePrecision = 0;
             kellermanComparer.Config.DecimalPrecision = 0;
+
+            //Include local copies of the DataTable comparers, as they are ruled out by netstandard builds in the NugetPackage.
+            //See: https://github.com/BHoM/BHoM_Engine/issues/3455
+            kellermanComparer.Config.CustomComparers.Add(new DataTableComparer(kellerman.RootComparerFactory.GetRootComparer()));
+            kellermanComparer.Config.CustomComparers.Add(new DataRowComparer(kellerman.RootComparerFactory.GetRootComparer()));
+            kellermanComparer.Config.CustomComparers.Add(new DataColumnComparer(kellerman.RootComparerFactory.GetRootComparer()));
 
             // Perform the comparison using the Kellerman library.
             kellerman.ComparisonResult kellermanResult = kellermanComparer.Compare(pastObject, followingObject);
@@ -319,3 +325,4 @@ namespace BH.Engine.Diffing
         /***************************************************/
     }
 }
+

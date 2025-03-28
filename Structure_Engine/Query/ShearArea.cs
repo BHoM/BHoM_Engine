@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -44,7 +44,7 @@ namespace BH.Engine.Structure
         [Input("centroid", "The centroid of the curves along the axis used to generate the slices.", typeof(Length))]
         [Output("shearArea", "The shear area calculated based on the slices.", typeof(Area))]
         [DocumentationURL("https://bhom.xyz/documentation/BHoM_oM/Structure_oM/Shear-Area-Derivation/", oM.Base.Attributes.Enums.DocumentationType.Documentation)]
-        public static double ShearArea(List<IntegrationSlice> slices, double momentOfInertia, double centroid)
+        public static double ShearArea(this List<IntegrationSlice> slices, double momentOfInertia, double centroid)
         {
             double sy = 0;
             double b = 0;
@@ -66,6 +66,7 @@ namespace BH.Engine.Structure
         /***************************************************/
     }
 }
+
 
 
 

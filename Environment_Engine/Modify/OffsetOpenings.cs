@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         [Description("Reduces the area of the opening(s) if the total area of the opening(s) is equal to the area of the panel itself. Returns an Environment Panel object.")]
         [Input("panel", "An Environment Panel object")]
         [Output("panel", "An Environment Panel object")]
-        public static Panel OffsetOpenings(Panel panel)
+        public static Panel OffsetOpenings(this Panel panel)
         {
             if(panel == null)
             {
@@ -103,6 +103,7 @@ namespace BH.Engine.Environment
         }
     }
 }
+
 
 
 

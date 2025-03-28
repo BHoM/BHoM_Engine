@@ -1,6 +1,6 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -20,37 +20,45 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Geometry;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
-using BH.oM.Base;
-using BH.oM.Geometry;
-using BH.oM.Data.Collections;
+using BH.oM.Quantities.Attributes;
 
-namespace BH.Engine.Data
+namespace BH.Engine.Geometry
 {
-    public static partial class Create
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Create a leaf node for a DomainTree.")]
-        [Input("data", "The data to store in the DomainTree leaf.")]
-        [Input("domainBox", "A DomainBox that encompasses the data.")]
-        [Output("leaf", "A leaf node for a DomainTree.")]
-        public static DomainTree<T> DomainTreeLeaf<T>(T data, DomainBox domainBox)
+        [PreviousVersion("8.1", "BH.Engine.Geometry.Create.PointGrid(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, System.Int32, System.Int32)")]
+        [Description("Creates a two dimensional grid of points along the two provided vectors.")]
+        [Input("start", "Base point of the grid.")]
+        [Input("dir1", "First direction of the grid. Spacing in this direction will be determined by the length of the vector.")]
+        [Input("dir2", "Second direction of the grid. Spacing in this direction will be determined by the length of the vector.")]
+        [Input("nbPts1", "Number of points along the first direction.")]
+        [Input("nbPts2", "Number of points along the second direction.")]
+        [Output("grid", "The created grid of points as a nested list, where each inner list corresponds to all values along the first vector.")]
+        public static List<List<Point>> PointGrid(Point start, Vector dir1, Vector dir2, int nbPts1, int nbPts2)
         {
-            return new DomainTree<T>() { Values = new List<T>() { data }, DomainBox = domainBox };
+            List<List<Point>> pts = new List<List<Point>>();
+            for (int i = 0; i < nbPts1; i++)
+            {
+                List<Point> row = new List<Point>();
+                for (int j = 0; j < nbPts2; j++)
+                {
+                    row.Add(start + i * dir1 + j * dir2);
+                }
+                pts.Add(row);
+            }
+
+            return pts;
         }
 
         /***************************************************/
-
     }
 }
-
-
-
-

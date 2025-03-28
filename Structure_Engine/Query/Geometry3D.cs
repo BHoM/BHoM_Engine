@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -61,10 +61,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Gets a CompositeGeometry made of the boundary surfaces of the Panel, or only its central Surface.")]
+        [Description("Gets a CompositeGeometry made of the boundary surfaces of the Panel envelope, or only its central Surface.")]
         [Input("panel", "The input panel to get the Geometry3D out of.")]
         [Input("onlyCentralSurface", "If true, the returned geometry is only the central (middle) surface of the panel. Otherwise, the whole external solid is returned as a CompositeGeometry of many surfaces.")]
-        [Output("3d", "Three-dimensional geometry of the Panel.")]
+        [Output("3d", "Three-dimensional geometry of the Panel envelope.")]
         public static IGeometry Geometry3D(this Panel panel, bool onlyCentralSurface = false)
         {
             if (panel.IsNull())
@@ -79,13 +79,14 @@ namespace BH.Engine.Structure
             else
             {
                 CompositeGeometry compositeGeometry = new CompositeGeometry();
+                Vector localZ = centralPlanarSurface.Normal().Normalise();
+                double thickness = panel.Property.ITotalThickness();
 
-                double thickness = panel.Property.IVolumePerArea();
-                Vector translateVect = new Vector() { Z = -thickness / 2 };
-                Vector extrudeVect = new Vector() { Z = thickness };
+                Vector translateVect = localZ * -thickness / 2;
+                Vector extrudeVect = localZ * thickness;
 
-                Vector upHalf = new Vector() { X = 0, Y = 0, Z = thickness / 2 };
-                Vector downHalf = new Vector() { X = 0, Y = 0, Z = -thickness / 2 };
+                Vector upHalf = localZ * thickness / 2;
+                Vector downHalf = localZ * -thickness / 2;
 
                 PlanarSurface topSrf = centralPlanarSurface.ITranslate(upHalf) as PlanarSurface;
                 PlanarSurface botSrf = centralPlanarSurface.ITranslate(downHalf) as PlanarSurface;
@@ -211,6 +212,7 @@ namespace BH.Engine.Structure
         }
     }
 }
+
 
 
 

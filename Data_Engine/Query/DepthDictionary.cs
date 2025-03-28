@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -34,10 +34,10 @@ namespace BH.Engine.Data
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("Gets the depth dictionary of a graph using breadth first search, each key value pair in the resulting dictionary is in the form <graph node, depth>")]
-        [Input("adjacency", "The adjacency dictionary to extract the depth dictionary from")]
-        [Input("startNode", "The graph node from which the depth dictionary is created")]
-        public static Dictionary<GraphNode<T>, int> DepthDictionary<T>(Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency, GraphNode<T> startNode)
+        [Description("Gets the depth dictionary of a graph using breadth first search, each key value pair in the resulting dictionary is in the form <graph node, depth>.")]
+        [Input("adjacency", "The adjacency dictionary to extract the depth dictionary from.")]
+        [Input("startNode", "The graph node from which the depth dictionary is created.")]
+        public static Dictionary<GraphNode<T>, int> DepthDictionary<T>(this Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency, GraphNode<T> startNode)
         {
             //https://www.geeksforgeeks.org/level-node-tree-source-node-using-bfs/
             // dictionary to store level of each node  
@@ -81,9 +81,9 @@ namespace BH.Engine.Data
             return level;
         }
         /***************************************************/
-        [Description("Gets the depth dictionary of a graph using breadth first search, each key value pair in the resulting dictionary is in the form <graph node, depth>")]
-        [Input("graph", "The graph to extract the depth dictionary from")]
-        [Input("startNode", "The graph node from which the depth dictionary is created")]
+        [Description("Gets the depth dictionary of a graph using breadth first search, each key value pair in the resulting dictionary is in the form <graph node, depth>.")]
+        [Input("graph", "The graph to extract the depth dictionary from.")]
+        [Input("startNode", "The graph node from which the depth dictionary is created.")]
         public static Dictionary<GraphNode<T>, int> DepthDictionary<T>(this Graph<T> graph, GraphNode<T> startNode)
         {
             Dictionary<GraphNode<T>, List<GraphNode<T>>> adjacency = graph.AdjacencyDictionary();
@@ -91,6 +91,7 @@ namespace BH.Engine.Data
         }
     }
 }
+
 
 
 

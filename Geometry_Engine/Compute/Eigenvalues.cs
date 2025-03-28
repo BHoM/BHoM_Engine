@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -73,11 +73,11 @@ namespace BH.Engine.Geometry
         
         /***************************************************/
 
-        // Solve Ax^3 + Bx^2 + Cx + D = 0 following http://www.code-kings.com/2013/11/cubic-equation-roots-in-csharp-code.html
-        private static double[] RealCubicRoots(double A, double B, double C, double D)
+        // Solve ax^3 + bx^2 + cx + d = 0 following http://www.code-kings.com/2013/11/cubic-equation-roots-in-csharp-code.html
+        private static double[] RealCubicRoots(double a, double b, double c, double d)
         {
-            double f = (3 * C / A - B * B / (A * A)) / 3;
-            double g = (2 * Math.Pow(B, 3) / Math.Pow(A, 3) - (9 * B * C) / Math.Pow(A, 2) + 27 * D / A) / 27;
+            double f = (3 * c / a - b * b / (a * a)) / 3;
+            double g = (2 * Math.Pow(b, 3) / Math.Pow(a, 3) - (9 * b * c) / Math.Pow(a, 2) + 27 * d / a) / 27;
             double h = Math.Pow(g, 2) * 0.25 + Math.Pow(f, 3) / 27;
 
             if (h <= 0)
@@ -88,8 +88,8 @@ namespace BH.Engine.Geometry
                 double l = -j;
                 double m = Math.Cos(k / 3);
                 double n = Math.Pow(3, 0.5) * Math.Sin(k / 3);
-                double p = -B / (3 * A);
-                double x = 2 * j * Math.Cos(k / 3) - B / (3 * A);
+                double p = -b / (3 * a);
+                double x = 2 * j * Math.Cos(k / 3) - b / (3 * a);
                 double y = l * (m + n) + p;
                 double z = l * (m - n) + p;
                 return new double[] { x, y, z };
@@ -101,6 +101,7 @@ namespace BH.Engine.Geometry
         /***************************************************/
     }
 }
+
 
 
 

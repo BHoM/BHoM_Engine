@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -33,10 +33,10 @@ namespace BH.Engine.Data
 {
     public static partial class Modify
     {
-        [Description("Get the transpose of a rectangular collection")]
-        [Input("lists", "The rectangular collection to transpose")]
-        [Output("The transposed rectangular collection")]
-        public static List<List<T>> TransposeRectangularCollection<T>(List<List<T>> lists)
+        [Description("Get the transpose of a rectangular collection.")]
+        [Input("lists", "The rectangular collection to transpose.")]
+        [Output("The transposed rectangular collection.")]
+        public static List<List<T>> TransposeRectangularCollection<T>(this List<List<T>> lists)
         {
             var longest = lists.Any() ? lists.Max(l => l.Count) : 0;
             List<List<T>> outer = new List<List<T>>(longest);
@@ -54,6 +54,7 @@ namespace BH.Engine.Data
         }
     }
 }
+
 
 
 

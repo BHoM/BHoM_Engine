@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -21,6 +21,7 @@
  */
 
 
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Humans.BodyParts;
 
@@ -32,7 +33,8 @@ namespace BH.Engine.Humans
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static PairOfEyes pairOfEyes(Point location, Vector viewDirection)
+        [PreviousVersion("8.1", "BH.Engine.Humans.Create.pairOfEyes(BH.oM.Geometry.Point, BH.oM.Geometry.Vector)")]
+        public static PairOfEyes PairOfEyes(Point location, Vector viewDirection)
         {
             return new PairOfEyes
             {
@@ -45,6 +47,7 @@ namespace BH.Engine.Humans
         /***************************************************/
     }
 }
+
 
 
 

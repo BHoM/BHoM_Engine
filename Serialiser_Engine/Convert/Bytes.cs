@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -50,7 +50,7 @@ namespace BH.Engine.Serialiser
         [Description("Convert a byte array to a BHoMObject")]
         [Input("bytes", "Byte array representing the object in Bson")]
         [Output("obj", "Object recovered from the byte array")]
-        public static object FromBytes(byte[] bytes)
+        public static object FromBytes(this byte[] bytes)
         {
             BsonDocument doc = BsonSerializer.Deserialize(bytes, typeof(BsonDocument)) as BsonDocument;
             return FromBson(doc);
@@ -59,6 +59,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
     }
 }
+
 
 
 

@@ -1,6 +1,6 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -51,7 +51,7 @@ namespace BH.Engine.Verification
             object result;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(objects, nameof(VerifySpecification), new object[] { specification }, out result))
             {
-                BH.Engine.Base.Compute.RecordError($"Verification failed because specification of type {result.GetType().Name} is currently not supported.");
+                BH.Engine.Base.Compute.RecordError($"Verification failed because specification of type {specification.GetType().Name} is currently not supported.");
                 return null;
             }
 
@@ -82,3 +82,4 @@ namespace BH.Engine.Verification
         /***************************************************/
     }
 }
+

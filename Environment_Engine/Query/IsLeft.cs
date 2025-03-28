@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
         [Input("line", "The line to determine directionality")]
         [Input("check", "The point to check against")]
         [Output("isLeft", "True if the point is on the left hand side of the line. False if it is on the line or on the right hand side")]
-        public static bool IsLeft(Line line, Point check)
+        public static bool IsLeft(this Line line, Point check)
         {
             if(line == null)
             {
@@ -60,6 +60,7 @@ namespace BH.Engine.Environment
         }
     }
 }
+
 
 
 

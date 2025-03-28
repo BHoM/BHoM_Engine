@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -35,7 +35,7 @@ namespace BH.Engine.Settings
         [Description("Obtain settings of the specified type if they exist in memory.")]
         [Input("type", "The type of settings you want to obtain.")]
         [Output("settings", "The requested settings if they exist in memory. If they don't exist, a default is returned instead.")]
-        public static object GetSettings(Type type)
+        public static object GetSettings(this Type type)
         {
             Compute.LoadSettings(); //Just in case - load up the defaults
 
@@ -73,4 +73,5 @@ namespace BH.Engine.Settings
         }
     }
 }
+
 

@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -83,11 +83,9 @@ namespace BH.Engine.Versioning
             // Get the list of upgraders to call
             List<string> versions = Query.UpgradersToCall(version);
 
-            bool versionWithPipes = false;
-
             lock (m_versioningLock)
             {
-                if (versionWithPipes)
+                if (m_VersionWithPipes)
                 {
                     // Call all the upgraders in sequence
                     for (int i = 0; i < versions.Count; i++)
@@ -132,6 +130,13 @@ namespace BH.Engine.Versioning
                             Func<BsonDocument, BsonDocument> upgrader = GetUpgraderMethod(versions[i]);
                             if (upgrader != null)
                                 result = upgrader(document);    //Upgrade
+                        }
+                        catch (BadImageFormatException badImageException)
+                        {
+                            //This exception is thrown when there is a problem directly laoding up the upgrades dlls due to runtime of .net
+                            //If this happends, we fall back to runnign via pipes instead
+                            m_VersionWithPipes = true;
+                            return ToNewVersion(document, version);
                         }
                         catch (Exception e)
                         {
@@ -344,6 +349,8 @@ namespace BH.Engine.Versioning
         /**** Private Fields                            ****/
         /***************************************************/
 
+        private static bool m_VersionWithPipes = false;
+
         private static Dictionary<string, NamedPipeServerStream> m_Pipes = new Dictionary<string, NamedPipeServerStream>();
 
         private static object m_versioningLock = new object();
@@ -361,6 +368,7 @@ namespace BH.Engine.Versioning
         /***************************************************/
     }
 }
+
 
 
 

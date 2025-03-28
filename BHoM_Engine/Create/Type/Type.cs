@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -63,6 +63,10 @@ namespace BH.Engine.Base
                     return type;
 
                 type = System.Type.GetType(name);
+
+                if (type == null)
+                    type = System.Type.GetType(unQualifiedName);    //Fallback for when deserialising a type from a later net runtime to a lower net runtime. Can be critical when going between softwares of different net runtimes.
+
                 if (type == null && name.EndsWith("&"))
                 {
                     type = Type(name.TrimEnd(new char[] { '&' }), true);
@@ -105,6 +109,7 @@ namespace BH.Engine.Base
         /*******************************************/
     }
 }
+
 
 
 

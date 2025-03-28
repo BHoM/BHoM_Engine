@@ -1,6 +1,6 @@
 /*
  * This file is part of the Buildings and Habitats object Model (BHoM)
- * Copyright (c) 2015 - 2024, the respective contributors. All rights reserved.
+ * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
@@ -40,12 +40,12 @@ namespace BH.Engine.Ground
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [Description("A method that takes a Borehole, and consolidates the Strata sequentially by combining them based on a specific property.")]
+        [Description("A method that takes a Borehole, and consolidates the Strata sequentially by combining them based on a the property provided.")]
         [Input("borehole", "The Borehole to consolidate the strata for.")]
-        [Input("propertyCompare", "The property of the Strata to consolidate such as ObservedGeology, InterpretedGeology or Legend.")]
+        [Input("propertyCompare", "The property of the Strata to consolidate (e.g. ObservedGeology, InterpretedGeology or Legend).")]
         [Input("decimals", "The number of decimals to display the depth ranges.")]
         [Output("b", "The consolidated Borehole.")]
-        public static Borehole ConsolidateStrata(Borehole borehole, string propertyCompare, int decimals)
+        public static Borehole ConsolidateStrata(Borehole borehole, string propertyCompare, int decimals = 2)
         {
             if (borehole.IsValid())
             {
@@ -159,5 +159,6 @@ namespace BH.Engine.Ground
 
     }
 }
+
 
 
