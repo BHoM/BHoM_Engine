@@ -32,8 +32,6 @@ namespace BH.Engine.Verification
         /****              Public Methods               ****/
         /***************************************************/
 
-        [PreviousVersion("8.1", "BH.Engine.Verification.Query.IValueFromSource(System.Object, BH.oM.Verification.Conditions.IValueSource, System.Boolean)")]
-        [PreviousVersion("8.1", "BH.Engine.Verification.Query.ValueFromSource(System.Object, BH.oM.Verification.Conditions.PropertyValueSource, System.Boolean)")]
         [Description("Extracts a value from an object based on the instruction embedded in the provided " + nameof(IValueSource) + ".")]
         [Input("obj", "Object to extract the value from.")]
         [Input("valueSource", "Object defining how to extract the value from the input object.")]
@@ -57,7 +55,6 @@ namespace BH.Engine.Verification
 
         /***************************************************/
 
-        [PreviousVersion("8.1", "BH.Engine.Verification.Query.ValueFromSource(System.Object, BH.oM.Verification.Conditions.IValueCondition, System.Boolean)")]
         [Description("Extracts a value from an object based on the instruction embedded in the provided " + nameof(IValueCondition) + ".")]
         [Input("obj", "Object to extract the value from.")]
         [Input("valueCondition", "Condition containing an object defining how to extract the value from the input object.")]
