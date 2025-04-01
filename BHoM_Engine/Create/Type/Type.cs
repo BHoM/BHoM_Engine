@@ -49,6 +49,13 @@ namespace BH.Engine.Base
                 return null;
             }
 
+            if (name.StartsWith("System.")) //If a system type, try create it before doing anything else. If failing, rest of method will handle unqualified, generics, reference etc
+            {
+                Type type = System.Type.GetType(name);
+                if (type != null)
+                    return type;
+            }
+
             if (name.Contains('<'))
                 return GenericTypeAngleBrackets(name, silent, takeFirstIfMultiple);
             else if (name.Contains('`') && name.Contains("[["))
