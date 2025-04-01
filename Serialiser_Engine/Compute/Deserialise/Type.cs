@@ -164,7 +164,6 @@ namespace BH.Engine.Serialiser
             return type;
         }
 
-
         /*******************************************/
     }
 }
