@@ -153,7 +153,6 @@ namespace BH.Engine.Serialiser
                 type = type = Base.Create.Type(fullName, true, true);
             }
 
-
             if (type == null)
             {
                 List<Type> types = Base.Create.AllTypes(fullName, true);
