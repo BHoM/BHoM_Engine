@@ -146,16 +146,13 @@ namespace BH.Engine.Serialiser
             Type type = null;
             if (fullName == "T")
                 return null;
-            if (fullName.IsOmNamespace())
-                type = Base.Create.Type(fullName, true, true);
             else if (fullName.IsEngineNamespace())
                 type = Base.Create.EngineType(fullName, true, true);
             else
             {
-                type = Type.GetType(fullName);
-                if (type == null)
-                    type = System.Type.GetType(Base.Query.UnqualifiedName(fullName));
+                type = type = Base.Create.Type(fullName, true, true);
             }
+
 
             if (type == null)
             {
@@ -167,8 +164,8 @@ namespace BH.Engine.Serialiser
             return type;
         }
 
-        /*******************************************/
 
+        /*******************************************/
     }
 }
 
