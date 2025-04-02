@@ -32,7 +32,6 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("8.1", "BH.Engine.Data.Modify.Peek(BH.oM.Data.Collections.PriorityQueue<System.IComparable<System.Object>>)")]
         public static T Peek<T>(this PriorityQueue<T> queue) where T : IComparable<T>
         {
             T frontItem = queue.Data[0];

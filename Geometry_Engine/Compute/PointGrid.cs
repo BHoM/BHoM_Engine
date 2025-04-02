@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
@@ -35,7 +35,6 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("8.1", "BH.Engine.Geometry.Create.PointGrid(BH.oM.Geometry.Point, BH.oM.Geometry.Vector, BH.oM.Geometry.Vector, System.Int32, System.Int32)")]
         [Description("Creates a two dimensional grid of points along the two provided vectors.")]
         [Input("start", "Base point of the grid.")]
         [Input("dir1", "First direction of the grid. Spacing in this direction will be determined by the length of the vector.")]
