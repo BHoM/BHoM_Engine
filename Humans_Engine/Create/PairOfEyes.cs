@@ -33,7 +33,6 @@ namespace BH.Engine.Humans
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("8.1", "BH.Engine.Humans.Create.pairOfEyes(BH.oM.Geometry.Point, BH.oM.Geometry.Vector)")]
         public static PairOfEyes PairOfEyes(Point location, Vector viewDirection)
         {
             return new PairOfEyes

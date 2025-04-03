@@ -35,7 +35,6 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [PreviousVersion("8.1", "BH.Engine.Reflection.Query.UnqualifiedName(System.String)")]
         [Description("Obtain the unqualified name for a given qualified name from a type.")]
         [Input("qualifiedName", "The qualified name to query the unqualified name from.")]
         [Output("unqualifiedName", "The unqualified name for the given name.")]
