@@ -110,7 +110,10 @@ namespace BH.Engine.Base
             ["System.Drawing.Bitmap"] = typeof(System.Drawing.Bitmap),
             ["System.Collections.Generic.SortedDictionary`2"] = typeof(System.Collections.Generic.SortedDictionary<,>),
             ["System.Data.DataTable"] = typeof(System.Data.DataTable),
-            ["System.Collections.Generic.HashSet`1"] = typeof(System.Collections.Generic.HashSet<>)
+            ["System.Collections.Generic.HashSet`1"] = typeof(System.Collections.Generic.HashSet<>),
+            ["System.Xml.XmlNode"] = typeof(System.Xml.XmlNode),
+            ["System.Xml.Linq.XDocument"] = typeof(System.Xml.Linq.XDocument),
+            ["System.Collections.Concurrent.ConcurrentBag`1"] = typeof(System.Collections.Concurrent.ConcurrentBag<>)
         };
 
         /*******************************************/
