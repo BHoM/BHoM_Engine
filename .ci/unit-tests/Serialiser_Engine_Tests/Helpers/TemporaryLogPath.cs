@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace BH.Tests.Engine.Serialiser
 {
     public static partial class Helpers
     {
+        [Description("Method giving a full path for a temporary log file to be created, and boolean option to clear any previous file with the same name.")]
         public static string TemporaryLogPath(string fileName, bool clear) 
         {
             string filePath = System.IO.Path.Combine(Helpers.TemporaryLogFolder(), fileName);

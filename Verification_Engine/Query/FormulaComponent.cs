@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2025, the respective contributors. All rights reserved.
  *
@@ -20,48 +20,41 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using MongoDB.Bson;
-using MongoDB.Bson.IO;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel;
 using BH.oM.Base.Attributes;
-using MongoDB.Bson.Serialization;
+using System.ComponentModel;
 
-namespace BH.Engine.Serialiser
+namespace BH.Engine.Verification
 {
-    public static partial class Convert
+    public static partial class Query
     {
-        /*******************************************/
-        /**** Public Methods                    ****/
-        /*******************************************/
+        /***************************************************/
+        /****             Interface Methods             ****/
+        /***************************************************/
 
-        [Description("Convert a BHoM object To a byte array")]
-        [Input("obj", "Object to be converted")]
-        [Output("bytes", "Byte array representing the object in Bson")]
-        public static byte[] ToBytes(this object obj)
+        [Description("Unpacks the object in preparation to solve a formula.")]
+        [Input("obj", "Object to unpack.")]
+        [Output("unpacked", "Input object unpacked and ready to use in formula solution.")]
+        public static object IFormulaComponent(this object obj)
         {
-            BsonDocument doc = obj.ToBson();
-            return BsonExtensionMethods.ToBson(doc); 
+            if (obj == null)
+                return null;
+
+            return BH.Engine.Base.Compute.RunExtensionMethod(obj, nameof(FormulaComponent));
         }
 
-        /*******************************************/
 
-        [Description("Convert a byte array to a BHoMObject")]
-        [Input("bytes", "Byte array representing the object in Bson")]
-        [Output("obj", "Object recovered from the byte array")]
-        public static object FromBytes(this byte[] bytes)
+        /***************************************************/
+        /****              Public Methods               ****/
+        /***************************************************/
+
+        [Description("Unpacks the object in preparation to solve a formula.")]
+        [Input("obj", "Object to unpack.")]
+        [Output("unpacked", "Input object unpacked and ready to use in formula solution.")]
+        public static object FormulaComponent(this object obj)
         {
-            BsonDocument doc = BsonSerializer.Deserialize(bytes, typeof(BsonDocument)) as BsonDocument;
-            return FromBson(doc);
+            return obj;
         }
 
-        /*******************************************/
+        /***************************************************/
     }
 }
-
-
-
-
-
-

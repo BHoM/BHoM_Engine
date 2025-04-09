@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>https://github.com/BHoM/BHoM_Engine</Description>
-    <FileVersion>8.1.0.0</FileVersion>
+    <FileVersion>8.2.0.0</FileVersion>
     <AssemblyVersion>8.0.0.0</AssemblyVersion>
     <RootNamespace>BH.Engine.Settings</RootNamespace>
     <OutputPath>..\Build\</OutputPath>

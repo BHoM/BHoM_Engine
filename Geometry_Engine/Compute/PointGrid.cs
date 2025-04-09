@@ -20,35 +20,44 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-
-using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
-using BH.oM.Humans.BodyParts;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Quantities.Attributes;
 
-namespace BH.Engine.Humans
+namespace BH.Engine.Geometry
 {
-    public static partial class Create
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static PairOfEyes PairOfEyes(Point location, Vector viewDirection)
+        [Description("Creates a two dimensional grid of points along the two provided vectors.")]
+        [Input("start", "Base point of the grid.")]
+        [Input("dir1", "First direction of the grid. Spacing in this direction will be determined by the length of the vector.")]
+        [Input("dir2", "Second direction of the grid. Spacing in this direction will be determined by the length of the vector.")]
+        [Input("nbPts1", "Number of points along the first direction.")]
+        [Input("nbPts2", "Number of points along the second direction.")]
+        [Output("grid", "The created grid of points as a nested list, where each inner list corresponds to all values along the first vector.")]
+        public static List<List<Point>> PointGrid(Point start, Vector dir1, Vector dir2, int nbPts1, int nbPts2)
         {
-            return new PairOfEyes
+            List<List<Point>> pts = new List<List<Point>>();
+            for (int i = 0; i < nbPts1; i++)
             {
-                ReferenceLocation = location,
+                List<Point> row = new List<Point>();
+                for (int j = 0; j < nbPts2; j++)
+                {
+                    row.Add(start + i * dir1 + j * dir2);
+                }
+                pts.Add(row);
+            }
 
-                ViewDirection = viewDirection,
-            };
+            return pts;
         }
 
         /***************************************************/
     }
 }
-
-
-
-
-
-

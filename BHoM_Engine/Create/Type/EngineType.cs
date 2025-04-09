@@ -84,6 +84,9 @@ namespace BH.Engine.Base
             {
                 //Unique method not found in list, check if it can be extracted using the system Type
                 Type type = System.Type.GetType(name, false);
+                if (type == null)
+                    type = System.Type.GetType(Query.UnqualifiedName(name), false);    //Fallback for when deserialising a type from a later net runtime to a lower net runtime. Can be critical when going between softwares of different net runtimes.
+
                 if (type == null && !silent)
                 {
                     if (types.Count == 0)

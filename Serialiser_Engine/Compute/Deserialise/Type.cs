@@ -151,7 +151,11 @@ namespace BH.Engine.Serialiser
             else if (fullName.IsEngineNamespace())
                 type = Base.Create.EngineType(fullName, true, true);
             else
+            {
                 type = Type.GetType(fullName);
+                if (type == null)
+                    type = System.Type.GetType(Base.Query.UnqualifiedName(fullName));
+            }
 
             if (type == null)
             {

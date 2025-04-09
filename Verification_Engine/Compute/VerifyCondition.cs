@@ -188,25 +188,10 @@ namespace BH.Engine.Verification
             // If value found, check the actual condition
             object value = valueFromSource.Item2;
             bool? pass = false;
-            
-            double tolerance;
-            double.TryParse(condition.Tolerance.ToString(), out tolerance);
-            if (double.IsNaN(tolerance) || tolerance == 0)
-            {
-                BH.Engine.Base.Compute.RecordNote("Tolerance has not been set, default value of 1e-6 is being used.");
-                tolerance = 1e-6;
-            }
 
-            double numericalValue;
-            if (double.TryParse(value?.ToString(), out numericalValue))
-                pass = Query.IsInDomain(numericalValue, condition.Domain, tolerance);
-            else if (value is DateTime)
-            {
-                DateTime? dt = value as DateTime?;
-                pass = Query.IsInDomain(dt.Value.Ticks, condition.Domain, tolerance);
-            }
-            else
-                pass = null;
+            pass = ICompareValues(value, condition.Domain.Min, ValueComparisonType.GreaterThanOrEqualTo, condition.Tolerance);
+            if (pass == true)
+                pass = ICompareValues(value, condition.Domain.Max, ValueComparisonType.LessThanOrEqualTo, condition.Tolerance);
 
             return new ValueConditionResult(pass, value);
         }
@@ -349,17 +334,7 @@ namespace BH.Engine.Verification
                 return new ValueConditionResult(null, null);
 
             object value = valueFromSource.Item2;
-            bool? pass;
-            if (value == null)
-                pass = false;
-            else if (value is double valueDouble)
-                pass = !double.IsNaN(valueDouble);
-            else if (value is string valueString)
-                pass = !string.IsNullOrEmpty(valueString);
-            else
-                pass = !(value.GetType().IsNullable() && value != null);
-
-            return new ValueConditionResult(pass, valueFromSource.Item2); 
+            return new ValueConditionResult(value.IHasValue(), value); 
         }
 
         /***************************************************/
@@ -391,7 +366,7 @@ namespace BH.Engine.Verification
             object value = valueFromSource?.Item2;
 
             // If value found, check the actual condition
-            bool? pass = value.CompareValues(condition.ReferenceValue, condition.ComparisonType, condition.Tolerance);
+            bool? pass = value.ICompareValues(condition.ReferenceValue, condition.ComparisonType, condition.Tolerance);
             return new ValueConditionResult(pass, value);
         }
 
@@ -438,10 +413,7 @@ namespace BH.Engine.Verification
 
         private static bool IsInSet(this object value, List<object> set, ComparisonConfig comparisonConfig)
         {
-            if (comparisonConfig != null)
-                return set.Contains(value, new HashComparer<object>(comparisonConfig));
-            else
-                return set.Contains(value);
+            return set.Any(x => ICompareValues(value, x, ValueComparisonType.EqualTo, comparisonConfig) == true);
         }
 
         /***************************************************/

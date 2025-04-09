@@ -24,7 +24,6 @@ using BH.Engine.Base.Objects;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using BH.oM.Verification;
-using BH.oM.Verification.Conditions;
 using System;
 using System.ComponentModel;
 
@@ -32,6 +31,32 @@ namespace BH.Engine.Verification
 {
     public static partial class Compute
     {
+        /***************************************************/
+        /****             Interface Methods             ****/
+        /***************************************************/
+
+        [Description("Compares two values using the provided comparison requirement and tolerance.")]
+        [Input("value", "Value to compare against the reference value.")]
+        [Input("referenceValue", "Reference value to compare the value against.")]
+        [Input("comparisonType", "Comparison requirement, i.e. whether the value should be equal, greater, less than reference value etc.")]
+        [Input("tolerance", "Tolerance to apply in the comparison.")]
+        [Output("result", "True if comparison of the input values meets the comparison requirement, otherwise false. Null in case of inconclusive comparison.")]
+        public static bool? ICompareValues(this object value, object referenceValue, ValueComparisonType comparisonType, object tolerance)
+        {
+            if (value == null)
+            {
+                if (comparisonType == ValueComparisonType.EqualTo)
+                    return referenceValue == null;
+                else if (comparisonType == ValueComparisonType.NotEqualTo)
+                    return referenceValue != null;
+                else
+                    return null;
+            }
+
+            return BH.Engine.Base.Compute.RunExtensionMethod(value, nameof(CompareValues), new object[] { referenceValue, comparisonType, tolerance }) as bool?;
+        }
+
+
         /***************************************************/
         /****              Public Methods               ****/
         /***************************************************/

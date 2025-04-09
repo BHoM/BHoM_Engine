@@ -33,10 +33,10 @@ namespace BH.Engine.Data
 {
     public static partial class Modify
     {
-        [Description("Get the transpose of a rectangular collection")]
-        [Input("lists", "The rectangular collection to transpose")]
-        [Output("The transposed rectangular collection")]
-        public static List<List<T>> TransposeRectangularCollection<T>(List<List<T>> lists)
+        [Description("Get the transpose of a rectangular collection.")]
+        [Input("lists", "The rectangular collection to transpose.")]
+        [Output("The transposed rectangular collection.")]
+        public static List<List<T>> TransposeRectangularCollection<T>(this List<List<T>> lists)
         {
             var longest = lists.Any() ? lists.Max(l => l.Count) : 0;
             List<List<T>> outer = new List<List<T>>(longest);

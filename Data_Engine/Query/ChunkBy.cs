@@ -35,11 +35,11 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Partition an enumerable collection into sublists based on the number of target sub-lists")]
-        [Input("collection", "An enumerable list of variable data types")]
-        [Input("nChunks", "The number of \"chunks\" into which the collection should be split")]
+        [Description("Partition an enumerable collection into sublists based on the number of target sub-lists.")]
+        [Input("collection", "An enumerable list of variable data types.")]
+        [Input("nChunks", "The number of \"chunks\" into which the collection should be split.")]
         [Output("chunks", "The chunked list")]
-        public static IEnumerable<List<T>> ChunkByNumber<T>(IEnumerable<T> collection, int nChunks)
+        public static IEnumerable<List<T>> ChunkByNumber<T>(this IEnumerable<T> collection, int nChunks)
         {
             int i = 0;
             var splits = from item in collection
@@ -48,11 +48,11 @@ namespace BH.Engine.Data
             return splits;
         }
 
-        [Description("Chunk an enumerable collection into sublists based on a maximum size of each sub-list")]
-        [Input("collection", "An enumerable list of variable data types")]
-        [Input("chunkSize", "The size of each \"chunk\" into which the collection should be split")]
-        [Output("chunks", "The chunked list")]
-        public static IEnumerable<List<T>> ChunkBySize<T>(List<T> collection, int chunkSize = 1)
+        [Description("Chunk an enumerable collection into sublists based on a maximum size of each sub-list.")]
+        [Input("collection", "An enumerable list of variable data types.")]
+        [Input("chunkSize", "The size of each \"chunk\" into which the collection should be split.")]
+        [Output("chunks", "The chunked list.")]
+        public static IEnumerable<List<T>> ChunkBySize<T>(this List<T> collection, int chunkSize = 1)
         {
             for (int i = 0; i < collection.Count; i += chunkSize)
             {

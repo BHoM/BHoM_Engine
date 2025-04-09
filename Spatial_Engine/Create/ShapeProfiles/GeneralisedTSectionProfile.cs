@@ -41,7 +41,6 @@ namespace BH.Engine.Spatial
 
         [Description("Creates a T-shaped profile based on input dimensions. Method generates edge curves based on the inputs.")]
         [InputFromProperty("height")]
-        [InputFromProperty("width")]
         [InputFromProperty("webThickness")]
         [InputFromProperty("leftOutstandWidth")]
         [InputFromProperty("leftOutstandThickness")]

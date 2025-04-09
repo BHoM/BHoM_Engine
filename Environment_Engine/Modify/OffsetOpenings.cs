@@ -40,7 +40,7 @@ namespace BH.Engine.Environment
         [Description("Reduces the area of the opening(s) if the total area of the opening(s) is equal to the area of the panel itself. Returns an Environment Panel object.")]
         [Input("panel", "An Environment Panel object")]
         [Output("panel", "An Environment Panel object")]
-        public static Panel OffsetOpenings(Panel panel)
+        public static Panel OffsetOpenings(this Panel panel)
         {
             if(panel == null)
             {

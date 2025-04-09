@@ -24,17 +24,10 @@ using System.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
-using BH.oM.Data;
-using BH.oM.Geometry;
 using BH.oM.Ground;
-using BH.oM.Quantities.Attributes;
 using BH.Engine.Base;
-using BH.Engine.Data;
-using BH.Engine.Geometry;
-using BH.oM.Data.Requests;
 
 
 namespace BH.Engine.Ground
@@ -45,7 +38,7 @@ namespace BH.Engine.Ground
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the IContaminantProperty matching the type provided..")]
+        [Description("Returns the IContaminantProperty matching the type provided.")]
         [Input("sample", "The ContaminantSample to retrieve the property from.")]
         [Input("type", "The type that inherits IContaminantProperty to search the ContaminantSample for.")]
         [Output("property", "The IContaminantProperty found on the ContaminantSample.")]
@@ -53,14 +46,17 @@ namespace BH.Engine.Ground
         {
             if (sample.IsValid())
             {
-                List<IContaminantProperty> contaminantProperties = sample.ContaminantProperties;
+                List<IContaminantProperty> props = sample.ContaminantProperties.Where(x => x.GetType() == type).ToList();
 
-                if (contaminantProperties.Select(x => x.GetType()).Contains(type))
-                    return (IContaminantProperty)Base.Query.FilterByType(contaminantProperties, type).First();
+                if (props.IsNullOrEmpty($"The ContaminantSample does not contain a property of {type}."))
+                    return null;
                 else
                 {
-                    Base.Compute.RecordError($"The ContaminantSample does not contain {type}.");
-                    return null;
+                    if (props.Count > 1)
+                        Base.Compute.RecordWarning($"Ambigous match as ContaminantSample contains more than one property of type {type}. " +
+                            $"First one is returned.");
+
+                    return props.First();
                 }
             }
             else

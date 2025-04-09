@@ -51,6 +51,7 @@ namespace BH.Tests.Engine.Base.Query
         }
 
         [TearDown]
+        [Description("Tear down method handling collection and reporting of BHoM events recorded during the tests.")]
         public void TearDown()
         {
             var events = BH.Engine.Base.Query.CurrentEvents();
@@ -97,6 +98,7 @@ namespace BH.Tests.Engine.Base.Query
 
         [Test]
         [TestCaseSource(nameof(GetTestContainers))]
+        [Description("Tests that general cases for the unpack is functioning as intended against the data defined in the GetTestContainers().")]
         public void Unpack<T>(Container<T> container, int numberOfObjects)
         {
             var result = container.Unpack();
@@ -106,6 +108,7 @@ namespace BH.Tests.Engine.Base.Query
 
         [Test]
         [TestCaseSource(nameof(GetTestContainerOfContainers))]
+        [Description("Tests that general cases for the unpack is functioning as intended for containers containing other container against the data defined in the GetTestContainerOfContainers().")]
         public void UnpackContainerOfContainers<T>(Container<T> container, int numberOfObjects)
         {
             var result = container.Unpack();
@@ -114,6 +117,7 @@ namespace BH.Tests.Engine.Base.Query
         }
 
         [Test]
+        [Description("Test method that checks that CustomData is ignored when unpacking a container.")]
         public void Unpack_DisregardCustomData()
         {
             var validContainer = new AutoFaker<Container<BHoMObject>>().Generate();
@@ -125,6 +129,7 @@ namespace BH.Tests.Engine.Base.Query
         }
 
         [Test]
+        [Description("Test method that checks that Fragments are ignored when unpacking a container.")]
         public void Unpack_DisregardFragments()
         {
             var validContainer = new AutoFaker<Container<BHoMObject>>().Generate();

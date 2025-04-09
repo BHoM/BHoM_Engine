@@ -20,17 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
-using System.ComponentModel;
+using BH.oM.Ground;
+using BH.Engine.Base;
 
-namespace BH.Engine.Environment
+
+namespace BH.Engine.Ground
 {
     public static partial class Query
     {
@@ -38,30 +37,32 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determine whether a point falls on the left side of a line or not. The left side is defined as the left hand side of the line when standing on the start point and looking at the end point")]
-        [Input("line", "The line to determine directionality")]
-        [Input("check", "The point to check against")]
-        [Output("isLeft", "True if the point is on the left hand side of the line. False if it is on the line or on the right hand side")]
-        public static bool IsLeft(this Line line, Point check)
+        [Description("Returns the IStratumProperty matching the type provided..")]
+        [Input("stratum", "The IStratumProperty to retrieve the property from.")]
+        [Input("type", "The type that inherits IStratumProperty to search the Stratum for.")]
+        [Output("property", "The IStratumProperty found on the Stratum.")]
+        public static IStratumProperty StratumProperty(this Stratum stratum, Type type)
         {
-            if(line == null)
+            if (stratum.IsValid())
             {
-                BH.Engine.Base.Compute.RecordError("Cannot query whether a point is on the left side of a null line.");
-                return false;
-            }
+                List<IStratumProperty> props = stratum.Properties.Where(x => x.GetType() == type).ToList();
 
-            if(check == null)
-            {
-                BH.Engine.Base.Compute.RecordError("Cannot query whether a point is on the left side of a line if the point is null.");
-                return false;
-            }
+                if (props.IsNullOrEmpty($"The Stratum does not contain a property of {type}."))
+                    return null;
+                else
+                {
+                    if (props.Count > 1)
+                        Base.Compute.RecordWarning($"Ambigous match as Stratum contains more than one property of type {type}. " +
+                            $"First one is returned.");
 
-            return ((line.End.X - line.Start.X) * (check.Y - line.Start.Y) - (line.End.Y - line.Start.Y) * (check.X - line.Start.X)) > 0;
+                    return props.First();
+                }
+            }
+            else
+                return null;
         }
+
+        /***************************************************/
+
     }
 }
-
-
-
-
-

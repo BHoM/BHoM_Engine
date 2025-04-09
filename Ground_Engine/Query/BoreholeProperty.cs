@@ -20,48 +20,48 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using MongoDB.Bson;
-using MongoDB.Bson.IO;
-using System.Linq;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using BH.oM.Base.Attributes;
-using MongoDB.Bson.Serialization;
+using BH.oM.Ground;
+using BH.Engine.Base;
 
-namespace BH.Engine.Serialiser
+
+namespace BH.Engine.Ground
 {
-    public static partial class Convert
+    public static partial class Query
     {
-        /*******************************************/
-        /**** Public Methods                    ****/
-        /*******************************************/
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        [Description("Convert a BHoM object To a byte array")]
-        [Input("obj", "Object to be converted")]
-        [Output("bytes", "Byte array representing the object in Bson")]
-        public static byte[] ToBytes(this object obj)
+        [Description("Returns the IBoreholeProperty matching the type provided..")]
+        [Input("borehole", "The IBoreholeProperty to retrieve the property from.")]
+        [Input("type", "The type that inherits IBoreholeProperty to search the Stratum for.")]
+        [Output("property", "The IBoreholeProperty found on the Stratum.")]
+        public static IBoreholeProperty BoreholeProperty(this Borehole borehole, Type type)
         {
-            BsonDocument doc = obj.ToBson();
-            return BsonExtensionMethods.ToBson(doc); 
+            if (borehole.IsValid())
+            {
+                List<IBoreholeProperty> props = borehole.BoreholeProperties.Where(x => x.GetType() == type).ToList();
+
+                if (props.IsNullOrEmpty($"The Borehole does not contain a property of {type}."))
+                    return null;
+                else
+                {
+                    if(props.Count > 1)
+                        Base.Compute.RecordWarning($"Ambigous match as Borehole contains more than one property of type {type}. First one is returned.");
+
+                    return props.First();
+                }
+            }
+            else
+                return null;
         }
 
-        /*******************************************/
+        /***************************************************/
 
-        [Description("Convert a byte array to a BHoMObject")]
-        [Input("bytes", "Byte array representing the object in Bson")]
-        [Output("obj", "Object recovered from the byte array")]
-        public static object FromBytes(this byte[] bytes)
-        {
-            BsonDocument doc = BsonSerializer.Deserialize(bytes, typeof(BsonDocument)) as BsonDocument;
-            return FromBson(doc);
-        }
-
-        /*******************************************/
     }
 }
-
-
-
-
-
-

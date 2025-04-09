@@ -102,12 +102,14 @@ namespace BH.Engine.Reflection
             if (obj == null)
                 return;
 
-            IList iList = obj as IList;
             Type objType = obj.GetType();
-
             if (objType.IsPrimitive())
                 return;
 
+            if (obj is Type || obj is Assembly || obj is Module || obj is Attribute || obj is MemberInfo)
+                return;
+
+            IList iList = obj as IList;
             if (iList == null)
             {
                 var props = objType.GetProperties();

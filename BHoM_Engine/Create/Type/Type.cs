@@ -63,6 +63,10 @@ namespace BH.Engine.Base
                     return type;
 
                 type = System.Type.GetType(name);
+
+                if (type == null)
+                    type = System.Type.GetType(unQualifiedName);    //Fallback for when deserialising a type from a later net runtime to a lower net runtime. Can be critical when going between softwares of different net runtimes.
+
                 if (type == null && name.EndsWith("&"))
                 {
                     type = Type(name.TrimEnd(new char[] { '&' }), true);

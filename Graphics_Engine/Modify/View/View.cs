@@ -40,9 +40,9 @@ namespace BH.Engine.Graphics
         /***************************************************/
 
         [Description("Modifies a dataset by adding representation fragments to define a view of the data.")]
-        [Input("chart", "The configuration properties for the view representation.")]
+        [Input("view", "The configuration properties for the view representation.")]
         [Input("dataset", "Dataset to generate a view of.")]
-        public static void IView(IView view, Dataset dataset)
+        public static void IView(this IView view, Dataset dataset)
         {
             if(view == null || dataset == null)
             {
@@ -57,7 +57,7 @@ namespace BH.Engine.Graphics
         /**** Fallback Methods                          ****/
         /***************************************************/
 
-        public static void View(IView view, Dataset dataset)
+        public static void View(this IView view, Dataset dataset)
         {
 
         }

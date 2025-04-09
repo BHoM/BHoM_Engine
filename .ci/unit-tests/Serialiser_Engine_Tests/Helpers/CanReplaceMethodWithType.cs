@@ -23,6 +23,7 @@
 using BH.oM.Base;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,6 +36,7 @@ namespace BH.Tests.Engine.Serialiser
         /**** Public Methods              ****/
         /*************************************/
 
+        [Description("Helper method that checks if a create method can be replaced with a auto constructor create method.")]
         public static bool CanReplaceMethodWithType(string json)
         {
             string customJson = json.Replace(" \"_t\" : \"System.Reflection.MethodBase\", ", "");

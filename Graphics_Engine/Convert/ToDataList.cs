@@ -33,7 +33,7 @@ namespace BH.Engine.Graphics
     public static partial class Convert
     {
         [Description("Attempts to convert an object to a collection of objects.")]
-        [Input("object", "The object to convert.")]
+        [Input("obj", "The object to convert.")]
         [Output("dataList", "A collection of objects, empty if the conversion was not possible.")]
         public static List<object> ToDataList(object obj)
         {
