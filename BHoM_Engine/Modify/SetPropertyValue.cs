@@ -197,13 +197,6 @@ namespace BH.Engine.Base
         {
             if (obj == null || propName == null)
                 return false;
-
-            // Handle fragments
-            if (value is IFragment && obj is IBHoMObject)
-            {
-                (obj as IBHoMObject).Fragments.Add(value as IFragment);
-                return true;
-            }
             
             // Handle dynamic objects
             if(obj is IDynamicObject)
@@ -231,21 +224,15 @@ namespace BH.Engine.Base
                 }
             }
 
-            // Add to custom data if BHoM object
+            // Handle BHoM objects
             if (obj is IBHoMObject)
             {
-                // Fallback to storing into CustomData
-                IBHoMObject bhom = obj as IBHoMObject;
-                
-                bhom.CustomData[propName] = value;
-                if (!(obj is CustomObject))
-                    Compute.RecordWarning("The object does not contain any property with the name " + propName + ". The value is being set as custom data.");
-
+                SetPropertyFallback(obj as IBHoMObject, propName, value);
                 return true;
             }
             else
             {
-                Compute.RecordWarning("The objects does not contain any property with the name " + propName + ".");
+                Compute.RecordWarning("The object does not contain any property with the name " + propName + ".");
                 return false;
             }                
         }
