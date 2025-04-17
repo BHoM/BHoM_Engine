@@ -262,6 +262,8 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
+        [Description("Return the description of an enum.")]
+        [Input("e", "Enum to be queried for description.")]
         public static string Description(this Enum e)
         {
             FieldInfo fi = e.GetType().GetField(e.ToString());

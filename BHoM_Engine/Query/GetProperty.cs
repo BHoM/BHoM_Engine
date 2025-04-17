@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using BH.oM.Base;
@@ -35,6 +36,10 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Get the value of a property with a given name from a custom object")]
+        [Input("obj", "Custom object to get the value from")]
+        [Input("propertyName", "name of the property to get the value from")]
+        [Output("value", "value of the property")]
         public static object GetProperty(this CustomObject obj, string propertyName)
         {
             return GetPropertyFallback(obj, propertyName);

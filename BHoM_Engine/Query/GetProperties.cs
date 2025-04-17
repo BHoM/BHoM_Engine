@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
@@ -37,6 +38,9 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Extract the list of properties found in a custom object.")]
+        [Input("obj", "Custom object to extract the properties from.")]
+        [Output("properties", "list of properties found on the object.")]
         public static List<Property> GetProperties(this CustomObject obj)
         {
             List<Property> properties = obj.CustomData.Select(x => new Property

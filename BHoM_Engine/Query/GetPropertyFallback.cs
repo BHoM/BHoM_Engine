@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using BH.oM.Base;
@@ -35,6 +36,11 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Fallback nethod to get the value of a property with a given name from a BHoM object. This will try to get the property either from a fragment or from CustomData.")]
+        [Input("obj", "BHoM object to get the value from")]
+        [Input("propertyName", "name of the property to get the value from")]
+        [Input("isSilent", "If true, no warning will be recorded if the property is not found or if multiple matches are found.")]
+        [Output("value", "value of the property")]
         public static object GetPropertyFallback(this IBHoMObject obj, string propertyName, bool isSilent = false)
         {
             if (obj.CustomData.ContainsKey(propertyName))
