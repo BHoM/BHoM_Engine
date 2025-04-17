@@ -252,7 +252,7 @@ namespace BH.Engine.Base
             K key;
             if (!Enum.TryParse(propName, out key))
             {
-                Compute.RecordError($"cannot convert {propName} into an enum of type {typeof(K)}");
+                Compute.RecordWarning($"Cannot convert {propName} into an enum of type {typeof(K)}");
                 return false;
             }
             else
