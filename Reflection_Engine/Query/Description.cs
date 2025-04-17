@@ -262,7 +262,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        public static string Description(Enum e)
+        public static string Description(this Enum e)
         {
             FieldInfo fi = e.GetType().GetField(e.ToString());
             DescriptionAttribute[] descriptions = fi.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
