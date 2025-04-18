@@ -29,6 +29,7 @@ using BH.oM.Verification;
 using BH.oM.Verification.Conditions;
 using BH.oM.Verification.Results;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -558,9 +559,9 @@ namespace BH.Engine.Verification
                     formulaToSolve = formulaToSolve.Replace(key, stringReplacements[key]);
                 }
 
-                return CSharpScript.EvaluateAsync(formulaToSolve, globals: globals).Result;
+                return Evaluate(formulaToSolve, globals);
             }
-            catch
+            catch (Exception ex)
             {
                 BH.Engine.Base.Compute.RecordError($"Formula {formula.Equation} could not be solved, please make sure it does not contain errors.");
                 return null;
@@ -689,6 +690,35 @@ namespace BH.Engine.Verification
 
             return result;
         }
+
+        /***************************************************/
+
+        private static object Evaluate(string formula, object globals)
+        {
+            return CompileScript(formula, globals.GetType()).RunAsync(globals: globals).Result.ReturnValue;
+        }
+
+        /***************************************************/
+
+        private static Script CompileScript(string formula, Type globalsType)
+        {
+            (string, Type) key = (formula, globalsType);
+            Script result;
+            if (!m_CompiledScripts.TryGetValue(key, out result))
+            {
+                result = CSharpScript.Create(formula, globalsType: globalsType);
+                m_CompiledScripts.Add(key, result);
+            }
+
+            return result;
+        }
+
+
+        /***************************************************/
+        /****              Private Fields               ****/
+        /***************************************************/
+
+        private static Dictionary<(string, Type), Script> m_CompiledScripts = new Dictionary<(string, Type), Script>();
 
         /***************************************************/
     }
