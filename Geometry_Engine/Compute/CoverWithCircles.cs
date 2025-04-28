@@ -21,7 +21,7 @@ namespace BH.Engine.Geometry
             {
                 Vector dir = l.Direction();
                 double len = l.Length();
-                var key = dirSignificance.Keys.FirstOrDefault(x => 1 - Math.Abs(x.DotProduct(dir)) <= 1e-3);
+                Vector key = dirSignificance.Keys.FirstOrDefault(x => 1 - Math.Abs(x.DotProduct(dir)) <= 1e-3);
                 if (key == null)
                 {
                     dirSignificance.Add(dir, len);
@@ -32,7 +32,7 @@ namespace BH.Engine.Geometry
             }
 
             double totalOutline = dirSignificance.Values.Sum();
-            foreach(var key in dirSignificance.Keys.ToList())
+            foreach (Vector key in dirSignificance.Keys.ToList())
             {
                 double normalised = dirSignificance[key] / totalOutline;
                 if (normalised <= 0.1)
@@ -41,7 +41,7 @@ namespace BH.Engine.Geometry
                     dirSignificance[key] = normalised;
             }
 
-            dirSignificance = dirSignificance.Where(x => x.Value >= totalOutline * 0.1).ToDictionary(x => x.Key, x => x.Value);
+            //dirSignificance = dirSignificance.Where(x => x.Value >= totalOutline * 0.1).ToDictionary(x => x.Key, x => x.Value);
 
 
             foreach (Point point in coverageOutlines.Concat(coverageHoles).Concat(availableOutlines).Concat(availableHoles).SelectMany(x => x.ControlPoints))
@@ -56,7 +56,7 @@ namespace BH.Engine.Geometry
 
             //TODO: orient to primary direction
 
-            var bbox = coverageOutlines.SelectMany(x => x.ControlPoints()).ToList().Bounds();
+            BoundingBox bbox = coverageOutlines.SelectMany(x => x.ControlPoints()).ToList().Bounds();
             int horizontalSteps = (int)Math.Ceiling((bbox.Max.X - bbox.Min.X) / horizontalGridSize);
             int verticalSteps = (int)Math.Ceiling((bbox.Max.Y - bbox.Min.Y) / verticalGridSize);
 
@@ -71,7 +71,7 @@ namespace BH.Engine.Geometry
             {
                 for (int n = 0; n < verticalSteps; n++)
                 {
-                    var corners = Corners(bbox.Min.X, bbox.Min.Y, m, n, horizontalGridSize, verticalGridSize);
+                    PointXY[] corners = Corners(bbox.Min.X, bbox.Min.Y, m, n, horizontalGridSize, verticalGridSize);
                     toCover[m, n] = corners.IsAtLeastPartlyInside(coverageOutlines, coverageHoles);
                     if (toCover[m, n])
                     {
@@ -99,9 +99,11 @@ namespace BH.Engine.Geometry
             }
 
 
-            //Print(toCover, "To cover:");
-            //Print(available, "Available:");
-            //Print(depths, "Depths:");
+
+
+            Print(toCover, "To cover:");
+            Print(available, "Available:");
+            Print(depths, "Depths:");
 
             List<(int, int)> result = new List<(int, int)>();
 
@@ -207,6 +209,8 @@ namespace BH.Engine.Geometry
             while (topScorer != (-1, -1))
             {
 
+                //TODO: need to recalc depths?
+
                 Print(candidateScores, $"Candidate scores, iteration {result.Count}:");
 
                 result.Add(topScorer);
@@ -259,7 +263,7 @@ namespace BH.Engine.Geometry
 
         private static IEnumerable<(int, int)> CircleCells(int m, int n)
         {
-            foreach (var cell in m_Range)
+            foreach ((int, int) cell in m_Range)
             {
                 yield return (cell.Item1 + m, cell.Item2 + n);
             }
@@ -325,7 +329,7 @@ namespace BH.Engine.Geometry
             (int, int) result = (-1, -1);
             double maxCoverage = 0;
             double maxDistance = 0;
-            foreach (var cell in CircleCells(m, n))
+            foreach ((int, int) cell in CircleCells(m, n))
             {
                 int m1 = cell.Item1;
                 int n1 = cell.Item2;
@@ -372,7 +376,7 @@ namespace BH.Engine.Geometry
                     if (toCover[m, n])
                     {
                         (int, int) result = (-1, -1);
-                        
+
                         double maxScore = 0;
 
                         for (int m1 = m - range; m1 <= m + range; m1++)
@@ -444,12 +448,12 @@ namespace BH.Engine.Geometry
         private static double[,] ScoreCandidates(bool[,] toCover, bool[,] available, double[,] distances, int[,] depths, List<(int, int)> alreadyFound, Dictionary<Vector, double> dirSignificance, int gridDensity)
         {
             Dictionary<Line, double> gridPromoters = new Dictionary<Line, double>();
-            foreach (var found in alreadyFound)
+            foreach ((int, int) found in alreadyFound)
             {
-                foreach (var dirs in dirSignificance)
+                foreach (KeyValuePair<Vector, double> dirs in dirSignificance)
                 {
                     Point start = new Point { X = found.Item1, Y = found.Item2 };
-                    Line grid = new Line { Start=start, End = start + dirs.Key };
+                    Line grid = new Line { Start = start, End = start + dirs.Key };
                     if (gridPromoters.Keys.All(x => !(x.IsParallel(grid) == 0)))
                         gridPromoters.Add(grid, dirs.Value);
                 }
@@ -605,7 +609,7 @@ namespace BH.Engine.Geometry
                         continue;
 
                     int c = 0;
-                    foreach (var cell in CircleCells(m, n))
+                    foreach ((int, int) cell in CircleCells(m, n))
                     {
                         int m1 = cell.Item1;
                         if (m1 < 0 || m1 >= dimM)
@@ -642,7 +646,7 @@ namespace BH.Engine.Geometry
                         continue;
 
                     double c = 0;
-                    foreach (var cell in CircleCells(m, n))
+                    foreach ((int, int) cell in CircleCells(m, n))
                     {
                         int m1 = cell.Item1;
                         if (m1 < 0 || m1 >= dimM)
@@ -679,7 +683,7 @@ namespace BH.Engine.Geometry
                         continue;
 
                     int c = 0;
-                    foreach(var cell in CircleCells(m, n))
+                    foreach ((int, int) cell in CircleCells(m, n))
                     {
                         int m1 = cell.Item1;
                         if (m1 < 0 || m1 >= dimM)
@@ -974,7 +978,7 @@ namespace BH.Engine.Geometry
             //    }
             //}
 
-            foreach (var cell in CircleCells(m, n))
+            foreach ((int, int) cell in CircleCells(m, n))
             {
                 int m1 = cell.Item1;
                 int n1 = cell.Item2;
@@ -1123,7 +1127,7 @@ namespace BH.Engine.Geometry
                 return true;
 
             Vector dir = Vector.XAxis;
-            while(IntersectsWithCorner(asbhom, dir, outline.ControlPoints, tolerance))
+            while (IntersectsWithCorner(asbhom, dir, outline.ControlPoints, tolerance))
             {
                 dir = dir.Rotate(Math.PI / 36, Vector.ZAxis);
                 if (1 - dir.DotProduct(Vector.XAxis) <= tolerance)
@@ -1167,16 +1171,16 @@ namespace BH.Engine.Geometry
     {
         public double X { get; set; }
         public double Y { get; set; }
-    public PointXY(double x, double y)
-    {
-        X = x; Y = y;
-    }
-    public PointXY(Point point)
-    {
-        X = point.X; Y = point.Y;
-    }
+        public PointXY(double x, double y)
+        {
+            X = x; Y = y;
+        }
+        public PointXY(Point point)
+        {
+            X = point.X; Y = point.Y;
+        }
 
-    public Point ToPoint()
+        public Point ToPoint()
         {
             return new Point { X = this.X, Y = this.Y };
         }
