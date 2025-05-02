@@ -66,7 +66,6 @@ namespace BH.Engine.Geometry
             int[,] depths = new int[horizontalSteps, verticalSteps];
             //List<(int, int, double)> availableByDistance = new List<(int, int, double)>();
 
-            List<(int, int)> outlineCells = new List<(int, int)>();
             for (int m = 0; m < horizontalSteps; m++)
             {
                 for (int n = 0; n < verticalSteps; n++)
@@ -81,7 +80,7 @@ namespace BH.Engine.Geometry
                         if (dist <= diagonal / 2 + 1e-6)
                         {
                             depths[m, n] = 1;
-                            outlineCells.Add((m, n));
+                            //outlineCells.Add((m, n));
                         }
                     }
 
@@ -89,14 +88,26 @@ namespace BH.Engine.Geometry
                 }
             }
 
-            for (int m = 0; m < horizontalSteps; m++)
-            {
-                for (int n = 0; n < verticalSteps; n++)
-                {
-                    if (toCover[m, n] && depths[m, n] == 0)
-                        depths[m, n] = outlineCells.Select(x => Distance(x.Item1, x.Item2, m, n)).Min() + 1;
-                }
-            }
+            UpdateDepths(depths, toCover);
+
+            //List<(int, int)> outlineCells = new List<(int, int)>();
+            //for (int m = 0; m < toCover.GetLength(0); m++)
+            //{
+            //    for (int n = 0; n <= toCover.GetLength(1); n++)
+            //    {
+            //        if (depths[m, n] == 1)
+            //            outlineCells.Add((m, n));
+            //    }
+            //}
+
+            //for (int m = 0; m < horizontalSteps; m++)
+            //{
+            //    for (int n = 0; n < verticalSteps; n++)
+            //    {
+            //        if (toCover[m, n] && depths[m, n] == 0)
+            //            depths[m, n] = outlineCells.Select(x => Distance(x.Item1, x.Item2, m, n)).Min() + 1;
+            //    }
+            //}
 
 
 
@@ -212,9 +223,13 @@ namespace BH.Engine.Geometry
                 //TODO: need to recalc depths?
 
                 Print(candidateScores, $"Candidate scores, iteration {result.Count}:");
+                Print(depths, "Depths, iteration {result.Count}:");
 
                 result.Add(topScorer);
                 SetAsCovered(toCover, topScorer.Item1, topScorer.Item2, gridDensity);
+
+
+                UpdateDepths(depths, toCover);
 
                 candidateScores = ScoreCandidates(toCover, available, distances, depths, result, dirSignificance, gridDensity);
                 topScorer = candidateScores.TopScorer();
@@ -240,6 +255,31 @@ namespace BH.Engine.Geometry
             //}
 
             return result.Select(x => Corners(bbox.Min.X, bbox.Min.Y, x.Item1, x.Item2, horizontalGridSize, verticalGridSize).Center().ToPoint()).ToList();
+        }
+
+        private static void UpdateDepths(int[,] depths, bool[,] toCover)
+        {
+            int dimM = toCover.GetLength(0);
+            int dimN = toCover.GetLength(1);
+
+            List<(int, int)> outlineCells = new List<(int, int)>();
+            for (int m = 0; m < dimM; m++)
+            {
+                for (int n = 0; n < dimN; n++)
+                {
+                    if (depths[m, n] == 1)
+                        outlineCells.Add((m, n));
+                }
+            }
+
+            for (int m = 0; m < dimM; m++)
+            {
+                for (int n = 0; n < dimN; n++)
+                {
+                    if (toCover[m, n] && depths[m, n] == 0)
+                        depths[m, n] = outlineCells.Select(x => Distance(x.Item1, x.Item2, m, n)).Min() + 1;
+                }
+            }
         }
 
         private static T[,] MyClone<T>(this T[,] original)
