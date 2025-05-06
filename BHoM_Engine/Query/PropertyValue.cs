@@ -99,7 +99,7 @@ namespace BH.Engine.Base
 					.Where(x => x.GetCustomAttribute<DynamicPropertyAttribute>() != null && typeof(IDictionary).IsAssignableFrom(x.PropertyType) && x.PropertyType.GenericTypeArguments.First().IsEnum)
 					.ToList();
 
-				// Try to save into a dynamic property
+				// Try to extract from a dynamic property
 				foreach (PropertyInfo prop in dynamicProperties)
 				{
 					object key = Compute.ParseEnum(prop.PropertyType.GenericTypeArguments.First(), propName);
