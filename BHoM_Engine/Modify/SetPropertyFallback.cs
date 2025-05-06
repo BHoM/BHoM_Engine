@@ -46,7 +46,7 @@ namespace BH.Engine.Base
             if (value is IFragment)
             {
                 // Handle fragments
-                obj.Fragments.Add(value as IFragment); 
+                obj.Fragments.AddOrReplace(value as IFragment); 
             }
             else
             {
