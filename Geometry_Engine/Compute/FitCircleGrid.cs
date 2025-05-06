@@ -7,12 +7,12 @@ namespace BH.Engine.Geometry
 {
     public static partial class Compute
     {
-        public static List<List<Point>> FitCircleGrid(Polyline coverageOutline, List<Polyline> availableOutlines, double radius, List<Polyline> coverageHoles = null, List<Polyline> availableHoles = null, double tol = Tolerance.Distance)
+        public static List<List<Point>> FitCircleGrid(List<Polyline> coverageOutlines, List<Polyline> availableOutlines, double radius, List<Polyline> coverageHoles = null, List<Polyline> availableHoles = null, double tol = Tolerance.Distance)
         {
             coverageHoles = coverageHoles ?? new List<Polyline>();
             availableHoles = availableHoles ?? new List<Polyline>();
 
-            coverageOutline = coverageOutline.CleanPolyline(tol, tol);
+            coverageOutlines = coverageOutlines.Select(o => o.CleanPolyline(tol, tol)).ToList();
             availableOutlines = availableOutlines.Select(o => o.CleanPolyline(tol, tol)).ToList();
             coverageHoles = coverageHoles.Select(o => o.CleanPolyline(tol, tol)).ToList();
             availableHoles = availableHoles.Select(o => o.CleanPolyline(tol, tol)).ToList();
@@ -20,9 +20,14 @@ namespace BH.Engine.Geometry
             throw new NotImplementedException();
         }
 
+        private static bool?[] ContainmentGrid(List<Polyline> outlines, List<Polyline> holes, double cellSize, double offset)
+        {
+
+        }
+
         // cellRatio 0.8 to 1.25
         // shiftX, shiftY 0.0 to 1.0
-        public static List<Point> CreateGrid(List<Polyline> outlines, List<Polyline> holes, double radius, double cellRatio, double shiftX, double shiftY, double tol = Tolerance.Distance)
+        public static List<Point> CreateGrid(List<Polyline> outlines, List<Polyline> holes, bool?[] containmentGrid, double radius, double cellRatio, double shiftX, double shiftY, double tol = Tolerance.Distance)
         {
             BoundingBox bbox = outlines.Select(x => x.Bounds()).ToList().Bounds();
             bbox = bbox.Inflate(radius);
