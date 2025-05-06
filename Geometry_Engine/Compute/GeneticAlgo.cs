@@ -54,11 +54,11 @@ namespace BH.Engine.Geometry
         private static List<Polyline> m_AvailableHoles;
         private static double m_Radius;
         private static double m_Tolerance;
-        private static bool?[] m_ContainmentGrid;
+        private static bool?[,] m_ContainmentGrid;
 
         private static double FitGridFunction(double[] chromosome)
         {
-            List<Point> grid = CreateGrid(m_AvailableOutlines, m_AvailableHoles, m_Radius, chromosome[0], chromosome[1], chromosome[2], m_Tolerance);
+            List<Point> grid = CreateGrid(m_AvailableOutlines, m_AvailableHoles, m_ContainmentGrid, m_Radius, chromosome[0], chromosome[1], chromosome[2], m_Tolerance);
             if (grid.Count == 0)
                 return -1e+6;
 
