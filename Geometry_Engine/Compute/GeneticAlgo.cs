@@ -163,8 +163,11 @@ namespace BH.Engine.Geometry
 
             //TODO: remember to check if the size is not equal to the number of permutations - then simply all options checked
             int generation = 0;
+            int stagnant = 0;
+            int maxStagnant = settings.MaxStagnant;
             int maintain = (int)(Math.Round(settings.PopulationSize * settings.ForceMaintainRatio));
             int drop = (int)(Math.Round(settings.PopulationSize * settings.ForceDropRatio));
+
 
             // Generate further generations
             while (generation < settings.GenerationCount - 1)
@@ -217,8 +220,17 @@ namespace BH.Engine.Geometry
                 }
 
                 // Store results and increment
+                if (population.OrderByDescending(x => x.Item2).First().Item1.SequenceEqual(newPopulation.OrderByDescending(x => x.Item2).First().Item1))
+                    stagnant++;
+                else
+                    stagnant = 0;
+
                 population = newPopulation;
                 StoreResults(population);
+
+                if (stagnant == maxStagnant)
+                    break;
+
                 generation++;
             }
 
