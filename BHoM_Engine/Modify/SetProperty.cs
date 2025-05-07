@@ -37,7 +37,7 @@ namespace BH.Engine.Base
         [Description("Sets a property of a custom object.")]
         [Input("obj", "Custom object to set the value for")]
         [Input("propertyName", "name of the property to set the value of")]
-        [Input("value", "new value of the property. \nIf left empty, the value for that property will be cleared \n(enumerables will be emptied, primitives will be set to their default value, and objects will be set to null)")]
+        [Input("value", "new value of the property.")]
         [Output("result", "New custom object with its property changed to the new value")]
         public static CustomObject SetProperty(this CustomObject obj, string propertyName, object value)
         {
