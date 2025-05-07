@@ -9,7 +9,7 @@ namespace BH.Engine.Geometry
 {
     public static partial class Compute
     {
-        public static IGeneticAlgorithmResult GridFittingTest(IGeneticAlgorithmSettings settings, List<Polyline> coverageOutlines, List<Polyline> availableOutlines, double radius, List<Polyline> coverageHoles = null, List<Polyline> availableHoles = null, double tol = Tolerance.Distance)
+        public static IGeneticAlgorithmResult GridFittingTest(IGeneticAlgorithmSettings settings, List<Polyline> coverageOutlines, List<Polyline> availableOutlines, double radius, double cellSize = 0.5, List<Polyline> coverageHoles = null, List<Polyline> availableHoles = null, double tol = Tolerance.Distance)
         {
             coverageHoles = coverageHoles ?? new List<Polyline>();
             availableHoles = availableHoles ?? new List<Polyline>();
@@ -45,7 +45,11 @@ namespace BH.Engine.Geometry
             };
 
             Func<double[], double> fitnessFunction = FitGridFunction;
-            return IRunGeneticAlgorithm(settings as dynamic, parameters.ToArray(), fitnessFunction);
+            Action preproc = () =>
+            {
+                GenerateContainmentGrid(m_AvailableOutlines, m_AvailableHoles, cellSize, m_Radius * Math.Sqrt(2) * 2, m_Tolerance);
+            };
+            return RunGeneticAlgorithm(settings as dynamic, parameters.ToArray(), fitnessFunction, preproc);
         }
 
         private static List<Polyline> m_CoverageOutlines;
@@ -55,21 +59,44 @@ namespace BH.Engine.Geometry
         private static double m_Radius;
         private static double m_Tolerance;
         private static bool?[,] m_ContainmentGrid;
+        private static SquareGrid m_SquareGrid;
 
         private static double FitGridFunction(double[] chromosome)
         {
-            List<Point> grid = CreateGrid(m_AvailableOutlines, m_AvailableHoles, m_ContainmentGrid, m_Radius, chromosome[0], chromosome[1], chromosome[2], m_Tolerance);
+            List<Point> grid = CreatePointGrid(m_AvailableOutlines, m_AvailableHoles, m_SquareGrid, m_ContainmentGrid, m_Radius, chromosome[0], chromosome[1], chromosome[2], m_Tolerance);
             if (grid.Count == 0)
                 return -1e+6;
 
-            List<Line> uncovered = m_CoverageOutlines.SelectMany(x => UncoveredEdges(x, m_CoverageHoles, grid, m_Radius, m_Tolerance)).ToList();
-            List<Polyline> joined = uncovered.Join(m_Tolerance);
-            double circleCount = grid.Count + joined.Sum(x => Math.Ceiling(x.Length() / m_Radius));
-            List<double> dists = grid.Select(x => m_CoverageOutlines.Min(y => x.Distance(y))).ToList();
+            List<oM.Base.Output<List<Line>, List<double>>> uncoveredOutline = m_CoverageOutlines.Select(x => UncoveredEdges(grid, x, m_Radius, m_Tolerance)).ToList();
+            List<oM.Base.Output<List<Line>, List<double>>> uncoveredHoles = m_CoverageHoles.Select(x => UncoveredEdges(grid, x, m_Radius, m_Tolerance)).ToList();
+            List<Polyline> joinedOutlines = uncoveredOutline.SelectMany(x => x.Item1).ToList().Join(m_Tolerance);
+            List<Polyline> joinedHoles = uncoveredHoles.SelectMany(x => x.Item1).ToList().Join(m_Tolerance);
+            double circleCount = grid.Count + joinedOutlines.Sum(x => Math.Ceiling(x.Length() / m_Radius)) + joinedHoles.Sum(x => Math.Max(2, Math.Ceiling(x.Length() / m_Radius)));
+            //List<double> dists = grid.Select(x => m_CoverageOutlines.Min(y => x.Distance(y))).ToList();
+            List<double> dists = uncoveredOutline[0].Item2;
+            if (uncoveredOutline.Count > 1)
+            {
+                for (int i = 1; i < uncoveredOutline.Count; i++)
+                {
+                    List<double> cands = uncoveredOutline[i].Item2;
+                    for (int j = 0; j < dists.Count; j++)
+                    {
+                        dists[j] = Math.Min(dists[j], cands[j]);
+                    }
+                }
+            }
+
             double avgDist = dists.Average();
             double stDev = Math.Sqrt(dists.Sum(x => Math.Pow(x - avgDist, 2)) / dists.Count);
             double stDevThing = stDev / m_Radius;
             return -circleCount - stDevThing;
+        }
+
+        private static void GenerateContainmentGrid(List<Polyline> outlines, List<Polyline> holes, double cellSize, double offset, double tol)
+        {
+            SquareGrid grid = Grid(outlines, holes, cellSize, offset);
+            m_SquareGrid = grid;
+            m_ContainmentGrid = ContainmentGrid(outlines, holes, grid, tol);
         }
 
         public static IGeneticAlgorithmResult GeneticSumTest(IGeneticAlgorithmSettings settings, List<DoubleParameter> parameters)
@@ -108,7 +135,7 @@ namespace BH.Engine.Geometry
         private static DoubleParameter[] m_Parameters = null;
         private static Random m_Random = new Random();
 
-        public static GeneticAlgorithmResult RunGeneticAlgorithm(FixedGenerationCount settings, DoubleParameter[] parameters, Func<double[], double> fitnessFunction)
+        public static GeneticAlgorithmResult RunGeneticAlgorithm(FixedGenerationCount settings, DoubleParameter[] parameters, Func<double[], double> fitnessFunction, Action prep = null)
         {
             if (settings == null)
             {
@@ -121,6 +148,9 @@ namespace BH.Engine.Geometry
                 BH.Engine.Base.Compute.RecordError("Population size needs to be a positive even number.");
                 return null;
             }
+
+            if (prep != null)
+                prep.Invoke();
 
             // Set global settings
             m_Parameters = parameters;
