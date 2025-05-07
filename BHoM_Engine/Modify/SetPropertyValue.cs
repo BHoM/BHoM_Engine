@@ -241,8 +241,17 @@ namespace BH.Engine.Base
 
         private static bool SetValue<T>(this Dictionary<string, T> dic, string propName, object value)
         {
-            dic[propName] = (T)(value as dynamic);
-            return true;
+            try
+            {
+                dic[propName] = (T)(value as dynamic);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Compute.RecordError($"Failed to set value of type {value?.GetType()?.ToString() ?? "null"} into a dictionary with values of type {typeof(T)}");
+                return false;
+            }
+            
         }
 
         /***************************************************/
@@ -257,8 +266,16 @@ namespace BH.Engine.Base
             }
             else
             {
-                dic[key] = (T)(value as dynamic);
-                return true;
+                try
+                {
+                    dic[key] = (T)(value as dynamic);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Compute.RecordError($"Failed to set value of type {value?.GetType()?.ToString() ?? "null"} into a dictionary with values of type {typeof(T)}");
+                    return false;
+                }
             }
                 
         }
