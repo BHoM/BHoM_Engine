@@ -1,17 +1,29 @@
 ﻿using BH.oM.Base;
+using BH.oM.Data.Genetic;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
 {
+    [Description("Object representing a region in a form of a matrix of square cells where each cell has a boolean value indicating if the cell is inside or outside of the region. Null means on edge.")]
     public class ContainmentGrid
     {
+        [Description("Bottom left corner of the grid.")]
         public Point Origin { get; set; }
+
+        [Description("Size of the grid cell.")]
         public double CellSize { get; set; }
+
+        [Description("Number of cells in the X direction.")]
         public int CellCountX { get; set; }
+
+        [Description("Number of cells in the Y direction.")]
         public int CellCountY { get; set; }
+
+        [Description("Matrix of boolean values indicating if the cell is inside (true), outside (false) or on edge (null) of the region.")]
         public bool?[,] ContainmentMatrix { get; set; }
     }
 
@@ -66,8 +78,77 @@ namespace BH.Engine.Geometry
             };
         }
 
+        public static List<List<int>> GetIntersectedCellsTest(Line line, Point origin, double cellSize, double tol = 1e-6)
+        {
+            return GetIntersectedCells(line.Start, line.End, origin, cellSize, tol).Select(x => new List<int> { x.Item1, x.Item2 }).ToList();
+        }
+
+        public static List<Point> FillInRemainderTest2(List<Polyline> availableOutlines, List<Polyline> availableHoles, List<Polyline> toCoverOutlines, List<Polyline> toCoverHoles, List<Point> grid, double cellSize, double offset, double radius, double existingGridPremium = 2, double tol = Tolerance.Distance)
+        {
+            ContainmentGrid containmentGrid = ContainmentGrid(availableOutlines, availableHoles, cellSize, offset, tol);
+            return FillInRemainder(toCoverOutlines, toCoverHoles, containmentGrid, grid, radius, existingGridPremium);
+        }
+
+        public static IGeneticAlgorithmResult GeneticSumTest(IGeneticAlgorithmSettings settings, List<DoubleParameter> parameters)
+        {
+            Func<double[], double> fitnessFunction = SumFunction;
+            return IRunGeneticAlgorithm(settings, parameters.ToArray(), fitnessFunction);
+        }
+
+        public static IGeneticAlgorithmResult GeneticStDevTest(IGeneticAlgorithmSettings settings, List<DoubleParameter> parameters)
+        {
+            Func<double[], double> fitnessFunction = StDevFunction;
+            return IRunGeneticAlgorithm(settings, parameters.ToArray(), fitnessFunction);
+        }
+
+        private static double SumFunction(double[] chromosome)
+        {
+            // Example fitness function: sum of the chromosome values
+            return chromosome.Sum();
+        }
+
+        private static double StDevFunction(double[] chromosome)
+        {
+            // Example fitness function: standard deviation of the chromosome values
+            double mean = chromosome.Average();
+            double sumOfSquares = chromosome.Sum(x => Math.Pow(x - mean, 2));
+            return Math.Sqrt(sumOfSquares / chromosome.Length);
+        }
+
+        public static List<Point> CreateDebugGrid(List<Polyline> outlines, List<Polyline> holes, double radius, double cellRatio, double shiftX, double shiftY, double tol = Tolerance.Distance)
+        {
+            BoundingBox bbox = outlines.Select(x => x.Bounds()).ToList().Bounds();
+            bbox = bbox.Inflate(radius);
+
+            double hor = 2 * radius / Math.Sqrt(1 + cellRatio * cellRatio);
+            double ver = cellRatio * hor;
+
+            double horShift = hor * shiftX;
+            double verShift = ver * shiftY;
+
+            int horSteps = (int)Math.Ceiling((bbox.Max.X - bbox.Min.X) / hor);
+            int verSteps = (int)Math.Ceiling((bbox.Max.Y - bbox.Min.Y) / ver);
+            List<Point> grid = new List<Point>();
+            for (int i = 0; i < horSteps; i++)
+            {
+                for (int j = 0; j < verSteps; j++)
+                {
+                    double x = bbox.Min.X + hor * i + horShift;
+                    double y = bbox.Min.Y + ver * j + verShift;
+                    Point p = new Point { X = x, Y = y };
+
+                    if (outlines.Any(o => IsInside(p, o, tol)) && holes.All(h => !IsInside(p, h, tol)))
+                        grid.Add(p);
+                }
+            }
+
+            return grid;
+        }
+
+        [Description("Creates containment grid for a given region.")]
         private static ContainmentGrid ContainmentGrid(List<Polyline> outlines, List<Polyline> holes, double cellSize, double offset, double tol)
         {
+            // Offset the room outline, and map a square grid on it
             BoundingBox bbox = outlines.Select(x => x.Bounds()).ToList().Bounds();
             double dx = bbox.Max.X - bbox.Min.X + offset * 2;
             double dy = bbox.Max.Y - bbox.Min.Y + offset * 2;
@@ -75,9 +156,8 @@ namespace BH.Engine.Geometry
             int cellCountY = (int)Math.Ceiling(dy / cellSize) + 1;
             Point origin = (bbox.Min + bbox.Max) / 2 - new Vector { X = cellCountX * cellSize / 2, Y = cellCountY * cellSize / 2 };
 
+            // Initiate the containment matrix
             bool?[,] containment = new bool?[cellCountX, cellCountY];
-
-            //TODO: check if nullable bool is false or null at start
             for (int m = 0; m < cellCountX; m++)
             {
                 for (int n = 0; n < cellCountY; n++)
@@ -86,6 +166,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
+            // Mark the cells that are on the edge of the outlines
             foreach (Polyline outline in outlines.Concat(holes))
             {
                 for (int i = 0; i < outline.ControlPoints.Count; i++)
@@ -99,6 +180,8 @@ namespace BH.Engine.Geometry
                 }
             }
 
+            // Mark the cells that are inside the outlines
+            // Going row by row check 1st cell after edge and repeat until edge met again
             for (int m = 0; m < containment.GetLength(0); m++)
             {
                 bool inside = false;
@@ -121,6 +204,7 @@ namespace BH.Engine.Geometry
                 }
             }
 
+            // Return the object
             return new Geometry.ContainmentGrid
             {
                 CellCountX = cellCountX,
@@ -131,6 +215,7 @@ namespace BH.Engine.Geometry
             };
         }
 
+        [Description("Finds the center of a cell at given coordinates.")]
         private static Point CellCenter(Point origin, double cellSize, int cellX, int cellY)
         {
             return new Point
@@ -140,21 +225,24 @@ namespace BH.Engine.Geometry
             };
         }
 
+        [Description("Optimised 2d version of IsContaining method.")]
         private static bool IsInside(this Point pt, Polyline outline, double tolerance = 1e-6)
         {
-            //TODO: make sure right vector is picked - no intersections etc.
+            // Check if point on the edge
             double sqTol = tolerance * tolerance;
             if (outline.ControlPoints.Any(x => x.SquareDistance(pt) <= sqTol))
                 return true;
 
+            // Get arbitrary vector that does not point at any corner of the polygon
             Vector dir = Vector.XAxis;
             while (IntersectsWithCorner(pt, dir, outline.ControlPoints, tolerance))
             {
-                dir = dir.Rotate(Math.PI / 36, Vector.ZAxis);
+                dir = dir.Rotate(Math.PI / 180, Vector.ZAxis);
                 if (1 - dir.DotProduct(Vector.XAxis) <= tolerance)
                     throw new Exception("is inside failed");
             }
 
+            // Count intersectios of the ray with the outline
             int c = 0;
             foreach (Line ln in outline.SubParts())
             {
@@ -162,8 +250,17 @@ namespace BH.Engine.Geometry
                     c++;
             }
 
+            // If odd number of intersections, point is inside
             return c % 2 == 1;
         }
+
+        [Description("Checks whether a ray hits any point in the provided set.")]
+        private static bool IntersectsWithCorner(Point pt, Vector dir, List<Point> controlPoints, double tolerance)
+        {
+            return controlPoints.Any(x => 1 - (x - pt).Normalise().DotProduct(dir) <= tolerance);
+        }
+
+        [Description("Checks if a ray intersects with a line.")]
         private static bool Intersects(this Point pt, Vector dir, Line line2, double angleTolerance = Tolerance.Angle)
         {
             Vector v2 = line2.End - line2.Start;
@@ -187,12 +284,7 @@ namespace BH.Engine.Geometry
             return t2 >= 0 && t2 <= 1;
         }
 
-
-        public static List<List<int>> GetIntersectedCellsTest(Line line, Point origin, double cellSize, double tol = 1e-6)
-        {
-            return GetIntersectedCells(line.Start, line.End, origin, cellSize, tol).Select(x => new List<int> { x.Item1, x.Item2 }).ToList();
-        }
-
+        [Description("Lists out ids of cells of a containment matrix that are intersected by a line.")]
         private static HashSet<(int, int)> GetIntersectedCells(Point lineStart, Point lineEnd, Point origin, double cellSize, double tol)
         {
             double startX = lineStart.X;
@@ -215,8 +307,9 @@ namespace BH.Engine.Geometry
                 return crossedCells;
             }
 
-            // Edge case when a line start is at grid edge
             List<(int, int)> startCells = new List<(int, int)> { (startCellX, startCellY) };
+
+            // Edge case when a line start is at grid edge
             if (Math.Abs(startX - originX - startCellX * cellSize) <= tol)
                 startCells.Add((startCellX - 1, startCellY));
             else if (Math.Abs(startX - originX - (startCellX + 1) * cellSize) <= tol)
@@ -239,8 +332,9 @@ namespace BH.Engine.Geometry
 
             crossedCells.UnionWith(startCells);
 
-            // Edge case when a line end is at grid edge
             List<(int, int)> endCells = new List<(int, int)> { (endCellX, endCellY) };
+
+            // Edge case when a line end is at grid edge
             if (Math.Abs(endX - originX - endCellX * cellSize) <= tol)
                 endCells.Add((endCellX - 1, endCellY));
             else if (Math.Abs(endX - originX - (endCellX + 1) * cellSize) <= tol)
@@ -378,20 +472,27 @@ namespace BH.Engine.Geometry
             return crossedCells;
         }
 
-
-        public static List<Point> CreatePointGrid(List<Polyline> outlines, List<Polyline> holes, ContainmentGrid containment, double radius, double cellRatio, double shiftX, double shiftY, double tol = Tolerance.Distance)
+        [Description("Creates a grid of points inside a given region defined by outlines and holes. Containment grid is used as an optimisation to avoid calling containment checks too often.")]
+        private static List<Point> CreatePointGrid(List<Polyline> outlines, List<Polyline> holes, ContainmentGrid containment, double radius, double cellRatio, double shiftX, double shiftY, double tol = Tolerance.Distance)
         {
             BoundingBox bbox = outlines.Select(x => x.Bounds()).ToList().Bounds();
             bbox = bbox.Inflate(radius);
 
+            // Find horizontal cell size (horizontal distance between centers of circles)
             double hor = 2 * radius / Math.Sqrt(1 + cellRatio * cellRatio);
+
+            // Same with vertical
             double ver = cellRatio * hor;
 
+            // Proportional shift
             double horShift = hor * shiftX;
             double verShift = ver * shiftY;
 
+            // Number of cells in each direction
             int horSteps = (int)Math.Ceiling((bbox.Max.X - bbox.Min.X) / hor);
             int verSteps = (int)Math.Ceiling((bbox.Max.Y - bbox.Min.Y) / ver);
+
+            // Generate the grid
             List<Point> grid = new List<Point>();
             for (int i = 0; i < horSteps; i++)
             {
@@ -401,6 +502,7 @@ namespace BH.Engine.Geometry
                     double y = bbox.Min.Y + ver * j + verShift;
                     Point p = new Point { X = x, Y = y };
 
+                    // Check if the point is in the region, containment grid used to speed things up
                     if (IsInside(p, containment, outlines, holes, tol))
                         grid.Add(p);
                 }
@@ -409,43 +511,11 @@ namespace BH.Engine.Geometry
             return grid;
         }
 
-
-        public static List<Point> CreateDebugGrid(List<Polyline> outlines, List<Polyline> holes, double radius, double cellRatio, double shiftX, double shiftY, double tol = Tolerance.Distance)
-        {
-            BoundingBox bbox = outlines.Select(x => x.Bounds()).ToList().Bounds();
-            bbox = bbox.Inflate(radius);
-
-            double hor = 2 * radius / Math.Sqrt(1 + cellRatio * cellRatio);
-            double ver = cellRatio * hor;
-
-            double horShift = hor * shiftX;
-            double verShift = ver * shiftY;
-
-            int horSteps = (int)Math.Ceiling((bbox.Max.X - bbox.Min.X) / hor);
-            int verSteps = (int)Math.Ceiling((bbox.Max.Y - bbox.Min.Y) / ver);
-            List<Point> grid = new List<Point>();
-            for (int i = 0; i < horSteps; i++)
-            {
-                for (int j = 0; j < verSteps; j++)
-                {
-                    double x = bbox.Min.X + hor * i + horShift;
-                    double y = bbox.Min.Y + ver * j + verShift;
-                    Point p = new Point { X = x, Y = y };
-
-                    if (outlines.Any(o => IsInside(p, o, tol)) && holes.All(h => !IsInside(p, h, tol)))
-                        grid.Add(p);
-                }
-            }
-
-            return grid;
-        }
-
+        [Description("Checks if a point is in the region, containment grid used for performance purposes.")]
         private static bool IsInside(Point pt, ContainmentGrid grid, List<Polyline> outlines, List<Polyline> holes, double tol)
         {
             int cellX = (int)((pt.X - grid.Origin.X) / grid.CellSize);
             int cellY = (int)((pt.Y - grid.Origin.Y) / grid.CellSize);
-
-            //TODO: check of grid size etc.
 
             bool? containment = grid.ContainmentMatrix[cellX, cellY];
             if (containment != null)
@@ -454,13 +524,14 @@ namespace BH.Engine.Geometry
                 return outlines.Any(o => IsInside(pt, o, tol)) && holes.All(h => !IsInside(pt, h, tol));
         }
 
-        public static Output<List<Line>, List<double>> UncoveredEdges(List<Point> grid, Polyline outline, double radius, double tol = Tolerance.Distance)
+        [Description("Finds segments of edges of an outline that are not inside any circle defined by given grid.")]
+        private static Output<List<Line>, List<double>> UncoveredEdges(Polyline outline, List<Point> grid, double radius, double tol = Tolerance.Distance)
         {
             List<Line> uncoveredEdges = new List<Line>();
             double[] minDists = Enumerable.Repeat(double.MaxValue, grid.Count).ToArray();
 
-            //TODO: use R-trees here based on bboxes of circles etc.
-
+            //TODO: profiling shows that hyper-optimisation of maths could help a lot here
+            // Per each line find the parameter ranges that are covered by circles
             foreach (Line l in outline.SubParts())
             {
                 Point start = l.Start;
@@ -489,12 +560,12 @@ namespace BH.Engine.Geometry
                         continue;
 
                     double along = Math.Sqrt(radius * radius - dist * dist);
-                    //double par = along / len;
                     double tMax = t + along;
                     double tMin = t - along;
                     coveredParams.Add((tMin / len, tMax / len));
                 }
 
+                // Cull out irrelevant values
                 coveredParams = coveredParams.Where(x => x.Item1 < 1 - tol && x.Item2 > tol).OrderBy(x => x.Item1).ToList();
                 if (coveredParams.Count == 0)
                 {
@@ -502,7 +573,7 @@ namespace BH.Engine.Geometry
                     continue;
                 }
 
-                // join coveredparams that overlap, include tol
+                // Join covered params that overlap, include tol
                 List<(double, double)> joined = new List<(double, double)>();
                 (double, double) current = coveredParams[0];
                 for (int i = 1; i < coveredParams.Count; i++)
@@ -517,8 +588,7 @@ namespace BH.Engine.Geometry
                 }
                 joined.Add(current);
 
-                // create uncovered edges
-
+                // Create uncovered edges
                 if (joined[0].Item1 > tol)
                 {
                     Line uncovered = new Line { Start = start, End = start + joined[0].Item1 * dir * len };
@@ -541,176 +611,133 @@ namespace BH.Engine.Geometry
             return new Output<List<Line>, List<double>> { Item1 = uncoveredEdges, Item2 = minDists.ToList() };
         }
 
-        public static List<Point> FillInRemainderTest2(List<Polyline> availableOutlines, List<Polyline> availableHoles, List<Polyline> toCoverOutlines, List<Polyline> toCoverHoles, List<Point> grid, double cellSize, double offset, double radius, double existingGridPremium = 2, double tol = Tolerance.Distance)
-        {
-            ContainmentGrid containmentGrid = ContainmentGrid(availableOutlines, availableHoles, cellSize, offset, tol);
-            return FillInRemainder(toCoverOutlines, toCoverHoles, containmentGrid, grid, radius, existingGridPremium);
-        }
-
-        public static List<Point> FillInRemainderTest(List<Polyline> outlines, List<Polyline> holes, double cellSize, double offset, List<Line> toCover, double radius, double tol = Tolerance.Distance)
-        {
-            ContainmentGrid grid = ContainmentGrid(outlines, holes, cellSize, offset, tol);
-            return FillInRemainder(grid, toCover, radius, tol);
-        }
-
-
-        public static List<Point> FillInRemainder(ContainmentGrid containmentGrid, List<Line> toCover, double radius, double tol = Tolerance.Distance)
-        {
-            int cellCountX = containmentGrid.CellCountX;
-            int cellCountY = containmentGrid.CellCountY;
-            List<Point> result = new List<Point>();
-            HashSet<(int, int)> edgeCells = new HashSet<(int, int)>(toCover.SelectMany(x => GetIntersectedCells(x.Start, x.End, containmentGrid.Origin, containmentGrid.CellSize, tol)));
-
-            //int range = (int)(radius / Math.Sqrt(2) / containmentGrid.CellSize);
-
-            (int, int)[] circleRange = CircleRange(radius, containmentGrid.CellSize);
-
-            //bool[,] toCoverGrid = new bool[containmentGrid.CellCountX, containmentGrid.CellCountY];
-            Dictionary<(int, int), int> cands = CoverageCandidates(containmentGrid.ContainmentMatrix, edgeCells, circleRange);
-
-            while (edgeCells.Count != 0)
-            {
-                if (cands.Count == 0)
-                {
-                    //TODO: error
-                    return result;
-                }
-
-                //TODO: add a premium for using existing grids! each grid score x2? so inters x4
-
-                // find the cell with the most candidates
-                (int, int) bestCand = cands.OrderByDescending(x => x.Value).First().Key;
-                result.Add(CellCenter(containmentGrid.Origin, containmentGrid.CellSize, bestCand.Item1, bestCand.Item2));
-
-                (int, int)[] coveredByCand = circleRange.Select(x => (bestCand.Item1 + x.Item1, bestCand.Item2 + x.Item2)).ToArray();
-                edgeCells.ExceptWith(coveredByCand);
-
-                //TODO: could speed up by reducing cand dict rather than recomputing it all
-                cands = CoverageCandidates(containmentGrid.ContainmentMatrix, edgeCells, circleRange);
-            }
-
-            return result;
-        }
-
-
-        public static List<Point> FillInRemainder(List<Polyline> outlines, List<Polyline> holes, ContainmentGrid containmentGrid, List<Point> grid, double radius, double existingGridPremium = 2, double tol = Tolerance.Distance)
+        [Description("Fills in the uncovered area of a region with circles of given radius. Containment grid used to speed up maths. Existing grid premium is a multiplier applied to candidates that align with the main grid provided.")]
+        private static List<Point> FillInRemainder(List<Polyline> outlines, List<Polyline> holes, ContainmentGrid containmentGrid, List<Point> grid, double radius, double existingGridPremium = 2, double tol = Tolerance.Distance)
         {
             int cellCountX = containmentGrid.CellCountX;
             int cellCountY = containmentGrid.CellCountY;
             double cellSize = containmentGrid.CellSize;
             Point origin = containmentGrid.Origin;
+
             List<Point> result = new List<Point>();
 
+            // Find boolean difference of region outlines with circles
             List<PolyCurve> diff = outlines.SelectMany(x => x.BooleanDifference(holes.Cast<ICurve>().Concat(grid.Select(y => new Circle { Centre = y, Radius = radius })), tol)).ToList();
-            List<Line> segments = diff.SelectMany(x => x.CollapseToPolyline(Math.PI / 32).SubParts()).ToList();
 
-            (int, int)[] circleRange = CircleRange(radius, containmentGrid.CellSize);
+            // Turn the outlines to lines and find the cells that are intersected by these lines
+            List<Line> segments = diff.SelectMany(x => x.CollapseToPolyline(Math.PI / 32).SubParts()).ToList();
             HashSet<(int, int)> toCover = new HashSet<(int, int)>(segments.SelectMany(x => GetIntersectedCells(x.Start, x.End, containmentGrid.Origin, containmentGrid.CellSize, tol)));
 
-            Dictionary<int, List<int>> xS = new Dictionary<int, List<int>>();
-            Dictionary<int, List<int>> yS = new Dictionary<int, List<int>>();
-            List<double> xS2 = new List<double>();
-            List<double> yS2 = new List<double>();
+            // Find relative addresses of cells that are covered by a single circle at address 0,0
+            (int, int)[] circleRange = CircleRange(radius, containmentGrid.CellSize);
+
+            // Find cells that host centres of circles
+            // Also find unique X and Y coordinates of the grid
+            Dictionary<int, List<int>> gridRows = new Dictionary<int, List<int>>();
+            Dictionary<int, List<int>> gridCols = new Dictionary<int, List<int>>();
+            List<double> gridXs = new List<double>();
+            List<double> gridYs = new List<double>();
             foreach (Point p in grid)
             {
-                if (xS2.All(x => Math.Abs(x - p.X) > tol))
-                    xS2.Add(p.X);
+                if (gridXs.All(x => Math.Abs(x - p.X) > tol))
+                    gridXs.Add(p.X);
 
-                if (yS2.All(x => Math.Abs(x - p.Y) > tol))
-                    yS2.Add(p.Y);
+                if (gridYs.All(x => Math.Abs(x - p.Y) > tol))
+                    gridYs.Add(p.Y);
 
                 int xInt = (int)((p.X - origin.X) / cellSize);
                 int yInt = (int)((p.Y - origin.Y) / cellSize);
 
-                if (!xS.ContainsKey(xInt))
-                    xS.Add(xInt, new List<int>());
+                if (!gridRows.ContainsKey(xInt))
+                    gridRows.Add(xInt, new List<int>());
 
-                if (!yS.ContainsKey(yInt))
-                    yS.Add(yInt, new List<int>());
+                if (!gridCols.ContainsKey(yInt))
+                    gridCols.Add(yInt, new List<int>());
 
-                xS[xInt].Add(yInt);
-                yS[yInt].Add(xInt);
+                gridRows[xInt].Add(yInt);
+                gridCols[yInt].Add(xInt);
             }
 
+            // Find the span of the point grid in X direction
             int cellSpanX = int.MaxValue;
-            if (xS2.Count > 1)
+            if (gridXs.Count > 1)
             {
-                xS2.Sort();
-                cellSpanX = (int)((xS2[1] - xS2[0]) / cellSize) + 2;
+                gridXs.Sort();
+                cellSpanX = (int)((gridXs[1] - gridXs[0]) / cellSize) + 2;
             }
 
+            // Find the span of the point grid in Y direction
             int cellSpanY = int.MaxValue;
-            if (yS2.Count > 1)
+            if (gridYs.Count > 1)
             {
-                yS2.Sort();
-                cellSpanY = (int)((yS2[1] - yS2[0]) / cellSize) + 2;
+                gridYs.Sort();
+                cellSpanY = (int)((gridYs[1] - gridYs[0]) / cellSize) + 2;
             }
 
+            // Find candidate points that can host the extra circles
             Dictionary<(int, int), int> cands = CoverageCandidates(containmentGrid.ContainmentMatrix, toCover, circleRange);
             while (toCover.Count != 0)
             {
                 if (cands.Count == 0)
                 {
-                    //TODO: error
+                    BH.Engine.Base.Compute.RecordError("Something went wrong when filling in the remainder space. Please review the results with care.");
                     return result;
                 }
 
-                //TODO: need to improve the scoring system to promote grid alignment in some more meaningful way
-                // boost the scores based on grid alignement
+                // Boost the scores based on grid alignement
                 foreach ((int, int) key in cands.Keys.ToList())
                 {
                     double value = cands[key];
-                    if (xS.ContainsKey(key.Item1) && xS[key.Item1].Any(x => Math.Abs(x - key.Item2) <= cellSpanY))
+                    if (gridRows.ContainsKey(key.Item1) && gridRows[key.Item1].Any(x => Math.Abs(x - key.Item2) <= cellSpanY))
                         value *= existingGridPremium;
 
-                    if (yS.ContainsKey(key.Item2) && yS[key.Item2].Any(x => Math.Abs(x - key.Item1) <= cellSpanX))
+                    if (gridCols.ContainsKey(key.Item2) && gridCols[key.Item2].Any(x => Math.Abs(x - key.Item1) <= cellSpanX))
                         value *= existingGridPremium;
 
                     cands[key] = (int)Math.Round(value);
                 }
 
-                // find topscorer
+                // Find topscorer and add it to the output
                 (int, int) bestCand = cands.OrderByDescending(x => x.Value).First().Key;
                 result.Add(CellCenter(origin, cellSize, bestCand.Item1, bestCand.Item2));
-                //result.Add(new Point { X = origin.X + bestCand.Item1 * cellSize, Y = origin.Y + bestCand.Item2 * cellSize });
 
-                if (!xS.ContainsKey(bestCand.Item1))
-                    xS.Add(bestCand.Item1, new List<int>());
+                // Add the topscorer coordinates to cache
+                if (!gridRows.ContainsKey(bestCand.Item1))
+                    gridRows.Add(bestCand.Item1, new List<int>());
 
-                xS[bestCand.Item1].Add(bestCand.Item2);
+                gridRows[bestCand.Item1].Add(bestCand.Item2);
 
-                if (!yS.ContainsKey(bestCand.Item2))
-                    yS.Add(bestCand.Item2, new List<int>());
+                if (!gridCols.ContainsKey(bestCand.Item2))
+                    gridCols.Add(bestCand.Item2, new List<int>());
 
-                yS[bestCand.Item2].Add(bestCand.Item1);
+                gridCols[bestCand.Item2].Add(bestCand.Item1);
 
+                // Remove the space covered by candidate from the search
                 (int, int)[] coveredByCand = circleRange.Select(x => (bestCand.Item1 + x.Item1, bestCand.Item2 + x.Item2)).ToArray();
                 toCover.ExceptWith(coveredByCand);
 
                 //TODO: could speed up by reducing cand dict rather than recomputing it all
+                // Recalculate the candidates
                 cands = CoverageCandidates(containmentGrid.ContainmentMatrix, toCover, circleRange);
             }
 
+            // Align newly added points with the primary grid
             foreach (Point pt in result)
             {
-                int idX = xS2.FindIndex(x => Math.Abs(x - pt.X) <= cellSize / 2 + tol);
+                int idX = gridXs.FindIndex(x => Math.Abs(x - pt.X) <= cellSize / 2 + tol);
                 if (idX != -1)
-                    pt.X = xS2[idX];
+                    pt.X = gridXs[idX];
 
-                int idY = yS2.FindIndex(x => Math.Abs(x - pt.Y) <= cellSize / 2 + tol);
+                int idY = gridYs.FindIndex(x => Math.Abs(x - pt.Y) <= cellSize / 2 + tol);
                 if (idY != -1)
-                    pt.Y = yS2[idY];
+                    pt.Y = gridYs[idY];
             }
 
             return result;
         }
 
-        private static (int, int)[] GetCircleCoverage((int, int) cell, (int, int)[] circleRange)
-        {
-            return circleRange.Select(x => (cell.Item1 + x.Item1, cell.Item2 + x.Item2)).ToArray();
-        }
-
-        private static Dictionary<(int, int), int> CoverageCandidates(bool?[,] containment, IEnumerable<(int, int)> toCover, (int, int)[] range)
+        [Description("Find candidate points that can host the extra circles.")]
+        private static Dictionary<(int, int), int> CoverageCandidates(bool?[,] containment, IEnumerable<(int, int)> toCover, (int, int)[] circleRange)
         {
             Dictionary<(int, int), int> result = new Dictionary<(int, int), int>();
 
@@ -718,7 +745,7 @@ namespace BH.Engine.Geometry
             int dimN = containment.GetLength(1);
             foreach ((int, int) cell in toCover)
             {
-                foreach ((int, int) item in range)
+                foreach ((int, int) item in circleRange)
                 {
                     int m = cell.Item1 + item.Item1;
                     int n = cell.Item2 + item.Item2;
@@ -740,7 +767,8 @@ namespace BH.Engine.Geometry
             return result;
         }
 
-        public static (int, int)[] CircleRange(double radius, double cellSize)
+        [Description("Finds relative addresses of cells that are covered by a single circle at address 0,0")]
+        private static (int, int)[] CircleRange(double radius, double cellSize)
         {
             List<(int, int)> result = new List<(int, int)>();
             double sqR = radius * radius;

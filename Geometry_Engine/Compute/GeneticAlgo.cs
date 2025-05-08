@@ -3,6 +3,7 @@ using BH.oM.Data.Genetic;
 using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Geometry
@@ -14,10 +15,11 @@ namespace BH.Engine.Geometry
             coverageHoles = coverageHoles ?? new List<Polyline>();
             availableHoles = availableHoles ?? new List<Polyline>();
 
-            m_CoverageOutlines = coverageOutlines.Select(o => o.CleanPolyline(tol, tol)).ToList();
-            m_AvailableOutlines = availableOutlines.Select(o => o.CleanPolyline(tol, tol)).ToList();
-            m_CoverageHoles = coverageHoles.Select(o => o.CleanPolyline(tol, tol)).ToList();
-            m_AvailableHoles = availableHoles.Select(o => o.CleanPolyline(tol, tol)).ToList();
+            Plane p = new Plane();
+            m_CoverageOutlines = coverageOutlines.Select(o => o.CleanPolyline(tol, tol).Project(p)).ToList();
+            m_AvailableOutlines = availableOutlines.Select(o => o.CleanPolyline(tol, tol).Project(p)).ToList();
+            m_CoverageHoles = coverageHoles.Select(o => o.CleanPolyline(tol, tol).Project(p)).ToList();
+            m_AvailableHoles = availableHoles.Select(o => o.CleanPolyline(tol, tol).Project(p)).ToList();
 
             m_Radius = radius;
             m_Tolerance = tol;
@@ -47,7 +49,7 @@ namespace BH.Engine.Geometry
             Func<double[], double> fitnessFunction = FitGridFunction;
             Action preproc = () =>
             {
-                GenerateContainmentGrid(m_AvailableOutlines, m_AvailableHoles, cellSize, m_Radius * Math.Sqrt(2) * 2, m_Tolerance);
+                m_ContainmentGrid = ContainmentGrid(m_AvailableOutlines, m_AvailableHoles, cellSize, m_Radius * Math.Sqrt(2) * 2, m_Tolerance);
             };
             return RunGeneticAlgorithm(settings as dynamic, parameters.ToArray(), fitnessFunction, preproc);
         }
@@ -60,18 +62,18 @@ namespace BH.Engine.Geometry
         private static double m_Tolerance;
         private static ContainmentGrid m_ContainmentGrid;
 
+        [Description("Fitness function used to determine how well a grid of circles covers the input outline.")]
         private static double FitGridFunction(double[] chromosome)
         {
             List<Point> grid = CreatePointGrid(m_AvailableOutlines, m_AvailableHoles, m_ContainmentGrid, m_Radius, chromosome[0], chromosome[1], chromosome[2], m_Tolerance);
             if (grid.Count == 0)
                 return -1e+6;
 
-            List<oM.Base.Output<List<Line>, List<double>>> uncoveredOutline = m_CoverageOutlines.Select(x => UncoveredEdges(grid, x, m_Radius, m_Tolerance)).ToList();
-            List<oM.Base.Output<List<Line>, List<double>>> uncoveredHoles = m_CoverageHoles.Select(x => UncoveredEdges(grid, x, m_Radius, m_Tolerance)).ToList();
+            List<oM.Base.Output<List<Line>, List<double>>> uncoveredOutline = m_CoverageOutlines.Select(x => UncoveredEdges(x, grid, m_Radius, m_Tolerance)).ToList();
+            List<oM.Base.Output<List<Line>, List<double>>> uncoveredHoles = m_CoverageHoles.Select(x => UncoveredEdges(x, grid, m_Radius, m_Tolerance)).ToList();
             List<Polyline> joinedOutlines = uncoveredOutline.SelectMany(x => x.Item1).ToList().Join(m_Tolerance);
             List<Polyline> joinedHoles = uncoveredHoles.SelectMany(x => x.Item1).ToList().Join(m_Tolerance);
             double circleCount = grid.Count + joinedOutlines.Sum(x => Math.Ceiling(x.Length() / m_Radius)) + joinedHoles.Sum(x => Math.Max(2, Math.Ceiling(x.Length() / m_Radius)));
-            //List<double> dists = grid.Select(x => m_CoverageOutlines.Min(y => x.Distance(y))).ToList();
             List<double> dists = uncoveredOutline[0].Item2;
             if (uncoveredOutline.Count > 1)
             {
@@ -91,48 +93,17 @@ namespace BH.Engine.Geometry
             return -circleCount - stDevThing;
         }
 
-        private static void GenerateContainmentGrid(List<Polyline> outlines, List<Polyline> holes, double cellSize, double offset, double tol)
-        {
-            m_ContainmentGrid = ContainmentGrid(outlines, holes, cellSize, offset, tol);
-        }
-
-        public static IGeneticAlgorithmResult GeneticSumTest(IGeneticAlgorithmSettings settings, List<DoubleParameter> parameters)
-        {
-            Func<double[], double> fitnessFunction = SumFunction;
-            return IRunGeneticAlgorithm(settings, parameters.ToArray(), fitnessFunction);
-        }
-
-        public static IGeneticAlgorithmResult GeneticStDevTest(IGeneticAlgorithmSettings settings, List<DoubleParameter> parameters)
-        {
-            Func<double[], double> fitnessFunction = StDevFunction;
-            return IRunGeneticAlgorithm(settings, parameters.ToArray(), fitnessFunction);
-        }
-
-        private static double SumFunction(double[] chromosome)
-        {
-            // Example fitness function: sum of the chromosome values
-            return chromosome.Sum();
-        }
-
-        private static double StDevFunction(double[] chromosome)
-        {
-            // Example fitness function: standard deviation of the chromosome values
-            double mean = chromosome.Average();
-            double sumOfSquares = chromosome.Sum(x => Math.Pow(x - mean, 2));
-            return Math.Sqrt(sumOfSquares / chromosome.Length);
-        }
-
-        public static IGeneticAlgorithmResult IRunGeneticAlgorithm(IGeneticAlgorithmSettings settings, DoubleParameter[] parameters, Func<double[], double> fitnessFunction)
-        {
-            return RunGeneticAlgorithm(settings as dynamic, parameters, fitnessFunction);
-        }
-
         private static Dictionary<double[], double> m_ResultPool = null;
         private static List<GenerationResult> m_ResultsPerGeneration = null;
         private static DoubleParameter[] m_Parameters = null;
         private static Random m_Random = new Random();
 
-        public static GeneticAlgorithmResult RunGeneticAlgorithm(FixedGenerationCount settings, DoubleParameter[] parameters, Func<double[], double> fitnessFunction, Action prep = null)
+        public static IGeneticAlgorithmResult IRunGeneticAlgorithm(IGeneticAlgorithmSettings settings, DoubleParameter[] parameters, Func<double[], double> fitnessFunction, Action preproc = null)
+        {
+            return RunGeneticAlgorithm(settings as dynamic, parameters, fitnessFunction, preproc);
+        }
+
+        public static GeneticAlgorithmResult RunGeneticAlgorithm(StandardGaSettings settings, DoubleParameter[] parameters, Func<double[], double> fitnessFunction, Action preproc = null)
         {
             if (settings == null)
             {
@@ -146,29 +117,41 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            if (prep != null)
-                prep.Invoke();
+            if (preproc != null)
+                preproc.Invoke();
 
             // Set global settings
             m_Parameters = parameters;
             m_ResultPool = new Dictionary<double[], double>(new DoubleArrayComparer());
             m_ResultsPerGeneration = new List<GenerationResult>();
 
+            int totalSolutionSpaceSize = (int)parameters.Select(x => (x.Max - x.Min) / x.Step).Aggregate((x, y) => x * y);
+            int initialPopulationSize = (int)Math.Round(settings.PopulationSize * settings.InitialBoost);
+            if (totalSolutionSpaceSize < settings.PopulationSize)
+            {
+                BH.Engine.Base.Compute.RecordError($"Can't run GA because initial population size ({initialPopulationSize}) is larger than the total solution space size ({totalSolutionSpaceSize}).");
+                return null;
+            }
+
             // Generate first generation
-            List<(double[], double)> population = InitializePopulation((int)Math.Round(settings.PopulationSize * settings.InitialBoost), parameters, fitnessFunction);
+            List<(double[], double)> population = InitializePopulation(initialPopulationSize, parameters, fitnessFunction);
             StoreResults(population);
 
-            //TODO: remember to check if the size is not equal to the number of permutations - then simply all options checked
             int generation = 0;
             int stagnant = 0;
             int maxStagnant = settings.MaxStagnant;
             int maintain = (int)(Math.Round(settings.PopulationSize * settings.ForceMaintainRatio));
             int drop = (int)(Math.Round(settings.PopulationSize * settings.ForceDropRatio));
 
-
             // Generate further generations
             while (generation < settings.GenerationCount - 1)
             {
+                if (m_ResultPool.Count >= totalSolutionSpaceSize * 3 / 4.0)
+                {
+                    BH.Engine.Base.Compute.RecordWarning("The solution space is almost fully covered. Stopping the GA.");
+                    break;
+                }
+
                 // Pick most fit individuals from previous generation to maintain
                 List<(double[], double)> toMaintain = population.OrderByDescending(individual => individual.Item2).Take(maintain).ToList();
 
@@ -235,6 +218,7 @@ namespace BH.Engine.Geometry
             return new GeneticAlgorithmResult { Generations = m_ResultsPerGeneration };
         }
 
+        [Description("Add the current generation to the result pool.")]
         private static void StoreResults(IEnumerable<(double[], double)> population)
         {
             foreach ((double[], double) individual in population)
@@ -242,13 +226,10 @@ namespace BH.Engine.Geometry
                 m_ResultPool[individual.Item1] = individual.Item2;
             }
 
-            m_ResultsPerGeneration.Add(new GenerationResult
-            {
-                GenerationNumber = m_ResultsPerGeneration.Count,
-                Population = population.Select(x => new Individual { Genes = x.Item1.ToList(), Fitness = x.Item2 }).OrderByDescending(x => x.Fitness).ToList(),
-            });
+            m_ResultsPerGeneration.Add(new GenerationResult(m_ResultsPerGeneration.Count, population.Select(x => new Individual(x.Item1.ToList(), x.Item2)).OrderByDescending(x => x.Fitness).ToList()));
         }
 
+        [Description("Initialise the population with random individuals.")]
         private static List<(double[], double)> InitializePopulation(int populationSize, DoubleParameter[] parameters, Func<double[], double> fitnessFunction)
         {
             List<(double[], double)> population = new List<(double[], double)>();
@@ -276,12 +257,13 @@ namespace BH.Engine.Geometry
             return population;
         }
 
-        public static double[] ISelectFirstParent(List<(double[], double)> population, IFirstParentSelectionMethod selectionMethod)
+        [Description("Select first parent for mating.")]
+        private static double[] ISelectFirstParent(List<(double[], double)> population, IFirstParentSelectionMethod selectionMethod)
         {
             return SelectParent(population, selectionMethod as dynamic);
         }
 
-        public static double[] SelectParent(List<(double[], double)> population, RouletteWheelSelection selectionMethod)
+        private static double[] SelectParent(List<(double[], double)> population, RouletteWheelSelection selectionMethod)
         {
             double totalFitness = population.Sum(individual => individual.Item2);
             double randomValue = m_Random.NextDouble() * totalFitness;
@@ -291,15 +273,13 @@ namespace BH.Engine.Geometry
             {
                 cumulativeFitness += individual.Item2;
                 if (cumulativeFitness >= randomValue)
-                {
                     return individual.Item1;
-                }
             }
 
             return population.Last().Item1; // Fallback
         }
 
-        public static double[] SelectParent(List<(double[], double)> population, RankSelection selectionMethod)
+        private static double[] SelectParent(List<(double[], double)> population, RankSelection selectionMethod)
         {
             List<(double[], double)> sortedPopulation = population.OrderBy(individual => individual.Item2).ToList();
             int rankSum = sortedPopulation.Count * (sortedPopulation.Count + 1) / 2;
@@ -316,7 +296,7 @@ namespace BH.Engine.Geometry
             return sortedPopulation.Last().Item1; // Fallback
         }
 
-        public static double[] SelectParent(List<(double[], double)> population, TournamentSelection selectionMethod)
+        private static double[] SelectParent(List<(double[], double)> population, TournamentSelection selectionMethod)
         {
             int tournamentSize = selectionMethod.TournamentSize;
             List<(double[], double)> tournament = new List<(double[], double)>();
@@ -330,17 +310,18 @@ namespace BH.Engine.Geometry
         }
 
 
-        public static double[] SelectParent(List<(double[], double)> population, IParentSelectionMethod selectionMethod)
+        private static double[] SelectParent(List<(double[], double)> population, IParentSelectionMethod selectionMethod)
         {
             throw new NotImplementedException();
         }
 
-        public static double[] ISelectSecondParent(List<(double[], double)> population, double[] firstParent, ISecondParentSelectionMethod method)
+        [Description("Select second parent for mating.")]
+        private static double[] ISelectSecondParent(List<(double[], double)> population, double[] firstParent, ISecondParentSelectionMethod method)
         {
             return SelectSecondParent(population, firstParent, method as dynamic);
         }
 
-        public static double[] SelectSecondParent(List<(double[], double)> population, double[] firstParent, DistanceBasedSelection method)
+        private static double[] SelectSecondParent(List<(double[], double)> population, double[] firstParent, DistanceBasedSelection method)
         {
             List<(double[], double)> distances = population.Select(individual => (individual.Item1, Math.Sqrt(individual.Item1.Zip(firstParent, (x, y) => (x - y) * (x - y)).Sum())))
                             .OrderBy(individual => individual.Item2).ToList();
@@ -352,20 +333,19 @@ namespace BH.Engine.Geometry
             return candidates[m_Random.Next(candidates.Count)].Item1;
         }
 
-        public static double[] SelectSecondParent(List<(double[], double)> population, double[] firstParent, IParentSelectionMethod method)
+        private static double[] SelectSecondParent(List<(double[], double)> population, double[] firstParent, IParentSelectionMethod method)
         {
             return SelectParent(population, method as dynamic);
         }
 
+        [Description("Perform crossover between two parents to create two children.")]
         private static (double[], double[]) ICrossover(double[] parent1, double[] parent2, ICrossoverMethod crossoverMethod)
         {
             return Crossover(parent1, parent2, crossoverMethod as dynamic);
         }
 
-        public static (double[], double[]) Crossover(double[] parent1, double[] parent2, SinglePointCrossover crossoverMethod)
+        private static (double[], double[]) Crossover(double[] parent1, double[] parent2, SinglePointCrossover crossoverMethod)
         {
-            //TODO: rounding, min max etc.
-
             if (m_Random.NextDouble() > crossoverMethod.CrossoverRate)
                 return (parent1.ToArray(), parent2.ToArray());
 
@@ -390,7 +370,7 @@ namespace BH.Engine.Geometry
             return (child1, child2);
         }
 
-        public static (double[], double[]) Crossover(double[] parent1, double[] parent2, TwoPointCrossover crossoverMethod)
+        private static (double[], double[]) Crossover(double[] parent1, double[] parent2, TwoPointCrossover crossoverMethod)
         {
             if (m_Random.NextDouble() > crossoverMethod.CrossoverRate)
                 return (parent1.ToArray(), parent2.ToArray());
@@ -417,7 +397,7 @@ namespace BH.Engine.Geometry
             return (child1, child2);
         }
 
-        public static (double[], double[]) Crossover(double[] parent1, double[] parent2, UniformCrossover crossoverMethod)
+        private static (double[], double[]) Crossover(double[] parent1, double[] parent2, UniformCrossover crossoverMethod)
         {
             if (m_Random.NextDouble() > crossoverMethod.CrossoverRate)
                 return (parent1.ToArray(), parent2.ToArray());
@@ -443,7 +423,7 @@ namespace BH.Engine.Geometry
             return (child1, child2);
         }
 
-        public static (double[], double[]) Crossover(double[] parent1, double[] parent2, ArithmeticCrossover crossoverMethod)
+        private static (double[], double[]) Crossover(double[] parent1, double[] parent2, ArithmeticCrossover crossoverMethod)
         {
             if (m_Random.NextDouble() > crossoverMethod.CrossoverRate)
                 return (parent1.ToArray(), parent2.ToArray());
@@ -467,7 +447,7 @@ namespace BH.Engine.Geometry
             return (child1, child2);
         }
 
-        public static (double[], double[]) Crossover(double[] parent1, double[] parent2, ProportionalArithmeticCrossover crossoverMethod)
+        private static (double[], double[]) Crossover(double[] parent1, double[] parent2, ProportionalArithmeticCrossover crossoverMethod)
         {
             if (m_Random.NextDouble() > crossoverMethod.CrossoverRate)
                 return (parent1.ToArray(), parent2.ToArray());
@@ -494,7 +474,7 @@ namespace BH.Engine.Geometry
             return (child1, child2);
         }
 
-        public static (double[], double[]) Crossover(double[] parent1, double[] parent2, BlendCrossover crossoverMethod)
+        private static (double[], double[]) Crossover(double[] parent1, double[] parent2, BlendCrossover crossoverMethod)
         {
             if (m_Random.NextDouble() > crossoverMethod.CrossoverRate)
                 return (parent1.ToArray(), parent2.ToArray());
@@ -523,7 +503,7 @@ namespace BH.Engine.Geometry
             return (child1, child2);
         }
 
-        public static (double[], double[]) Crossover(double[] parent1, double[] parent2, SimulatedBinaryCrossover crossoverMethod)
+        private static (double[], double[]) Crossover(double[] parent1, double[] parent2, SimulatedBinaryCrossover crossoverMethod)
         {
             if (m_Random.NextDouble() > crossoverMethod.CrossoverRate)
                 return (parent1.ToArray(), parent2.ToArray());
@@ -556,21 +536,21 @@ namespace BH.Engine.Geometry
         }
 
 
-        public static (double[], double[]) Crossover(double[] parent1, double[] parent2, ICrossoverMethod crossoverMethod)
+        private static (double[], double[]) Crossover(double[] parent1, double[] parent2, ICrossoverMethod crossoverMethod)
         {
             throw new NotImplementedException();
         }
 
-        private static void IMutate(double[] chromosome, IMutationMethod mutationMethod, DoubleParameter[] parameters)
+        [Description("Perform mutation on the individual.")]
+        private static void IMutate(double[] individual, IMutationMethod mutationMethod, DoubleParameter[] parameters)
         {
-            Mutate(chromosome, mutationMethod as dynamic, parameters);
+            Mutate(individual, mutationMethod as dynamic, parameters);
         }
 
-        public static void Mutate(double[] individual, RandomPointMutation mutationMethod, DoubleParameter[] parameters)
+        private static void Mutate(double[] individual, RandomPointMutation mutationMethod, DoubleParameter[] parameters)
         {
             double mutationRate = mutationMethod.MutationRate;
 
-            //TODO: this may get really slow if most combinations already covered - need to think how to avoid gridlock
             do
             {
                 for (int i = 0; i < individual.Length; i++)
@@ -587,12 +567,11 @@ namespace BH.Engine.Geometry
             while (m_ResultPool.ContainsKey(individual));
         }
 
-        public static void Mutate(double[] individual, GaussianPointMutation mutationMethod, DoubleParameter[] parameters)
+        private static void Mutate(double[] individual, GaussianPointMutation mutationMethod, DoubleParameter[] parameters)
         {
             double mutationRate = mutationMethod.MutationRate;
             int intervalCount = mutationMethod.IntervalCount;
 
-            //TODO: this may get really slow if most combinations already covered - need to think how to avoid gridlock
             do
             {
                 for (int i = 0; i < individual.Length; i++)
@@ -624,12 +603,11 @@ namespace BH.Engine.Geometry
             while (m_ResultPool.ContainsKey(individual));
         }
 
-        public static void Mutate(double[] individual, GleamPointMutation mutationMethod, DoubleParameter[] parameters)
+        private static void Mutate(double[] individual, GleamPointMutation mutationMethod, DoubleParameter[] parameters)
         {
             double mutationRate = mutationMethod.MutationRate;
             int k = mutationMethod.IntervalCount;
 
-            //TODO: this may get really slow if most combinations already covered - need to think how to avoid gridlock
             do
             {
                 for (int i = 0; i < individual.Length; i++)
@@ -647,22 +625,22 @@ namespace BH.Engine.Geometry
                         if (increase)
                         {
                             double delta = (max - x) / k;
-                            int subInterval = m_Random.Next(1, k + 1); // Select a sub-interval
+                            int subInterval = m_Random.Next(1, k + 1);
                             double lowerBound = x;
                             double upperBound = x + delta * subInterval;
                             double newValue = lowerBound + m_Random.NextDouble() * (upperBound - lowerBound);
-                            newValue = Math.Min(max, newValue); // Clamp to max
-                            individual[i] = newValue.Round(step); // Round to nearest step
+                            newValue = Math.Min(max, newValue);
+                            individual[i] = newValue.Round(step);
                         }
                         else
                         {
                             double delta = (x - min) / k;
-                            int subInterval = m_Random.Next(1, k + 1); // Select a sub-interval
+                            int subInterval = m_Random.Next(1, k + 1);
                             double lowerBound = x - delta * subInterval;
                             double upperBound = x;
                             double newValue = lowerBound + m_Random.NextDouble() * (upperBound - lowerBound);
-                            newValue = Math.Max(min, newValue); // Clamp to min
-                            individual[i] = newValue.Round(step); // Round to nearest step
+                            newValue = Math.Max(min, newValue);
+                            individual[i] = newValue.Round(step);
                         }
                     }
                 }
@@ -672,11 +650,11 @@ namespace BH.Engine.Geometry
 
         private static double NextGaussian(double mean, double stddev)
         {
-            // Use Box-Muller transform to generate a standard normal distribution
-            double u1 = 1.0 - m_Random.NextDouble(); // Uniform(0,1] random doubles
+            // Box-Muller transform to generate a standard normal distribution
+            double u1 = 1.0 - m_Random.NextDouble();
             double u2 = 1.0 - m_Random.NextDouble();
-            double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2); // Random normal(0,1)
-            return mean + stddev * randStdNormal; // Random normal(mean,stddev)
+            double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) * Math.Sin(2.0 * Math.PI * u2);
+            return mean + stddev * randStdNormal;
         }
 
         private static void Mutate(double[] chromosome, IMutationMethod mutationMethod, double mutationRate, DoubleParameter[] parameters)
@@ -685,6 +663,7 @@ namespace BH.Engine.Geometry
         }
     }
 
+    [Description("Comparer for double arrays.")]
     internal class DoubleArrayComparer : IEqualityComparer<double[]>
     {
         public bool Equals(double[] x, double[] y)
