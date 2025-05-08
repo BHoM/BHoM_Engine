@@ -239,8 +239,14 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        private static bool SetValue<T>(this Dictionary<string, T> dic, string propName, object value)
+        private static bool SetValue<T>(this IDictionary<string, T> dic, string propName, object value)
         {
+            if (dic.IsReadOnly)
+            {
+                Compute.RecordError("This dictionary is read-only so it is not possible to modify it.");
+                return true;
+            }
+
             try
             {
                 dic[propName] = (T)(value as dynamic);
@@ -256,7 +262,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        private static bool SetValue<K, T>(this Dictionary<K, T> dic, string propName, object value, bool isSilent = false) where K : struct, Enum
+        private static bool SetValue<K, T>(this IDictionary<K, T> dic, string propName, object value, bool isSilent = false) where K : struct, Enum
         {
             K key;
             if (!Enum.TryParse(propName, out key))
@@ -267,6 +273,12 @@ namespace BH.Engine.Base
             }
             else
             {
+                if (dic.IsReadOnly)
+                {
+                    Compute.RecordError($"Property {propName} doesn't have a public setter so it is not possible to modify it.");
+                    return true;
+                }
+
                 try
                 {
                     dic[key] = (T)(value as dynamic);

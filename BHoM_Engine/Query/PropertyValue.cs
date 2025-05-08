@@ -116,7 +116,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        private static object GetValue<T>(this Dictionary<string, T> dic, string propName)
+        private static object GetValue<T>(this IDictionary<string, T> dic, string propName)
         {
             if (dic.ContainsKey(propName))
             {
@@ -131,7 +131,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        private static object GetValue<K, T>(this Dictionary<K, T> dic, string propName) where K : struct, Enum
+        private static object GetValue<K, T>(this IDictionary<K, T> dic, string propName) where K : struct, Enum
         {
             K key;
             if (!Enum.TryParse(propName, out key))
@@ -152,7 +152,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        private static bool TryGetDynamicValue<K, T>(this Dictionary<K, T> dic, string propName, out object result) where K : struct, Enum
+        private static bool TryGetDynamicValue<K, T>(this IDictionary<K, T> dic, string propName, out object result) where K : struct, Enum
         {
             result = null;
             bool isCorrectContainer = Enum.TryParse(propName, out K key);
