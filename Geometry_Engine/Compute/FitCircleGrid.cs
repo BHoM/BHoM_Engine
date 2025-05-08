@@ -19,14 +19,6 @@ namespace BH.Engine.Geometry
     {
         public static Output<List<Line>, List<Point>, List<Point>> ContainmentGridTest(List<Polyline> outlines, List<Polyline> holes, double cellSize, double offset, double tol)
         {
-            //BoundingBox bbox = outlines.Select(x => x.Bounds()).ToList().Bounds();
-            //double dx = bbox.Max.X - bbox.Min.X;
-            //double dy = bbox.Max.Y - bbox.Min.Y;
-            //int cellCountX = (int)Math.Ceiling(dx / cellSize);
-            //int cellCountY = (int)Math.Ceiling(dy / cellSize);
-            //Point origin = (bbox.Min + bbox.Max) / 2 - new Vector { X = cellCountX * cellSize / 2, Y = cellCountY * cellSize / 2 };
-
-
             List<Point> inside = new List<Point>();
             List<Point> edge = new List<Point>();
             ContainmentGrid grid = ContainmentGrid(outlines, holes, cellSize, offset, tol);
@@ -547,6 +539,210 @@ namespace BH.Engine.Geometry
             }
 
             return new Output<List<Line>, List<double>> { Item1 = uncoveredEdges, Item2 = minDists.ToList() };
+        }
+
+        public static List<Point> FillInRemainderTest2(List<Polyline> availableOutlines, List<Polyline> availableHoles, List<Polyline> toCoverOutlines, List<Polyline> toCoverHoles, List<Point> grid, double cellSize, double offset, double radius, double existingGridPremium = 2, double tol = Tolerance.Distance)
+        {
+            ContainmentGrid containmentGrid = ContainmentGrid(availableOutlines, availableHoles, cellSize, offset, tol);
+            return FillInRemainder(toCoverOutlines, toCoverHoles, containmentGrid, grid, radius, existingGridPremium);
+        }
+
+        public static List<Point> FillInRemainderTest(List<Polyline> outlines, List<Polyline> holes, double cellSize, double offset, List<Line> toCover, double radius, double tol = Tolerance.Distance)
+        {
+            ContainmentGrid grid = ContainmentGrid(outlines, holes, cellSize, offset, tol);
+            return FillInRemainder(grid, toCover, radius, tol);
+        }
+
+
+        public static List<Point> FillInRemainder(ContainmentGrid containmentGrid, List<Line> toCover, double radius, double tol = Tolerance.Distance)
+        {
+            int cellCountX = containmentGrid.CellCountX;
+            int cellCountY = containmentGrid.CellCountY;
+            List<Point> result = new List<Point>();
+            HashSet<(int, int)> edgeCells = new HashSet<(int, int)>(toCover.SelectMany(x => GetIntersectedCells(x.Start, x.End, containmentGrid.Origin, containmentGrid.CellSize, tol)));
+
+            //int range = (int)(radius / Math.Sqrt(2) / containmentGrid.CellSize);
+
+            (int, int)[] circleRange = CircleRange(radius, containmentGrid.CellSize);
+
+            //bool[,] toCoverGrid = new bool[containmentGrid.CellCountX, containmentGrid.CellCountY];
+            Dictionary<(int, int), int> cands = CoverageCandidates(containmentGrid.ContainmentMatrix, edgeCells, circleRange);
+
+            while (edgeCells.Count != 0)
+            {
+                if (cands.Count == 0)
+                {
+                    //TODO: error
+                    return result;
+                }
+
+                //TODO: add a premium for using existing grids! each grid score x2? so inters x4
+
+                // find the cell with the most candidates
+                (int, int) bestCand = cands.OrderByDescending(x => x.Value).First().Key;
+                result.Add(CellCenter(containmentGrid.Origin, containmentGrid.CellSize, bestCand.Item1, bestCand.Item2));
+
+                (int, int)[] coveredByCand = circleRange.Select(x => (bestCand.Item1 + x.Item1, bestCand.Item2 + x.Item2)).ToArray();
+                edgeCells.ExceptWith(coveredByCand);
+
+                //TODO: could speed up by reducing cand dict rather than recomputing it all
+                cands = CoverageCandidates(containmentGrid.ContainmentMatrix, edgeCells, circleRange);
+            }
+
+            return result;
+        }
+
+
+        public static List<Point> FillInRemainder(List<Polyline> outlines, List<Polyline> holes, ContainmentGrid containmentGrid, List<Point> grid, double radius, double existingGridPremium = 2, double tol = Tolerance.Distance)
+        {
+            int cellCountX = containmentGrid.CellCountX;
+            int cellCountY = containmentGrid.CellCountY;
+            double cellSize = containmentGrid.CellSize;
+            Point origin = containmentGrid.Origin;
+            List<Point> result = new List<Point>();
+
+            List<PolyCurve> diff = outlines.SelectMany(x => x.BooleanDifference(holes.Cast<ICurve>().Concat(grid.Select(y => new Circle { Centre = y, Radius = radius })), tol)).ToList();
+            List<Line> segments = diff.SelectMany(x => x.CollapseToPolyline(Math.PI / 32).SubParts()).ToList();
+
+            (int, int)[] circleRange = CircleRange(radius, containmentGrid.CellSize);
+            HashSet<(int, int)> toCover = new HashSet<(int, int)>(segments.SelectMany(x => GetIntersectedCells(x.Start, x.End, containmentGrid.Origin, containmentGrid.CellSize, tol)));
+
+            List<int> xS = new List<int>();
+            List<int> yS = new List<int>();
+            List<double> xS2 = new List<double>();
+            List<double> yS2 = new List<double>();
+            foreach (Point p in grid)
+            {
+                if (xS2.All(x => Math.Abs(x - p.X) > tol))
+                {
+                    xS.Add((int)((p.X - origin.X) / cellSize));
+                    xS2.Add(p.X);
+                }
+
+                if (yS2.All(x => Math.Abs(x - p.Y) > tol))
+                {
+                    yS.Add((int)((p.Y - origin.Y) / cellSize));
+                    yS2.Add(p.Y);
+                }
+            }
+
+            Dictionary<(int, int), int> cands = CoverageCandidates(containmentGrid.ContainmentMatrix, toCover, circleRange);
+            while (toCover.Count != 0)
+            {
+                if (cands.Count == 0)
+                {
+                    //TODO: error
+                    return result;
+                }
+
+                //TODO: need to improve the scoring system to promote grid alignment in some more meaningful way
+                // boost the scores based on grid alignement
+                foreach ((int, int) key in cands.Keys.ToList())
+                {
+                    double value = cands[key];
+                    if (xS.Contains(key.Item1))
+                        value *= existingGridPremium;
+
+                    if (yS.Contains(key.Item2))
+                        value *= existingGridPremium;
+
+                    cands[key] = (int)Math.Round(value);
+                }
+
+                // find topscorer
+                (int, int) bestCand = cands.OrderByDescending(x => x.Value).First().Key;
+                result.Add(CellCenter(origin, cellSize, bestCand.Item1, bestCand.Item2));
+                //result.Add(new Point { X = origin.X + bestCand.Item1 * cellSize, Y = origin.Y + bestCand.Item2 * cellSize });
+
+                if (xS.All(x => x != bestCand.Item1))
+                    xS.Add(bestCand.Item1);
+
+                if (yS.All(x => x != bestCand.Item2))
+                    yS.Add(bestCand.Item2);
+
+                (int, int)[] coveredByCand = circleRange.Select(x => (bestCand.Item1 + x.Item1, bestCand.Item2 + x.Item2)).ToArray();
+                toCover.ExceptWith(coveredByCand);
+
+                //TODO: could speed up by reducing cand dict rather than recomputing it all
+                cands = CoverageCandidates(containmentGrid.ContainmentMatrix, toCover, circleRange);
+            }
+
+            foreach (Point pt in result)
+            {
+                int idX = xS2.FindIndex(x => Math.Abs(x - pt.X) <= cellSize / 2 + tol);
+                if (idX != -1)
+                    pt.X = xS2[idX];
+
+                int idY = yS2.FindIndex(x => Math.Abs(x - pt.Y) <= cellSize / 2 + tol);
+                if (idY != -1)
+                    pt.Y = yS2[idY];
+            }
+
+            return result;
+        }
+
+        private static (int, int)[] GetCircleCoverage((int, int) cell, (int, int)[] circleRange)
+        {
+            return circleRange.Select(x => (cell.Item1 + x.Item1, cell.Item2 + x.Item2)).ToArray();
+        }
+
+        private static Dictionary<(int, int), int> CoverageCandidates(bool?[,] containment, IEnumerable<(int, int)> toCover, (int, int)[] range)
+        {
+            Dictionary<(int, int), int> result = new Dictionary<(int, int), int>();
+
+            int dimM = containment.GetLength(0);
+            int dimN = containment.GetLength(1);
+            foreach ((int, int) cell in toCover)
+            {
+                foreach ((int, int) item in range)
+                {
+                    int m = cell.Item1 + item.Item1;
+                    int n = cell.Item2 + item.Item2;
+
+                    if (m < 0 || m >= dimM || n < 0 || n >= dimN)
+                        continue;
+
+                    if (containment[m, n] == true)
+                    {
+                        (int m, int n) toAdd = (m, n);
+                        if (result.ContainsKey(toAdd))
+                            result[toAdd]++;
+                        else
+                            result.Add(toAdd, 1);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static (int, int)[] CircleRange(double radius, double cellSize)
+        {
+            List<(int, int)> result = new List<(int, int)>();
+            double sqR = radius * radius;
+            int range = (int)(radius / cellSize);
+            for (int m = -range; m <= 0; m++)
+            {
+                for (int n = -range; n <= 0; n++)
+                {
+                    double mm = m * cellSize;
+                    double nn = n * cellSize;
+                    if (mm * mm + nn * nn <= sqR)
+                    {
+                        (int, int)[] a = new (int, int)[]
+                        {
+                            (m, n),
+                            (-m, n),
+                            (-m, -n),
+                            (m, -n)
+                        };
+
+                        result.AddRange(a.Distinct());
+                    }
+                }
+            }
+
+            return result.ToArray();
         }
     }
 }
