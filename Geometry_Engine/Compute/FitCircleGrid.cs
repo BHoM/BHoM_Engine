@@ -607,23 +607,43 @@ namespace BH.Engine.Geometry
             (int, int)[] circleRange = CircleRange(radius, containmentGrid.CellSize);
             HashSet<(int, int)> toCover = new HashSet<(int, int)>(segments.SelectMany(x => GetIntersectedCells(x.Start, x.End, containmentGrid.Origin, containmentGrid.CellSize, tol)));
 
-            List<int> xS = new List<int>();
-            List<int> yS = new List<int>();
+            Dictionary<int, List<int>> xS = new Dictionary<int, List<int>>();
+            Dictionary<int, List<int>> yS = new Dictionary<int, List<int>>();
             List<double> xS2 = new List<double>();
             List<double> yS2 = new List<double>();
             foreach (Point p in grid)
             {
                 if (xS2.All(x => Math.Abs(x - p.X) > tol))
-                {
-                    xS.Add((int)((p.X - origin.X) / cellSize));
                     xS2.Add(p.X);
-                }
 
                 if (yS2.All(x => Math.Abs(x - p.Y) > tol))
-                {
-                    yS.Add((int)((p.Y - origin.Y) / cellSize));
                     yS2.Add(p.Y);
-                }
+
+                int xInt = (int)((p.X - origin.X) / cellSize);
+                int yInt = (int)((p.Y - origin.Y) / cellSize);
+
+                if (!xS.ContainsKey(xInt))
+                    xS.Add(xInt, new List<int>());
+
+                if (!yS.ContainsKey(yInt))
+                    yS.Add(yInt, new List<int>());
+
+                xS[xInt].Add(yInt);
+                yS[yInt].Add(xInt);
+            }
+
+            int cellSpanX = int.MaxValue;
+            if (xS2.Count > 1)
+            {
+                xS2.Sort();
+                cellSpanX = (int)((xS2[1] - xS2[0]) / cellSize) + 2;
+            }
+
+            int cellSpanY = int.MaxValue;
+            if (yS2.Count > 1)
+            {
+                yS2.Sort();
+                cellSpanY = (int)((yS2[1] - yS2[0]) / cellSize) + 2;
             }
 
             Dictionary<(int, int), int> cands = CoverageCandidates(containmentGrid.ContainmentMatrix, toCover, circleRange);
@@ -640,10 +660,10 @@ namespace BH.Engine.Geometry
                 foreach ((int, int) key in cands.Keys.ToList())
                 {
                     double value = cands[key];
-                    if (xS.Contains(key.Item1))
+                    if (xS.ContainsKey(key.Item1) && xS[key.Item1].Any(x => Math.Abs(x - key.Item2) <= cellSpanY))
                         value *= existingGridPremium;
 
-                    if (yS.Contains(key.Item2))
+                    if (yS.ContainsKey(key.Item2) && yS[key.Item2].Any(x => Math.Abs(x - key.Item1) <= cellSpanX))
                         value *= existingGridPremium;
 
                     cands[key] = (int)Math.Round(value);
@@ -654,11 +674,15 @@ namespace BH.Engine.Geometry
                 result.Add(CellCenter(origin, cellSize, bestCand.Item1, bestCand.Item2));
                 //result.Add(new Point { X = origin.X + bestCand.Item1 * cellSize, Y = origin.Y + bestCand.Item2 * cellSize });
 
-                if (xS.All(x => x != bestCand.Item1))
-                    xS.Add(bestCand.Item1);
+                if (!xS.ContainsKey(bestCand.Item1))
+                    xS.Add(bestCand.Item1, new List<int>());
 
-                if (yS.All(x => x != bestCand.Item2))
-                    yS.Add(bestCand.Item2);
+                xS[bestCand.Item1].Add(bestCand.Item2);
+
+                if (!yS.ContainsKey(bestCand.Item2))
+                    yS.Add(bestCand.Item2, new List<int>());
+
+                yS[bestCand.Item2].Add(bestCand.Item1);
 
                 (int, int)[] coveredByCand = circleRange.Select(x => (bestCand.Item1 + x.Item1, bestCand.Item2 + x.Item2)).ToArray();
                 toCover.ExceptWith(coveredByCand);
