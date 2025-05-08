@@ -22,6 +22,7 @@
 
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Quantities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -281,7 +282,14 @@ namespace BH.Engine.Base
 
                 try
                 {
-                    dic[key] = (T)(value as dynamic);
+                    if (typeof(IQuantity).IsAssignableFrom(typeof(T)) && Query.IsNumeric(value?.GetType(), false))
+                    {
+                        IQuantity quantity = Activator.CreateInstance(typeof(T)) as IQuantity;
+                        quantity.Value = value as dynamic;
+                        dic[key] = (T)quantity;
+                    }
+                    else
+                        dic[key] = (T)(value as dynamic);
                     return true;
                 }
                 catch (Exception e)
