@@ -58,12 +58,11 @@ namespace BH.Engine.Geometry
         private static List<Polyline> m_AvailableHoles;
         private static double m_Radius;
         private static double m_Tolerance;
-        private static bool?[,] m_ContainmentGrid;
-        private static SquareGrid m_SquareGrid;
+        private static ContainmentGrid m_ContainmentGrid;
 
         private static double FitGridFunction(double[] chromosome)
         {
-            List<Point> grid = CreatePointGrid(m_AvailableOutlines, m_AvailableHoles, m_SquareGrid, m_ContainmentGrid, m_Radius, chromosome[0], chromosome[1], chromosome[2], m_Tolerance);
+            List<Point> grid = CreatePointGrid(m_AvailableOutlines, m_AvailableHoles, m_ContainmentGrid, m_Radius, chromosome[0], chromosome[1], chromosome[2], m_Tolerance);
             if (grid.Count == 0)
                 return -1e+6;
 
@@ -94,9 +93,7 @@ namespace BH.Engine.Geometry
 
         private static void GenerateContainmentGrid(List<Polyline> outlines, List<Polyline> holes, double cellSize, double offset, double tol)
         {
-            SquareGrid grid = Grid(outlines, holes, cellSize, offset);
-            m_SquareGrid = grid;
-            m_ContainmentGrid = ContainmentGrid(outlines, holes, grid, tol);
+            m_ContainmentGrid = ContainmentGrid(outlines, holes, cellSize, offset, tol);
         }
 
         public static IGeneticAlgorithmResult GeneticSumTest(IGeneticAlgorithmSettings settings, List<DoubleParameter> parameters)

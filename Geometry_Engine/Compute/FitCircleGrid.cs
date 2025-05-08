@@ -6,38 +6,47 @@ using System.Linq;
 
 namespace BH.Engine.Geometry
 {
-    public class SquareGrid
+    public class ContainmentGrid
     {
         public Point Origin { get; set; }
         public double CellSize { get; set; }
         public int CellCountX { get; set; }
         public int CellCountY { get; set; }
+        public bool?[,] ContainmentMatrix { get; set; }
     }
 
     public static partial class Compute
     {
-        public static List<List<Point>> FitCircleGrid(List<Polyline> coverageOutlines, List<Polyline> availableOutlines, double radius, List<Polyline> coverageHoles = null, List<Polyline> availableHoles = null, double tol = Tolerance.Distance)
-        {
-            coverageHoles = coverageHoles ?? new List<Polyline>();
-            availableHoles = availableHoles ?? new List<Polyline>();
-
-            coverageOutlines = coverageOutlines.Select(o => o.CleanPolyline(tol, tol)).ToList();
-            availableOutlines = availableOutlines.Select(o => o.CleanPolyline(tol, tol)).ToList();
-            coverageHoles = coverageHoles.Select(o => o.CleanPolyline(tol, tol)).ToList();
-            availableHoles = availableHoles.Select(o => o.CleanPolyline(tol, tol)).ToList();
-
-            throw new NotImplementedException();
-        }
-
         public static Output<List<Line>, List<Point>, List<Point>> ContainmentGridTest(List<Polyline> outlines, List<Polyline> holes, double cellSize, double offset, double tol)
         {
-            BoundingBox bbox = outlines.Select(x => x.Bounds()).ToList().Bounds();
-            double dx = bbox.Max.X - bbox.Min.X;
-            double dy = bbox.Max.Y - bbox.Min.Y;
-            int cellCountX = (int)Math.Ceiling(dx / cellSize);
-            int cellCountY = (int)Math.Ceiling(dy / cellSize);
-            Point origin = (bbox.Min + bbox.Max) / 2 - new Vector { X = cellCountX * cellSize / 2, Y = cellCountY * cellSize / 2 };
-            SquareGrid grid = new SquareGrid { CellCountX = cellCountX, CellCountY = cellCountY, CellSize = cellSize, Origin = origin };
+            //BoundingBox bbox = outlines.Select(x => x.Bounds()).ToList().Bounds();
+            //double dx = bbox.Max.X - bbox.Min.X;
+            //double dy = bbox.Max.Y - bbox.Min.Y;
+            //int cellCountX = (int)Math.Ceiling(dx / cellSize);
+            //int cellCountY = (int)Math.Ceiling(dy / cellSize);
+            //Point origin = (bbox.Min + bbox.Max) / 2 - new Vector { X = cellCountX * cellSize / 2, Y = cellCountY * cellSize / 2 };
+
+
+            List<Point> inside = new List<Point>();
+            List<Point> edge = new List<Point>();
+            ContainmentGrid grid = ContainmentGrid(outlines, holes, cellSize, offset, tol);
+            int cellCountX = grid.CellCountX;
+            int cellCountY = grid.CellCountY;
+            double dx = cellCountX * cellSize;
+            double dy = cellCountY * cellSize;
+            Point origin = grid.Origin;
+            bool?[,] matrix = grid.ContainmentMatrix;
+
+            for (int m = 0; m < cellCountX; m++)
+            {
+                for (int n = 0; n < cellCountY; n++)
+                {
+                    if (matrix[m, n] == null)
+                        edge.Add(CellCenter(origin, cellSize, m, n));
+                    else if (matrix[m, n] == true)
+                        inside.Add(CellCenter(origin, cellSize, m, n));
+                }
+            }
 
             List<Line> lns = new List<Line>();
             for (int i = 0; i <= cellCountX; i++)
@@ -57,20 +66,6 @@ namespace BH.Engine.Geometry
                 });
             }
 
-            List<Point> inside = new List<Point>();
-            List<Point> edge = new List<Point>();
-            bool?[,] containmentGrid = ContainmentGrid(outlines, holes, grid, tol);
-            for (int m = 0; m < cellCountX; m++)
-            {
-                for (int n = 0; n < cellCountY; n++)
-                {
-                    if (containmentGrid[m, n] == null)
-                        edge.Add(CellCenter(origin, cellSize, m, n));
-                    else if (containmentGrid[m, n] == true)
-                        inside.Add(CellCenter(origin, cellSize, m, n));
-                }
-            }
-
             return new Output<List<Line>, List<Point>, List<Point>>
             {
                 Item1 = lns,
@@ -79,7 +74,7 @@ namespace BH.Engine.Geometry
             };
         }
 
-        private static SquareGrid Grid(List<Polyline> outlines, List<Polyline> holes, double cellSize, double offset)
+        private static ContainmentGrid ContainmentGrid(List<Polyline> outlines, List<Polyline> holes, double cellSize, double offset, double tol)
         {
             BoundingBox bbox = outlines.Select(x => x.Bounds()).ToList().Bounds();
             double dx = bbox.Max.X - bbox.Min.X + offset * 2;
@@ -87,25 +82,15 @@ namespace BH.Engine.Geometry
             int cellCountX = (int)Math.Ceiling(dx / cellSize) + 1;
             int cellCountY = (int)Math.Ceiling(dy / cellSize) + 1;
             Point origin = (bbox.Min + bbox.Max) / 2 - new Vector { X = cellCountX * cellSize / 2, Y = cellCountY * cellSize / 2 };
-            return new SquareGrid { CellCountX = cellCountX, CellCountY = cellCountY, CellSize = cellSize, Origin = origin };
-        }
 
-        private static bool?[,] ContainmentGrid(List<Polyline> outlines, List<Polyline> holes, SquareGrid grid, double tol)
-        {
-            int cellCountX = grid.CellCountX;
-            int cellCountY = grid.CellCountY;
-            Point origin = grid.Origin;
-            double cellSize = grid.CellSize;
-
-
-            bool?[,] containmentGrid = new bool?[cellCountX, cellCountY];
+            bool?[,] containment = new bool?[cellCountX, cellCountY];
 
             //TODO: check if nullable bool is false or null at start
             for (int m = 0; m < cellCountX; m++)
             {
                 for (int n = 0; n < cellCountY; n++)
                 {
-                    containmentGrid[m, n] = false;
+                    containment[m, n] = false;
                 }
             }
 
@@ -115,20 +100,20 @@ namespace BH.Engine.Geometry
                 {
                     Point start = outline.ControlPoints[i];
                     Point end = outline.ControlPoints[(i + 1) % outline.ControlPoints.Count];
-                    foreach ((int, int) coords in GetIntersectedCells(start, end, grid, tol))
+                    foreach ((int, int) coords in GetIntersectedCells(start, end, origin, cellSize, tol))
                     {
-                        containmentGrid[coords.Item1, coords.Item2] = null;
+                        containment[coords.Item1, coords.Item2] = null;
                     }
                 }
             }
 
-            for (int m = 0; m < containmentGrid.GetLength(0); m++)
+            for (int m = 0; m < containment.GetLength(0); m++)
             {
                 bool inside = false;
                 bool onEdge = false;
-                for (int n = 0; n < containmentGrid.GetLength(1); n++)
+                for (int n = 0; n < containment.GetLength(1); n++)
                 {
-                    if (containmentGrid[m, n] == null)
+                    if (containment[m, n] == null)
                     {
                         onEdge = true;
                         continue;
@@ -140,11 +125,18 @@ namespace BH.Engine.Geometry
                         onEdge = false;
                     }
 
-                    containmentGrid[m, n] = inside;
+                    containment[m, n] = inside;
                 }
             }
 
-            return containmentGrid;
+            return new Geometry.ContainmentGrid
+            {
+                CellCountX = cellCountX,
+                CellCountY = cellCountY,
+                CellSize = cellSize,
+                Origin = origin,
+                ContainmentMatrix = containment
+            };
         }
 
         private static Point CellCenter(Point origin, double cellSize, int cellX, int cellY)
@@ -204,21 +196,19 @@ namespace BH.Engine.Geometry
         }
 
 
-        public static List<List<int>> GetIntersectedCellsTest(Line line, Point origin, double cellSize, int numCellsX, int numCellsY, double tol = 1e-6)
+        public static List<List<int>> GetIntersectedCellsTest(Line line, Point origin, double cellSize, double tol = 1e-6)
         {
-            SquareGrid grid = new SquareGrid { CellCountX = numCellsX, CellCountY = numCellsY, CellSize = cellSize, Origin = origin };
-            return GetIntersectedCells(line.Start, line.End, grid, tol).Select(x => new List<int> { x.Item1, x.Item2 }).ToList();
+            return GetIntersectedCells(line.Start, line.End, origin, cellSize, tol).Select(x => new List<int> { x.Item1, x.Item2 }).ToList();
         }
 
-        public static HashSet<(int, int)> GetIntersectedCells(Point lineStart, Point lineEnd, SquareGrid grid, double tol)
+        private static HashSet<(int, int)> GetIntersectedCells(Point lineStart, Point lineEnd, Point origin, double cellSize, double tol)
         {
             double startX = lineStart.X;
             double startY = lineStart.Y;
             double endX = lineEnd.X;
             double endY = lineEnd.Y;
-            double originX = grid.Origin.X;
-            double originY = grid.Origin.Y;
-            double cellSize = grid.CellSize;
+            double originX = origin.X;
+            double originY = origin.Y;
 
             HashSet<(int, int)> crossedCells = new HashSet<(int, int)>();
 
@@ -397,7 +387,7 @@ namespace BH.Engine.Geometry
         }
 
 
-        public static List<Point> CreatePointGrid(List<Polyline> outlines, List<Polyline> holes, SquareGrid sqGrid, bool?[,] containmentGrid, double radius, double cellRatio, double shiftX, double shiftY, double tol = Tolerance.Distance)
+        public static List<Point> CreatePointGrid(List<Polyline> outlines, List<Polyline> holes, ContainmentGrid containment, double radius, double cellRatio, double shiftX, double shiftY, double tol = Tolerance.Distance)
         {
             BoundingBox bbox = outlines.Select(x => x.Bounds()).ToList().Bounds();
             bbox = bbox.Inflate(radius);
@@ -419,7 +409,7 @@ namespace BH.Engine.Geometry
                     double y = bbox.Min.Y + ver * j + verShift;
                     Point p = new Point { X = x, Y = y };
 
-                    if (IsInsideInclMatrix(p, sqGrid, containmentGrid, outlines, holes, tol))
+                    if (IsInside(p, containment, outlines, holes, tol))
                         grid.Add(p);
                 }
             }
@@ -458,14 +448,14 @@ namespace BH.Engine.Geometry
             return grid;
         }
 
-        private static bool IsInsideInclMatrix(Point pt, SquareGrid sqGrid, bool?[,] containmentGrid, List<Polyline> outlines, List<Polyline> holes, double tol)
+        private static bool IsInside(Point pt, ContainmentGrid grid, List<Polyline> outlines, List<Polyline> holes, double tol)
         {
-            int cellX = (int)((pt.X - sqGrid.Origin.X) / sqGrid.CellSize);
-            int cellY = (int)((pt.Y - sqGrid.Origin.Y) / sqGrid.CellSize);
+            int cellX = (int)((pt.X - grid.Origin.X) / grid.CellSize);
+            int cellY = (int)((pt.Y - grid.Origin.Y) / grid.CellSize);
 
             //TODO: check of grid size etc.
 
-            bool? containment = containmentGrid[cellX, cellY];
+            bool? containment = grid.ContainmentMatrix[cellX, cellY];
             if (containment != null)
                 return (bool)containment;
             else
