@@ -218,7 +218,7 @@ namespace BH.Engine.Base
                     // Try to save into a dynamic property
                     foreach (PropertyInfo prop in dynamicProperties)
                     {
-                        if (SetValue(prop.GetValue(obj) as dynamic, propName, value))
+                        if (SetValue(prop.GetValue(obj) as dynamic, propName, value, true))
                             return true;
                     }
                 }
@@ -249,19 +249,20 @@ namespace BH.Engine.Base
             catch (Exception e)
             {
                 Compute.RecordError($"Failed to set value of type {value?.GetType()?.ToString() ?? "null"} into a dictionary with values of type {typeof(T)}");
-                return false;
+                return true;
             }
             
         }
 
         /***************************************************/
 
-        private static bool SetValue<K, T>(this Dictionary<K, T> dic, string propName, object value) where K : struct, Enum
+        private static bool SetValue<K, T>(this Dictionary<K, T> dic, string propName, object value, bool isSilent = false) where K : struct, Enum
         {
             K key;
             if (!Enum.TryParse(propName, out key))
             {
-                Compute.RecordWarning($"Cannot convert {propName} into an enum of type {typeof(K)}");
+                if (!isSilent)
+                    Compute.RecordWarning($"Cannot convert {propName} into an enum of type {typeof(K)}");
                 return false;
             }
             else
@@ -274,7 +275,7 @@ namespace BH.Engine.Base
                 catch (Exception e)
                 {
                     Compute.RecordError($"Failed to set value of type {value?.GetType()?.ToString() ?? "null"} into a dictionary with values of type {typeof(T)}");
-                    return false;
+                    return true;
                 }
             }
                 

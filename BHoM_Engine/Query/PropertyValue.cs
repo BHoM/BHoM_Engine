@@ -102,9 +102,8 @@ namespace BH.Engine.Base
 				// Try to extract from a dynamic property
 				foreach (PropertyInfo prop in dynamicProperties)
 				{
-					object key = Compute.ParseEnum(prop.PropertyType.GenericTypeArguments.First(), propName);
-					if (key != null)
-						return GetValue(prop.GetValue(obj) as dynamic, propName);
+					if (TryGetDynamicValue(prop.GetValue(obj) as dynamic, propName, out result))
+                        return result;
 				}
 			}
 
@@ -132,7 +131,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        private static object GetValue<K, T>(this Dictionary<K, T> dic, string propName, bool isSilent = false) where K : struct, Enum
+        private static object GetValue<K, T>(this Dictionary<K, T> dic, string propName) where K : struct, Enum
         {
             K key;
             if (!Enum.TryParse(propName, out key))
@@ -149,6 +148,24 @@ namespace BH.Engine.Base
                 Compute.RecordWarning($"{dic} does not contain the key: {propName}");
                 return null;
             }
+        }
+
+        /***************************************************/
+
+        private static bool TryGetDynamicValue<K, T>(this Dictionary<K, T> dic, string propName, out object result) where K : struct, Enum
+        {
+            result = null;
+            bool isCorrectContainer = Enum.TryParse(propName, out K key);
+
+            if (isCorrectContainer)
+            {
+                if (dic.ContainsKey(key))
+                    result = dic[key];
+                else
+                    Compute.RecordWarning($"The object does not contain a dynamic property named {propName}");
+            } 
+                
+            return isCorrectContainer;
         }
 
         /***************************************************/
