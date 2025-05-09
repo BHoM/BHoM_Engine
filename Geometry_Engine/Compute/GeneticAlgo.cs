@@ -76,7 +76,7 @@ namespace BH.Engine.Geometry
             List<Polyline> joinedOutlines = uncoveredOutline.SelectMany(x => x.Item1).ToList().Join(m_Tolerance);
             List<Polyline> joinedHoles = uncoveredHoles.SelectMany(x => x.Item1).ToList().Join(m_Tolerance);
 
-            // Value s empirical and represents an average max edge length that can be covered with a single additional circle
+            // Value empirical and represents an average max edge length that can be covered with a single additional circle
             double extraCircleSpan = m_Radius / Math.Sqrt(2);
             double circleCount = grid.Count + joinedOutlines.Sum(x => Math.Ceiling(x.Length() / extraCircleSpan)) + joinedHoles.Sum(x => Math.Max(2, Math.Ceiling(x.Length() / extraCircleSpan)));
             List<double> dists = uncoveredOutline[0].Item2;
