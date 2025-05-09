@@ -701,14 +701,18 @@ namespace BH.Engine.Geometry
                 // Boost the scores based on grid alignement
                 foreach ((int, int) key in cands.Keys.ToList())
                 {
-                    double value = cands[key];
-                    if (gridRows.ContainsKey(key.Item1) && gridRows[key.Item1].Any(x => Math.Abs(x - key.Item2) <= cellSpanY))
-                        value *= existingGridPremium;
+                    double multiplier = 1;
 
-                    if (gridCols.ContainsKey(key.Item2) && gridCols[key.Item2].Any(x => Math.Abs(x - key.Item1) <= cellSpanX))
-                        value *= existingGridPremium;
+                    bool onRow = gridRows.ContainsKey(key.Item1) && gridRows[key.Item1].Any(x => Math.Abs(x - key.Item2) <= cellSpanY);
+                    bool onCol = gridCols.ContainsKey(key.Item2) && gridCols[key.Item2].Any(x => Math.Abs(x - key.Item1) <= cellSpanX);
 
-                    cands[key] = (int)Math.Round(value);
+                    // At intersection never welcome because will produce an overlap
+                    if (onRow && onCol)
+                        multiplier = 0;
+                    else if (onRow || onCol)
+                        multiplier = existingGridPremium;
+
+                    cands[key] = (int)Math.Round(cands[key] * multiplier);
                 }
 
                 // Find topscorer and add it to the output
