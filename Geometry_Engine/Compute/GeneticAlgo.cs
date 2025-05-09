@@ -12,7 +12,7 @@ namespace BH.Engine.Geometry
 {
     public static partial class Compute
     {
-        public static IGeneticAlgorithmResult GridFittingTest(IGeneticAlgorithmSettings settings, List<Polyline> coverageOutlines, List<Polyline> availableOutlines, double radius, double cellSize = 0.5, List<Polyline> coverageHoles = null, List<Polyline> availableHoles = null, double tol = Tolerance.Distance)
+        public static IGeneticAlgorithmResult GridFittingTest(IGeneticAlgorithmSettings settings, List<Polyline> coverageOutlines, List<Polyline> availableOutlines, double radius, double cellSize = 0.5, List<Polyline> coverageHoles = null, List<Polyline> availableHoles = null, double tol = Tolerance.Distance, int processorCount = 1)
         {
             coverageHoles = coverageHoles ?? new List<Polyline>();
             availableHoles = availableHoles ?? new List<Polyline>();
@@ -53,7 +53,7 @@ namespace BH.Engine.Geometry
             {
                 m_ContainmentGrid = ContainmentGrid(m_AvailableOutlines, m_AvailableHoles, cellSize, m_Radius * Math.Sqrt(2) * 2, m_Tolerance);
             };
-            return RunGeneticAlgorithm(settings as dynamic, parameters.ToArray(), fitnessFunction, preproc);
+            return RunGeneticAlgorithm(settings as dynamic, parameters.ToArray(), fitnessFunction, preproc, processorCount);
         }
 
         private static ConcurrentBag<Polyline> m_CoverageOutlines;
@@ -98,17 +98,18 @@ namespace BH.Engine.Geometry
             return -circleCount - stDevThing;
         }
 
-        private static Dictionary<double[], double> m_ResultPool = null;
-        private static List<GenerationResult> m_ResultsPerGeneration = null;
-        private static DoubleParameter[] m_Parameters = null;
+        private static Dictionary<double[], double> m_ResultPool;
+        private static List<GenerationResult> m_ResultsPerGeneration;
+        private static DoubleParameter[] m_Parameters;
         private static Random m_Random = new Random();
+        private static int m_ProcessorCount;
 
-        public static IGeneticAlgorithmResult IRunGeneticAlgorithm(IGeneticAlgorithmSettings settings, DoubleParameter[] parameters, Func<double[], double> fitnessFunction, Action preproc = null)
+        public static IGeneticAlgorithmResult IRunGeneticAlgorithm(IGeneticAlgorithmSettings settings, DoubleParameter[] parameters, Func<double[], double> fitnessFunction, Action preproc = null, int processorCount = 1)
         {
             return RunGeneticAlgorithm(settings as dynamic, parameters, fitnessFunction, preproc);
         }
 
-        public static GeneticAlgorithmResult RunGeneticAlgorithm(StandardGaSettings settings, DoubleParameter[] parameters, Func<double[], double> fitnessFunction, Action preproc = null)
+        public static GeneticAlgorithmResult RunGeneticAlgorithm(StandardGaSettings settings, DoubleParameter[] parameters, Func<double[], double> fitnessFunction, Action preproc = null, int processorCount = 1)
         {
             if (settings == null)
             {
@@ -129,6 +130,7 @@ namespace BH.Engine.Geometry
             m_Parameters = parameters;
             m_ResultPool = new Dictionary<double[], double>(new DoubleArrayComparer());
             m_ResultsPerGeneration = new List<GenerationResult>();
+            m_ProcessorCount = processorCount;
 
             int totalSolutionSpaceSize = (int)parameters.Select(x => (x.Max - x.Min) / x.Step).Aggregate((x, y) => x * y);
             int initialPopulationSize = (int)Math.Round(settings.PopulationSize * settings.InitialBoost);
@@ -182,7 +184,7 @@ namespace BH.Engine.Geometry
                     newGeneration.Add(child2);
                 }
 
-                List<(double[], double)> newPopulation = CalculateFitness(newGeneration, fitnessFunction);
+                List<(double[], double)> newPopulation = CalculateFitness(newGeneration, fitnessFunction).OrderBy(x => x.Item2).ToList();
 
                 HashSet<double[]> currentIndividuals = new HashSet<double[]>(newPopulation.Select(x => x.Item1), new DoubleArrayComparer());
                 foreach ((double[], double) individual in toMaintain)
@@ -221,21 +223,25 @@ namespace BH.Engine.Geometry
 
         private static List<(double[], double)> CalculateFitness(this List<double[]> generation, Func<double[], double> fitnessFunction)
         {
-            // Parallel processing of candidates
-            int processorCount = Environment.ProcessorCount / 2;
-            int chunkSize = Math.Max(1, generation.Count / processorCount);
-            List<List<double[]>> chunks = Data.Query.ChunkBySize(generation, chunkSize).ToList();
-            ConcurrentBag<(double[], double)> fitnessResults = new ConcurrentBag<(double[], double)>();
-            Parallel.ForEach(chunks, new ParallelOptions { MaxDegreeOfParallelism = processorCount }, chunk =>
+            if (m_ProcessorCount > 1)
             {
-                foreach (double[] individual in chunk)
+                // Parallel processing of candidates
+                int processorCount = Math.Min(m_ProcessorCount, Environment.ProcessorCount - 1);
+                int chunkSize = Math.Max(1, generation.Count / processorCount);
+                List<List<double[]>> chunks = Data.Query.ChunkBySize(generation, chunkSize).ToList();
+                ConcurrentBag<(double[], double)> fitnessResults = new ConcurrentBag<(double[], double)>();
+                Parallel.ForEach(chunks, new ParallelOptions { MaxDegreeOfParallelism = processorCount }, chunk =>
                 {
-                    fitnessResults.Add((individual, fitnessFunction(individual)));
-                }
-            });
+                    foreach (double[] individual in chunk)
+                    {
+                        fitnessResults.Add((individual, fitnessFunction(individual)));
+                    }
+                });
 
-            // Try including the most fit individuals from previous generation, if more fit than the weakest in the current one
-            return fitnessResults.OrderBy(x => x.Item2).ToList();
+                return fitnessResults.ToList();
+            }
+            else
+                return generation.Select(x => (x, fitnessFunction(x))).ToList();
         }
 
         [Description("Add the current generation to the result pool.")]
