@@ -12,19 +12,40 @@ namespace BH.Engine.Geometry
     public class ContainmentGrid
     {
         [Description("Bottom left corner of the grid.")]
-        public Point Origin { get; set; }
+        public Point Origin { get; }
 
         [Description("Size of the grid cell.")]
-        public double CellSize { get; set; }
+        public double CellSize { get; }
 
         [Description("Number of cells in the X direction.")]
-        public int CellCountX { get; set; }
+        public int CellCountX { get; }
 
         [Description("Number of cells in the Y direction.")]
-        public int CellCountY { get; set; }
+        public int CellCountY { get; }
 
         [Description("Matrix of boolean values indicating if the cell is inside (true), outside (false) or on edge (null) of the region.")]
-        public bool?[,] ContainmentMatrix { get; set; }
+        public bool?[,] ContainmentMatrix
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return _containmentMatrix;
+                }
+            }
+        }
+
+        private bool?[,] _containmentMatrix;
+        private readonly object _lock = new object();
+
+        public ContainmentGrid(Point origin, double cellSize, int cellCountX, int cellCountY, bool?[,] containmentMatrix)
+        {
+            Origin = origin;
+            CellSize = cellSize;
+            CellCountX = cellCountX;
+            CellCountY = cellCountY;
+            _containmentMatrix = containmentMatrix;
+        }
     }
 
     public static partial class Compute
@@ -83,7 +104,7 @@ namespace BH.Engine.Geometry
             return GetIntersectedCells(line.Start, line.End, origin, cellSize, tol).Select(x => new List<int> { x.Item1, x.Item2 }).ToList();
         }
 
-        public static List<Point> FillInRemainderTest2(List<Polyline> availableOutlines, List<Polyline> availableHoles, List<Polyline> toCoverOutlines, List<Polyline> toCoverHoles, List<Point> grid, double cellSize, double offset, double radius, double existingGridPremium = 2, double tol = Tolerance.Distance)
+        public static List<Point> FillInRemainderTest(List<Polyline> availableOutlines, List<Polyline> availableHoles, List<Polyline> toCoverOutlines, List<Polyline> toCoverHoles, List<Point> grid, double cellSize, double offset, double radius, double existingGridPremium = 2, double tol = Tolerance.Distance)
         {
             ContainmentGrid containmentGrid = ContainmentGrid(availableOutlines, availableHoles, cellSize, offset, tol);
             return FillInRemainder(toCoverOutlines, toCoverHoles, containmentGrid, grid, radius, existingGridPremium);
@@ -146,7 +167,7 @@ namespace BH.Engine.Geometry
         }
 
         [Description("Creates containment grid for a given region.")]
-        private static ContainmentGrid ContainmentGrid(List<Polyline> outlines, List<Polyline> holes, double cellSize, double offset, double tol)
+        private static ContainmentGrid ContainmentGrid(IEnumerable<Polyline> outlines, IEnumerable<Polyline> holes, double cellSize, double offset, double tol)
         {
             // Offset the room outline, and map a square grid on it
             BoundingBox bbox = outlines.Select(x => x.Bounds()).ToList().Bounds();
@@ -205,14 +226,7 @@ namespace BH.Engine.Geometry
             }
 
             // Return the object
-            return new Geometry.ContainmentGrid
-            {
-                CellCountX = cellCountX,
-                CellCountY = cellCountY,
-                CellSize = cellSize,
-                Origin = origin,
-                ContainmentMatrix = containment
-            };
+            return new Geometry.ContainmentGrid(origin, cellSize, cellCountX, cellCountY, containment);
         }
 
         [Description("Finds the center of a cell at given coordinates.")]
@@ -473,7 +487,7 @@ namespace BH.Engine.Geometry
         }
 
         [Description("Creates a grid of points inside a given region defined by outlines and holes. Containment grid is used as an optimisation to avoid calling containment checks too often.")]
-        private static List<Point> CreatePointGrid(List<Polyline> outlines, List<Polyline> holes, ContainmentGrid containment, double radius, double cellRatio, double shiftX, double shiftY, double tol = Tolerance.Distance)
+        private static List<Point> CreatePointGrid(IEnumerable<Polyline> outlines, IEnumerable<Polyline> holes, ContainmentGrid containment, double radius, double cellRatio, double shiftX, double shiftY, double tol = Tolerance.Distance)
         {
             BoundingBox bbox = outlines.Select(x => x.Bounds()).ToList().Bounds();
             bbox = bbox.Inflate(radius);
@@ -512,7 +526,7 @@ namespace BH.Engine.Geometry
         }
 
         [Description("Checks if a point is in the region, containment grid used for performance purposes.")]
-        private static bool IsInside(Point pt, ContainmentGrid grid, List<Polyline> outlines, List<Polyline> holes, double tol)
+        private static bool IsInside(Point pt, ContainmentGrid grid, IEnumerable<Polyline> outlines, IEnumerable<Polyline> holes, double tol)
         {
             int cellX = (int)((pt.X - grid.Origin.X) / grid.CellSize);
             int cellY = (int)((pt.Y - grid.Origin.Y) / grid.CellSize);

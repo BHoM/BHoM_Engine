@@ -2,9 +2,11 @@
 using BH.oM.Data.Genetic;
 using BH.oM.Geometry;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace BH.Engine.Geometry
 {
@@ -16,10 +18,10 @@ namespace BH.Engine.Geometry
             availableHoles = availableHoles ?? new List<Polyline>();
 
             Plane p = new Plane();
-            m_CoverageOutlines = coverageOutlines.Select(o => o.CleanPolyline(tol, tol).Project(p)).ToList();
-            m_AvailableOutlines = availableOutlines.Select(o => o.CleanPolyline(tol, tol).Project(p)).ToList();
-            m_CoverageHoles = coverageHoles.Select(o => o.CleanPolyline(tol, tol).Project(p)).ToList();
-            m_AvailableHoles = availableHoles.Select(o => o.CleanPolyline(tol, tol).Project(p)).ToList();
+            m_CoverageOutlines = new ConcurrentBag<Polyline>(coverageOutlines.Select(o => o.CleanPolyline(tol, tol).Project(p)));
+            m_AvailableOutlines = new ConcurrentBag<Polyline>(availableOutlines.Select(o => o.CleanPolyline(tol, tol).Project(p)));
+            m_CoverageHoles = new ConcurrentBag<Polyline>(coverageHoles.Select(o => o.CleanPolyline(tol, tol).Project(p)));
+            m_AvailableHoles = new ConcurrentBag<Polyline>(availableHoles.Select(o => o.CleanPolyline(tol, tol).Project(p)));
 
             m_Radius = radius;
             m_Tolerance = tol;
@@ -54,10 +56,10 @@ namespace BH.Engine.Geometry
             return RunGeneticAlgorithm(settings as dynamic, parameters.ToArray(), fitnessFunction, preproc);
         }
 
-        private static List<Polyline> m_CoverageOutlines;
-        private static List<Polyline> m_AvailableOutlines;
-        private static List<Polyline> m_CoverageHoles;
-        private static List<Polyline> m_AvailableHoles;
+        private static ConcurrentBag<Polyline> m_CoverageOutlines;
+        private static ConcurrentBag<Polyline> m_AvailableOutlines;
+        private static ConcurrentBag<Polyline> m_CoverageHoles;
+        private static ConcurrentBag<Polyline> m_AvailableHoles;
         private static double m_Radius;
         private static double m_Tolerance;
         private static ContainmentGrid m_ContainmentGrid;
@@ -162,7 +164,7 @@ namespace BH.Engine.Geometry
                 population = population.OrderBy(individual => individual.Item2).Skip(drop).ToList();
 
                 // Generate new generation
-                List<(double[], double)> newPopulation = new List<(double[], double)>();
+                List<double[]> newGeneration = new List<double[]>();
                 for (int i = 0; i < settings.PopulationSize; i += 2)
                 {
                     // Select parents
@@ -174,18 +176,14 @@ namespace BH.Engine.Geometry
 
                     // Perform mutations
                     IMutate(child1, settings.MutationMethod, parameters);
-                    double fitness = fitnessFunction(child1);
-                    newPopulation.Add((child1, fitness));
+                    newGeneration.Add(child1);
 
                     IMutate(child2, settings.MutationMethod, parameters);
-                    fitness = fitnessFunction(child2);
-                    newPopulation.Add((child2, fitness));
+                    newGeneration.Add(child2);
                 }
 
-                //TODO: could easily be parallelised if fitness calculation moved to here, remember to avoid race conditions against private fields
+                List<(double[], double)> newPopulation = CalculateFitness(newGeneration, fitnessFunction);
 
-                // Try including the most fit individuals from previous generation, if more fit than the weakest in the current one
-                newPopulation = newPopulation.OrderBy(x => x.Item2).ToList();
                 HashSet<double[]> currentIndividuals = new HashSet<double[]>(newPopulation.Select(x => x.Item1), new DoubleArrayComparer());
                 foreach ((double[], double) individual in toMaintain)
                 {
@@ -221,6 +219,25 @@ namespace BH.Engine.Geometry
             return new GeneticAlgorithmResult { Generations = m_ResultsPerGeneration };
         }
 
+        private static List<(double[], double)> CalculateFitness(this List<double[]> generation, Func<double[], double> fitnessFunction)
+        {
+            // Parallel processing of candidates
+            int processorCount = Environment.ProcessorCount / 2;
+            int chunkSize = Math.Max(1, generation.Count / processorCount);
+            List<List<double[]>> chunks = Data.Query.ChunkBySize(generation, chunkSize).ToList();
+            ConcurrentBag<(double[], double)> fitnessResults = new ConcurrentBag<(double[], double)>();
+            Parallel.ForEach(chunks, new ParallelOptions { MaxDegreeOfParallelism = processorCount }, chunk =>
+            {
+                foreach (double[] individual in chunk)
+                {
+                    fitnessResults.Add((individual, fitnessFunction(individual)));
+                }
+            });
+
+            // Try including the most fit individuals from previous generation, if more fit than the weakest in the current one
+            return fitnessResults.OrderBy(x => x.Item2).ToList();
+        }
+
         [Description("Add the current generation to the result pool.")]
         private static void StoreResults(IEnumerable<(double[], double)> population)
         {
@@ -229,15 +246,13 @@ namespace BH.Engine.Geometry
                 m_ResultPool[individual.Item1] = individual.Item2;
             }
 
-            double div = -1;
-
-            m_ResultsPerGeneration.Add(new GenerationResult(m_ResultsPerGeneration.Count, population.Select(x => new Individual(x.Item1.ToList(), x.Item2)).OrderByDescending(x => x.Fitness).ToList(), div));
+            m_ResultsPerGeneration.Add(new GenerationResult(m_ResultsPerGeneration.Count, population.Select(x => new Individual(x.Item1.ToList(), x.Item2)).OrderByDescending(x => x.Fitness).ToList()));
         }
 
         [Description("Initialise the population with random individuals.")]
         private static List<(double[], double)> InitializePopulation(int populationSize, DoubleParameter[] parameters, Func<double[], double> fitnessFunction)
         {
-            List<(double[], double)> population = new List<(double[], double)>();
+            List<double[]> population = new List<double[]>();
 
             int i = 0;
             while (i < populationSize)
@@ -251,15 +266,14 @@ namespace BH.Engine.Geometry
                     chromosome[j] = (min + m_Random.NextDouble() * (max - min)).Round(step);
                 }
 
-                if (population.Any(x => x.Item1.SequenceEqual(chromosome)))
+                if (population.Any(x => x.SequenceEqual(chromosome)))
                     continue;
 
-                double fitness = fitnessFunction(chromosome);
-                population.Add((chromosome, fitness));
+                population.Add(chromosome);
                 i++;
             }
 
-            return population;
+            return CalculateFitness(population, fitnessFunction);
         }
 
         [Description("Select first parent for mating.")]
