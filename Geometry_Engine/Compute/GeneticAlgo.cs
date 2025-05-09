@@ -73,7 +73,10 @@ namespace BH.Engine.Geometry
             List<oM.Base.Output<List<Line>, List<double>>> uncoveredHoles = m_CoverageHoles.Select(x => UncoveredEdges(x, grid, m_Radius, m_Tolerance)).ToList();
             List<Polyline> joinedOutlines = uncoveredOutline.SelectMany(x => x.Item1).ToList().Join(m_Tolerance);
             List<Polyline> joinedHoles = uncoveredHoles.SelectMany(x => x.Item1).ToList().Join(m_Tolerance);
-            double circleCount = grid.Count + joinedOutlines.Sum(x => Math.Ceiling(x.Length() / m_Radius)) + joinedHoles.Sum(x => Math.Max(2, Math.Ceiling(x.Length() / m_Radius)));
+
+            // Value s empirical and represents an average max edge length that can be covered with a single additional circle
+            double extraCircleSpan = m_Radius / Math.Sqrt(2);
+            double circleCount = grid.Count + joinedOutlines.Sum(x => Math.Ceiling(x.Length() / extraCircleSpan)) + joinedHoles.Sum(x => Math.Max(2, Math.Ceiling(x.Length() / extraCircleSpan)));
             List<double> dists = uncoveredOutline[0].Item2;
             if (uncoveredOutline.Count > 1)
             {
@@ -144,7 +147,7 @@ namespace BH.Engine.Geometry
             int drop = (int)(Math.Round(settings.PopulationSize * settings.ForceDropRatio));
 
             // Generate further generations
-            while (generation < settings.GenerationCount - 1)
+            while (generation < settings.MaxGenerationCount - 1)
             {
                 if (m_ResultPool.Count >= totalSolutionSpaceSize * 3 / 4.0)
                 {
@@ -163,7 +166,7 @@ namespace BH.Engine.Geometry
                 for (int i = 0; i < settings.PopulationSize; i += 2)
                 {
                     // Select parents
-                    double[] parent1 = ISelectFirstParent(population, settings.SelectionMethod);
+                    double[] parent1 = ISelectFirstParent(population, settings.FirstParentSelectionMethod);
                     double[] parent2 = ISelectSecondParent(population, parent1, settings.SecondParentSelectionMethod);
 
                     // Perform crossover
@@ -179,7 +182,7 @@ namespace BH.Engine.Geometry
                     newPopulation.Add((child2, fitness));
                 }
 
-                //TODO: could easily be parallelised if fitness calculation moved to here
+                //TODO: could easily be parallelised if fitness calculation moved to here, remember to avoid race conditions against private fields
 
                 // Try including the most fit individuals from previous generation, if more fit than the weakest in the current one
                 newPopulation = newPopulation.OrderBy(x => x.Item2).ToList();
@@ -226,7 +229,9 @@ namespace BH.Engine.Geometry
                 m_ResultPool[individual.Item1] = individual.Item2;
             }
 
-            m_ResultsPerGeneration.Add(new GenerationResult(m_ResultsPerGeneration.Count, population.Select(x => new Individual(x.Item1.ToList(), x.Item2)).OrderByDescending(x => x.Fitness).ToList()));
+            double div = -1;
+
+            m_ResultsPerGeneration.Add(new GenerationResult(m_ResultsPerGeneration.Count, population.Select(x => new Individual(x.Item1.ToList(), x.Item2)).OrderByDescending(x => x.Fitness).ToList(), div));
         }
 
         [Description("Initialise the population with random individuals.")]
@@ -260,10 +265,10 @@ namespace BH.Engine.Geometry
         [Description("Select first parent for mating.")]
         private static double[] ISelectFirstParent(List<(double[], double)> population, IFirstParentSelectionMethod selectionMethod)
         {
-            return SelectParent(population, selectionMethod as dynamic);
+            return SelectFirstParent(population, selectionMethod as dynamic);
         }
 
-        private static double[] SelectParent(List<(double[], double)> population, RouletteWheelSelection selectionMethod)
+        private static double[] SelectFirstParent(List<(double[], double)> population, RouletteWheelSelection selectionMethod)
         {
             double totalFitness = population.Sum(individual => individual.Item2);
             double randomValue = m_Random.NextDouble() * totalFitness;
@@ -279,7 +284,7 @@ namespace BH.Engine.Geometry
             return population.Last().Item1; // Fallback
         }
 
-        private static double[] SelectParent(List<(double[], double)> population, RankSelection selectionMethod)
+        private static double[] SelectFirstParent(List<(double[], double)> population, RankSelection selectionMethod)
         {
             List<(double[], double)> sortedPopulation = population.OrderBy(individual => individual.Item2).ToList();
             int rankSum = sortedPopulation.Count * (sortedPopulation.Count + 1) / 2;
@@ -296,7 +301,7 @@ namespace BH.Engine.Geometry
             return sortedPopulation.Last().Item1; // Fallback
         }
 
-        private static double[] SelectParent(List<(double[], double)> population, TournamentSelection selectionMethod)
+        private static double[] SelectFirstParent(List<(double[], double)> population, TournamentSelection selectionMethod)
         {
             int tournamentSize = selectionMethod.TournamentSize;
             List<(double[], double)> tournament = new List<(double[], double)>();
@@ -310,7 +315,7 @@ namespace BH.Engine.Geometry
         }
 
 
-        private static double[] SelectParent(List<(double[], double)> population, IParentSelectionMethod selectionMethod)
+        private static double[] SelectFirstParent(List<(double[], double)> population, IParentSelectionMethod selectionMethod)
         {
             throw new NotImplementedException();
         }
@@ -333,9 +338,14 @@ namespace BH.Engine.Geometry
             return candidates[m_Random.Next(candidates.Count)].Item1;
         }
 
+        private static double[] SelectSecondParent(List<(double[], double)> population, double[] firstParent, IFirstParentSelectionMethod method)
+        {
+            return ISelectFirstParent(population, method);
+        }
+
         private static double[] SelectSecondParent(List<(double[], double)> population, double[] firstParent, IParentSelectionMethod method)
         {
-            return SelectParent(population, method as dynamic);
+            throw new NotImplementedException();
         }
 
         [Description("Perform crossover between two parents to create two children.")]
@@ -547,9 +557,63 @@ namespace BH.Engine.Geometry
             Mutate(individual, mutationMethod as dynamic, parameters);
         }
 
+        private static double IMutationRate(this IMutationRate mutationRate)
+        {
+            return MutationRate(mutationRate as dynamic);
+        }
+
+        private static double MutationRate(this ConstantMutationRate mutationRate)
+        {
+            return mutationRate.MutationRate;
+        }
+
+        private static double MutationRate(this LinearMutationRate mutationRate)
+        {
+            int currentGeneration = m_ResultsPerGeneration.Count - 1;
+            double multiplier = Math.Min(1.0, (double)currentGeneration / mutationRate.EndGeneration);
+            return mutationRate.InitialMutationRate + (mutationRate.EndMutationRate - mutationRate.InitialMutationRate) * multiplier;
+        }
+
+        private static double MutationRate(this ExponentialMutationRate mutationRate)
+        {
+            int currentGeneration = m_ResultsPerGeneration.Count - 1;
+            if (currentGeneration > mutationRate.EndGeneration)
+                currentGeneration = mutationRate.EndGeneration;
+
+            // Calculate exponential decay rate
+            double decayRate = Math.Log(mutationRate.EndMutationRate / mutationRate.InitialMutationRate) / mutationRate.EndGeneration;
+
+            // Calculate mutation rate for the current generation
+            double rate = mutationRate.InitialMutationRate * Math.Exp(decayRate * currentGeneration);
+
+            // Ensure mutation rate does not go below final rate
+            return Math.Max(rate, mutationRate.EndMutationRate);
+        }
+
+        private static double MutationRate(this LogarithmicMutationRate mutationRate)
+        {
+            int currentGeneration = m_ResultsPerGeneration.Count - 1;
+            if (currentGeneration > mutationRate.EndGeneration)
+                currentGeneration = mutationRate.EndGeneration;
+
+            // Calculate logarithmic decay rate
+            double decayRate = Math.Log(currentGeneration + 1) / Math.Log(mutationRate.EndGeneration + 1);
+
+            // Calculate mutation rate for the current generation
+            double rate = mutationRate.InitialMutationRate - (mutationRate.InitialMutationRate - mutationRate.EndMutationRate) * decayRate;
+
+            // Ensure mutation rate does not go below final rate
+            return Math.Max(rate, mutationRate.EndMutationRate);
+        }
+
+        private static double MutationRate(this IMutationRate mutationRate)
+        {
+            throw new NotImplementedException();
+        }
+
         private static void Mutate(double[] individual, RandomPointMutation mutationMethod, DoubleParameter[] parameters)
         {
-            double mutationRate = mutationMethod.MutationRate;
+            double mutationRate = mutationMethod.MutationRate.IMutationRate();
 
             do
             {
@@ -569,7 +633,7 @@ namespace BH.Engine.Geometry
 
         private static void Mutate(double[] individual, GaussianPointMutation mutationMethod, DoubleParameter[] parameters)
         {
-            double mutationRate = mutationMethod.MutationRate;
+            double mutationRate = mutationMethod.MutationRate.IMutationRate();
             int intervalCount = mutationMethod.IntervalCount;
 
             do
@@ -605,7 +669,7 @@ namespace BH.Engine.Geometry
 
         private static void Mutate(double[] individual, GleamPointMutation mutationMethod, DoubleParameter[] parameters)
         {
-            double mutationRate = mutationMethod.MutationRate;
+            double mutationRate = mutationMethod.MutationRate.IMutationRate();
             int k = mutationMethod.IntervalCount;
 
             do
