@@ -68,7 +68,7 @@ namespace BH.Engine.Security
             cameraPolyline = cameraPolyline.Simplify(distanceTolerance, angleTolerance);
 
             //camera cone arc
-            PolyCurve cameraCone = cameraDevice.ViewCone();
+            PolyCurve cameraCone = cameraDevice.ViewCone(cameraDevice.Angle);
             Arc coneArc = cameraCone.Curves[1] as Arc;
 
             //create simplified polycurve

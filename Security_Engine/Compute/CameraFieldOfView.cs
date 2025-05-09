@@ -20,14 +20,16 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.ComponentModel;
+using BH.Engine.Geometry;
+using BH.Engine.Spatial;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Security.Elements;
-using BH.oM.Base.Attributes;
-using System.Collections.Generic;
-using BH.Engine.Geometry;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using Create = BH.Engine.Geometry.Create;
 
 namespace BH.Engine.Security
 {
@@ -48,91 +50,54 @@ namespace BH.Engine.Security
             if (cameraDevice == null || obstacles == null)
                 return null;
 
-            PolyCurve cameraCone = cameraDevice.ViewCone();
-            Polyline cameraConePolyline = cameraCone.CollapseToPolyline(angleTolerance);
+            double coneAngle = cameraDevice.Angle;
+
+            PolyCurve cameraConeLeft = cameraDevice.ViewCone(coneAngle/2);
+
+            PolyCurve cameraConeRight = cameraDevice.ViewCone(-coneAngle / 2);
+            
             Point cameraLocation = cameraDevice.EyePosition;
             Point targetLocation = cameraDevice.TargetPosition;
             double radius = targetLocation.Distance(cameraLocation);
-            Arc coneArc = cameraCone.Curves[1] as Arc;
+
             Plane cameraPlane = BH.Engine.Geometry.Create.Plane(cameraLocation, Vector.ZAxis);
 
-            //cone points
-            List<Point> conePoints = cameraConePolyline.ControlPoints();
+            PolyCurve cameraViewPolyCurveLeft = OutChainPoints(cameraConeLeft,obstacles,cameraPlane,cameraLocation,radius,angleTolerance,distanceTolerance);
 
-            //add cone boundary points as intersectPoints
-            List<Point> intersectPoints = new List<Point>();
-            intersectPoints.Add(conePoints[1]);
-            intersectPoints.Add(conePoints[conePoints.Count - 2]);
+            PolyCurve cameraViewPolyCurveRight = OutChainPoints(cameraConeRight, obstacles, cameraPlane, cameraLocation, radius, angleTolerance, distanceTolerance);
 
-            //simplify obstacles
-            List<Polyline> projObstacles = obstacles.Select(x => x.Project(cameraPlane, distanceTolerance)).ToList();
+            List<Line> lines = new List<Line>();
+            List<Arc> arcs = new List<Arc>();
 
-            //points that intersect with obstacles
-            List<Polyline> intersectObstacles = new List<Polyline>();
-            foreach (Polyline obstacle in projObstacles)
+            foreach (ICurve curve in cameraViewPolyCurveLeft.Curves)
             {
-                if (obstacle.IsContaining(new List<Point> { cameraLocation }, true, distanceTolerance))
-                {
-                    Base.Compute.RecordWarning("Camera Device is inside obstacle that will be skipped.");
-                    continue;
-                }
-
-                foreach (Line obstLine in obstacle.SubParts())
-                {
-                    List<Point> coneArcIntersection = coneArc.CurveIntersections(obstLine, distanceTolerance);
-                    intersectPoints.AddRange(coneArcIntersection);
-                }
-
-                List<Polyline> intersection = obstacle.BooleanIntersection(cameraConePolyline, distanceTolerance);
-                if (intersection.Count != 0)
-                {
-                    intersectObstacles.Add(obstacle);
-                    foreach (Polyline intersectPolyline in intersection)
-                    {
-                        List<Point> points = intersectPolyline.ControlPoints;
-                        intersectPoints.AddRange(points);
-                    }
-                }
+                if (curve is Line line)
+                    lines.Add(line);
+                else if (curve is Arc arc)
+                    arcs.Add(arc);                
             }
 
-            intersectPoints = intersectPoints.CullDuplicates(distanceTolerance);
-
-            //collect endpoints of extended ray lines
-            List<Point> endPoints = new List<Point>();
-            foreach (Point point in intersectPoints)
+            foreach (ICurve curve in cameraViewPolyCurveRight.Curves)
             {
-                Line line = BH.Engine.Geometry.Create.Line(cameraLocation, point);
-                Line rayLine = line.Extend(0, radius - line.Length(), false, distanceTolerance);
-                endPoints.Add(rayLine.End);
+                if (curve is Line line)
+                    lines.Add(line);
+                else if (curve is Arc arc)
+                    arcs.Add(arc);
             }
 
-            //cull endpoints
-            endPoints = endPoints.CullDuplicates(distanceTolerance);
+            lines = CombineAndRemoveDuplicates(lines, distanceTolerance);
 
-            //create and sort extended lines
-            List<Line> rayLines = new List<Line>();
-            foreach (Point point in endPoints)
-            {
-                Line line = BH.Engine.Geometry.Create.Line(cameraLocation, point);
-                rayLines.Add(line);
-            }
-            rayLines = rayLines.OrderBy(x => x.SignedAngle(rayLines[0], Vector.ZAxis)).ToList();
+            List<ICurve> curves = new List<ICurve>();
+            curves.AddRange(lines);
+            curves.AddRange(arcs);
 
-            //split ray lines and find visible line
-            List<Tuple<Line, Polyline>> linesDict = new List<Tuple<Line, Polyline>>();
-            foreach (Line rayLine in rayLines)
-            {
-                Line visibleLine = rayLine.VisibleLine(intersectObstacles, distanceTolerance);
-                linesDict.Add(visibleLine.LineObstacleDictionary(intersectObstacles, distanceTolerance));
-            }
+            PolyCurve outPolyCurve = new PolyCurve();
 
-            //create points chain
-            List<Point> pointsChain = linesDict.PointsChain(cameraLocation, radius, distanceTolerance);
+            outPolyCurve.Curves = curves;
 
-            //create camera cone
-            PolyCurve cameraViewPolyCurve = pointsChain.CameraViewPolyCurve(coneArc, distanceTolerance);
+            outPolyCurve = outPolyCurve.SortCurves(angleTolerance);
 
-            return cameraViewPolyCurve;
+            return outPolyCurve;
         }
 
         /***************************************************/
@@ -369,6 +334,120 @@ namespace BH.Engine.Security
 
         /***************************************************/
 
+        private static PolyCurve OutChainPoints(PolyCurve cameraCone, List<Polyline> obstacles, Plane cameraPlane, Point cameraLocation, double radius, double angleTolerance, double distanceTolerance)
+        {
+            Polyline cameraConePolyline = cameraCone.CollapseToPolyline(angleTolerance);
+            Arc coneArc = cameraCone.Curves[1] as Arc;
+            //cone points
+            List<Point> conePoints = cameraConePolyline.ControlPoints();
+
+            //add cone boundary points as intersectPoints
+            List<Point> intersectPoints = new List<Point>();
+
+            intersectPoints.Add(conePoints[1]);
+            intersectPoints.Add(conePoints[conePoints.Count - 2]);
+
+            //simplify obstacles
+            List<Polyline> projObstacles = obstacles.Select(x => x.Project(cameraPlane, distanceTolerance)).ToList();
+
+            //points that intersect with obstacles
+            List<Polyline> intersectObstacles = new List<Polyline>();
+            foreach (Polyline obstacle in projObstacles)
+            {
+                if (obstacle.IsContaining(new List<Point> { cameraLocation }, true, distanceTolerance))
+                {
+                    Base.Compute.RecordWarning("Camera Device is inside obstacle that will be skipped.");
+                    continue;
+                }
+
+                foreach (Line obstLine in obstacle.SubParts())
+                {
+                    List<Point> coneArcIntersection = coneArc.CurveIntersections(obstLine, distanceTolerance);
+                    intersectPoints.AddRange(coneArcIntersection);
+                }
+
+                if (cameraCone.Curves.Count != 1)
+                {
+                    List<Polyline> intersection = obstacle.BooleanIntersection(cameraConePolyline, distanceTolerance);
+                    if (intersection.Count != 0)
+                    {
+                        intersectObstacles.Add(obstacle);
+                        foreach (Polyline intersectPolyline in intersection)
+                        {
+                            List<Point> points = intersectPolyline.ControlPoints;
+                            intersectPoints.AddRange(points);
+                        }
+                    }
+                }
+            }
+
+            intersectPoints = intersectPoints.CullDuplicates(distanceTolerance);
+
+            //collect endpoints of extended ray lines
+            List<Point> endPoints = new List<Point>();
+            foreach (Point point in intersectPoints)
+            {
+                Line line = BH.Engine.Geometry.Create.Line(cameraLocation, point);
+                Line rayLine = line.Extend(0, radius - line.Length(), false, distanceTolerance);
+                endPoints.Add(rayLine.End);
+            }
+
+            //cull endpoints
+            endPoints = endPoints.CullDuplicates(distanceTolerance);
+
+            //create and sort extended lines
+            List<Line> rayLines = new List<Line>();
+            foreach (Point point in endPoints)
+            {
+                Line line = BH.Engine.Geometry.Create.Line(cameraLocation, point);
+                rayLines.Add(line);
+            }
+            rayLines = rayLines.OrderBy(x => x.SignedAngle(rayLines[0], Vector.ZAxis)).ToList();
+
+            //split ray lines and find visible line
+            List<Tuple<Line, Polyline>> linesDict = new List<Tuple<Line, Polyline>>();
+            foreach (Line rayLine in rayLines)
+            {
+                Line visibleLine = rayLine.VisibleLine(intersectObstacles, distanceTolerance);
+                linesDict.Add(visibleLine.LineObstacleDictionary(intersectObstacles, distanceTolerance));
+            }
+
+            List<Point> chainPoints = linesDict.PointsChain(cameraLocation, radius, distanceTolerance);
+            PolyCurve cameraViewPolyCurve = CameraViewPolyCurve(chainPoints, coneArc, distanceTolerance);
+
+
+            return cameraViewPolyCurve;           
+        }
+
+        private static List<Line> CombineAndRemoveDuplicates(List<Line> lines, double tolerance)
+        {
+            double sqTol = tolerance * tolerance;
+            List<Line> result = lines.Select(l => l).ToList();
+            List<int> ints = new List<int>();
+
+            for (int i = lines.Count - 2; i >= 0; i--)
+            {
+                for (int j = lines.Count - 1; j > i; j--)
+                {
+                    Line l1 = lines[i];
+                    Line l2 = lines[j];
+                    if ((l1.Start.SquareDistance(l2.Start) <= sqTol && l1.End.SquareDistance(l2.End) <= sqTol) || (l1.Start.SquareDistance(l2.End) <= sqTol && l1.End.SquareDistance(l2.Start) <= sqTol))
+                    {
+                        ints.Add(i);
+                        ints.Add(j);
+                    }
+                }
+            }
+
+            ints = ints.Distinct().ToList();
+            ints = ints.OrderByDescending(x => x).ToList();
+            for (int i = 0; i < ints.Count; i++)
+            {
+                lines.RemoveAt(ints[i]);
+            }
+
+            return lines;
+        }
     }
 }
 
