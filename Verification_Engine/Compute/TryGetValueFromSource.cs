@@ -250,7 +250,7 @@ namespace BH.Engine.Verification
 
         private static PropertyInfo GetProperty(object obj, Type type, string sourceName)
         {
-            var properties = type.GetProperties().Where(p => p.Name == sourceName).ToList();
+            var properties = type.GetProperties().Where(p => p.Name == sourceName);
             PropertyInfo prop = properties.FirstOrDefault(p => p.GetIndexParameters().Length == 0);
 
             if (prop?.CanRead == false)
