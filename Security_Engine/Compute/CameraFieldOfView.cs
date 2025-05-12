@@ -62,9 +62,9 @@ namespace BH.Engine.Security
 
             Plane cameraPlane = BH.Engine.Geometry.Create.Plane(cameraLocation, Vector.ZAxis);
 
-            PolyCurve cameraViewPolyCurveLeft = OutChainPoints(cameraConeLeft,obstacles,cameraPlane,cameraLocation,radius,angleTolerance,distanceTolerance);
+            PolyCurve cameraViewPolyCurveLeft = GenerateCameraFieldOfView(cameraConeLeft,obstacles,cameraPlane,cameraLocation,radius,angleTolerance,distanceTolerance);
 
-            PolyCurve cameraViewPolyCurveRight = OutChainPoints(cameraConeRight, obstacles, cameraPlane, cameraLocation, radius, angleTolerance, distanceTolerance);
+            PolyCurve cameraViewPolyCurveRight = GenerateCameraFieldOfView(cameraConeRight, obstacles, cameraPlane, cameraLocation, radius, angleTolerance, distanceTolerance);
 
             List<Line> lines = new List<Line>();
             List<Arc> arcs = new List<Arc>();
@@ -334,7 +334,7 @@ namespace BH.Engine.Security
 
         /***************************************************/
 
-        private static PolyCurve OutChainPoints(PolyCurve cameraCone, List<Polyline> obstacles, Plane cameraPlane, Point cameraLocation, double radius, double angleTolerance, double distanceTolerance)
+        private static PolyCurve GenerateCameraFieldOfView(PolyCurve cameraCone, List<Polyline> obstacles, Plane cameraPlane, Point cameraLocation, double radius, double angleTolerance, double distanceTolerance)
         {
             Polyline cameraConePolyline = cameraCone.CollapseToPolyline(angleTolerance);
             Arc coneArc = cameraCone.Curves[1] as Arc;
