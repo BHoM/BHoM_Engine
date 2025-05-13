@@ -151,9 +151,21 @@ namespace BH.Engine.Reflection
             // If this is a Quantity, return the description of the QuantityAttribute
             if (typeof(IQuantity).IsAssignableFrom(type))
             {
-                Type attributeType = type.GenericTypeArguments.FirstOrDefault();
-                if (attributeType != null)
-                    return Description(Activator.CreateInstance(attributeType) as QuantityAttribute);
+                if (type.Name != "Quantity`1")
+                {
+                    if (attribute != null)
+                        desc += attribute.Description + Environment.NewLine;
+                    if (type.BaseType != null)
+                        desc += Description(type.BaseType);
+
+                    return desc;
+                }
+                else
+                {
+                    Type attributeType = type.GenericTypeArguments.FirstOrDefault();
+                    if (attributeType != null)
+                        return desc + Description(Activator.CreateInstance(attributeType) as QuantityAttribute);
+                }
             }
 
             //Add the default description
