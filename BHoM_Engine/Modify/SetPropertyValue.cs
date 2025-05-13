@@ -282,14 +282,7 @@ namespace BH.Engine.Base
 
                 try
                 {
-                    if (typeof(IQuantity).IsAssignableFrom(typeof(T)) && Query.IsNumeric(value?.GetType(), false))
-                    {
-                        IQuantity quantity = Activator.CreateInstance(typeof(T)) as IQuantity;
-                        quantity.Value = value as dynamic;
-                        dic[key] = (T)quantity;
-                    }
-                    else
-                        dic[key] = (T)(value as dynamic);
+                    dic[key] = (T)(value as dynamic);
                     return true;
                 }
                 catch (Exception e)
