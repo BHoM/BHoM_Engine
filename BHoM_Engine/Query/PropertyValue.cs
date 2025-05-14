@@ -22,11 +22,14 @@
 
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Quantities;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 
 namespace BH.Engine.Base
 {
@@ -59,50 +62,61 @@ namespace BH.Engine.Base
 
             System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(propName);
 
+            object result = null;
             if (prop != null)
-                return prop.GetValue(obj);
-            else 
-                return GetValue(obj as dynamic, propName);
+                result = prop.GetValue(obj);
+            else
+                result = GetValue(obj as dynamic, propName);
 
+            if (result is IQuantity)
+                result = ((IQuantity)result).Value;
+
+            return result;
         }
 
         /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static object GetValue(this IBHoMObject obj, string propName)
+        private static object GetValue(this IObject obj, string propName)
         {
-            IBHoMObject bhom = obj as IBHoMObject;
-            if (obj == null || propName == null)
-                return null;
+			if (obj == null || propName == null)
+				return null;
 
-            if (bhom.CustomData.ContainsKey(propName))
-            {
-                if (!(bhom is CustomObject))
-                    Compute.RecordNote($"{propName} is stored in CustomData");
-                return bhom.CustomData[propName];
-            }
-            else
-            {
-                IFragment fragment = null;
-                Type fragmentType = Create.Type(propName, true);
-                if (fragmentType != null)
-                {
-                    List<IFragment> matches = bhom.Fragments.Where(fr => fragmentType.IsAssignableFrom(fr.GetType())).ToList();
-                    if (matches.Count > 1)
-                        Compute.RecordWarning($"{bhom} contains more than one fragment of type {fragmentType.IToText()}. The first one will be returned.");
-                    fragment = matches.FirstOrDefault();
-                }
-                if (fragment == null)
-                    Compute.RecordWarning($"{bhom} does not contain a property: {propName}, or: CustomData[{propName}], or fragment of type {propName}.");
+			object result = null;
 
-                return fragment;
-            }
+            // Handle Dynamic property providers
+			if (obj is IDynamicPropertyProvider)
+            {
+				if (Compute.TryRunExtensionMethod(obj, "GetProperty", new object[] { propName }, out result))
+                    return result;
+			}
+
+            // Handle dynamic objects
+            if (obj is IDynamicObject)
+            {
+				List<PropertyInfo> dynamicProperties = obj.GetType().GetProperties()
+					.Where(x => x.GetCustomAttribute<DynamicPropertyAttribute>() != null && typeof(IDictionary).IsAssignableFrom(x.PropertyType) && x.PropertyType.GenericTypeArguments.First().IsEnum)
+					.ToList();
+
+				// Try to extract from a dynamic property
+				foreach (PropertyInfo prop in dynamicProperties)
+				{
+					if (TryGetDynamicValue(prop.GetValue(obj) as dynamic, propName, out result))
+                        return result;
+				}
+			}
+
+            // Handle BHoM objects
+            if (obj is IBHoMObject)
+                result = GetPropertyFallback(obj as IBHoMObject, propName);
+
+            return result;
         }
 
         /***************************************************/
 
-        private static object GetValue<T>(this Dictionary<string, T> dic, string propName)
+        private static object GetValue<T>(this IDictionary<string, T> dic, string propName)
         {
             if (dic.ContainsKey(propName))
             {
@@ -113,6 +127,45 @@ namespace BH.Engine.Base
                 Compute.RecordWarning($"{dic} does not contain the key: {propName}");
                 return null;
             }
+        }
+
+        /***************************************************/
+
+        private static object GetValue<K, T>(this IDictionary<K, T> dic, string propName) where K : struct, Enum
+        {
+            K key;
+            if (!Enum.TryParse(propName, out key))
+            {
+                Compute.RecordError($"cannot convert {propName} into an enum of type {typeof(K)}");
+                return null;
+            }
+            else if (dic.ContainsKey(key))
+            {
+                return dic[key];
+            }
+            else
+            {
+                Compute.RecordWarning($"{dic} does not contain the key: {propName}");
+                return null;
+            }
+        }
+
+        /***************************************************/
+
+        private static bool TryGetDynamicValue<K, T>(this IDictionary<K, T> dic, string propName, out object result) where K : struct, Enum
+        {
+            result = null;
+            bool isCorrectContainer = Enum.TryParse(propName, out K key);
+
+            if (isCorrectContainer)
+            {
+                if (dic.ContainsKey(key))
+                    result = dic[key];
+                else
+                    Compute.RecordWarning($"The object does not contain a dynamic property named {propName}");
+            } 
+                
+            return isCorrectContainer;
         }
 
         /***************************************************/
