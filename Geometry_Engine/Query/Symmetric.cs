@@ -43,7 +43,7 @@ namespace BH.Engine.Geometry
         [Input("p", "The plane to check symmetry about.")]
         [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
         [Output("b", "True if the point is symmetric within tolerance, false if not.")]
-        public static bool Symmetric(List<Point> pts, Plane p, double tolerance = Tolerance.Distance)
+        public static bool Symmetric(this List<Point> pts, Plane p, double tolerance = Tolerance.Distance)
         {
             if (pts.IsNullOrEmpty() || p.IsNull())
                 return false;
