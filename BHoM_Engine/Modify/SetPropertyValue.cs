@@ -22,12 +22,14 @@
 
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Quantities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace BH.Engine.Base
 {
@@ -192,31 +194,104 @@ namespace BH.Engine.Base
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static bool SetValue(this IBHoMObject obj, string propName, object value)
+        private static bool SetValue(this IObject obj, string propName, object value)
         {
-            if (obj == null) return false;
-
-            if (value is IFragment)
+            if (obj == null || propName == null)
+                return false;
+            
+            // Handle dynamic objects
+            if(obj is IDynamicObject)
             {
-                obj.Fragments.Add(value as IFragment);
-                Compute.RecordWarning("The object does not contain any property with the name " + propName + ". The value is being set as a fragment.");
+                if (obj is IDynamicPropertyProvider)
+                {
+                    object result = null;
+                    bool success = Compute.TryRunExtensionMethod(obj, "SetProperty", new object[] { propName, value }, out result);
+
+                    if (success)
+                        return true;
+                }
+                else
+                {
+                    List<PropertyInfo> dynamicProperties = obj.GetType().GetProperties()
+                    .Where(x => x.GetCustomAttribute<DynamicPropertyAttribute>() != null && typeof(IDictionary).IsAssignableFrom(x.PropertyType) && x.PropertyType.GenericTypeArguments.First().IsEnum)
+                    .ToList();
+
+                    // Try to save into a dynamic property
+                    foreach (PropertyInfo prop in dynamicProperties)
+                    {
+                        if (SetValue(prop.GetValue(obj) as dynamic, propName, value, true))
+                            return true;
+                    }
+                }
+            }
+
+            // Handle BHoM objects
+            if (obj is IBHoMObject)
+            {
+                SetPropertyFallback(obj as IBHoMObject, propName, value);
+                return true;
             }
             else
             {
-                obj.CustomData[propName] = value;
-                if (!(obj is CustomObject))
-                    Compute.RecordWarning("The object does not contain any property with the name " + propName + ". The value is being set as custom data.");
-            }
-
-            return true;
+                Compute.RecordWarning("The object does not contain any property with the name " + propName + ".");
+                return false;
+            }                
         }
 
         /***************************************************/
 
-        private static bool SetValue(this IDictionary dic, string propName, object value)
+        private static bool SetValue<T>(this IDictionary<string, T> dic, string propName, object value)
         {
-            dic[propName] = value;
-            return true;
+            if (dic.IsReadOnly)
+            {
+                Compute.RecordError("This dictionary is read-only so it is not possible to modify it.");
+                return true;
+            }
+
+            try
+            {
+                dic[propName] = (T)(value as dynamic);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Compute.RecordError($"Failed to set value of type {value?.GetType()?.ToString() ?? "null"} into a dictionary with values of type {typeof(T)}");
+                return true;
+            }
+            
+        }
+
+        /***************************************************/
+
+        private static bool SetValue<K, T>(this IDictionary<K, T> dic, string propName, object value, bool isSilent = false) where K : struct, Enum
+        {
+            K key;
+            if (!Enum.TryParse(propName, out key))
+            {
+                if (!isSilent)
+                    Compute.RecordWarning($"Cannot convert {propName} into an enum of type {typeof(K)}");
+                return false;
+            }
+            else
+            {
+                if (dic.IsReadOnly)
+                {
+                    Compute.RecordError($"Property {propName} doesn't have a public setter so it is not possible to modify it.");
+                    return true;
+                }
+
+                try
+                {
+                    dic[key] = (T)(value as dynamic);
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    Compute.RecordError($"Failed to set value of type {value?.GetType()?.ToString() ?? "null"} into a dictionary with values of type {typeof(T)}");
+                    return true;
+                }
+            }
+                
         }
 
         /***************************************************/

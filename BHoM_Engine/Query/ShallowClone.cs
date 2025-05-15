@@ -35,21 +35,21 @@ namespace BH.Engine.Base
 
         public static T ShallowClone<T>(this T obj)
         {
-            return (T)_ShallowClone(obj as dynamic);
+            return (T)CreateShallowClone(obj as dynamic);
         }
 
         /***************************************************/
 
         public static T ShallowClone<T>(this T obj, bool newGuid = false) where T : IBHoMObject
         {
-            return (T)_ShallowClone(obj, newGuid);
+            return (T)CreateShallowClone(obj, newGuid);
         }
 
         /***************************************************/
         /**** Private Methods                            ****/
         /***************************************************/
 
-        private static IBHoMObject _ShallowClone(this IBHoMObject bhomObject, bool newGuid = false)
+        private static IBHoMObject CreateShallowClone(this IBHoMObject bhomObject, bool newGuid = false)
         {
             IBHoMObject clone = DeepClonerExtensions.ShallowClone(bhomObject);
 
@@ -76,7 +76,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        private static object _ShallowClone(this object obj)
+        private static object CreateShallowClone(this object obj)
         {
             return DeepClonerExtensions.ShallowClone(obj);
         }

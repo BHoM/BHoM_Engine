@@ -174,7 +174,11 @@ namespace BH.Engine.Verification
                 return null;
             }
 
-            return !obj.IPasses(condition.Condition);
+            bool? toInvert = obj.IPasses(condition.Condition);
+            if (toInvert != null)
+                toInvert = !toInvert;
+
+            return toInvert;
         }
 
         /***************************************************/
@@ -225,6 +229,29 @@ namespace BH.Engine.Verification
             }
 
             return condition.Conditions.Any(x => obj.IPasses(x) == true);
+        }
+
+        /***************************************************/
+
+        [Description("Verifies an object against " + nameof(FormulaCondition) + " and returns result in a form of a Boolean.")]
+        [Input("obj", "Object to check against the condition.")]
+        [Input("condition", "Condition to check the object against.")]
+        [Output("result", "True if the input object passed the condition, false otherwise. Null in case of inconclusive check.")]
+        public static bool? Passes(this object obj, FormulaCondition condition)
+        {
+            if (obj == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not check condition against a null object.");
+                return null;
+            }
+
+            if (condition == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not check condition because it was null.");
+                return null;
+            }
+
+            return obj.VerifyCondition(condition).Passed;
         }
 
         /***************************************************/

@@ -50,7 +50,7 @@ namespace BH.Engine.Serialiser
         [Description("Convert a byte array to a BHoMObject")]
         [Input("bytes", "Byte array representing the object in Bson")]
         [Output("obj", "Object recovered from the byte array")]
-        public static object FromBytes(byte[] bytes)
+        public static object FromBytes(this byte[] bytes)
         {
             BsonDocument doc = BsonSerializer.Deserialize(bytes, typeof(BsonDocument)) as BsonDocument;
             return FromBson(doc);

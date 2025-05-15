@@ -99,62 +99,6 @@ namespace BH.Engine.Data
             return path;
         }
 
-
-        /***************************************************/
-        /**** Private Helper Classes                    ****/
-        /***************************************************/
-
-        private class PathItem<T> : IComparable<PathItem<T>> 
-        {
-            /***************************************************/
-            /**** Properties                                ****/
-            /***************************************************/
-
-            public double StartCost { get; set; }    // Cost of going from start to that node
-
-            public double EndCost { get; set; }     // estimated cost of going from this node to the end
-
-            public GraphNode<T> Node { get; set; }
-
-            public PathItem<T> Previous { get; set; }
-
-            public bool IsValid { get { return Node != null; } }
-
-            public double Score { get { return StartCost + EndCost; } }
-
-
-            /***************************************************/
-            /**** Constructors                              ****/
-            /***************************************************/
-
-            public PathItem()
-            {
-                Node = null;
-            }
-
-            /***************************************************/
-
-            public PathItem(GraphNode<T> node, double startCost = 0, double endCost = 0)
-            {
-                Node = node;
-                StartCost = startCost;
-                EndCost = endCost;
-                Previous = null;
-            }
-
-
-            /***************************************************/
-            /**** Comparer                                  ****/
-            /***************************************************/
-
-            int IComparable<PathItem<T>>.CompareTo(PathItem<T> other)
-            {
-                return Score.CompareTo(other.Score);
-            }
-
-            /***************************************************/
-        }
-
         /***************************************************/
     }
 }

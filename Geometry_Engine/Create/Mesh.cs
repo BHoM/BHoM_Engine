@@ -92,7 +92,7 @@ namespace BH.Engine.Geometry
 
             double maxNormNoise = Math.Max(ellipse.Axis1.Length(), ellipse.Axis2.Length()) / 2;
 
-            foreach (List<Point> pts in PointGrid(start, ellipse.Axis1 / nb1, ellipse.Axis2 / nb2, nb1, nb2))
+            foreach (List<Point> pts in Compute.PointGrid(start, ellipse.Axis1 / nb1, ellipse.Axis2 / nb2, nb1, nb2))
             {
                 points.AddRange(pts.Select(x => x + 2 * maxNormNoise * (rnd.NextDouble() - 0.5) * normal));
             } 

@@ -33,6 +33,7 @@ namespace BH.Tests.Engine.Base.Query
     public class IsNumericTests
     {
         [Test]
+        [Description("Test method for IsNumeric that checks if the boolean toggle for enum types is functioning as intended when a enum type is provided.")]
         public void AreEnumsNumeric()
         {
             BH.Engine.Base.Query.IsNumeric(typeof(DOFType), false).ShouldBe(false);
@@ -42,6 +43,7 @@ namespace BH.Tests.Engine.Base.Query
         }
 
         [Test]
+        [Description("Test method for IsNumeric that checks if the boolean toggle for enum types is functioning as intended when a integer type is provided.")]
         public void AreIntegersNumeric()
         {
             BH.Engine.Base.Query.IsNumeric(10.GetType(), true).ShouldBe(true);

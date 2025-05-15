@@ -39,20 +39,20 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the Internal Polyline representation of a physical object (e.g. wall or window)")]
-        [Input("physicalObject", "A physical object to query the polyline representation of")]
-        [Output("polyline", "BHoM Geometry Polyline")]
-        public static List<Polyline> InternalPolyline(IPhysical physicalObject)
+        [Description("Returns the Internal Polyline representation of a physical object (e.g. wall or window).")]
+        [Input("physicalObject", "A physical object to query the polyline representation of.")]
+        [Output("polyline", "BHoM Geometry Polyline.")]
+        public static List<Polyline> InternalPolyline(this IPhysical physicalObject)
         {
             return InternalPolyline(physicalObject as dynamic);
         }
 
         /***************************************************/
 
-        [Description("Returns the Internal Polyline representation of a physical object that represents a solid impassable object (e.g. wall or roof)")]
-        [Input("physicalObject", "A physical object to query the polyline representation of")]
-        [Output("polyline", "BHoM Geometry Polyline")]
-        public static List<Polyline> InternalPolyline(BH.oM.Physical.Elements.ISurface physicalObject)
+        [Description("Returns the Internal Polyline representation of a physical object that represents a solid impassable object (e.g. wall or roof).")]
+        [Input("physicalObject", "A physical object to query the polyline representation of.")]
+        [Output("polyline", "BHoM Geometry Polyline.")]
+        public static List<Polyline> InternalPolyline(this BH.oM.Physical.Elements.ISurface physicalObject)
         {
             if(physicalObject == null)
             {
@@ -65,10 +65,10 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Returns the Internal Polyline representation of a physical object that represents an opening (e.g. window or door)")]
-        [Input("physicalOpening", "A physical opening to query the polyline representation of")]
-        [Output("polyline", "BHoM Geometry Polyline")]
-        public static List<Polyline> InternalPolyline(IOpening physicalOpening)
+        [Description("Returns the Internal Polyline representation of a physical object that represents an opening (e.g. window or door).")]
+        [Input("physicalOpening", "A physical opening to query the polyline representation of.")]
+        [Output("polyline", "BHoM Geometry Polyline.")]
+        public static List<Polyline> InternalPolyline(this IOpening physicalOpening)
         {
             if(physicalOpening == null)
             {

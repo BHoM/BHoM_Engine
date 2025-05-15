@@ -54,7 +54,7 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [PreviousInputNames("ToPlane", "toPlane")]
+        [PreviousInputNames("toPlane", "ToPlane")]
         public static Plane ProjectAlong(this Plane plane, Plane toPlane, Vector vector)
         {
             double dp = plane.Normal.DotProduct(toPlane.Normal);
