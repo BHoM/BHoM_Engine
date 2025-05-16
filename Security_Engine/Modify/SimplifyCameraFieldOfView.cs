@@ -75,6 +75,9 @@ namespace BH.Engine.Security
 
             //create simplified polycurve
             PolyCurve simplifiedPolyCurve = new PolyCurve();
+
+            ICurve lastCurve = null;
+
             foreach (Line line in cameraPolyline.SubParts())
             {
                 Point startPoint = line.Start;
@@ -86,6 +89,7 @@ namespace BH.Engine.Security
                     if (Math.Abs(cameraDevice.Angle - Math.PI) < distanceTolerance && Math.Abs(startPoint.Distance(endPoint) - 2 * coneArc.Radius) < distanceTolerance)
                     {
                         simplifiedPolyCurve.Curves.Add(line);
+                        lastCurve = line;
                         continue;
                     }
 
@@ -102,15 +106,23 @@ namespace BH.Engine.Security
                         newArc = (newArcList[0] as Arc);
                     else
                         newArc = (newArcList[1] as Arc);
-
-                    simplifiedPolyCurve.Curves.Add(newArc);
+                    
+                    if (lastCurve is Arc && !(cameraPolyline.SubParts().Count == 2))
+                    {
+                        simplifiedPolyCurve.Curves.Add(line);
+                        lastCurve = line;
+                    }
+                    else
+                    {
+                        simplifiedPolyCurve.Curves.Add(newArc);
+                        lastCurve = newArc;
+                    }                                                           
                 }
                 else
                 {
+                    lastCurve = line;
                     simplifiedPolyCurve.Curves.Add(line);
                 }
-
-
             }
 
             if (simplifiedPolyCurve.Curves.Count == 2)
