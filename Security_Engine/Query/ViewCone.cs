@@ -50,22 +50,29 @@ namespace BH.Engine.Security
 
             if (double.IsNaN(coneAngle))
                 coneAngle = Math.PI;
-
-            Vector viewDirection = BH.Engine.Geometry.Create.Vector(cameraLocation, cameraDevice.TargetPosition);
-            Vector startPointDir = viewDirection.Rotate(coneAngle, Vector.ZAxis);
-            Point startPoint = cameraLocation + startPointDir;
-
-            double offsetAngle = Vector.XAxis.SignedAngle(viewDirection,Vector.ZAxis);
-
-            Point arcCenterPoint = ArcCenterPoint(cameraLocation, coneRadius, coneAngle/2+offsetAngle);
-
-            Arc coneArc = BH.Engine.Geometry.Create.Arc(targetLocation, arcCenterPoint, startPoint);
-            Line startLine = BH.Engine.Geometry.Create.Line(startPoint, cameraLocation);
-            Line middleLine = BH.Engine.Geometry.Create.Line(cameraLocation, targetLocation);
-
+      
             PolyCurve conePolyCurve = new PolyCurve();
 
-            conePolyCurve.Curves = new List<ICurve>() { middleLine, coneArc, startLine};         
+            if (Math.Abs(Math.Abs(coneAngle) - 2* Math.PI) < 1e-6)
+            {
+                Arc coneArc = (Arc)BH.Engine.Geometry.Create.Circle(cameraLocation, Vector.ZAxis, coneRadius);
+
+                conePolyCurve.Curves = new List<ICurve>() { coneArc };
+            }
+            else
+            {
+                Vector viewDirection = BH.Engine.Geometry.Create.Vector(cameraLocation, cameraDevice.TargetPosition);
+                Vector startPointDir = viewDirection.Rotate(coneAngle, Vector.ZAxis);
+                Point startPoint = cameraLocation + startPointDir;
+                double offsetAngle = Vector.XAxis.SignedAngle(viewDirection, Vector.ZAxis);
+                Point arcCenterPoint = ArcCenterPoint(cameraLocation, coneRadius, coneAngle / 2 + offsetAngle);
+
+                Arc coneArc = BH.Engine.Geometry.Create.Arc(targetLocation, arcCenterPoint, startPoint);
+                Line startLine = BH.Engine.Geometry.Create.Line(startPoint, cameraLocation);
+                Line middleLine = BH.Engine.Geometry.Create.Line(cameraLocation, targetLocation);               
+
+                conePolyCurve.Curves = new List<ICurve>() { middleLine, coneArc, startLine };
+            }        
             
             return conePolyCurve;
         }

@@ -90,12 +90,17 @@ namespace BH.Engine.Security
             List<ICurve> curves = new List<ICurve>();
             curves.AddRange(lines);
             curves.AddRange(arcs);
-
+           
             PolyCurve outPolyCurve = new PolyCurve();
 
             outPolyCurve.Curves = curves;
 
             outPolyCurve = outPolyCurve.SortCurves(angleTolerance);
+
+            if (!(outPolyCurve.Curves[0] is Line))
+                outPolyCurve.Curves = ChangeOrderToStartWithLine(outPolyCurve.Curves);
+
+            outPolyCurve.Curves = CombineAdjacentArcsIntoOne(outPolyCurve.Curves);
 
             return outPolyCurve;
         }
@@ -294,6 +299,14 @@ namespace BH.Engine.Security
             return pointsChain;
         }
 
+        private class PointEqualityComparer : IEqualityComparer<Point>
+        {
+            private readonly double _tol;
+            public PointEqualityComparer(double tol) { _tol = tol; }
+            public bool Equals(Point a, Point b) => a.IsEqual(b, _tol);
+            public int GetHashCode(Point p) => 0; // Not efficient, but works for small sets
+        }
+
         /***************************************************/
 
         [Description("Create PolyCurve that represents camera field of view.")]
@@ -304,10 +317,15 @@ namespace BH.Engine.Security
         private static PolyCurve CameraViewPolyCurve(this List<Point> pointsChain, Arc coneArc, double tolerance)
         {
             List<ICurve> curves = new List<ICurve>();
+
             for (int i = 1; i < pointsChain.Count; i++)
             {
                 Point pt1 = pointsChain[i - 1];
                 Point pt2 = pointsChain[i];
+
+                double distance1 = pt1.Distance(coneArc);
+                double distance2 = pt2.Distance(coneArc);
+                double distance3 = pt1.Distance(pt2);
 
                 if ((pt1.Distance(coneArc) < tolerance) && (pt2.Distance(coneArc) < tolerance) && !(pt1.Distance(pt2) < tolerance))
                 {
@@ -338,6 +356,7 @@ namespace BH.Engine.Security
         {
             Polyline cameraConePolyline = cameraCone.CollapseToPolyline(angleTolerance);
             Arc coneArc = cameraCone.Curves[1] as Arc;
+            Line startLine = cameraCone.Curves[0] as Line;
             //cone points
             List<Point> conePoints = cameraConePolyline.ControlPoints();
 
@@ -402,19 +421,20 @@ namespace BH.Engine.Security
                 Line line = BH.Engine.Geometry.Create.Line(cameraLocation, point);
                 rayLines.Add(line);
             }
-            rayLines = rayLines.OrderBy(x => x.SignedAngle(rayLines[0], Vector.ZAxis)).ToList();
+            rayLines = rayLines.OrderByDescending(x => Math.Abs(x.SignedAngle(startLine, Vector.ZAxis))).ToList();
 
             //split ray lines and find visible line
             List<Tuple<Line, Polyline>> linesDict = new List<Tuple<Line, Polyline>>();
+            
             foreach (Line rayLine in rayLines)
             {
                 Line visibleLine = rayLine.VisibleLine(intersectObstacles, distanceTolerance);
                 linesDict.Add(visibleLine.LineObstacleDictionary(intersectObstacles, distanceTolerance));
-            }
+            }                       
 
             List<Point> chainPoints = linesDict.PointsChain(cameraLocation, radius, distanceTolerance);
-            PolyCurve cameraViewPolyCurve = CameraViewPolyCurve(chainPoints, coneArc, distanceTolerance);
 
+            PolyCurve cameraViewPolyCurve = CameraViewPolyCurve(chainPoints, coneArc, distanceTolerance);
 
             return cameraViewPolyCurve;           
         }
@@ -447,6 +467,180 @@ namespace BH.Engine.Security
             }
 
             return lines;
+        }
+
+        private static List<ICurve> CombineAdjacentArcsIntoOne(List<ICurve> startCurves, double tolerance = 1e-6)
+        {
+            List<ICurve> outCurves = new List<ICurve>();
+            int i = 0;
+            while (i < startCurves.Count)
+            {
+                // If current is not an arc, just add and continue
+                if (!(startCurves[i] is Arc))
+                {
+                    outCurves.Add(startCurves[i]);
+                    i++;
+                    continue;
+                }
+
+                // Find run of adjacent arcs
+                int arcStart = i;
+                int arcEnd = i;
+                while (arcEnd + 1 < startCurves.Count && startCurves[arcEnd + 1] is Arc)
+                    arcEnd++;
+
+                int arcCount = arcEnd - arcStart + 1;
+
+                if (arcCount == 1)
+                {
+                    outCurves.Add(startCurves[arcStart]);
+                }
+                else
+                {
+                    // Collect and order arcs by connectivity
+                    List<Arc> arcRun = new List<Arc>();
+                    for (int j = arcStart; j <= arcEnd; j++)
+                        arcRun.Add((Arc)startCurves[j]);
+
+                    List<Arc> orderedArcs = OrderArcsByConnectivity(arcRun, tolerance);
+
+                    // If the arcs form a closed loop, create a circle
+                    if (orderedArcs.First().StartPoint().Distance(orderedArcs.Last().EndPoint()) < tolerance)
+                    {
+                        Arc arc = orderedArcs[0];
+                        outCurves.Add((Arc)Create.Circle(arc.Centre(), Vector.ZAxis, arc.Radius));
+                    }
+                    else
+                    {
+                        // Combine into a single arc using first, middle, and last points
+                        Point start = orderedArcs.First().StartPoint();
+                        Point end = orderedArcs.Last().EndPoint();
+                        Point mid = orderedArcs[orderedArcs.Count / 2].EndPoint();
+
+                        // Try to ensure all three points are unique
+                        if (start.Distance(end) < tolerance)
+                        {
+                            end = orderedArcs[orderedArcs.Count / 2].StartPoint();
+                            if (start.Distance(end) < tolerance && orderedArcs.Count > 1)
+                                end = orderedArcs[1].EndPoint();
+                        }
+                        if (start.Distance(mid) < tolerance)
+                        {
+                            mid = orderedArcs[0].EndPoint();
+                            if (start.Distance(mid) < tolerance && orderedArcs.Count > 1)
+                                mid = orderedArcs[1].StartPoint();
+                        }
+                        if (end.Distance(mid) < tolerance)
+                        {
+                            mid = orderedArcs[0].EndPoint();
+                            if (end.Distance(mid) < tolerance && orderedArcs.Count > 1)
+                                mid = orderedArcs[1].StartPoint();
+                        }
+
+                        // Final check: if still not unique, skip arc creation
+                        if (start.Distance(end) < tolerance || start.Distance(mid) < tolerance || end.Distance(mid) < tolerance)
+                        {
+                            Base.Compute.RecordWarning("Could not find three unique points to create a combined arc. Skipping arc creation.");
+                        }
+                        else
+                        {
+                            outCurves.Add(Create.Arc(start, mid, end));
+                        }
+                    }
+                }
+
+                i = arcEnd + 1;
+            }
+            return outCurves;
+        }
+
+        // Helper: Orders arcs so that each arc's end matches the next arc's start
+        private static List<Arc> OrderArcsByConnectivity(List<Arc> arcs, double tolerance)
+        {
+            if (arcs.Count <= 1)
+                return arcs.ToList();
+
+            List<Arc> ordered = new List<Arc> { arcs[0] };
+            var used = new HashSet<int> { 0 };
+
+            while (ordered.Count < arcs.Count)
+            {
+                Arc last = ordered.Last();
+                bool found = false;
+                for (int i = 0; i < arcs.Count; i++)
+                {
+                    if (used.Contains(i))
+                        continue;
+                    if (last.EndPoint().Distance(arcs[i].StartPoint()) < tolerance)
+                    {
+                        ordered.Add(arcs[i]);
+                        used.Add(i);
+                        found = true;
+                        break;
+                    }
+                    else if (last.EndPoint().Distance(arcs[i].EndPoint()) < tolerance)
+                    {
+                        // Reverse arc if needed
+                        Arc reversed = ReverseArc(arcs[i]);
+                        ordered.Add(reversed);
+                        used.Add(i);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                    break; // Could not connect further
+            }
+            // If not all arcs could be connected, append the rest as is
+            for (int i = 0; i < arcs.Count; i++)
+                if (!used.Contains(i))
+                    ordered.Add(arcs[i]);
+            return ordered;
+        }
+
+        private static Arc ReverseArc(Arc arc)
+        {
+            // Compute the midpoint parameter (halfway between start and end angles)
+            double midAngle = arc.StartAngle + (arc.EndAngle - arc.StartAngle) / 2.0;
+            // Calculate the midpoint in the arc's coordinate system
+            Point midPoint = arc.CoordinateSystem.Origin
+                + arc.CoordinateSystem.X * (arc.Radius * Math.Cos(midAngle))
+                + arc.CoordinateSystem.Y * (arc.Radius * Math.Sin(midAngle));
+
+            // Create a new arc with swapped start and end, and the computed midpoint
+            return Create.Arc(arc.EndPoint(), midPoint, arc.StartPoint());
+        }
+
+        private static List<ICurve> ChangeOrderToStartWithLine(List<ICurve> startCurves)
+        {
+            List <ICurve> outCurves = new List<ICurve>();
+
+            bool flag = false;
+
+            for (int i = 0; i<startCurves.Count; i++)
+            {
+                ICurve firstLineCurve = startCurves[i];
+                if ( firstLineCurve is BH.oM.Geometry.Line)
+                {
+                    outCurves.Add(firstLineCurve);
+                    for (int j = i+1;j < startCurves.Count; j++)
+                    {
+                        outCurves.Add(startCurves[j]);
+                    }
+                    for (int j = i-1; j >= 0; j--)
+                    {
+                        outCurves.Add(startCurves[j]);
+                    }
+                    flag = true;
+                }
+                if (flag)
+                    break;                
+            }
+
+            if (flag)
+                return outCurves;
+            else
+                return startCurves;
         }
     }
 }
