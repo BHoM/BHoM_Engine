@@ -50,42 +50,30 @@ namespace BH.Engine.Security
             if (cameraDevice == null || obstacles == null)
                 return null;
 
-            double coneAngle = cameraDevice.Angle;
-
-            PolyCurve cameraConeLeft = cameraDevice.ViewCone(coneAngle/2);
-
-            PolyCurve cameraConeRight = cameraDevice.ViewCone(-coneAngle / 2);
-            
+            double coneAngle = cameraDevice.Angle;          
+                      
             Point cameraLocation = cameraDevice.EyePosition;
             Point targetLocation = cameraDevice.TargetPosition;
             double radius = targetLocation.Distance(cameraLocation);
 
             Plane cameraPlane = BH.Engine.Geometry.Create.Plane(cameraLocation, Vector.ZAxis);
 
+            //generate left view cone poly curve
+            PolyCurve cameraConeLeft = cameraDevice.ViewCone(coneAngle / 2);
             PolyCurve cameraViewPolyCurveLeft = GenerateCameraFieldOfView(cameraConeLeft,obstacles,cameraPlane,cameraLocation,radius,angleTolerance,distanceTolerance);
 
+            //generate right view cone poly curve
+            PolyCurve cameraConeRight = cameraDevice.ViewCone(-coneAngle / 2);
             PolyCurve cameraViewPolyCurveRight = GenerateCameraFieldOfView(cameraConeRight, obstacles, cameraPlane, cameraLocation, radius, angleTolerance, distanceTolerance);
 
-            List<Line> lines = new List<Line>();
-            List<Arc> arcs = new List<Arc>();
-
-            foreach (ICurve curve in cameraViewPolyCurveLeft.Curves)
-            {
-                if (curve is Line line)
-                    lines.Add(line);
-                else if (curve is Arc arc)
-                    arcs.Add(arc);                
-            }
-
-            foreach (ICurve curve in cameraViewPolyCurveRight.Curves)
-            {
-                if (curve is Line line)
-                    lines.Add(line);
-                else if (curve is Arc arc)
-                    arcs.Add(arc);
-            }
+            //separate lines and arcs to eliminate duplicates (both of duplicated lined get deleted)
+            List<Line> lines = cameraViewPolyCurveLeft.Curves.OfType<Line>().ToList();
+            lines.AddRange(cameraViewPolyCurveRight.Curves.OfType<Line>());
 
             lines = CombineAndRemoveDuplicates(lines, distanceTolerance);
+
+            List<Arc> arcs = cameraViewPolyCurveLeft.Curves.OfType<Arc>().ToList();
+            arcs.AddRange(cameraViewPolyCurveRight.Curves.OfType<Arc>());            
 
             List<ICurve> curves = new List<ICurve>();
             curves.AddRange(lines);
@@ -97,9 +85,11 @@ namespace BH.Engine.Security
 
             outPolyCurve = outPolyCurve.SortCurves(angleTolerance);
 
+            //change order to always start with line
             if (!(outPolyCurve.Curves[0] is Line))
                 outPolyCurve.Curves = ChangeOrderToStartWithLine(outPolyCurve.Curves);
 
+            //combine adjacent arcs into one
             outPolyCurve.Curves = CombineAdjacentArcsIntoOne(outPolyCurve.Curves);
 
             return outPolyCurve;
@@ -297,14 +287,6 @@ namespace BH.Engine.Security
             pointsChain.Reverse();
 
             return pointsChain;
-        }
-
-        private class PointEqualityComparer : IEqualityComparer<Point>
-        {
-            private readonly double _tol;
-            public PointEqualityComparer(double tol) { _tol = tol; }
-            public bool Equals(Point a, Point b) => a.IsEqual(b, _tol);
-            public int GetHashCode(Point p) => 0; // Not efficient, but works for small sets
         }
 
         /***************************************************/
@@ -554,7 +536,6 @@ namespace BH.Engine.Security
             return outCurves;
         }
 
-        // Helper: Orders arcs so that each arc's end matches the next arc's start
         private static List<Arc> OrderArcsByConnectivity(List<Arc> arcs, double tolerance)
         {
             if (arcs.Count <= 1)
