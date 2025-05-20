@@ -36,6 +36,10 @@ namespace BH.Engine.Settings
         internal static ConcurrentDictionary<Type, ISettings> BHoMSettings { get; set; } = new ConcurrentDictionary<Type, ISettings>();
         internal static ConcurrentDictionary<Type, string> BHoMSettingsFilePaths { get; set; } = new ConcurrentDictionary<Type, string>(); //Store where settings came from for saving on shut down
         internal static ConcurrentBag<string> BHoMSettingsLoaded { get; set; } = new ConcurrentBag<string>(); //Store whether a file path has been loaded or not
+
+        internal static Dictionary<string, double> SettingsInitialisationTimes { get; set; } = new Dictionary<string, double>();
+
+        internal static Dictionary<string, double> SettingsReadingTimes { get; set; } = new Dictionary<string, double>();
     }
 }
 

@@ -28,6 +28,8 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using BH.oM.Base;
 using System.Linq;
+using System.Diagnostics;
+using System.IO;
 
 namespace BH.Engine.Base
 {
@@ -42,19 +44,31 @@ namespace BH.Engine.Base
         [Output("assembly", "The assembly under the given path, if it exists and has been loaded to BHoM (at any point in time), otherwise null.")]
         public static Assembly LoadAssembly(string assemblyPath)
         {
+            Console.WriteLine($"Loading assembly from {assemblyPath}");
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
+            Assembly result = null;
+
             try
             {
                 string name = AssemblyName.GetAssemblyName(assemblyPath).FullName;
+                
                 if (!Global.AllAssemblies.ContainsKey(name))
-                    return Assembly.LoadFrom(assemblyPath);
+                    result = Assembly.LoadFrom(assemblyPath);
                 else
-                    return Global.AllAssemblies[name];
+                    result = Global.AllAssemblies[name];
             }
-            catch
+            catch (Exception e)
             {
-                RecordWarning("Failed to load assembly " + assemblyPath);
-                return null;
+                RecordWarning("Failed to load assembly " + assemblyPath + ".Error: " + e.Message);
             }
+
+            stopwatch.Stop();
+            TimeSpan elapsed = stopwatch.Elapsed;
+            m_LoadingTimes[Path.GetFileNameWithoutExtension(assemblyPath)] = elapsed.TotalSeconds;
+
+            return result;
         }
     }
 }
