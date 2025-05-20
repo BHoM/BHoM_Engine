@@ -28,6 +28,8 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using BH.oM.Base;
 using System.Linq;
+using System.Diagnostics;
+using System.IO;
 
 namespace BH.Engine.Base
 {
@@ -52,9 +54,24 @@ namespace BH.Engine.Base
                 Global.AllAssemblies[assembly.FullName] = assembly;
                 if (assembly.IsBHoM())
                 {
-                    Global.BHoMAssemblies[assembly.FullName] = assembly;
-                    ExtractTypes(assembly);
-                    ExtractMethods(assembly);
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start();
+
+                    try
+                    {
+                        Global.BHoMAssemblies[assembly.FullName] = assembly;
+                        ExtractTypes(assembly);
+                        ExtractMethods(assembly);
+                    }
+                    catch(Exception e)
+                    {
+                        RecordError($"Failed to extract assembly {Path.GetFileNameWithoutExtension(assembly.Location)}. Error: {e.Message}");
+                    }
+
+                    stopwatch.Stop();
+                    stopwatch.Stop();
+                    TimeSpan elapsed = stopwatch.Elapsed;
+                    m_ExtractionTimes[Path.GetFileNameWithoutExtension(assembly.Location)] = elapsed.TotalMilliseconds / 1000;
                 }
             }
         }
@@ -274,6 +291,16 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
+        public static Dictionary<string, double> AssmeblyExtractionTimes()
+        {
+            return m_ExtractionTimes.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        /***************************************************/
+
+
+        private static Dictionary<string, double> m_ExtractionTimes = new Dictionary<string, double>();
     }
 }
 

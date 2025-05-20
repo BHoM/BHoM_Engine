@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace BH.Engine.Base
 {
@@ -71,20 +72,28 @@ namespace BH.Engine.Base
                     regex = new Regex(".*");
 
                 SearchOption searchOption = parseSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly;
-                foreach (string file in Directory.GetFiles(folder, "*.dll", searchOption))
-                {
-                    string name = Path.GetFileNameWithoutExtension(file);
-                    if (regex.IsMatch(name))
+                result = Directory.GetFiles(folder, "*.dll", searchOption)
+                    //.AsParallel()
+                    .Select(file =>
                     {
-                        Assembly loaded = LoadAssembly(file);
-                        if (loaded != null)
-                            result.Add(loaded);
-                    }
-                }
+                        string name = Path.GetFileNameWithoutExtension(file);
+                        if (regex.IsMatch(name))
+                            return LoadAssembly(file);
+                        else
+                            return null;
+                    })
+                    .Where(x => x != null)
+                    .ToList();
 
                 m_AlreadyLoaded[key] = result.ToList();
                 return result;
             }
+        }
+
+
+        public static Dictionary<string, double> AssemblyLoadingTimes()
+        {
+            return m_LoadingTimes.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
         }
 
 
@@ -95,6 +104,8 @@ namespace BH.Engine.Base
         private static Dictionary<string, List<Assembly>> m_AlreadyLoaded = new Dictionary<string, List<Assembly>>();
 
         private static readonly object m_LoadAllAssembliesLock = new object();
+
+        private static Dictionary<string, double> m_LoadingTimes = new Dictionary<string, double>();
 
         /***************************************************/
     }

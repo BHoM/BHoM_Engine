@@ -29,6 +29,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Text;
 using System.Linq;
+using System.Diagnostics;
 
 namespace BH.Engine.Settings
 {
@@ -54,6 +55,9 @@ namespace BH.Engine.Settings
 
             foreach (var file in settingsFiles)
             {
+                Stopwatch stopwatch = new Stopwatch();
+                stopwatch.Start();
+
                 string contents = "";
                 try
                 {
@@ -78,6 +82,11 @@ namespace BH.Engine.Settings
                 {
                     BH.Engine.Base.Compute.RecordWarning(ex, $"Cannot deserialise the contents of {file} to an ISettings object.");
                 }
+
+                stopwatch.Stop();
+                stopwatch.Stop();
+                TimeSpan elapsed = stopwatch.Elapsed;
+                Global.SettingsReadingTimes[Path.GetFileNameWithoutExtension(file)] = elapsed.TotalMilliseconds / 1000;
             }
 
             Global.BHoMSettingsLoaded.Add(fullSettingsLoadedKey);
@@ -129,6 +138,27 @@ namespace BH.Engine.Settings
             {
                 BH.Engine.Base.Compute.RecordError(ex, $"Cannot deserialise the contents of {filePath} to an ISettings object.");
             }
+        }
+
+        /***************************************************/
+
+        public static void AddSettingInitialisationTime(string settingName, double time)
+        {
+            Global.SettingsInitialisationTimes[settingName] = time;
+        }
+
+        /***************************************************/
+
+        public static Dictionary<string, double> SettingInitialisationTimes()
+        {
+            return Global.SettingsInitialisationTimes.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        /***************************************************/
+
+        public static Dictionary<string, double> SettingReadingTimes()
+        {
+            return Global.SettingsReadingTimes.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
         }
     }
 }
