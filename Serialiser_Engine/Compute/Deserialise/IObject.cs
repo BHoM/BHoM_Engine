@@ -78,13 +78,13 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        private static IObject SetProperties(this BsonDocument doc, Type type, IObject value, string version, bool isUpgraded)
+        private static IObject SetProperties(this BsonDocument doc, Type type, IObject value, string version, bool isUpgraded, IEnumerable<string> ignoredProperties = null)
         {
             try
             {
                 foreach (BsonElement item in doc)
                 {
-                    if (item.Name.StartsWith("_"))
+                    if (item.Name.StartsWith("_") || (ignoredProperties != null && ignoredProperties.Contains(item.Name)))
                         continue;
 
                     PropertyInfo prop = type.GetProperty(item.Name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
