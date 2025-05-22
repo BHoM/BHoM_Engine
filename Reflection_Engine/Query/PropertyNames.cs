@@ -110,7 +110,7 @@ namespace BH.Engine.Reflection
                         && prop.PropertyType.GenericTypeArguments.First().IsEnum)
                     {
                         IDictionary dic = prop.GetValue(obj) as IDictionary;
-                        properties.AddRange(dic.Keys.OfType<Enum>().OrderBy(x => x).Select(x => x.IToText()).Where(x => !string.IsNullOrEmpty(x)));
+                        properties.AddRange(dic.Keys.OfType<Enum>().OrderBy(x => x).Select(x => x.ToString()).Where(x => !string.IsNullOrEmpty(x)));
 
                     }
                     else

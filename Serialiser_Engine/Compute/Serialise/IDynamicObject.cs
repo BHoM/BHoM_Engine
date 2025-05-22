@@ -89,7 +89,7 @@ namespace BH.Engine.Serialiser
                             IDictionary dic = prop.GetValue(value) as IDictionary;
                             foreach (Enum key in dic.Keys.OfType<Enum>())
                             {
-                                writer.WriteName(key.IToText());
+                                writer.WriteName(key.ToString());
                                 ISerialise(dic[key], writer, valueType);
                             }
                         }

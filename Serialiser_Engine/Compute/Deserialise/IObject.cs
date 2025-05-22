@@ -185,7 +185,7 @@ namespace BH.Engine.Serialiser
 
                 List<string> propNames = Enum.GetValues(keyType)
                     .OfType<Enum>()
-                    .Select(x => x.IToText())
+                    .Select(x => x.ToString())
                     .Where(x => doc.Contains(x))
                     .ToList();
 
