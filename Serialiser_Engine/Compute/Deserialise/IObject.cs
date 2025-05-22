@@ -21,12 +21,16 @@
  */
 
 using BH.Engine.Base;
+using BH.Engine.Reflection;
 using BH.Engine.Versioning;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -59,6 +63,11 @@ namespace BH.Engine.Serialiser
             {
                 return DeserialiseDeprecate(doc, version, isUpgraded) as IObject;
             }
+
+            if (typeof(IDynamicObject).IsAssignableFrom(type))
+                bson = RecoverDynamicObject(type, bson as BsonDocument);
+
+
             if (typeof(IImmutable).IsAssignableFrom(type))
                 return bson.DeserialiseImmutable(type, version, isUpgraded);
             else if (value == null || value.GetType() != type)
@@ -158,6 +167,43 @@ namespace BH.Engine.Serialiser
                 return !propType.IsValueType || Nullable.GetUnderlyingType(propType) != null;
             else
                 return propType.IsAssignableFrom(value.GetType());
+        }
+
+        /*******************************************/
+
+        private static BsonDocument RecoverDynamicObject(Type type, BsonDocument doc)
+        {
+            List<PropertyInfo> dynamicContainers = type.GetProperties()
+                .Where(x => x.GetCustomAttribute<DynamicPropertyAttribute>() != null && typeof(IDictionary).IsAssignableFrom(x.PropertyType))
+                .ToList();
+
+            foreach (PropertyInfo containerInfo in dynamicContainers)
+            {
+                Type keyType = containerInfo.PropertyType.GenericTypeArguments.FirstOrDefault();
+                if (keyType == null || !keyType.IsEnum)
+                    continue;
+
+                List<string> propNames = Enum.GetValues(keyType)
+                    .OfType<Enum>()
+                    .Select(x => x.IToText())
+                    .Where(x => doc.Contains(x))
+                    .ToList();
+
+                BsonArray container = new BsonArray();
+
+                foreach (string propName in propNames)
+                {
+                    BsonDocument kvp = new BsonDocument();
+                    kvp["k"] = propName;
+                    kvp["v"] = doc[propName];
+                    container.Add(kvp);
+                    doc.Remove(propName);
+                }
+                   
+                doc[containerInfo.Name] = container;
+            }
+
+            return doc;
         }
 
         /*******************************************/
