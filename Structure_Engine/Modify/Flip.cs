@@ -104,6 +104,8 @@ namespace BH.Engine.Structure
                         Z = bar.Offset.Start.Z
                     }
                 };
+
+                flipped.Offset = flippedOffset;
             }
 
 
@@ -151,6 +153,9 @@ namespace BH.Engine.Structure
         {
             if (section is IGeometricalSection geometricalSection)
             {
+                if (geometricalSection.SectionProfile.ISymmetry() == Symmetry.DoublySymmetric)
+                    return geometricalSection;
+
                 ISectionProperty tempSection = null;
                 IProfile profile = geometricalSection.SectionProfile;
                 IProfile tempProfile = IFlipProfile(profile);
@@ -172,7 +177,7 @@ namespace BH.Engine.Structure
 
         private static IProfile IFlipProfile(IProfile profile)
         {
-            if (profile.ISymmetric() == Symmetry.DoublySymmetric)
+            if (profile.ISymmetry() == Symmetry.DoublySymmetric)
             {
                 return profile;
             }

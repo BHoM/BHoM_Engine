@@ -30,6 +30,7 @@ using BH.oM.Spatial.Layouts;
 using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.oM.Spatial.ShapeProfiles;
+using SP = BH.oM.Spatial.ShapeProfiles;
 
 namespace BH.Engine.Spatial
 {
@@ -41,18 +42,18 @@ namespace BH.Engine.Spatial
 
         [Description("Determines the symmetry of the given IProfile about the X-Axis and Y-Axis.")]
         [Input("profile", "The layout object to query the points from.")]
-        [Output("s", "The level of symmetry..")]
-        public static Symmetry ISymmetric(this IProfile profile, double tolerance = Tolerance.Distance)
+        [Output("s", "The level of symmetry.")]
+        public static SP.Symmetry ISymmetry(this IProfile profile, double tolerance = Tolerance.Distance)
         {
             if (profile.IsNull())
-                return Symmetry.Asymmetric;
+                return SP.Symmetry.Asymmetric;
 
-            return Symmetric(profile as dynamic, tolerance);
+            return Symmetry(profile as dynamic, tolerance);
         }
 
         /***************************************************/
 
-        private static Symmetry Symmetric(this IProfile profile, double tolerance = Tolerance.Distance)
+        private static Symmetry Symmetry(this IProfile profile, double tolerance = Tolerance.Distance)
         {
             Plane pXZ = Plane.XZ;
             Plane pYZ = Plane.YZ;
@@ -61,102 +62,102 @@ namespace BH.Engine.Spatial
             List<Point> pts = profile.Edges.SelectMany(x => x.ControlPoints()).ToList().CullDuplicates(tolerance);
 
             // Iterate over each point and check an equivalent point exists in the reflection
-            bool symmetricX = Engine.Geometry.Query.Symmetric(pts, pYZ, tolerance);
-            bool symmetricY = Engine.Geometry.Query.Symmetric(pts, pXZ, tolerance);
+            bool symmetricX = Engine.Geometry.Query.IsSymmetric(pts, pYZ, tolerance);
+            bool symmetricY = Engine.Geometry.Query.IsSymmetric(pts, pXZ, tolerance);
 
             if (symmetricX && symmetricY)
-                return Symmetry.DoublySymmetric;
+                return SP.Symmetry.DoublySymmetric;
             else if (symmetricX && !symmetricY)
-                return Symmetry.SingleSymmetricMajor;
+                return SP.Symmetry.SingleSymmetricMajor;
             else if (!symmetricX && symmetricY)
-                return Symmetry.SinglySymmetricMinor;
+                return SP.Symmetry.SinglySymmetricMinor;
             else
-                return Symmetry.Asymmetric;
+                return SP.Symmetry.Asymmetric;
         }
 
         /***************************************************/
 
-        private static Symmetry Symmetric(this AngleProfile profile, double tolerance = Tolerance.Distance)
+        private static Symmetry Symmetry(this AngleProfile profile, double tolerance = Tolerance.Distance)
         {
-            return Symmetry.Asymmetric;
+            return SP.Symmetry.Asymmetric;
         }
 
         /***************************************************/
 
-        private static Symmetry Symmetric(this BoxProfile profile, double tolerance = Tolerance.Distance)
+        private static Symmetry Symmetry(this BoxProfile profile, double tolerance = Tolerance.Distance)
         {
-            return Symmetry.DoublySymmetric;
+            return SP.Symmetry.DoublySymmetric;
         }
 
         /***************************************************/
 
-        private static Symmetry Symmetric(this ChannelProfile profile, double tolerance = Tolerance.Distance)
+        private static Symmetry Symmetry(this ChannelProfile profile, double tolerance = Tolerance.Distance)
         {
-            return Symmetry.SingleSymmetricMajor;
+            return SP.Symmetry.SingleSymmetricMajor;
         }
 
         /***************************************************/
 
-        private static Symmetry Symmetric(this CircleProfile profile, double tolerance = Tolerance.Distance)
+        private static Symmetry Symmetry(this CircleProfile profile, double tolerance = Tolerance.Distance)
         {
-            return Symmetry.DoublySymmetric;
+            return SP.Symmetry.DoublySymmetric;
         }
 
         /***************************************************/
 
-        private static Symmetry Symmetric(this KiteProfile profile, double tolerance = Tolerance.Distance)
+        private static Symmetry Symmetry(this KiteProfile profile, double tolerance = Tolerance.Distance)
         {
-            return Symmetry.SinglySymmetricMinor;
+            return SP.Symmetry.SinglySymmetricMinor;
         }
 
         /***************************************************/
 
-        private static Symmetry Symmetric(this RectangleProfile profile, double tolerance = Tolerance.Distance)
+        private static Symmetry Symmetry(this RectangleProfile profile, double tolerance = Tolerance.Distance)
         {
-            return Symmetry.DoublySymmetric;
+            return SP.Symmetry.DoublySymmetric;
         }
 
-        private static Symmetry Symmetric(this TaperedProfile profile, double tolerance = Tolerance.Distance)
+        private static Symmetry Symmetry(this TaperedProfile profile, double tolerance = Tolerance.Distance)
         {
             List<Symmetry> symmetries = new List<Symmetry>();
             foreach (IProfile iProfile in profile.Profiles.Values)
             {
-                symmetries.Add(Symmetric(iProfile as dynamic, tolerance));
+                symmetries.Add(Symmetry(iProfile as dynamic, tolerance));
             }
 
             List<Symmetry> distinct = symmetries.Distinct().ToList();
 
             if (distinct.Count() > 1)
-                return Symmetry.Asymmetric;
-            else if (distinct.First() == Symmetry.Asymmetric)
-                return Symmetry.Asymmetric;
-            else if (distinct.First() == Symmetry.SinglySymmetricMinor)
-                return Symmetry.SinglySymmetricMinor;
-            else if (distinct.First() == Symmetry.SingleSymmetricMajor)
-                return Symmetry.SinglySymmetricMinor;
+                return SP.Symmetry.Asymmetric;
+            else if (distinct.First() == SP.Symmetry.Asymmetric)
+                return SP.Symmetry.Asymmetric;
+            else if (distinct.First() == SP.Symmetry.SinglySymmetricMinor)
+                return SP.Symmetry.SinglySymmetricMinor;
+            else if (distinct.First() == SP.Symmetry.SingleSymmetricMajor)
+                return SP.Symmetry.SinglySymmetricMinor;
 
-            return Symmetry.DoublySymmetric;
+            return SP.Symmetry.DoublySymmetric;
         }
 
         /***************************************************/
 
-        private static Symmetry Symmetric(this TSectionProfile profile, double tolerance = Tolerance.Distance)
+        private static Symmetry Symmetry(this TSectionProfile profile, double tolerance = Tolerance.Distance)
         {
-            return Symmetry.SinglySymmetricMinor;
+            return SP.Symmetry.SinglySymmetricMinor;
         }
 
         /***************************************************/
 
-        private static Symmetry Symmetric(this TubeProfile profile, double tolerance = Tolerance.Distance)
+        private static Symmetry Symmetry(this TubeProfile profile, double tolerance = Tolerance.Distance)
         {
-            return Symmetry.DoublySymmetric;
+            return SP.Symmetry.DoublySymmetric;
         }
 
         /***************************************************/
 
-        private static Symmetry Symmetric(this ZSectionProfile profile, double tolerance = Tolerance.Distance)
+        private static Symmetry Symmetry(this ZSectionProfile profile, double tolerance = Tolerance.Distance)
         {
-            return Symmetry.Asymmetric;
+            return SP.Symmetry.Asymmetric;
         }
     }
 }
