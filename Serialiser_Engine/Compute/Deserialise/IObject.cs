@@ -189,7 +189,11 @@ namespace BH.Engine.Serialiser
                     .Where(x => doc.Contains(x))
                     .ToList();
 
-                BsonArray container = new BsonArray();
+                BsonArray container = null;
+                if (doc.Contains(containerInfo.Name))
+                    container = doc[containerInfo.Name] as BsonArray;
+                if (container == null || container.IsBsonNull)
+                    container = new BsonArray();
 
                 foreach (string propName in propNames)
                 {
