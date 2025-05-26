@@ -315,13 +315,13 @@ namespace BH.Engine.Security
                     double p2Param = coneArc.ParameterAtPoint(pt2, tolerance);
                     double startAngle = coneArc.EndAngle * p1Param;
                     double endAngle = coneArc.EndAngle * p2Param;
-                    Arc newArc = Create.Arc(coneArc.CoordinateSystem, coneArc.Radius, startAngle, endAngle);
+                    Arc newArc = Geometry.Create.Arc(coneArc.CoordinateSystem, coneArc.Radius, startAngle, endAngle);
 
                     curves.Add(newArc);
                 }
                 else
                 {
-                    Line line = Create.Line(pt1, pt2);
+                    Line line = Geometry.Create.Line(pt1, pt2);
                     curves.Add(line);
                 }
             }
@@ -490,7 +490,7 @@ namespace BH.Engine.Security
                     if (orderedArcs.First().StartPoint().Distance(orderedArcs.Last().EndPoint()) < tolerance)
                     {
                         Arc arc = orderedArcs[0];
-                        outCurves.Add((Arc)Create.Circle(arc.Centre(), Vector.ZAxis, arc.Radius));
+                        outCurves.Add((Arc)Geometry.Create.Circle(arc.Centre(), Vector.ZAxis, arc.Radius));
                     }
                     else
                     {
@@ -526,7 +526,7 @@ namespace BH.Engine.Security
                         }
                         else
                         {
-                            outCurves.Add(Create.Arc(start, mid, end));
+                            outCurves.Add(Geometry.Create.Arc(start, mid, end));
                         }
                     }
                 }
@@ -589,7 +589,7 @@ namespace BH.Engine.Security
                 + arc.CoordinateSystem.Y * (arc.Radius * Math.Sin(midAngle));
 
             // Create a new arc with swapped start and end, and the computed midpoint
-            return Create.Arc(arc.EndPoint(), midPoint, arc.StartPoint());
+            return Geometry.Create.Arc(arc.EndPoint(), midPoint, arc.StartPoint());
         }
 
         private static List<ICurve> ChangeOrderToStartWithLine(List<ICurve> startCurves)
