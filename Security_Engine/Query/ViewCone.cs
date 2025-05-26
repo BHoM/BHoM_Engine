@@ -36,8 +36,10 @@ namespace BH.Engine.Security
         /****              Public Methods               ****/
         /***************************************************/
 
+        [PreviousVersion("8.2", "BH.Engine.Security.Query.ViewCone(BH.oM.Security.Elements.CameraDevice)")]
         [Description("Returns the camera view cone.")]
         [Input("cameraDevice", "The CameraDevice object to compute the camera view cone for.")]
+        [Input("coneAngle", "The angle view of the CameraDevice.")]
         [Output("conePolyCurve", "PolyCurve object that represents camera view cone.")]
         public static PolyCurve ViewCone(this CameraDevice cameraDevice, double coneAngle)
         {
