@@ -39,7 +39,7 @@ namespace BH.Engine.Security
         [Input("eyePosition", "The point at which the Camera is installed, known as the eye position.")]
         [Input("targetPosition", "The point at which the Camera is looking at, known as the target position.")]
         [Input("horizontalFieldOfView", "The horizontal field of view of the CameraDevice.")]
-        [Input("cameraDevice", "CameraDevice object.")]
+        [Output("cameraDevice", "CameraDevice object.")]
         public static CameraDevice CameraDevice(Point eyePosition, Point targetPosition, double horizontalFieldOfView)
         {
             var distance = eyePosition.Distance(targetPosition);
