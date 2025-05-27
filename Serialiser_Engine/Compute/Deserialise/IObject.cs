@@ -64,11 +64,16 @@ namespace BH.Engine.Serialiser
                 return DeserialiseDeprecate(doc, version, isUpgraded) as IObject;
             }
 
-            if (typeof(IDynamicObject).IsAssignableFrom(type))
-                bson = RecoverDynamicObject(type, bson as BsonDocument);
-
-
-            if (typeof(IImmutable).IsAssignableFrom(type))
+            Type[] interfaces = type.GetInterfaces();
+            if (interfaces.Contains(typeof(IDynamicObject)))
+            {
+                if (interfaces.Contains(typeof(IDynamicPropertyProvider)))
+                    return DeserialiseIDynamicPropertyProvider(bson, type, version, isUpgraded);
+                else
+                    bson = RecoverDynamicObject(type, bson as BsonDocument);
+            }
+                
+            if (interfaces.Contains(typeof(IImmutable)))
                 return bson.DeserialiseImmutable(type, version, isUpgraded);
             else if (value == null || value.GetType() != type)
                 value = Activator.CreateInstance(type) as IObject;
