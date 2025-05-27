@@ -41,7 +41,7 @@ namespace BH.Engine.Serialiser
         /**** Private Methods                   ****/
         /*******************************************/
         
-        private static void SerialiseDynamicObject(this IDynamicObject value, BsonDocumentWriter writer, Type targetType)
+        private static void SerialiseDynamicObject(this IDynamicObject value, BsonDocumentWriter writer, Type targetType, HashSet<string> toIgnore = null)
         {
             if (value == null)
             {
@@ -58,6 +58,9 @@ namespace BH.Engine.Serialiser
             {
                 foreach (string prop in value.PropertyNames())
                 {
+                    if (toIgnore != null && toIgnore.Contains(prop))
+                        continue;
+
                     object result;
                     if (BH.Engine.Base.Compute.TryRunExtensionMethod(value, "GetProperty", new object[] { prop }, out result))
                     {
@@ -74,6 +77,9 @@ namespace BH.Engine.Serialiser
             {
                 foreach (PropertyInfo prop in value.GetType().GetProperties())
                 {
+                    if (toIgnore != null && toIgnore.Contains(prop.Name))
+                        continue;
+
                     if (prop.GetCustomAttribute<DynamicPropertyAttribute>() != null && typeof(IDictionary).IsAssignableFrom(prop.PropertyType))
                     {
                         Type[] genericArguments = prop.PropertyType.GenericTypeArguments;

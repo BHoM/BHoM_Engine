@@ -45,9 +45,18 @@ namespace BH.Engine.Serialiser
                 writer.WriteNull();
                 return;
             }
-            else if (value is IDynamicObject)
+
+            HashSet<string> toIgnore = new HashSet<string>();
+            if (value.Fragments != null && value.Fragments.Count > 0)
+                toIgnore.Add("Fragments");
+            if (value.Tags != null && value.Tags.Count > 0)
+                toIgnore.Add("Tags");
+            if (value.CustomData != null && value.CustomData.Count > 0)
+                toIgnore.Add("CustomData");
+
+            if (value is IDynamicObject)
             {
-                SerialiseDynamicObject(value as IDynamicObject, writer, targetType);
+                SerialiseDynamicObject(value as IDynamicObject, writer, targetType, toIgnore);
                 return;
             }
 
@@ -58,22 +67,7 @@ namespace BH.Engine.Serialiser
 
             foreach (PropertyInfo prop in value.GetType().GetProperties())
             {
-                bool include = true;
-
-                switch (prop.Name)
-                {
-                    case "Fragments":
-                        include = (value.Fragments != null && value.Fragments.Count > 0);
-                        break;
-                    case "Tags":
-                        include = (value.Tags != null && value.Tags.Count > 0);
-                        break;
-                    case "CustomData":
-                        include = (value.CustomData != null && value.CustomData.Count > 0);
-                        break;
-                }
-
-                if(include)
+                if(!toIgnore.Contains(prop.Name))
                 {
                     writer.WriteName(prop.Name);
                     ISerialise(prop.GetValue(value), writer, prop.PropertyType);
