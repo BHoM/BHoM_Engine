@@ -118,15 +118,16 @@ namespace BH.Engine.Results
                 AddDynamicProperties(result, selectorsDict);
 
             //Check all available methods that takes a result compatible with the type and returns a double
-            foreach (MethodInfo method in Base.Query.BHoMMethodList().Where(x => typeof(P).IsAssignableFrom(x.ReturnType)))
+            foreach (MethodInfo method in Base.Query.BHoMMethodList().Where(x => x.GetParameters().Length == 1).Where(x => typeof(P).IsAssignableFrom(x.ReturnType)).OrderBy(x => x.Name))
             {
                 //Check that the method has exactly one argument
                 ParameterInfo[] para = method.GetParameters();
                 if (para.Length != 1)
                     continue;
 
+                Type firstPara = para[0].ParameterType;
                 //check that the first argument is a result argument (to filter out methods accepting object for example)
-                if (!typeof(IResult).IsAssignableFrom(para[0].ParameterType))
+                if (firstPara == typeof(object) || firstPara == typeof(IObject) || firstPara == typeof(IBHoMObject))
                     continue;
 
                 //Check that this argument is asignable from the type
