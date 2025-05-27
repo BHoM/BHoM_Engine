@@ -87,7 +87,7 @@ namespace BH.Engine.Serialiser
                         {
                             Type valueType = genericArguments[1];
                             IDictionary dic = prop.GetValue(value) as IDictionary;
-                            foreach (Enum key in dic.Keys.OfType<Enum>())
+                            foreach (Enum key in dic.Keys.OfType<Enum>().OrderBy(x => x))
                             {
                                 writer.WriteName(key.ToString());
                                 ISerialise(dic[key], writer, valueType);
