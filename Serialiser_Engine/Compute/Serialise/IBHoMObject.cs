@@ -47,11 +47,11 @@ namespace BH.Engine.Serialiser
             }
 
             HashSet<string> toIgnore = new HashSet<string>();
-            if (value.Fragments != null && value.Fragments.Count > 0)
+            if (value.Fragments == null || value.Fragments.Count == 0)
                 toIgnore.Add("Fragments");
-            if (value.Tags != null && value.Tags.Count > 0)
+            if (value.Tags == null || value.Tags.Count == 0)
                 toIgnore.Add("Tags");
-            if (value.CustomData != null && value.CustomData.Count > 0)
+            if (value.CustomData == null || value.CustomData.Count == 0)
                 toIgnore.Add("CustomData");
 
             if (value is IDynamicObject)
