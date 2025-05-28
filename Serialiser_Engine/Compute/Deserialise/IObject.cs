@@ -21,12 +21,16 @@
  */
 
 using BH.Engine.Base;
+using BH.Engine.Reflection;
 using BH.Engine.Versioning;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -59,7 +63,17 @@ namespace BH.Engine.Serialiser
             {
                 return DeserialiseDeprecate(doc, version, isUpgraded) as IObject;
             }
-            if (typeof(IImmutable).IsAssignableFrom(type))
+
+            Type[] interfaces = type.GetInterfaces();
+            if (interfaces.Contains(typeof(IDynamicObject)))
+            {
+                if (interfaces.Contains(typeof(IDynamicPropertyProvider)))
+                    return DeserialiseIDynamicPropertyProvider(bson, type, version, isUpgraded);
+                else
+                    bson = RecoverDynamicObject(type, bson as BsonDocument);
+            }
+                
+            if (interfaces.Contains(typeof(IImmutable)))
                 return bson.DeserialiseImmutable(type, version, isUpgraded);
             else if (value == null || value.GetType() != type)
                 value = Activator.CreateInstance(type) as IObject;
@@ -69,13 +83,13 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        private static IObject SetProperties(this BsonDocument doc, Type type, IObject value, string version, bool isUpgraded)
+        private static IObject SetProperties(this BsonDocument doc, Type type, IObject value, string version, bool isUpgraded, IEnumerable<string> ignoredProperties = null)
         {
             try
             {
                 foreach (BsonElement item in doc)
                 {
-                    if (item.Name.StartsWith("_"))
+                    if (item.Name.StartsWith("_") || (ignoredProperties != null && ignoredProperties.Contains(item.Name)))
                         continue;
 
                     PropertyInfo prop = type.GetProperty(item.Name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
@@ -158,6 +172,47 @@ namespace BH.Engine.Serialiser
                 return !propType.IsValueType || Nullable.GetUnderlyingType(propType) != null;
             else
                 return propType.IsAssignableFrom(value.GetType());
+        }
+
+        /*******************************************/
+
+        private static BsonDocument RecoverDynamicObject(Type type, BsonDocument doc)
+        {
+            List<PropertyInfo> dynamicContainers = type.GetProperties()
+                .Where(x => x.GetCustomAttribute<DynamicPropertyAttribute>() != null && typeof(IDictionary).IsAssignableFrom(x.PropertyType))
+                .ToList();
+
+            foreach (PropertyInfo containerInfo in dynamicContainers)
+            {
+                Type keyType = containerInfo.PropertyType.GenericTypeArguments.FirstOrDefault();
+                if (keyType == null || !keyType.IsEnum)
+                    continue;
+
+                List<string> propNames = Enum.GetValues(keyType)
+                    .OfType<Enum>()
+                    .Select(x => x.ToString())
+                    .Where(x => doc.Contains(x))
+                    .ToList();
+
+                BsonArray container = null;
+                if (doc.Contains(containerInfo.Name))
+                    container = doc[containerInfo.Name] as BsonArray;
+                if (container == null || container.IsBsonNull)
+                    container = new BsonArray();
+
+                foreach (string propName in propNames)
+                {
+                    BsonDocument kvp = new BsonDocument();
+                    kvp["k"] = propName;
+                    kvp["v"] = doc[propName];
+                    container.Add(kvp);
+                    doc.Remove(propName);
+                }
+                   
+                doc[containerInfo.Name] = container;
+            }
+
+            return doc;
         }
 
         /*******************************************/
