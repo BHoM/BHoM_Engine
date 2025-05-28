@@ -53,9 +53,26 @@ namespace BH.Engine.Serialiser
                 return null;
             }
 
-            IDynamicPropertyProvider result = Activator.CreateInstance(type) as IDynamicPropertyProvider;
-
             BsonDocument doc = bson.AsBsonDocument;
+            IDynamicPropertyProvider result;
+
+            try
+            {
+                result = Activator.CreateInstance(type) as IDynamicPropertyProvider;
+            }
+            catch (Exception e)
+            {
+                if (!isUpgraded && TryUpgrade(doc, version, out object upgrade))
+                {
+                    return upgrade as IDynamicPropertyProvider;
+                }
+                else
+                {
+                    BH.Engine.Base.Compute.RecordError(e, $"Cannot deserialise a {nameof(IDynamicPropertyProvider)} that is also IImmutable");
+                    return DeserialiseDeprecatedCustomObject(doc, version, false);
+                }
+            }
+            
             try
             {
                 foreach (BsonElement item in doc)
