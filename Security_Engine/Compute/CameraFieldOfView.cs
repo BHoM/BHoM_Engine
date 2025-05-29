@@ -50,6 +50,12 @@ namespace BH.Engine.Security
             if (cameraDevice == null || obstacles == null)
                 return null;
 
+            if (cameraDevice.Angle < 0 && cameraDevice.Angle > 2*Math.PI)
+            {
+                Base.Compute.RecordError("Camera angle is not valid. It should be between 0 and 360 degrees.");
+                return null;
+            }
+
             double coneAngle = cameraDevice.Angle;          
                       
             Point cameraLocation = cameraDevice.EyePosition;
@@ -86,8 +92,7 @@ namespace BH.Engine.Security
             outPolyCurve = outPolyCurve.SortCurves(angleTolerance);
 
             //change order to always start with line
-            if (!(outPolyCurve.Curves[0] is Line))
-                outPolyCurve.Curves = ChangeOrderToStartWithLine(outPolyCurve.Curves);
+            ReorderCurvesToStartWithLine(outPolyCurve.Curves);
 
             //combine adjacent arcs into one
             outPolyCurve.Curves = CombineAdjacentArcsIntoOne(outPolyCurve.Curves);
@@ -305,10 +310,6 @@ namespace BH.Engine.Security
                 Point pt1 = pointsChain[i - 1];
                 Point pt2 = pointsChain[i];
 
-                double distance1 = pt1.Distance(coneArc);
-                double distance2 = pt2.Distance(coneArc);
-                double distance3 = pt1.Distance(pt2);
-
                 if ((pt1.Distance(coneArc) < tolerance) && (pt2.Distance(coneArc) < tolerance) && !(pt1.Distance(pt2) < tolerance))
                 {
                     double p1Param = coneArc.ParameterAtPoint(pt1, tolerance);
@@ -343,10 +344,7 @@ namespace BH.Engine.Security
             List<Point> conePoints = cameraConePolyline.ControlPoints();
 
             //add cone boundary points as intersectPoints
-            List<Point> intersectPoints = new List<Point>();
-
-            intersectPoints.Add(conePoints[1]);
-            intersectPoints.Add(conePoints[conePoints.Count - 2]);
+            List<Point> intersectPoints = new List<Point> { conePoints[1], conePoints[conePoints.Count - 2] };
 
             //simplify obstacles
             List<Polyline> projObstacles = obstacles.Select(x => x.Project(cameraPlane, distanceTolerance)).ToList();
@@ -367,17 +365,14 @@ namespace BH.Engine.Security
                     intersectPoints.AddRange(coneArcIntersection);
                 }
 
-                if (cameraCone.Curves.Count != 1)
+                List<Polyline> intersection = obstacle.BooleanIntersection(cameraConePolyline, distanceTolerance);
+                if (intersection.Count != 0)
                 {
-                    List<Polyline> intersection = obstacle.BooleanIntersection(cameraConePolyline, distanceTolerance);
-                    if (intersection.Count != 0)
+                    intersectObstacles.Add(obstacle);
+                    foreach (Polyline intersectPolyline in intersection)
                     {
-                        intersectObstacles.Add(obstacle);
-                        foreach (Polyline intersectPolyline in intersection)
-                        {
-                            List<Point> points = intersectPolyline.ControlPoints;
-                            intersectPoints.AddRange(points);
-                        }
+                        List<Point> points = intersectPolyline.ControlPoints;
+                        intersectPoints.AddRange(points);
                     }
                 }
             }
@@ -421,11 +416,12 @@ namespace BH.Engine.Security
             return cameraViewPolyCurve;           
         }
 
+        /***************************************************/
         private static List<Line> CombineAndRemoveDuplicates(List<Line> lines, double tolerance)
         {
             double sqTol = tolerance * tolerance;
             List<Line> result = lines.Select(l => l).ToList();
-            List<int> ints = new List<int>();
+            List<int> indexes = new List<int>();
 
             for (int i = lines.Count - 2; i >= 0; i--)
             {
@@ -435,22 +431,23 @@ namespace BH.Engine.Security
                     Line l2 = lines[j];
                     if ((l1.Start.SquareDistance(l2.Start) <= sqTol && l1.End.SquareDistance(l2.End) <= sqTol) || (l1.Start.SquareDistance(l2.End) <= sqTol && l1.End.SquareDistance(l2.Start) <= sqTol))
                     {
-                        ints.Add(i);
-                        ints.Add(j);
+                        indexes.Add(i);
+                        indexes.Add(j);
                     }
                 }
             }
 
-            ints = ints.Distinct().ToList();
-            ints = ints.OrderByDescending(x => x).ToList();
-            for (int i = 0; i < ints.Count; i++)
+            indexes = indexes.Distinct().ToList();
+            indexes = indexes.OrderByDescending(x => x).ToList();
+            for (int i = 0; i < indexes.Count; i++)
             {
-                lines.RemoveAt(ints[i]);
+                lines.RemoveAt(indexes[i]);
             }
 
             return lines;
         }
 
+        /***************************************************/
         private static List<ICurve> CombineAdjacentArcsIntoOne(List<ICurve> startCurves, double tolerance = 1e-6)
         {
             List<ICurve> outCurves = new List<ICurve>();
@@ -536,6 +533,7 @@ namespace BH.Engine.Security
             return outCurves;
         }
 
+        /***************************************************/
         private static List<Arc> OrderArcsByConnectivity(List<Arc> arcs, double tolerance)
         {
             if (arcs.Count <= 1)
@@ -562,7 +560,7 @@ namespace BH.Engine.Security
                     else if (last.EndPoint().Distance(arcs[i].EndPoint()) < tolerance)
                     {
                         // Reverse arc if needed
-                        Arc reversed = ReverseArc(arcs[i]);
+                        Arc reversed = Geometry.Modify.Reverse(arcs[i]);
                         ordered.Add(reversed);
                         used.Add(i);
                         found = true;
@@ -579,50 +577,22 @@ namespace BH.Engine.Security
             return ordered;
         }
 
-        private static Arc ReverseArc(Arc arc)
+        /***************************************************/
+        private static void ReorderCurvesToStartWithLine(List<ICurve> startCurves)
         {
-            // Compute the midpoint parameter (halfway between start and end angles)
-            double midAngle = arc.StartAngle + (arc.EndAngle - arc.StartAngle) / 2.0;
-            // Calculate the midpoint in the arc's coordinate system
-            Point midPoint = arc.CoordinateSystem.Origin
-                + arc.CoordinateSystem.X * (arc.Radius * Math.Cos(midAngle))
-                + arc.CoordinateSystem.Y * (arc.Radius * Math.Sin(midAngle));
+            if (startCurves == null || startCurves.Count == 0)
+                return;
 
-            // Create a new arc with swapped start and end, and the computed midpoint
-            return Geometry.Create.Arc(arc.EndPoint(), midPoint, arc.StartPoint());
+            int lineIndex = startCurves.FindIndex(c => c is Line);
+            if (lineIndex < 0)
+                return; // Already starts with a line or no line found
+
+            List<ICurve> reordered = startCurves.Skip(lineIndex).Concat(startCurves.Take(lineIndex)).ToList();
+            startCurves.Clear();
+            startCurves.AddRange(reordered);
         }
 
-        private static List<ICurve> ChangeOrderToStartWithLine(List<ICurve> startCurves)
-        {
-            List <ICurve> outCurves = new List<ICurve>();
-
-            bool flag = false;
-
-            for (int i = 0; i<startCurves.Count; i++)
-            {
-                ICurve firstLineCurve = startCurves[i];
-                if ( firstLineCurve is BH.oM.Geometry.Line)
-                {
-                    outCurves.Add(firstLineCurve);
-                    for (int j = i+1;j < startCurves.Count; j++)
-                    {
-                        outCurves.Add(startCurves[j]);
-                    }
-                    for (int j = i-1; j >= 0; j--)
-                    {
-                        outCurves.Add(startCurves[j]);
-                    }
-                    flag = true;
-                }
-                if (flag)
-                    break;                
-            }
-
-            if (flag)
-                return outCurves;
-            else
-                return startCurves;
-        }
+        /***************************************************/
     }
 }
 
