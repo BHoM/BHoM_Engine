@@ -560,7 +560,7 @@ namespace BH.Engine.Security
                     else if (last.EndPoint().Distance(arcs[i].EndPoint()) < tolerance)
                     {
                         // Reverse arc if needed
-                        Arc reversed = Geometry.Modify.Reverse(arcs[i]);
+                        Arc reversed = arcs[i].Reverse();
                         ordered.Add(reversed);
                         used.Add(i);
                         found = true;
