@@ -48,7 +48,7 @@ namespace BH.Engine.Security
             {
                 EyePosition = eyePosition,
                 TargetPosition = targetPosition,
-                Angle = Math.Asin(horizontalFieldOfView / (2 * distance)) * 2
+                Angle = 2 * Math.Atan(horizontalFieldOfView / 2 / distance)
             };
         }
 
