@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <FileVersion>8.2.0.0</FileVersion>
@@ -8,12 +8,7 @@
     <Configurations>Debug;Release;Test</Configurations>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <RootNamespace>BH.Tests.Engine.Serialiser</RootNamespace>
-  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'!='Test'">
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Test'">
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
   </PropertyGroup>

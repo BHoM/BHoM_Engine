@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Structure_Engine_Tests", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestHelper_Engine", "TestHelper_Engine\TestHelper_Engine.csproj", "{04990536-063C-446B-8043-E3850617CF0A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spatial_Engine", "..\..\Spatial_Engine\Spatial_Engine.csproj", "{2FA172B8-1C8B-02FD-7DDA-EAFA8F9ABF98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,12 @@ Global
 		{04990536-063C-446B-8043-E3850617CF0A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{04990536-063C-446B-8043-E3850617CF0A}.Test|Any CPU.ActiveCfg = Debug|Any CPU
 		{04990536-063C-446B-8043-E3850617CF0A}.Test|Any CPU.Build.0 = Debug|Any CPU
+		{2FA172B8-1C8B-02FD-7DDA-EAFA8F9ABF98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FA172B8-1C8B-02FD-7DDA-EAFA8F9ABF98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FA172B8-1C8B-02FD-7DDA-EAFA8F9ABF98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FA172B8-1C8B-02FD-7DDA-EAFA8F9ABF98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FA172B8-1C8B-02FD-7DDA-EAFA8F9ABF98}.Test|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FA172B8-1C8B-02FD-7DDA-EAFA8F9ABF98}.Test|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

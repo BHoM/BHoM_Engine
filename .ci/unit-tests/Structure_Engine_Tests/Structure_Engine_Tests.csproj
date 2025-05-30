@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <FileVersion>8.2.0.0</FileVersion>
@@ -8,18 +8,14 @@
     <Configurations>Debug;Release;Test</Configurations>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <RootNamespace>BH.Tests.Engine.Structure</RootNamespace>
-  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'!='Test'">
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Test'">
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoBogus" Version="2.13.1" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.4.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
@@ -30,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BHoM_Engine\BHoM_Engine.csproj" />
+    <ProjectReference Include="..\..\..\Spatial_Engine\Spatial_Engine.csproj" />
     <ProjectReference Include="..\..\..\Structure_Engine\Structure_Engine.csproj" />
   </ItemGroup>
 
@@ -43,6 +40,15 @@
       <HintPath>$(ProgramData)\BHoM\Assemblies\BHoM.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="CodeComplianceTest_Engine">
+      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\CodeComplianceTest_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="CodeComplianceTest_oM">
+      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\CodeComplianceTest_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="Data_oM">
+      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
     </Reference>
     <Reference Include="Dimensional_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
@@ -63,6 +69,24 @@
       <HintPath>$(ProgramData)\BHoM\Assemblies\Structure_oM.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="TestSetup_Engine">
+      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\TestSetup_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Test_Engine">
+      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\Test_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Test_oM">
+      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\Test_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="UnitTest_Engine">
+      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\UnitTest_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnitTest_oM">
+      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\UnitTest_oM.dll</HintPath>
+    </Reference>
+    <Reference Include="Versioning_oM">
+      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\Versioning_oM.dll</HintPath>
     </Reference>
   </ItemGroup>
 
