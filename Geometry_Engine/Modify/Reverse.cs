@@ -48,8 +48,9 @@ namespace BH.Engine.Geometry
         }
 
         /***************************************************/
-        /**** Public Methods - Arcs                   ****/
+        /**** Public Methods - Arcs                     ****/
         /***************************************************/
+
         public static Arc Reverse(this Arc arc)
         {
             // Compute the midpoint parameter (halfway between start and end angles)
@@ -60,6 +61,8 @@ namespace BH.Engine.Geometry
             // Create a new arc with swapped start and end, and the computed midpoint
             return Geometry.Create.Arc(arc.EndPoint(), midPoint, arc.StartPoint());
         }
+
+        /***************************************************/
     }
 }
 

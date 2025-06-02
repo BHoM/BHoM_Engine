@@ -78,6 +78,8 @@ namespace BH.Engine.Security
 
             ICurve lastCurve = null;
 
+            Circle circle = BH.Engine.Geometry.Create.Circle(cameraDevice.EyePosition, coneArc.Radius);
+
             foreach (Line line in cameraPolyline.SubParts())
             {
                 Point startPoint = line.Start;
@@ -85,15 +87,13 @@ namespace BH.Engine.Security
 
                 if ((startPoint.Distance(coneArc) < distanceTolerance) && (endPoint.Distance(coneArc) < distanceTolerance))
                 {
-
-                    if (Math.Abs(cameraDevice.Angle - Math.PI) < distanceTolerance && Math.Abs(startPoint.Distance(endPoint) - 2 * coneArc.Radius) < distanceTolerance)
+                    //check if line is length is equal to the diameter of the cone arc, if so, add it as it is; apply only for 180 degree angles
+                    if (Math.Abs(cameraDevice.Angle - Math.PI) < angleTolerance && Math.Abs(startPoint.Distance(endPoint) - 2 * coneArc.Radius) < distanceTolerance)
                     {
                         simplifiedPolyCurve.Curves.Add(line);
                         lastCurve = line;
                         continue;
-                    }
-
-                    Circle circle = BH.Engine.Geometry.Create.Circle(cameraDevice.EyePosition, coneArc.Radius);
+                    }                    
 
                     List<ICurve> newArcList = circle.SplitAtPoints(new List<Point> { startPoint, endPoint }, distanceTolerance);
 
@@ -126,7 +126,7 @@ namespace BH.Engine.Security
             }
 
             //if polyCurve is not closed, try to close it
-            EnsurePolyCruveIsClosed(simplifiedPolyCurve);
+            EnsurePolyCurveIsClosed(simplifiedPolyCurve);
 
             //check if simplifiedPolyCurve has two curves only, if so make sure to convert smaller arc to a line
             CheckForTwoCurvesOnly(simplifiedPolyCurve);
@@ -176,7 +176,7 @@ namespace BH.Engine.Security
         }
 
         /***************************************************/
-        private static void EnsurePolyCruveIsClosed(PolyCurve simplifiedPolyCurve, double distanceTolerance = Tolerance.Distance)
+        private static void EnsurePolyCurveIsClosed(PolyCurve simplifiedPolyCurve, double distanceTolerance = Tolerance.Distance)
         {
             if (simplifiedPolyCurve.IsClosed())
                 return;

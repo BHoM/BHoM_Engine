@@ -50,7 +50,7 @@ namespace BH.Engine.Security
             if (cameraDevice == null || obstacles == null)
                 return null;
 
-            if (cameraDevice.Angle < 0 && cameraDevice.Angle > 2*Math.PI)
+            if (cameraDevice.Angle <= 0 || cameraDevice.Angle > 2*Math.PI)
             {
                 Base.Compute.RecordError("Camera angle is not valid. It should be between 0 and 360 degrees.");
                 return null;
