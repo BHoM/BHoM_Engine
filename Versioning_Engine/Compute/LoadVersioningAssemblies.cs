@@ -47,10 +47,8 @@ namespace BH.Engine.Versioning
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Provide a string representation of a method as it used for versioning by the PreviousVersion attribute.")]
-        [Input("declaringType", "Type in which the method is declared. You can use just the name of the type or include a (part of the) namespace in front of it.")]
-        [Input("methodName", "Name of the method. It has to be the exact string. If the method is a constructor, you can leave this input blank.")]
-        [Output("keys", "String representation for each method that matches the input filters.")]
+        [Description("Load all upgrader assemblies from the input folder to enable custom upgraders for versioning.")]
+        [Input("folder", "Folder containing the upgrader asssemblies. If left empty, it will be set to 'ProgramData\\BHoM\\Upgrades'")]
         public static void LoadVersioningAssemblies(string folder = "")
         {
             List<Assembly> result = new List<Assembly>();
