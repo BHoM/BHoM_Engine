@@ -48,7 +48,7 @@ namespace BH.Engine.Versioning
         /***************************************************/
 
         [Description("Load all upgrader assemblies from the input folder to enable custom upgraders for versioning.")]
-        [Input("folder", "Folder containing the upgrader asssemblies. If left empty, it will be set to 'ProgramData\\BHoM\\Upgrades'")]
+        [Input("folder", "Folder containing the upgrader asssemblies. If left empty, it will be set to 'ProgramData\\BHoM\\Upgrades'.")]
         public static void LoadVersioningAssemblies(string folder = "")
         {
             List<Assembly> result = new List<Assembly>();

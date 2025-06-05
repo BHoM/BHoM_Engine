@@ -29,6 +29,8 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using System.ComponentModel;
+using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Versioning
 {
@@ -38,6 +40,9 @@ namespace BH.Engine.Versioning
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Get the versioning converter for a specific version of the BHoM that it upgrades content to.")]
+        [Input("version", "Version of the BHoM that content will be upgraded to.")]
+        [Output("converter", "Requested converter.")]
         public static Converter Converter(string version)
         {
             if (Global.Converters.ContainsKey(version))

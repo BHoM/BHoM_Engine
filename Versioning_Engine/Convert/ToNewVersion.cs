@@ -22,6 +22,7 @@
 
 using BH.Engine.Versioning.Objects;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using BH.oM.Versioning;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
@@ -29,6 +30,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
@@ -45,6 +47,9 @@ namespace BH.Engine.Versioning
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Upgrades the input json string so it aligns with the current version of the BHoM.")]
+        [Input("json", "Json string that needs to be upgraded.")]
+        [Output("upgraded", "Upgraded json string that is compatible with the current version of the BHoM.")]
         public static string ToNewVersion(string json)
         {
             BsonDocument document;
@@ -65,6 +70,9 @@ namespace BH.Engine.Versioning
 
         /***************************************************/
 
+        [Description("Upgrades the input Bson document so it aligns with the current version of the BHoM.")]
+        [Input("document", "Bson document that needs to be upgraded.")]
+        [Output("upgraded", "Upgraded Bson document that is compatible with the current version of the BHoM.")]
         public static BsonDocument ToNewVersion(this BsonDocument document, string version = "")
         {
             if (document == null)
