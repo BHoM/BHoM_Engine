@@ -39,10 +39,10 @@ namespace BH.Engine.Base
         [Input("propertyName", "name of the property to set the value of")]
         [Input("value", "new value of the property.")]
         [Output("result", "New custom object with its property changed to the new value")]
-        public static CustomObject SetProperty(this CustomObject obj, string propertyName, object value)
+        public static bool TrySetProperty(this CustomObject obj, string propertyName, object value)
         {
             SetPropertyFallback(obj, propertyName, value, true);
-            return obj;
+            return true;
         }
 
         /***************************************************/

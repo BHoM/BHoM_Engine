@@ -43,7 +43,12 @@ namespace BH.Engine.Serialiser
                 writer.WriteNull();
                 return;
             }
-
+            else if (value is IDynamicObject)
+            {
+                SerialiseDynamicObject(value as IDynamicObject, writer, targetType);
+                return;
+            }
+                
             writer.WriteStartDocument();
 
             writer.WriteName("_t");
