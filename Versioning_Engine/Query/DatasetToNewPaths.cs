@@ -20,14 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Versioning.Objects;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.IO;
-using MongoDB.Bson;
+using System.Linq;
 
 namespace BH.Engine.Versioning
 {
@@ -56,15 +57,11 @@ namespace BH.Engine.Versioning
             m_DatasetToNewPaths = new Dictionary<string, string>();
             m_DatasetToOldPaths = new Dictionary<string, List<string>>();
             m_DatasetToMessageForDeleted = new Dictionary<string, string>();
-            string upgraderFolder = Path.Combine(Base.Query.BHoMFolder(), "..", "Upgrades");
 
-            List<string> upgradeFolders = Directory.GetDirectories(upgraderFolder, "BHoMUpgrader*", SearchOption.TopDirectoryOnly).OrderBy(x => x).ToList();
-
-            foreach (string folder in upgradeFolders)
+            foreach (string filePath in Directory.GetFiles(Base.Query.BHoMFolderUpgrades(), $"*.json", SearchOption.AllDirectories))
             {
                 try
                 {
-                    string filePath = Path.Combine(folder, "Upgrades.json");
 
                     if (File.Exists(filePath))
                     {
