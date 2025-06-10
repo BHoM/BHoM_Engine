@@ -39,6 +39,8 @@ using System.Linq;
 using BH.Engine.Spatial;
 using System.Data;
 using Mono.Reflection;
+using BH.oM.Structure.Reinforcement;
+using BH.oM.Spatial.Layouts;
 
 
 namespace BH.Engine.Structure
@@ -109,7 +111,35 @@ namespace BH.Engine.Structure
             }
 
 
+
             return flipped;
+        }
+
+        /***************************************************/
+
+        [Description("Flips the curve layout, i.e. the start becomes the end and vice versa.")]
+        [Input("layout", "The curvlayout to flip.")]
+        [Output("layout", "The layout with a flipped location curve.")]
+        public static ICurveLayout Flip(this ICurveLayout layout)
+        {
+            if (layout.IsNull())
+                return null;
+
+            if (layout is ExplicitCurveLayout)
+            {
+                ExplicitCurveLayout explicitLayout = layout as ExplicitCurveLayout;
+                return new ExplicitCurveLayout(explicitLayout.Curves.Select(x => x.IMirror(Plane.YZ)));
+
+            }
+            else if (layout is OffsetCurveLayout)
+            {
+                return layout;
+            }
+            else
+            {
+                Engine.Base.Compute.RecordError("ICurveLayout type not recognised.");
+                return null;
+            }
         }
 
         /***************************************************/
@@ -163,7 +193,51 @@ namespace BH.Engine.Structure
 
                 tempProfile.Name = profile.Name;
                 tempProfile.Fragments = profile.Fragments;
-                tempSection = Create.GenericSectionFromProfile(tempProfile, material, section.Name);
+
+                // Move these in to individual methods so we can return the sections with their properties 
+
+                if (section is AluminiumSection)
+                {
+                    tempSection = Create.AluminiumSectionFromProfile(tempProfile, (Aluminium)material, section.Name);
+                }
+                else if (section is ConcreteSection)
+                {
+                    // Flip reinforcement layouts
+                    ConcreteSection concSection = section as ConcreteSection;
+                    List<IBarReinforcement> flippedReinforcements = new List<IBarReinforcement>();
+                    foreach (IBarReinforcement barReinforcement in concSection.RebarIntent.BarReinforcement)
+                    {
+                        if (barReinforcement is TransverseReinforcement)
+                        {
+                            TransverseReinforcement flippedReinforcement = (TransverseReinforcement)barReinforcement.ShallowClone();
+                            flippedReinforcement.CenterlineLayout = flippedReinforcement.CenterlineLayout.Flip();
+                            flippedReinforcements.Add(flippedReinforcement);
+                        }
+                        else if(barReinforcement is LongitudinalReinforcement)
+                        {
+                            // Need to flip start and end here
+                        }
+                        else
+                            flippedReinforcements.Add(barReinforcement);
+                    }
+                    BarRebarIntent flippedRebarIntent = concSection.RebarIntent.ShallowClone();
+                    flippedRebarIntent.BarReinforcement = flippedReinforcements;
+                    tempSection = Create.ConcreteSectionFromProfile(tempProfile, (Concrete)material, section.Name, flippedRebarIntent);
+                }
+                else if (section is TimberSection)
+                {
+                    tempSection = Create.TimberSectionFromProfile(tempProfile, (ITimber)material, section.Name);
+                }
+                else if (section is SteelSection)
+                {
+                    SteelSection steelSection = (SteelSection)section;
+                    tempSection = Create.SteelSectionFromProfile(tempProfile, (Steel)material, section.Name);
+                }
+                else
+                {
+                    tempSection = Create.GenericSectionFromProfile(tempProfile, material, section.Name);
+                }
+
                 return tempSection;
             }
             else
