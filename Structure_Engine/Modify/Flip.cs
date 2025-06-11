@@ -337,10 +337,24 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        private static IProfile FlipProfile(FabricatedISectionProfile oldProfile)
+        {
+            return oldProfile;
+        }
+
+        /***************************************************/
+
         private static IProfile FlipProfile(FreeFormProfile oldProfile)
         {
             List<ICurve> curves = oldProfile.Edges.ToList();
             return Spatial.Create.FreeFormProfile(curves.Select(x => x.IMirror(Geometry.Create.Plane(new Point(), Vector.XAxis))));
+        }
+
+        /***************************************************/
+
+        private static IProfile FlipProfile(GeneralisedFabricatedBoxProfile oldProfile)
+        {
+            return oldProfile;
         }
 
         /***************************************************/
@@ -356,6 +370,13 @@ namespace BH.Engine.Structure
         private static IProfile FlipProfile(KiteProfile oldProfile)
         {
             return Spatial.Create.KiteProfile(oldProfile.Width1 * Math.Tan(oldProfile.Angle1 / 2), Math.PI - oldProfile.Angle1, oldProfile.Thickness);
+        }
+
+        /***************************************************/
+
+        private static IProfile FlipProfile(TSectionProfile oldProfile)
+        {
+            return oldProfile;
         }
 
         /***************************************************/
