@@ -24,7 +24,6 @@ using BH.oM.Structure.Elements;
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
-using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using BH.Engine.Base;
 using BH.oM.Structure.Constraints;
@@ -32,13 +31,11 @@ using BH.oM.Structure.Offsets;
 using System;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Spatial.ShapeProfiles.CellularOpenings;
 using BH.oM.Structure.MaterialFragments;
 using System.Collections.Generic;
 using System.Linq;
 using BH.Engine.Spatial;
 using System.Data;
-using Mono.Reflection;
 using BH.oM.Structure.Reinforcement;
 using BH.oM.Spatial.Layouts;
 
@@ -186,65 +183,156 @@ namespace BH.Engine.Structure
                 if (geometricalSection.SectionProfile.ISymmetry() == Symmetry.DoublySymmetric)
                     return geometricalSection;
 
-                ISectionProperty tempSection = null;
-                IProfile profile = geometricalSection.SectionProfile;
-                IProfile tempProfile = IFlipProfile(profile);
-                IMaterialFragment material = section.Material;
-
-                tempProfile.Name = profile.Name;
-                tempProfile.Fragments = profile.Fragments;
-
-                // Move these in to individual methods so we can return the sections with their properties 
-
-                if (section is AluminiumSection)
-                {
-                    tempSection = Create.AluminiumSectionFromProfile(tempProfile, (Aluminium)material, section.Name);
-                }
-                else if (section is ConcreteSection)
-                {
-                    // Flip reinforcement layouts
-                    ConcreteSection concSection = section as ConcreteSection;
-                    List<IBarReinforcement> flippedReinforcements = new List<IBarReinforcement>();
-                    foreach (IBarReinforcement barReinforcement in concSection.RebarIntent.BarReinforcement)
-                    {
-                        if (barReinforcement is TransverseReinforcement)
-                        {
-                            TransverseReinforcement flippedReinforcement = (TransverseReinforcement)barReinforcement.ShallowClone();
-                            flippedReinforcement.CenterlineLayout = flippedReinforcement.CenterlineLayout.Flip();
-                            flippedReinforcements.Add(flippedReinforcement);
-                        }
-                        else if(barReinforcement is LongitudinalReinforcement)
-                        {
-                            // Need to flip start and end here
-                        }
-                        else
-                            flippedReinforcements.Add(barReinforcement);
-                    }
-                    BarRebarIntent flippedRebarIntent = concSection.RebarIntent.ShallowClone();
-                    flippedRebarIntent.BarReinforcement = flippedReinforcements;
-                    tempSection = Create.ConcreteSectionFromProfile(tempProfile, (Concrete)material, section.Name, flippedRebarIntent);
-                }
-                else if (section is TimberSection)
-                {
-                    tempSection = Create.TimberSectionFromProfile(tempProfile, (ITimber)material, section.Name);
-                }
-                else if (section is SteelSection)
-                {
-                    SteelSection steelSection = (SteelSection)section;
-                    tempSection = Create.SteelSectionFromProfile(tempProfile, (Steel)material, section.Name);
-                }
-                else
-                {
-                    tempSection = Create.GenericSectionFromProfile(tempProfile, material, section.Name);
-                }
-
-                return tempSection;
+                return IFlipSection(section);
             }
             else
             {
                 Base.Compute.RecordWarning("The given shape profile is not an IGeometricalSection.");
                 return section;
             }
+        }
+
+        /***************************************************/
+
+        private static ISectionProperty IFlipSection(ISectionProperty section)
+        {
+            return FlipSection(section as dynamic);
+        }
+
+        /***************************************************/
+
+        private static ISectionProperty FlipSection(AluminiumSection section)
+        {
+            IProfile flippedProfile = IFlipProfile(section.SectionProfile);
+            IMaterialFragment material = section.Material;
+            AluminiumSection flippedSection = Create.AluminiumSectionFromProfile(flippedProfile, (Aluminium)material, section.Name);
+            flippedSection.Fragments = section.Fragments;
+
+            return flippedSection;
+        }
+
+        /***************************************************/
+
+        private static ISectionProperty FlipSection(CableSection section)
+        {
+            return section;
+        }
+
+        /***************************************************/
+        private static ISectionProperty FlipSection(CellularSection section)
+        {
+            return section;
+        }
+
+        /***************************************************/
+        private static ISectionProperty FlipSection(CompositeSection section)
+        {
+            SteelSection flippedSteel = FlipSection(section.SteelSection as dynamic);
+            ConcreteSection flippedConcrete = FlipSection(section.ConcreteSection as dynamic);
+            IMaterialFragment material = section.Material;
+            CompositeSection flippedSection = new CompositeSection
+            (
+            flippedSteel, flippedConcrete, section.SteelEmbedmentDepth, section.StudDiameter, section.StudDiameter, section.StudsPerGroup,
+            section.Area, section.Rgy, section.Rgz, section.J, section.Iy, section.Iz, section.Iw, section.Wely, section.Welz, section.Wply,
+            section.Wplz, section.CentreY, section.CentreZ, section.Vz, section.Vpz, section.Vpy, section.Vy, section.Asy, section.Asz
+            );
+            flippedSection.Fragments = section.Fragments;
+
+            return flippedSection;
+        }
+
+        /***************************************************/
+
+        private static ISectionProperty FlipSection(ConcreteSection section)
+        {
+            IProfile flippedProfile = IFlipProfile(section.SectionProfile);
+            IMaterialFragment material = section.Material;
+
+            // Flip reinforcement layouts
+            ConcreteSection concSection = section as ConcreteSection;
+            List<IBarReinforcement> flippedReinforcements = new List<IBarReinforcement>();
+            foreach (IBarReinforcement barReinforcement in concSection.RebarIntent.BarReinforcement)
+            {
+                if (barReinforcement is TransverseReinforcement)
+                {
+                    TransverseReinforcement flippedReinforcement = (TransverseReinforcement)barReinforcement;
+                    flippedReinforcement.CenterlineLayout = flippedReinforcement.CenterlineLayout.Flip();
+                    flippedReinforcements.Add(flippedReinforcement);
+                }
+                else if (barReinforcement is LongitudinalReinforcement)
+                {
+                    LongitudinalReinforcement flippedReinforcement = (LongitudinalReinforcement)barReinforcement;
+                    flippedReinforcement.StartLocation = 1 - barReinforcement.EndLocation;
+                    flippedReinforcement.EndLocation = 1 - barReinforcement.StartLocation;
+                    flippedReinforcements.Add(flippedReinforcement);
+                }
+                else
+                    flippedReinforcements.Add(barReinforcement);
+            }
+
+            BarRebarIntent flippedRebarIntent = concSection.RebarIntent.ShallowClone();
+            flippedRebarIntent.BarReinforcement = flippedReinforcements;
+
+            ConcreteSection flippedSection = Create.ConcreteSectionFromProfile(flippedProfile, (Concrete)material, section.Name, flippedRebarIntent);
+            flippedSection.Fragments = section.Fragments;
+
+            return flippedSection;
+        }
+
+        /***************************************************/
+
+        private static ISectionProperty FlipSection(ExplicitSection section)
+        {
+            ExplicitSection flippedSection = section.ShallowClone();
+            flippedSection.Vy = section.Vpy;
+            flippedSection.Vpy = section.Vy;
+
+            return flippedSection;
+        }
+
+        /***************************************************/
+
+        private static ISectionProperty FlipSection(GenericSection section)
+        {
+            IProfile flippedProfile = IFlipProfile(section.SectionProfile);
+            GenericSection flippedSection = Create.GenericSectionFromProfile(flippedProfile, section.Material, section.Name);
+            flippedSection.Fragments = section.Fragments;
+
+            return flippedSection;
+        }
+
+        /***************************************************/
+
+        private static ISectionProperty FlipSection(SteelSection section)
+        {
+            IProfile flippedProfile = IFlipProfile(section.SectionProfile);
+            IMaterialFragment material = section.Material;
+            SteelSection flippedSection = Create.SteelSectionFromProfile(flippedProfile, (Steel)material, section.Name);
+            flippedSection.Fragments = section.Fragments;
+            flippedSection.Fabrication = section.Fabrication;
+            flippedSection.PlateRestraint = section.PlateRestraint;
+
+            return flippedSection;
+        }
+
+        /***************************************************/
+
+        private static ISectionProperty FlipSection(TimberSection section)
+        {
+            IProfile flippedProfile = IFlipProfile(section.SectionProfile);
+            IMaterialFragment material = section.Material;
+            TimberSection flippedSection = Create.TimberSectionFromProfile(flippedProfile, (Timber)material, section.Name);
+            flippedSection.Fragments = section.Fragments;
+
+            return flippedSection;
+        }
+
+        /***************************************************/
+
+        private static ISectionProperty FlipSection(ISectionProperty section)
+        {
+            Base.Compute.RecordWarning("The given ISectionProperty does not have a FlipProfile method implemented, the original section is returned.");
+            return section;
         }
 
         /***************************************************/
@@ -257,7 +345,11 @@ namespace BH.Engine.Structure
             }
             else
             {
-                return FlipProfile(profile as dynamic);
+                IProfile flippedProfile = FlipProfile(profile as dynamic);
+                flippedProfile.Name = profile.Name;
+                flippedProfile.Fragments = profile.Fragments;
+
+                return flippedProfile;
             }
         }
 
