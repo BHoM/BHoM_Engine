@@ -178,24 +178,6 @@ namespace BH.Engine.Structure
 
         private static ISectionProperty Flip(this ISectionProperty section)
         {
-            if (section is IGeometricalSection geometricalSection)
-            {
-                if (geometricalSection.SectionProfile.ISymmetry() == Symmetry.DoublySymmetric)
-                    return geometricalSection;
-
-                return IFlipSection(section);
-            }
-            else
-            {
-                Base.Compute.RecordWarning("The given shape profile is not an IGeometricalSection.");
-                return section;
-            }
-        }
-
-        /***************************************************/
-
-        private static ISectionProperty IFlipSection(ISectionProperty section)
-        {
             return FlipSection(section as dynamic);
         }
 
@@ -222,23 +204,6 @@ namespace BH.Engine.Structure
         private static ISectionProperty FlipSection(CellularSection section)
         {
             return section;
-        }
-
-        /***************************************************/
-        private static ISectionProperty FlipSection(CompositeSection section)
-        {
-            SteelSection flippedSteel = FlipSection(section.SteelSection as dynamic);
-            ConcreteSection flippedConcrete = FlipSection(section.ConcreteSection as dynamic);
-            IMaterialFragment material = section.Material;
-            CompositeSection flippedSection = new CompositeSection
-            (
-            flippedSteel, flippedConcrete, section.SteelEmbedmentDepth, section.StudDiameter, section.StudDiameter, section.StudsPerGroup,
-            section.Area, section.Rgy, section.Rgz, section.J, section.Iy, section.Iz, section.Iw, section.Wely, section.Welz, section.Wply,
-            section.Wplz, section.CentreY, section.CentreZ, section.Vz, section.Vpz, section.Vpy, section.Vy, section.Asy, section.Asz
-            );
-            flippedSection.Fragments = section.Fragments;
-
-            return flippedSection;
         }
 
         /***************************************************/
@@ -321,7 +286,7 @@ namespace BH.Engine.Structure
         {
             IProfile flippedProfile = IFlipProfile(section.SectionProfile);
             IMaterialFragment material = section.Material;
-            TimberSection flippedSection = Create.TimberSectionFromProfile(flippedProfile, (Timber)material, section.Name);
+            TimberSection flippedSection = Create.TimberSectionFromProfile(flippedProfile, (ITimber)material, section.Name);
             flippedSection.Fragments = section.Fragments;
 
             return flippedSection;
@@ -331,7 +296,8 @@ namespace BH.Engine.Structure
 
         private static ISectionProperty FlipSection(ISectionProperty section)
         {
-            Base.Compute.RecordWarning("The given ISectionProperty does not have a FlipProfile method implemented, the original section is returned.");
+            Base.Compute.RecordWarning($"The given ISectionProperty {section.Name} of type {section.GetType()}" +
+                $"does not have a FlipProfile method implemented, the original section is returned.");
             return section;
         }
 
@@ -426,7 +392,8 @@ namespace BH.Engine.Structure
 
         private static IProfile FlipProfile(IProfile oldProfile)
         {
-            Base.Compute.RecordWarning("The given shape profile does not have a FlipProfile method implemented, the original profile is returned.");
+            Base.Compute.RecordWarning($"The given shape profile {oldProfile.Name} of type {oldProfile.GetType()} " +
+                $"does not have a FlipProfile method implemented, the original profile is returned.");
             return oldProfile;
         }
 
