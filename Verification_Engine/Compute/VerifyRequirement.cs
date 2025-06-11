@@ -27,7 +27,6 @@ using BH.oM.Verification.Results;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace BH.Engine.Verification
 {
@@ -45,24 +44,21 @@ namespace BH.Engine.Verification
         {
             if (requirement == null)
             {
-                Event error = new Event { Message = "Could not verify requirement against a null requirement.", Type = EventType.Error };
-                BH.Engine.Base.Compute.RecordEvent(error);
-                return new RequirementResult(null, obj?.IIdentifier(), null, new List<Event> { error });
+                BH.Engine.Base.Compute.RecordError("Could not verify a null requirement.");
+                return null;
             }
 
             if (obj == null)
             {
-                Event error = new Event { Message = "Could not verify requirement against a null object.", Type = EventType.Error };
-                BH.Engine.Base.Compute.RecordEvent(error);
-                return new RequirementResult(requirement.IIdentifier(), null, null, new List<Event> { error });
+                BH.Engine.Base.Compute.RecordError("Could not verify requirement against a null object.");
+                return null;
             }
 
             object result;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(obj, nameof(VerifyRequirement), new object[] { requirement }, out result))
             {
-                Event error = new Event { Message = $"Verification failed because requirement of type {requirement.GetType().Name} is currently not supported.", Type = EventType.Error };
-                BH.Engine.Base.Compute.RecordEvent(error);
-                return new RequirementResult(requirement.IIdentifier(), obj.IIdentifier(), null, new List<Event> { error });
+                BH.Engine.Base.Compute.RecordError($"Verification failed because requirement of type {requirement.GetType().Name} is currently not supported.");
+                return null;
             }
 
             return result as RequirementResult;
@@ -79,11 +75,10 @@ namespace BH.Engine.Verification
         [Output("result", "Result object containing references to the input object and requirement as well as condition verification result.")]
         public static RequirementResult VerifyRequirement(this object obj, Requirement requirement)
         {
-            if (requirement == null || requirement.Condition.INestedConditions().Any(x => x == null))
+            if (requirement == null)
             {
-                Event error = new Event { Message = $"Requirement {requirement.Name} is null or its condition contains nulls.", Type = EventType.Error };
-                BH.Engine.Base.Compute.RecordEvent(error);
-                return new RequirementResult(requirement?.IIdentifier(), obj?.IIdentifier(), null, new List<Event> { error });
+                BH.Engine.Base.Compute.RecordError("Could not verify a null requirement.");
+                return null;
             }
 
             IComparable requirementId = null;
