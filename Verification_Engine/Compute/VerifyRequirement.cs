@@ -20,10 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Base.Debugging;
 using BH.oM.Verification.Requirements;
 using BH.oM.Verification.Results;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
@@ -41,17 +43,26 @@ namespace BH.Engine.Verification
         [Output("result", "Result object containing references to the input object and requirement as well as condition verification result.")]
         public static RequirementResult IVerifyRequirement(this object obj, IRequirement requirement)
         {
+            if (requirement == null)
+            {
+                Event error = new Event { Message = "Could not verify requirement against a null requirement.", Type = EventType.Error };
+                BH.Engine.Base.Compute.RecordEvent(error);
+                return new RequirementResult(null, obj?.IIdentifier(), null, new List<Event> { error });
+            }
+
             if (obj == null)
             {
-                BH.Engine.Base.Compute.RecordError("Could not verify requirement against a null object.");
-                return null;
+                Event error = new Event { Message = "Could not verify requirement against a null object.", Type = EventType.Error };
+                BH.Engine.Base.Compute.RecordEvent(error);
+                return new RequirementResult(requirement.IIdentifier(), null, null, new List<Event> { error });
             }
 
             object result;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(obj, nameof(VerifyRequirement), new object[] { requirement }, out result))
             {
-                BH.Engine.Base.Compute.RecordError($"Verification failed because requirement of type {requirement.GetType().Name} is currently not supported.");
-                return null;
+                Event error = new Event { Message = $"Verification failed because requirement of type {requirement.GetType().Name} is currently not supported.", Type = EventType.Error };
+                BH.Engine.Base.Compute.RecordEvent(error);
+                return new RequirementResult(requirement.IIdentifier(), obj.IIdentifier(), null, new List<Event> { error });
             }
 
             return result as RequirementResult;
@@ -70,15 +81,35 @@ namespace BH.Engine.Verification
         {
             if (requirement == null || requirement.Condition.INestedConditions().Any(x => x == null))
             {
-                BH.Engine.Base.Compute.RecordError($"Requirement {requirement.Name} is null or its condition contains nulls.");
-                return null;
+                Event error = new Event { Message = $"Requirement {requirement.Name} is null or its condition contains nulls.", Type = EventType.Error };
+                BH.Engine.Base.Compute.RecordEvent(error);
+                return new RequirementResult(requirement?.IIdentifier(), obj?.IIdentifier(), null, new List<Event> { error });
             }
 
-            IConditionResult conditionResult = obj.IVerifyCondition(requirement.Condition);
-            return new RequirementResult(requirement.BHoM_Guid, obj.IIdentifier(), conditionResult);
+            IComparable requirementId = null;
+            IComparable objId = null;
+            IConditionResult conditionResult = null;
+            List<Event> events = new List<Event>();
+            DateTime start = DateTime.UtcNow;
+            try
+            {
+                requirementId = requirement.IIdentifier();
+                objId = obj?.IIdentifier();
+                conditionResult = obj.IVerifyCondition(requirement.Condition);
+            }
+            catch (Exception ex)
+            {
+                BH.Engine.Base.Compute.RecordError($"Verification failed due to an exception: {ex.Message}");
+            }
+            finally
+            {
+                events = BH.Engine.Base.Query.EventsSince(start);
+                BH.Engine.Base.Compute.RemoveEvents(events);
+            }
+
+            return new RequirementResult(requirementId, objId, conditionResult, events);
         }
 
         /***************************************************/
     }
 }
-
