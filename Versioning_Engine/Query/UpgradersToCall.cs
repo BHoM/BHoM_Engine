@@ -50,9 +50,44 @@ namespace BH.Engine.Versioning
             if (m_UpgradersToCall.ContainsKey(version))
                 return m_UpgradersToCall[version];
 
-            List<string> upgraders = UpgraderVersions();
-            int index = upgraders.IndexOf(version);
-            return upgraders.Skip(Math.Min(index + 1, upgraders.Count - 1)).ToList();
+            GetVersionNumbers(version, out int sourceMajor, out int sourceMinor);
+            GetVersionNumbers(Base.Query.BHoMVersion(), out int targetMajor, out int targetMinor);
+
+            List<string> result = new List<string>();
+            for (int major = sourceMajor; major <= targetMajor; major++)
+            {
+                int startMinor = (major == sourceMajor) ? sourceMinor : 0;
+                int endMinor = (major == targetMajor) ? targetMinor : 3;
+
+                for (int minor = startMinor; minor <= endMinor; minor++)
+                    result.Add(major + "." + minor);
+            }
+
+            m_UpgradersToCall[version] = result;
+
+            return result;
+        }
+
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static bool GetVersionNumbers(string version, out int major, out int minor)
+        {
+            string[] versionSplit = version.Split(new char[] { '.' });
+            if (versionSplit.Length != 2)
+            {
+                BH.Engine.Base.Compute.RecordError($"Version provided doesn't fit the format <Major>.<Minor>");
+                major = 0;
+                minor = 0;
+                return false;
+            }
+
+            bool success = int.TryParse(versionSplit[0], out major);
+            success &= int.TryParse(versionSplit[1], out minor);
+
+            return success;
         }
 
 

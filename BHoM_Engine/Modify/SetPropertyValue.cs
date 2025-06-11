@@ -204,10 +204,10 @@ namespace BH.Engine.Base
             {
                 if (obj is IDynamicPropertyProvider)
                 {
-                    object result = null;
-                    bool success = Compute.TryRunExtensionMethod(obj, "SetProperty", new object[] { propName, value }, out result);
+                    object result;
+                    bool success = Compute.TryRunExtensionMethod(obj, "TrySetProperty", new object[] { propName, value }, out result);
 
-                    if (success)
+                    if (success && (bool)result)
                         return true;
                 }
                 else

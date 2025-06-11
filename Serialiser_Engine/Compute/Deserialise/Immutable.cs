@@ -85,7 +85,7 @@ namespace BH.Engine.Serialiser
                         IImmutable result = ctor.Invoke(arguments.ToArray()) as IImmutable;
 
                         if (result != null)
-                            return SetProperties(doc, targetType, result, version, isUpgraded) as IImmutable;
+                            return SetProperties(doc, targetType, result, version, isUpgraded, matches.Select(x => x.Properties.First().Name)) as IImmutable;
                     }
                 }
 

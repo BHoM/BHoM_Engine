@@ -28,6 +28,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace BH.Engine.Verification
@@ -233,7 +234,7 @@ namespace BH.Engine.Verification
             }
 
             // Try get value from property
-            System.Reflection.PropertyInfo prop = obj.GetType().GetProperty(sourceName);
+            PropertyInfo prop = GetProperty(obj, obj.GetType(), sourceName);
             if (prop != null)
                 return ValueFound(prop.GetValue(obj));
 
@@ -243,6 +244,19 @@ namespace BH.Engine.Verification
 
             // Finally try fallback methods (currently implemented for IBHoMObject)
             return GetValue(obj as dynamic, sourceName);
+        }
+
+        /***************************************************/
+
+        private static PropertyInfo GetProperty(object obj, Type type, string sourceName)
+        {
+            var properties = type.GetProperties().Where(p => p.Name == sourceName);
+            PropertyInfo prop = properties.FirstOrDefault(p => p.GetIndexParameters().Length == 0);
+
+            if (prop?.CanRead == false)
+                prop = GetProperty(obj, prop.DeclaringType.BaseType, sourceName);
+
+            return prop;
         }
 
         /***************************************************/

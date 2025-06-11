@@ -21,49 +21,22 @@
  */
 
 using BH.oM.Base;
-using MongoDB.Bson.IO;
+using BH.oM.Base.Debugging;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Engine.Serialiser
+namespace BH.Engine.Versioning.Objects
 {
-    public static partial class Compute
-    {
+    public delegate Dictionary<string, object> CustomVersioningMethod(Dictionary<string, object> item);
 
-        /*******************************************/
-        /**** Private Methods                   ****/
-        /*******************************************/
-        
-        private static void Serialise(this IObject value, BsonDocumentWriter writer, Type targetType)
-        {
-            if (value == null)
-            {
-                writer.WriteNull();
-                return;
-            }
-            else if (value is IDynamicObject)
-            {
-                SerialiseDynamicObject(value as IDynamicObject, writer, targetType);
-                return;
-            }
-                
-            writer.WriteStartDocument();
-
-            writer.WriteName("_t");
-            writer.WriteString(value.GetType().FullName);
-
-            foreach (PropertyInfo prop in value.GetType().GetProperties())
-            {
-                writer.WriteName(prop.Name);
-                ISerialise(prop.GetValue(value), writer, prop.PropertyType);
-            }
-            writer.WriteEndDocument();
-        }
-
-        /*******************************************/
-    }
 }
+
+
+
+
 
 
