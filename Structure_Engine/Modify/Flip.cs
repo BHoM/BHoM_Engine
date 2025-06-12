@@ -315,7 +315,7 @@ namespace BH.Engine.Structure
             }
             if (layout is LinearLayout linearLayout)
             {
-                return new LinearLayout(linearLayout.NumberOfPoints, linearLayout.Direction.Mirror(Plane.XZ), linearLayout.Offset, linearLayout.ReferencePoint.FLip());
+                return new LinearLayout(linearLayout.NumberOfPoints, linearLayout.Direction.Mirror(Plane.XZ), linearLayout.Offset, linearLayout.ReferencePoint.Flip());
             }
             if (layout is MultiLinearLayout multiLayout)
             {
@@ -326,7 +326,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static ReferencePoint FLip(this ReferencePoint referencePoint)
+        private static ReferencePoint Flip(this ReferencePoint referencePoint)
         {
             switch (referencePoint)
             {
