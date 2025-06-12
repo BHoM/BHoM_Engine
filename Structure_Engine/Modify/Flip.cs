@@ -134,8 +134,8 @@ namespace BH.Engine.Structure
             }
             else
             {
-                Engine.Base.Compute.RecordError("ICurveLayout type not recognised.");
-                return null;
+                Engine.Base.Compute.RecordError("ICurveLayout type not recognised. Unflipped curve layout returned.");
+                return layout;
             }
         }
 
@@ -218,21 +218,21 @@ namespace BH.Engine.Structure
             List<IBarReinforcement> flippedReinforcements = new List<IBarReinforcement>();
             foreach (IBarReinforcement barReinforcement in concSection.RebarIntent.BarReinforcement)
             {
-                if (barReinforcement is TransverseReinforcement)
+                IBarReinforcement flipped = barReinforcement.ShallowClone();
+                flipped.StartLocation = 1 - barReinforcement.EndLocation;
+                flipped.EndLocation = 1 - barReinforcement.StartLocation;
+                if (flipped is TransverseReinforcement transverseReinforcement)
                 {
-                    TransverseReinforcement flippedReinforcement = (TransverseReinforcement)barReinforcement;
-                    flippedReinforcement.CenterlineLayout = flippedReinforcement.CenterlineLayout.Flip();
-                    flippedReinforcements.Add(flippedReinforcement);
+                    transverseReinforcement.CenterlineLayout = transverseReinforcement.CenterlineLayout.Flip();
+                    flippedReinforcements.Add(transverseReinforcement);
                 }
-                else if (barReinforcement is LongitudinalReinforcement)
+                else if (flipped is LongitudinalReinforcement longitudinalReinforcement)
                 {
-                    LongitudinalReinforcement flippedReinforcement = (LongitudinalReinforcement)barReinforcement;
-                    flippedReinforcement.StartLocation = 1 - barReinforcement.EndLocation;
-                    flippedReinforcement.EndLocation = 1 - barReinforcement.StartLocation;
-                    flippedReinforcements.Add(flippedReinforcement);
+                    longitudinalReinforcement.RebarLayout = longitudinalReinforcement.RebarLayout.Flip();
+                    flippedReinforcements.Add(longitudinalReinforcement);
                 }
                 else
-                    flippedReinforcements.Add(barReinforcement);
+                    flippedReinforcements.Add(flipped);
             }
 
             BarRebarIntent flippedRebarIntent = concSection.RebarIntent.ShallowClone();
@@ -299,6 +299,56 @@ namespace BH.Engine.Structure
             Base.Compute.RecordWarning($"The given ISectionProperty {section.Name} of type {section.GetType()}" +
                 $"does not have a FlipProfile method implemented, the original section is returned.");
             return section;
+        }
+
+
+        [Description("Flips the ILayout2D for it to be used with a flipped bar. This means flipping the layout around the XZ plane.")]
+        [Input("layout", "The ILayout2D to flip.")]
+        [Output("layout", "The layout with a flipped.")]
+        public static ILayout2D Flip(this ILayout2D layout)
+        {
+            if (layout.IsNull())
+                return null;
+            if (layout is ExplicitLayout explicitLayout)
+            {
+                return new ExplicitLayout(explicitLayout.Points.Select(x => x.Mirror(Plane.YZ)));
+            }
+            if (layout is LinearLayout linearLayout)
+            {
+                return new LinearLayout(linearLayout.NumberOfPoints, linearLayout.Direction.Mirror(Plane.XZ), linearLayout.Offset, linearLayout.ReferencePoint.FLip());
+            }
+            if (layout is MultiLinearLayout multiLayout)
+            {
+                return new MultiLinearLayout(multiLayout.NumberOfPoints, multiLayout.ParallelMinimumSpacing, multiLayout.PerpendicularMinimumSpacing, multiLayout.Direction.Mirror(Plane.XZ), multiLayout.Offset, multiLayout.ReferencePoint.Flip());
+            }
+            return layout; //TODO: Implement flipping for other layouts as needed. Might require flipping of direction vectors as well as offset points, but for the most common usecase of horizontal rebars, this is not a factor.
+        }
+
+        /***************************************************/
+
+        private static ReferencePoint FLip(this ReferencePoint referencePoint)
+        {
+            switch (referencePoint)
+            {
+                case ReferencePoint.BottomLeft:
+                    return ReferencePoint.BottomRight;
+                case ReferencePoint.BottomRight:
+                    return ReferencePoint.BottomLeft;
+                case ReferencePoint.MiddleLeft:
+                    return ReferencePoint.MiddleRight;
+                case ReferencePoint.MiddleRight:
+                    return ReferencePoint.MiddleLeft;
+                case ReferencePoint.TopLeft:
+                    return ReferencePoint.TopRight;
+                case ReferencePoint.TopRight:
+                    return ReferencePoint.TopLeft;
+                case ReferencePoint.TopCenter:
+                case ReferencePoint.MiddleCenter:
+                case ReferencePoint.Centroid:
+                case ReferencePoint.BottomCenter:
+                default:
+                    return referencePoint;
+            }
         }
 
         /***************************************************/
