@@ -60,7 +60,7 @@ namespace BH.Engine.Versioning
             }
             else if (newDoc.Contains("k") && newDoc.Contains("v"))
             {
-                result = UpgradeObject(newDoc, converter);
+                result = UpgradeObjectProperties(newDoc, converter);    //Calling UpgradeObjectProperties directly here, as that is the only part of UpgradeObejct method that is relevant. All other parts are related to the _t field
             }
 
             return result;
