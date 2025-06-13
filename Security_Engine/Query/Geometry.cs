@@ -54,10 +54,12 @@ namespace BH.Engine.Security
 
             Vector perpendicular = direction.Rotate((Math.PI / 180) * 90, Vector.ZAxis);
 
+            double coneRadius = cameraDevice.TargetPosition.Distance(cameraDevice.EyePosition);
+
             List<Point> vertices = new List<Point>();
             Point point1 = cameraDevice.EyePosition.DeepClone();
-            Point point2 = cameraDevice.TargetPosition.DeepClone().Translate(perpendicular * (cameraDevice.HorizontalFieldOfView / 2));
-            Point point3 = cameraDevice.TargetPosition.DeepClone().Translate(perpendicular * ((cameraDevice.HorizontalFieldOfView / 2)) * -1);
+            Point point2 = cameraDevice.TargetPosition.DeepClone().Translate(perpendicular * (coneRadius * Math.Sin(cameraDevice.Angle/2)));
+            Point point3 = cameraDevice.TargetPosition.DeepClone().Translate(perpendicular * ((coneRadius * Math.Sin(cameraDevice.Angle / 2))) * -1);
             vertices.Add(point1);
             vertices.Add(point2);
             vertices.Add(point3);
