@@ -68,9 +68,9 @@ namespace BH.Engine.Spatial
             if (symmetricX && symmetricY)
                 return SP.Symmetry.DoublySymmetric;
             else if (symmetricX && !symmetricY)
-                return SP.Symmetry.SingleSymmetricMajor;
-            else if (!symmetricX && symmetricY)
                 return SP.Symmetry.SinglySymmetricMinor;
+            else if (!symmetricX && symmetricY)
+                return SP.Symmetry.SingleSymmetricMajor;
             else
                 return SP.Symmetry.Asymmetric;
         }
