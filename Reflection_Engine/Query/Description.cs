@@ -109,7 +109,28 @@ namespace BH.Engine.Reflection
                             return prop.Description();
                     }
                 }
+                else
+                {
+                    InputFromDescription inputFromDesc = parameter.Member.GetCustomAttributes<InputFromDescription>().FirstOrDefault(x => x.InputName == parameter.Name);
+                    if (inputFromDesc != null)
+                    {
+                        desc = inputFromDesc.Member?.IDescription() ?? "";
+
+                        if (addTypeDescription)
+                        {
+                            if (inputFromDesc.Classification != null)
+                                classification = inputFromDesc.Classification;
+
+                            desc += parameter.ParameterType.Description(classification);
+                        }
+
+                        return desc;
+                    }
+                }
             }
+
+
+
             if (addTypeDescription && parameter.ParameterType != null)
             {
                 desc += parameter.ParameterType.Description(classification);

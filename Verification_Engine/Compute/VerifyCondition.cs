@@ -20,8 +20,6 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.Engine.Base.Objects;
 using BH.Engine.Verification.Objects;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
@@ -68,7 +66,9 @@ namespace BH.Engine.Verification
             object result;
             if (!BH.Engine.Base.Compute.TryRunExtensionMethod(obj, nameof(VerifyCondition), new object[] { condition }, out result))
             {
-                BH.Engine.Base.Compute.RecordError($"Verification failed because condition of type {condition.GetType().Name} is currently not supported.");
+                if (BH.Engine.Base.Query.CurrentEvents().LastOrDefault()?.Message?.StartsWith($"Failed to run {nameof(VerifyCondition)} extension method") != true)
+                    BH.Engine.Base.Compute.RecordError($"Verification failed because condition of type {condition.GetType().Name} is currently not supported.");
+
                 return null;
             }
 
@@ -100,7 +100,7 @@ namespace BH.Engine.Verification
 
             IConditionResult result = obj.IVerifyCondition(condition.Condition);
             bool? inverted;
-            if (result.Passed == null)
+            if (result?.Passed == null)
                 inverted = null;
             else
                 inverted = !(result.Passed.Value);
@@ -137,7 +137,7 @@ namespace BH.Engine.Verification
                 if (f == null)
                     continue;
 
-                var r = obj.IVerifyCondition(f);
+                IConditionResult r = obj.IVerifyCondition(f);
                 results.Add(r);
             }
 
@@ -335,7 +335,7 @@ namespace BH.Engine.Verification
                 return new ValueConditionResult(null, null);
 
             object value = valueFromSource.Item2;
-            return new ValueConditionResult(value.IHasValue(), value); 
+            return new ValueConditionResult(value.IHasValue(), value);
         }
 
         /***************************************************/
@@ -363,7 +363,7 @@ namespace BH.Engine.Verification
             bool found = valueFromSource?.Item1 == true;
             if (!found)
                 return new ValueConditionResult(null, null);
-            
+
             object value = valueFromSource?.Item2;
 
             // If value found, check the actual condition
@@ -398,7 +398,7 @@ namespace BH.Engine.Verification
             }
 
             Dictionary<string, object> components = condition.Inputs.ToDictionary(x => x.Key, x => (object)x.Value);
-            foreach (var formula in condition.CalculationFormulae)
+            foreach (KeyValuePair<string, Formula> formula in condition.CalculationFormulae)
             {
                 components.Add(formula.Key, (object)formula.Value);
             }
@@ -428,9 +428,9 @@ namespace BH.Engine.Verification
 
                 // Collect variables used in the equation
                 string formulaToSolve = formula.Equation;
-                var usedVariables = new List<(string, object)>();
+                List<(string, object)> usedVariables = new List<(string, object)>();
                 int k = 1;
-                foreach (var key in variables.Keys.OrderByDescending(x => x))
+                foreach (string key in variables.Keys.OrderByDescending(x => x))
                 {
                     if (formulaToSolve.Contains(key))
                     {
@@ -454,7 +454,7 @@ namespace BH.Engine.Verification
                             value = f.Solve(obj, variables);
                             if (value == null || (value is double && double.IsNaN((double)value)))
                                 return null;
-                            
+
                             variables[key] = value;
                         }
 
@@ -474,7 +474,7 @@ namespace BH.Engine.Verification
 
                 // Set the properties of globals object based on variables
                 k = 1;
-                foreach (var kvp in usedVariables)
+                foreach ((string, object) kvp in usedVariables)
                 {
                     string propName = $"Variable{k}";
                     constructedType.GetProperty(propName).SetValue(globals, kvp.Item2);
@@ -486,7 +486,7 @@ namespace BH.Engine.Verification
                 Dictionary<string, string> stringReplacements = new Dictionary<string, string>();
                 string stringRegex = @"'([^']*)'";
                 int stringCount = 0;
-                foreach (var match in Regex.Matches(formulaToSolve, stringRegex).Cast<Match>().Select(x => x.Value).Distinct().OrderByDescending(x => x.Length))
+                foreach (string match in Regex.Matches(formulaToSolve, stringRegex).Cast<Match>().Select(x => x.Value).Distinct().OrderByDescending(x => x.Length))
                 {
                     stringCount++;
                     string replacement = $"\"%%TempString{stringCount}\"";
@@ -554,7 +554,7 @@ namespace BH.Engine.Verification
                 }
 
                 // Bring back the original strings
-                foreach (var key in stringReplacements.Keys.OrderByDescending(x => x.Length))
+                foreach (string key in stringReplacements.Keys.OrderByDescending(x => x.Length))
                 {
                     formulaToSolve = formulaToSolve.Replace(key, stringReplacements[key]);
                 }
@@ -683,7 +683,7 @@ namespace BH.Engine.Verification
             }
 
             string result = equation;
-            foreach (var kvp in replacements.OrderByDescending(x => x.Key.Index))
+            foreach (KeyValuePair<Match, string> kvp in replacements.OrderByDescending(x => x.Key.Index))
             {
                 result = result.Remove(kvp.Key.Index, kvp.Key.Length).Insert(kvp.Key.Index, kvp.Value);
             }

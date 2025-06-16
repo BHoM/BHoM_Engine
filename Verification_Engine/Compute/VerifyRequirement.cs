@@ -20,12 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
 using BH.oM.Base.Attributes;
+using BH.oM.Base.Debugging;
 using BH.oM.Verification.Requirements;
 using BH.oM.Verification.Results;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace BH.Engine.Verification
 {
@@ -41,6 +42,12 @@ namespace BH.Engine.Verification
         [Output("result", "Result object containing references to the input object and requirement as well as condition verification result.")]
         public static RequirementResult IVerifyRequirement(this object obj, IRequirement requirement)
         {
+            if (requirement == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Could not verify a null requirement.");
+                return null;
+            }
+
             if (obj == null)
             {
                 BH.Engine.Base.Compute.RecordError("Could not verify requirement against a null object.");
@@ -68,17 +75,36 @@ namespace BH.Engine.Verification
         [Output("result", "Result object containing references to the input object and requirement as well as condition verification result.")]
         public static RequirementResult VerifyRequirement(this object obj, Requirement requirement)
         {
-            if (requirement == null || requirement.Condition.INestedConditions().Any(x => x == null))
+            if (requirement == null)
             {
-                BH.Engine.Base.Compute.RecordError($"Requirement {requirement.Name} is null or its condition contains nulls.");
+                BH.Engine.Base.Compute.RecordError("Could not verify a null requirement.");
                 return null;
             }
 
-            IConditionResult conditionResult = obj.IVerifyCondition(requirement.Condition);
-            return new RequirementResult(requirement.BHoM_Guid, obj.IIdentifier(), conditionResult);
+            IComparable requirementId = null;
+            IComparable objId = null;
+            IConditionResult conditionResult = null;
+            List<Event> events = new List<Event>();
+            DateTime start = DateTime.UtcNow;
+            try
+            {
+                requirementId = requirement.IIdentifier();
+                objId = obj?.IIdentifier();
+                conditionResult = obj.IVerifyCondition(requirement.Condition);
+            }
+            catch (Exception ex)
+            {
+                BH.Engine.Base.Compute.RecordError($"Verification failed due to an exception: {ex.Message}");
+            }
+            finally
+            {
+                events = BH.Engine.Base.Query.EventsSince(start);
+                BH.Engine.Base.Compute.RemoveEvents(events);
+            }
+
+            return new RequirementResult(requirementId, objId, conditionResult, events);
         }
 
         /***************************************************/
     }
 }
-
