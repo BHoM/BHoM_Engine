@@ -60,7 +60,7 @@ namespace BH.Engine.Versioning
             }
             else if (newDoc.Contains("k") && newDoc.Contains("v"))
             {
-                result = UpgradeObject(newDoc, converter);
+                result = UpgradeObjectProperties(newDoc, converter);    //Calling UpgradeObjectProperties directly here, as that is the only part of UpgradeObject method that is relevant. All other parts require _t to be set
             }
 
             return result;
@@ -204,13 +204,12 @@ namespace BH.Engine.Versioning
 
         private static BsonDocument UpgradeObject(BsonDocument document, Converter converter)
         {
+
+            if (!document.Contains("_t"))
+                return UpgradeObjectProperties(document, converter);    //Only method relevant to be called for the case of no type available
+
             //Get the old type
-            string oldType = "";
-            try
-            {
-                oldType = CleanTypeString(document["_t"].AsString);
-            }
-            catch { }
+            string oldType = CleanTypeString(document["_t"].AsString);
 
             // Check if the object type is classified as deleted or without update
             CheckForNoUpgrade(converter, oldType, "object type");
