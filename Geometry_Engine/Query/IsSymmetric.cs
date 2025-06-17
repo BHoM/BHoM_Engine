@@ -21,51 +21,48 @@
  */
 
 using BH.oM.Geometry;
+using BH.oM.Base.Attributes;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.ComponentModel;
+using BH.oM.Quantities.Attributes;
+using BH.Engine.Base;
+using BH.oM.Data.Collections;
 
 namespace BH.Engine.Geometry
 {
-    public static partial class Modify
+    public static partial class Query
     {
-        /***************************************************/
-        /**** Public Methods - Vectors                  ****/
-        /***************************************************/
-
-        public static Vector Reverse(this Vector vector)
-        {
-            return new Vector { X = -vector.X, Y = -vector.Y, Z = -vector.Z };
-        }
-
-
         /***************************************************/
         /**** Public Methods - Curves                   ****/
         /***************************************************/
 
-        public static Line Reverse(this Line line)
+        [Description("Checks whether the list of points are symmetric about the given plane.")]
+        [Input("pts", "The list of points to check the symmetry against.")]
+        [Input("p", "The plane to check symmetry about.")]
+        [Input("tolerance", "Distance tolerance to be used in the method.", typeof(Length))]
+        [Output("b", "True if the points are symmetric within tolerance, false if not.")]
+        public static bool IsSymmetric(this List<Point> pts, Plane p, double tolerance = Tolerance.Distance)
         {
-            return new Line { Start = line.End, End = line.Start, Infinite = line.Infinite };
-        }
+            if (pts.IsNullOrEmpty() || p.IsNull())
+                return false;
 
-        /***************************************************/
-        /**** Public Methods - Arcs                     ****/
-        /***************************************************/
+            foreach(Point pt in pts)
+            {
+                Point mirror = pt.Mirror(p);
+                Point closest = ClosestPoint(pts, mirror);
+                if (Distance(mirror, closest) > tolerance)
+                    return false;
+            }
 
-        public static Arc Reverse(this Arc arc)
-        {
-            // Compute the midpoint parameter (halfway between start and end angles)
-            double midAngle = arc.StartAngle + (arc.EndAngle - arc.StartAngle) / 2.0;
-            // Calculate the midpoint in the arc's coordinate system
-            Point midPoint = arc.CoordinateSystem.Origin + arc.CoordinateSystem.X * (arc.Radius * Math.Cos(midAngle)) + arc.CoordinateSystem.Y * (arc.Radius * Math.Sin(midAngle));
+            return true;
 
-            // Create a new arc with swapped start and end, and the computed midpoint
-            return Geometry.Create.Arc(arc.EndPoint(), midPoint, arc.StartPoint());
         }
 
         /***************************************************/
     }
 }
-
 
 
 

@@ -70,7 +70,7 @@ namespace BH.Engine.Verification
         public static SpecificationResult VerifySpecification(this IEnumerable<object> objects, Specification specification)
         {
             // Extract the objects to verify
-            List<object> extracted = objects.IExtract(specification.Extraction);
+            List<object> extracted = objects.IExtract(specification.Extraction) ?? new List<object>();
 
             // Then apply the check to the extracted objects
             List<RequirementResult> requirementResults = extracted.SelectMany(x => specification.Requirements.Select(y => IVerifyRequirement(x, y))).ToList();
