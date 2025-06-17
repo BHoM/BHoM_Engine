@@ -136,7 +136,8 @@ namespace BH.Engine.Versioning
                     NewDocument = newDocument,
                     OldVersion = oldVersion,
                     NewVersion = newVersion,
-                    Message = message
+                    Message = message,
+                    StackTrace = "No stack trace for versioning"
                 });
             }
             return document;
