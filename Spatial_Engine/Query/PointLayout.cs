@@ -351,7 +351,7 @@ namespace BH.Engine.Spatial
                 case oM.Spatial.Layouts.ReferencePoint.BottomRight:
                     return new Point { X = bounds.Max.X, Y = bounds.Min.Y };
                 case oM.Spatial.Layouts.ReferencePoint.MiddleLeft:
-                    return new Point { X = bounds.Min.X, Y = bounds.Min.Y };
+                    return new Point { X = bounds.Min.X, Y = (bounds.Min.Y + bounds.Max.Y) / 2 };
                 case oM.Spatial.Layouts.ReferencePoint.MiddleCenter:
                     return bounds.Centre();
                 case oM.Spatial.Layouts.ReferencePoint.MiddleRight:
