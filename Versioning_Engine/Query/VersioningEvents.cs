@@ -43,7 +43,7 @@ namespace BH.Engine.Versioning
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Provide a list of all the versioning upgrades that occured this session.")]
+        [Description("Provide a list of all the versioning upgrades that occurred this session.")]
         [Output("events", "List of all exiting events describing a versioning upgrade.")]
         public static List<VersioningEvent> VersioningEvents()
         {
