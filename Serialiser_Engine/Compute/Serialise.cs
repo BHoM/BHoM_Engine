@@ -35,7 +35,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
-        [Description("Used to support ToJson, not recomended to be used in isolation.")]
+        [Description("Used to support ToJson, not recommended to be used in isolation.")]
         public static void ISerialise(this object value, BsonDocumentWriter writer)
         {
             if (value == null)

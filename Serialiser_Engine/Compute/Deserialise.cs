@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /**** Public Methods                    ****/
         /*******************************************/
 
-        [Description("Used to support FromJson, not recomended to be used in isolation.")]
+        [Description("Used to support FromJson, not recommended to be used in isolation.")]
         public static object IDeserialise(this BsonValue bson)
         {
             return IDeserialise(bson, "", false);
