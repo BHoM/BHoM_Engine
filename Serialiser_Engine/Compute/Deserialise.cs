@@ -19,7 +19,6 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
 using BH.oM.Base;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
@@ -37,7 +36,6 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Public Methods                    ****/
         /*******************************************/
-
         [Description("Used to support FromJson, not recommended to be used in isolation.")]
         public static object IDeserialise(this BsonValue bson)
         {
@@ -47,7 +45,6 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Private Methods                   ****/
         /*******************************************/
-
         private static object IDeserialise(this BsonValue bson, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
@@ -85,12 +82,10 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
-
         private static object IDeserialise(this BsonValue bson, Type targetType, object value, string version, bool isUpgraded)
         {
             if (bson.IsBsonNull)
                 return null;
-
             // Cover all base types
             switch (targetType.FullName)
             {
@@ -190,11 +185,9 @@ namespace BH.Engine.Serialiser
             }
         }
 
-
         /*******************************************/
         /**** Private Methods - Support         ****/
         /*******************************************/
-
         private static object EnsureNotNull(object value, Type targetType)
         {
             if (targetType.IsAbstract)
@@ -206,7 +199,6 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
-
         private static object EnsureNotNullAndClear(ICollection value, Type targetType)
         {
             if (targetType.IsAbstract)
@@ -218,7 +210,6 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
-
         private static object CreateEmptyList(Type targetType)
         {
             Type itemType = targetType.GetGenericArguments()[0];
@@ -228,39 +219,34 @@ namespace BH.Engine.Serialiser
         }
 
         /*******************************************/
-
         private static object CreateEmptyDictionary(Type targetType)
         {
             Type[] types = targetType.GetGenericArguments();
-            Type dicType = typeof(Dictionary<,>);
+            Type dicType = typeof(Dictionary<, >);
             Type constructedDicType = dicType.MakeGenericType(types);
             return Activator.CreateInstance(constructedDicType);
         }
 
         /*******************************************/
-
         private static object CreateEmptyArray(Type targetType)
         {
             if (targetType.Name.EndsWith("[]"))
-                return Activator.CreateInstance(targetType, new object[] { 0 });
+                return Activator.CreateInstance(targetType, new object[]{0});
             else if (targetType.Name.EndsWith("[,]"))
-                return Activator.CreateInstance(targetType, new object[] { 0, 0 });
+                return Activator.CreateInstance(targetType, new object[]{0, 0});
             else
                 return null;
         }
 
         /*******************************************/
-
         private static object GetDefaultValue(Type t)
         {
             if (t.IsValueType)
                 return Activator.CreateInstance(t);
-
             return null;
         }
 
         /*******************************************/
-
         private static BsonValue ExtractValue(BsonValue bson)
         {
             if (bson != null && bson.IsBsonDocument)
@@ -274,10 +260,6 @@ namespace BH.Engine.Serialiser
 
             return bson;
         }
-
-        /*******************************************/
+    /*******************************************/
     }
 }
-
-
-

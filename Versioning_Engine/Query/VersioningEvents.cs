@@ -19,7 +19,6 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
 using BH.Engine.Reflection;
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
@@ -42,19 +41,12 @@ namespace BH.Engine.Versioning
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
         [Description("Provide a list of all the versioning upgrades that occurred this session.")]
         [Output("events", "List of all exiting events describing a versioning upgrade.")]
         public static List<VersioningEvent> VersioningEvents()
         {
             return BH.Engine.Base.Query.AllEvents().OfType<VersioningEvent>().ToList();
         }
-
-        /***************************************************/
+    /***************************************************/
     }
 }
-
-
-
-
-

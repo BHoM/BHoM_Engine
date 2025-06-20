@@ -19,8 +19,6 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
-
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Analytical.Elements;
@@ -43,7 +41,6 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
         [Description("Gets the geometry of a INode as a Point. Method required for automatic display in UI packages.")]
         [Input("node", "INode to get the Point from.")]
         [Output("point", "The geometry of the INode.")]
@@ -53,7 +50,6 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-
         [PreviousInputNames("link", "bar")]
         [Description("Gets the geometry of a ILink as its centreline. Method required for automatic display in UI packages.")]
         [Input("link", "ILink to get the centreline geometry from.")]
@@ -61,11 +57,10 @@ namespace BH.Engine.Analytical
         public static Line Geometry<TNode>(this ILink<TNode> link)
             where TNode : INode
         {
-            return new Line { Start = link?.Start?.Position, End = link?.End?.Position };
+            return new Line{Start = link?.Start?.Position, End = link?.End?.Position};
         }
 
         /***************************************************/
-
         [Description("Gets the geometry of a IEdge as its Curve. Method required for automatic display in UI packages.")]
         [Input("edge", "IEdge to get the curve geometry from.")]
         [Output("curve", "The geometry of the IEdge as its Curve.")]
@@ -75,33 +70,26 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-
         [Description("Gets the geometry of a analytical IPanel at its centre. Method required for automatic display in UI packages.")]
         [Input("panel", "IPanel to get the planar surface geometry from.")]
         [Output("surface", "The geometry of the analytical IPanel at its centre.")]
         public static PlanarSurface Geometry<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
-            where TEdge : IEdge
-            where TOpening : IOpening<TEdge>
+            where TEdge : IEdge where TOpening : IOpening<TEdge>
         {
-            return Engine.Geometry.Create.PlanarSurface(
-                Engine.Geometry.Compute.IJoin(panel?.ExternalEdges?.Select(x => x?.Curve).ToList()).FirstOrDefault(),
-                panel?.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x?.Edges.Select(y => y?.Curve).ToList())).Cast<ICurve>().ToList());
+            return Engine.Geometry.Create.PlanarSurface(Engine.Geometry.Compute.IJoin(panel?.ExternalEdges?.Select(x => x?.Curve).ToList()).FirstOrDefault(), panel?.Openings.SelectMany(x => Engine.Geometry.Compute.IJoin(x?.Edges.Select(y => y?.Curve).ToList())).Cast<ICurve>().ToList());
         }
 
         /***************************************************/
-
         [Description("Gets the geometry of a analytical IOpening as an outline curve. Method required for automatic display in UI packages.")]
         [Input("opening", "IOpening to get the outline geometry from.")]
         [Output("outline", "The geometry of the analytical IOpening.")]
         public static PolyCurve Geometry<TEdge>(this IOpening<TEdge> opening)
             where TEdge : IEdge
-
         {
-            return new PolyCurve { Curves = opening?.Edges?.Select(x => x?.Curve).ToList() };
+            return new PolyCurve{Curves = opening?.Edges?.Select(x => x?.Curve).ToList()};
         }
 
         /***************************************************/
-
         [Description("Gets the geometry of a analytical ISurface at its centre. Method required for automatic display in UI packages.")]
         [Input("surface", "Analytical ISurface to get the geometrical Surface geometry from.")]
         [Output("surface", "The underlying surface geometry of the analytical ISurface at its centre.")]
@@ -111,26 +99,20 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-
         [PreviousInputNames("mesh", "feMesh")]
         [Description("Gets the geometry of a analytical IMesh as a geometrical Mesh. A geometrical mesh only supports 3 and 4 nodes faces, while a FEMesh does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
         [Input("mesh", "Analytical IMesh to get the mesh geometry from.")]
         [Output("mesh", "The geometry of the IMesh as a geometrical Mesh.")]
         public static Mesh Geometry<TNode, TFace>(this IMesh<TNode, TFace> mesh)
-            where TNode : INode
-            where TFace : IFace
+            where TNode : INode where TFace : IFace
         {
             Mesh geoMesh = new Mesh();
-
             geoMesh.Vertices = mesh?.Nodes?.Select(x => x?.Position).ToList();
-
             geoMesh.Faces.AddRange(mesh?.Faces?.Geometry());
-
             return geoMesh;
         }
 
         /***************************************************/
-
         [PreviousInputNames("faces", "feFaces")]
         [Description("Gets the geometry of a collection of IFaces as a geometrical Mesh's Faces. A geometrical mesh face only supports 3 and 4 nodes faces, while a FEMeshFace does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
         [Input("faces", "Analytical IFaces to get the mesh faces geometry from.")]
@@ -145,11 +127,11 @@ namespace BH.Engine.Analytical
                 if (face != null)
                     result.Add(face);
             }
+
             return result;
         }
 
         /***************************************************/
-
         [PreviousInputNames("face", "feFace")]
         [Description("Gets the geometry of a analytical IFace as a geometrical Mesh's Face. A geometrical mesh face only supports 3 and 4 nodes faces, while a FEMeshFace does not have this limitation. For FEMeshFaces with more than 4 nodes or less than 3 this operation is therefore not possible. Method required for automatic display in UI packages.")]
         [Input("face", "Analytical IFace to get the mesh face geometry from.")]
@@ -158,12 +140,12 @@ namespace BH.Engine.Analytical
         {
             if (face?.NodeListIndices == null)
                 return null;
-
             if (face.NodeListIndices.Count < 3)
             {
                 Base.Compute.RecordError("Insuffiecient node indices");
                 return null;
             }
+
             if (face.NodeListIndices.Count > 4)
             {
                 Base.Compute.RecordError("To high number of node indices. Can only handle triangular and quads");
@@ -171,19 +153,15 @@ namespace BH.Engine.Analytical
             }
 
             Face geomFace = new Face();
-
             geomFace.A = face.NodeListIndices[0];
             geomFace.B = face.NodeListIndices[1];
             geomFace.C = face.NodeListIndices[2];
-
             if (face.NodeListIndices.Count == 4)
                 geomFace.D = face.NodeListIndices[3];
-
             return geomFace;
         }
 
         /***************************************************/
-
         [Description("Gets the geometry of a IRegion as its Perimeter curve. Method required for automatic display in UI packages.")]
         [Input("region", "IRegion to get the curve geometry from.")]
         [Output("curve", "The geometry of the IRegion as its Perimeter curve.")]
@@ -193,20 +171,18 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-
         [Description("Gets the geometry of a Graph as its relation curve arrows. For relations between entities of IElement0D types and automatic curve is created if it does not exist. Method required for automatic display in UI packages.")]
         [Input("graph", "Graph to get the geometry from.")]
         [Output("Composite Geometry", "The CompositeGeometry geometry of the Graph.")]
         public static CompositeGeometry Geometry(this Graph graph)
         {
-            if(graph == null)
+            if (graph == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query the geometry of a null graph.");
                 return null;
             }
 
             Dictionary<Guid, Point> element0DGeoms = graph.Entities.Where(x => x.Value is IElement0D).ToDictionary(x => x.Key, x => ((IElement0D)x.Value).IGeometry());
-
             bool relNoGeom = false;
             List<IGeometry> geometries = new List<IGeometry>();
             foreach (Relation relation in graph.Relations)
@@ -215,30 +191,19 @@ namespace BH.Engine.Analytical
                 {
                     Point sourcePt, targetPt;
                     if (relation.Curve != null)
-                        geometries.Add(relation.RelationArrow());   //If Relation have a curve defined, use it to display
+                        geometries.Add(relation.RelationArrow()); //If Relation have a curve defined, use it to display
                     else if (element0DGeoms.TryGetValue(relation.Source, out sourcePt) && element0DGeoms.TryGetValue(relation.Target, out targetPt))
-                        geometries.Add(new Relation { Curve = new Line { Start = sourcePt, End = targetPt } }.RelationArrow());  //Relation between two IElement0Ds - Generate a curve between them and draw arrow
+                        geometries.Add(new Relation{Curve = new Line{Start = sourcePt, End = targetPt}}.RelationArrow()); //Relation between two IElement0Ds - Generate a curve between them and draw arrow
                     else
-                        relNoGeom = true;   //Some relations can not be displayed automatically, flag to raise warning
+                        relNoGeom = true; //Some relations can not be displayed automatically, flag to raise warning
                 }
             }
 
             geometries.AddRange(element0DGeoms.Values); //Add Points representing IElement0Ds to the list
-
-            if(relNoGeom)   //Raise warning if relations that could not be displayed was found
+            if (relNoGeom) //Raise warning if relations that could not be displayed was found
                 Base.Compute.RecordWarning("Geometry is only displayed for Relations that either have their Curve set or span between entities that are IElement0D.");
-
-
-            return new CompositeGeometry { Elements = geometries };
-
+            return new CompositeGeometry{Elements = geometries};
         }
-
-        /***************************************************/
-
-        
+    /***************************************************/
     }
 }
-
-
-
-

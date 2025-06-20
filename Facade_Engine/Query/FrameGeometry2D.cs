@@ -19,7 +19,6 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
 using System;
 using System.Linq;
 using BH.oM.Geometry;
@@ -32,7 +31,6 @@ using BH.oM.Physical.FramingProperties;
 using BH.Engine.Geometry;
 using BH.Engine.Analytical;
 using BH.Engine.Base;
- 
 using System.Collections.Generic;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
@@ -44,11 +42,9 @@ namespace BH.Engine.Facade
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
         [Description("Returns 2D Geometry representing the frame's projected elevation extents.")]
-        [Input("opening", "The opening to get the frame geometry for")]
-        [Output("geo", "The projected elevation extents of the frame")]
-
+        [Input("opening", "The opening to get the frame geometry for.")]
+        [Output("geo", "The projected elevation extents of the frame.")]
         public static IGeometry FrameGeometry2D(this Opening opening)
         {
             if (opening == null)
@@ -59,17 +55,16 @@ namespace BH.Engine.Facade
 
             PolyCurve extCrv = opening.Geometry();
             List<double> widths = new List<double>();
-
             if (!extCrv.IsPlanar(Tolerance.Distance))
             {
                 BH.Engine.Base.Compute.RecordWarning("This method only works on planar curves. Opening " + opening.BHoM_Guid + " has non-planar curves and will be ignored.");
                 return null;
             }
-            
+
             foreach (FrameEdge edge in opening.Edges)
             {
                 double width = edge.FrameEdgeProperty.WidthIntoOpening();
-                widths.Add(width*-1);
+                widths.Add(width * -1);
             }
 
             if (widths.Min() == 0)
@@ -79,15 +74,8 @@ namespace BH.Engine.Facade
             }
 
             PolyCurve intCrv = Modify.OffsetVariable(extCrv, widths);
-
-            PlanarSurface geo = BH.Engine.Geometry.Create.PlanarSurface(extCrv, new List<ICurve> { intCrv });
-
+            PlanarSurface geo = BH.Engine.Geometry.Create.PlanarSurface(extCrv, new List<ICurve>{intCrv});
             return geo;
         }
-
     }
 }
-
-
-
-

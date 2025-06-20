@@ -19,7 +19,6 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
@@ -33,23 +32,14 @@ namespace BH.Engine.Spatial
         /******************************************/
         /****            IElement2D            ****/
         /******************************************/
-
         [Description("Queries the IElement2Ds internal IElement2Ds. Returns an empty list for objects without defined internal elements.")]
         [Input("element2D", "The IElement2D to get the internal IElement2Ds from.")]
         [Output("element2D", "A list of the IElement2Ds internal elements.")]
         public static List<IElement2D> IInternalElements2D(this IElement2D element2D)
         {
             List<IElement2D> result = Base.Compute.RunExtensionMethod(element2D, "InternalElements2D") as List<IElement2D>;
-
             return result ?? new List<IElement2D>();
         }
-
-        /******************************************/
+    /******************************************/
     }
 }
-
-
-
-
-
-

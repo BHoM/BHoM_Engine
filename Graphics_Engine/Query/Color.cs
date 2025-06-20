@@ -19,7 +19,6 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
 using BH.oM.Geometry;
 using BH.oM.Graphics;
 using BH.oM.Base.Attributes;
@@ -36,14 +35,13 @@ namespace BH.Engine.Graphics
         /***************************************************/
         /****           Public Methods                  ****/
         /***************************************************/
-
         [Description("Gets a color from a gradient at the specified position between 0 and 1.")]
         [Input("gradient", "The gradient to Query a Color from.")]
         [Input("val", "The number between 0 and 1 to use for interpolation of the markers colors.")]
         [Output("color", "The Color at the specified position.")]
         public static Color Color(this Gradient gradient, double val)
         {
-            if(gradient == null)
+            if (gradient == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query the colour of a null gradient.");
                 return System.Drawing.Color.Transparent;
@@ -57,23 +55,19 @@ namespace BH.Engine.Graphics
 
             // keep val in the domain
             val = val > 1 ? 1 : val < 0 ? 0 : val;
-
             // Find adjacent markers
             KeyValuePair<decimal, Color> upper = gradient.Markers.FirstOrDefault(x => x.Key >= (decimal)val);
             KeyValuePair<decimal, Color> lower = gradient.Markers.LastOrDefault(x => x.Key <= (decimal)val);
-
             // Check adjacency on both sides
             if (lower.Equals(default(KeyValuePair<decimal, Color>)))
                 return gradient.Markers.First().Value;
             if (upper.Equals(default(KeyValuePair<decimal, Color>)))
                 return gradient.Markers.Last().Value;
-
             // Interpolate
             return InterpolateColor(lower, upper, (decimal)val);
         }
 
         /***************************************************/
-
         [Description("Gets a color from a gradient at the specified position between 0 and 1.")]
         [Input("gradient", "The gradient to Query a Color from.")]
         [Input("val", "The number between 0 and 1 to use for extracting the colour from the gradient.")]
@@ -94,13 +88,11 @@ namespace BH.Engine.Graphics
 
             // keep val in the domain
             val = val > 1 ? 1 : val < 0 ? 0 : val;
-
             // Find first marker with value above the value
             return gradient.Markers.LastOrDefault(x => x.Key <= (decimal)val).Value;
         }
 
         /***************************************************/
-
         [Description("Gets a color from a gradient at the specified position scaled between from and to.")]
         [Input("gradient", "The gradient to Query a Color from.")]
         [Input("val", "The number between 'from' and 'to' to use for extraction of colour from the gradient.")]
@@ -121,7 +113,6 @@ namespace BH.Engine.Graphics
         /***************************************************/
         /**** Public Methods - Interface                ****/
         /***************************************************/
-
         [Description("Gets a color from a gradient at the specified position between 0 and 1.")]
         [Input("gradient", "The gradient to Query a Color from.")]
         [Input("val", "The number between 0 and 1 to use for extracting the colour from the gradient.")]
@@ -140,38 +131,26 @@ namespace BH.Engine.Graphics
         /***************************************************/
         /****           Private Methods                 ****/
         /***************************************************/
-
         private static Color InterpolateColor(KeyValuePair<decimal, Color> lower, KeyValuePair<decimal, Color> upper, decimal val)
         {
             // Safety check
             val = val > lower.Key ? val < upper.Key ? val : upper.Key : lower.Key;
-
             decimal diff = upper.Key - lower.Key;
             if (diff == 0)
                 return lower.Value;
             decimal fraction = (val - lower.Key) / diff;
-
             int alpha = (int)Math.Round(Interpolate(lower.Value.A, upper.Value.A, fraction));
             int red = (int)Math.Round(Interpolate(lower.Value.R, upper.Value.R, fraction));
             int green = (int)Math.Round(Interpolate(lower.Value.G, upper.Value.G, fraction));
             int blue = (int)Math.Round(Interpolate(lower.Value.B, upper.Value.B, fraction));
-
             return System.Drawing.Color.FromArgb(alpha, red, green, blue);
         }
 
         /***************************************************/
-
         private static decimal Interpolate(decimal a, decimal b, decimal val)
         {
             return (b - a) * val + a;
         }
-
-        /***************************************************/
+    /***************************************************/
     }
 }
-
-
-
-
-
-

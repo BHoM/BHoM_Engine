@@ -19,19 +19,14 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
-
 using System;
 using System.Collections.Generic;
-
 using System.Linq;
 using BH.oM.Environment;
-
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
-
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
-
 using BH.oM.Environment.Climate;
 
 namespace BH.Engine.Environment
@@ -41,18 +36,11 @@ namespace BH.Engine.Environment
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-
-        [Description("Calculate the Third Order Polynomial for the numbers provided. The equation is: ((a * x + b) * x + c) * x + d")]
-        [Output("thirdOrderPolynomial", "The calculated Third Order Polynomial")]
+        [Description("Calculate the Third Order Polynomial for the numbers provided. The equation is: ((a * x + b) * x + c) * x + d.")]
+        [Output("thirdOrderPolynomial", "The calculated Third Order Polynomial.")]
         public static double ThirdOrderPolynomial(double a, double b, double c, double d, double x)
         {
             return ((a * x + b) * x + c) * x + d;
         }
     }
-
 }
-
-
-
-
-
