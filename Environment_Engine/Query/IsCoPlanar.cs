@@ -47,7 +47,7 @@ namespace BH.Engine.Environment
         {
             if(panel == null || panelToCompare == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot query whether two panels are co planar if either panel is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query whether two panels are co-planar if either panel is null.");
                 return false;
             }
 
