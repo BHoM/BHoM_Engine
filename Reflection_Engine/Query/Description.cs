@@ -231,8 +231,8 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        [Description("Return the custom description of a C# element such as Type, MemberInfo, and ParamaterInfo")]
-        [Input("item", "This item can either be a Type, a MemberInfo, or a ParamaterInfo")]
+        [Description("Return the custom description of a C# element such as Type, MemberInfo, and ParameterInfo")]
+        [Input("item", "This item can either be a Type, a MemberInfo, or a ParameterInfo")]
         public static string IDescription(this object item)
         {
             if (item is ParameterInfo)
