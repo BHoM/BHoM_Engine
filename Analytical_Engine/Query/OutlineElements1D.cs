@@ -62,9 +62,9 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Gets the boundary from an IRegion defining the boundary of the element as the subparts of the perimiter curve. Method required for all IElement2Ds.")]
+        [Description("Gets the boundary from an IRegion defining the boundary of the element as the subparts of the perimeter curve. Method required for all IElement2Ds.")]
         [Input("region", "The IRegion to get outline elements from.")]
-        [Output("elements", "Outline elements of the IRegion, i.e. the subparts of the Perimiter curve.")]
+        [Output("elements", "Outline elements of the IRegion, i.e. the subparts of the Perimeter curve.")]
         public static List<IElement1D> OutlineElements1D(this IRegion region)
         {
             if(region == null)
