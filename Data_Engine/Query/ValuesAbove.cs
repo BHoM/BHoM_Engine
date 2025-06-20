@@ -36,7 +36,7 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets all table rows with values exeeding the values provided. Values returned as CustomObjects")]
+        [Description("Gets all table rows with values exceeding the values provided. Values returned as CustomObjects")]
         [Input("table", "The table to extract values from")]
         [Input("axes", "The axis of the table to match values for")]
         [Input("values", "The value of the axis to match with")]
