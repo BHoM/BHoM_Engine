@@ -35,7 +35,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a Line based on its origin and normal vector.")]
+        [Description("Creates a Plane based on its origin and normal vector.")]
         [InputFromProperty("origin")]
         [InputFromProperty("normal")]
         [Output("plane", "The created Plane.")]
@@ -46,10 +46,10 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Creates a Plane passing through the three points. Orgin of the plane will be set to the first point.")]
-        [Input("p1", "First point that the plane pass through. Will be used as the origin of the created plane.")]
-        [Input("p2", "Second point that the plane pass through.")]
-        [Input("p3", "Third point that the plane pass through.")]
+        [Description("Creates a Plane passing through the three points. Origin of the plane will be set to the first point.")]
+        [Input("p1", "First point that the plane passes through. Will be used as the origin of the created plane.")]
+        [Input("p2", "Second point that the plane passes through.")]
+        [Input("p3", "Third point that the plane passes through.")]
         [Output("plane", "The created Plane.")]
         public static Plane Plane(Point p1, Point p2, Point p3)
         {
