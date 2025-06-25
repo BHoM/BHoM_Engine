@@ -78,8 +78,15 @@ namespace BH.Engine.Base
                 }
             }
 
-            if (types.Count == 1 || (takeFirstIfMultiple && types.Count > 1))
+            if (types.Count == 1)
                 return types[0];
+            else if (types.Count > 1 && takeFirstIfMultiple)
+            {
+                if (!silent)
+                    Compute.RecordWarning($"Ambiguous match: Multiple types correspond the the name provided:\n{string.Join("\n", types.Select(x => x.FullName))}");
+
+                return types.OrderBy(x => x.Assembly.FullName).First();
+            }
             else
             {
                 //Unique method not found in list, check if it can be extracted using the system Type

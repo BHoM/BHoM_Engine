@@ -36,10 +36,12 @@ namespace BH.Engine.Security
         /****              Public Methods               ****/
         /***************************************************/
 
+        [PreviousVersion("8.2", "BH.Engine.Security.Query.ViewCone(BH.oM.Security.Elements.CameraDevice)")]
         [Description("Returns the camera view cone.")]
         [Input("cameraDevice", "The CameraDevice object to compute the camera view cone for.")]
+        [Input("coneAngle", "The angle view of the CameraDevice.")]
         [Output("conePolyCurve", "PolyCurve object that represents camera view cone.")]
-        public static PolyCurve ViewCone(this CameraDevice cameraDevice)
+        public static PolyCurve ViewCone(this CameraDevice cameraDevice, double coneAngle)
         {
             if (cameraDevice == null)
                 return null;
@@ -47,30 +49,54 @@ namespace BH.Engine.Security
             Point cameraLocation = cameraDevice.EyePosition;
             Point targetLocation = cameraDevice.TargetPosition;
             double coneRadius = targetLocation.Distance(cameraLocation);
-            double coneArcLength = cameraDevice.HorizontalFieldOfView;
-            double coneAngle = Math.Asin(coneArcLength / (2 * coneRadius)) * 2;
 
             if (double.IsNaN(coneAngle))
                 coneAngle = Math.PI;
-
-            Vector viewDirection = BH.Engine.Geometry.Create.Vector(cameraLocation, cameraDevice.TargetPosition);
-            Vector startPointDir = viewDirection.Rotate(-coneAngle / 2, Vector.ZAxis);
-            Vector endPointDir = viewDirection.Rotate(coneAngle / 2, Vector.ZAxis);
-            Point startPoint = cameraLocation + startPointDir;
-            Point endPoint = cameraLocation + endPointDir;
-
-            Arc coneArc = BH.Engine.Geometry.Create.Arc(startPoint, targetLocation, endPoint);
-            Line startLine = BH.Engine.Geometry.Create.Line(cameraLocation, startPoint);
-            Line endLine = BH.Engine.Geometry.Create.Line(endPoint, cameraLocation);
-
+      
             PolyCurve conePolyCurve = new PolyCurve();
-            conePolyCurve.Curves = new List<ICurve>() { startLine, coneArc, endLine };
 
+            if (Math.Abs(Math.Abs(coneAngle) - 2* Math.PI) < 1e-6)
+            {
+                Arc coneArc = (Arc)BH.Engine.Geometry.Create.Circle(cameraLocation, Vector.ZAxis, coneRadius);
+
+                conePolyCurve.Curves = new List<ICurve>() { coneArc };
+            }
+            else
+            {
+                Vector viewDirection = BH.Engine.Geometry.Create.Vector(cameraLocation, cameraDevice.TargetPosition);
+                Vector startPointDir = viewDirection.Rotate(coneAngle, Vector.ZAxis);
+                Point startPoint = cameraLocation + startPointDir;
+                double offsetAngle = Vector.XAxis.SignedAngle(viewDirection, Vector.ZAxis);
+                Point arcCenterPoint = ArcCenterPoint(cameraLocation, coneRadius, coneAngle / 2 + offsetAngle);
+
+                Arc coneArc = BH.Engine.Geometry.Create.Arc(targetLocation, arcCenterPoint, startPoint);
+                Line startLine = BH.Engine.Geometry.Create.Line(startPoint, cameraLocation);
+                Line middleLine = BH.Engine.Geometry.Create.Line(cameraLocation, targetLocation);               
+
+                conePolyCurve.Curves = new List<ICurve>() { middleLine, coneArc, startLine };
+            }        
+            
             return conePolyCurve;
         }
 
         /***************************************************/
 
+        private static Point ArcCenterPoint(Point centerPoint, double radius, double angle)
+        {
+            double centerX = centerPoint.X;
+            double centerY = centerPoint.Y;
+            double centerZ = centerPoint.Z;
+
+            double midpointX = centerX + radius * Math.Cos(angle);
+            double midpointY = centerY + radius * Math.Sin(angle);
+
+            Point outPoint = new Point();
+            outPoint.X = midpointX;
+            outPoint.Y = midpointY;
+            outPoint.Z = centerZ;
+
+            return outPoint;
+        }
     }
 }
 

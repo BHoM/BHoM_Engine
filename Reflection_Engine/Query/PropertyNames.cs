@@ -20,10 +20,17 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
+using BH.oM.Base.Reflection;
+using BH.oM.Quantities.Attributes;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
+using System.Reflection;
 
 namespace BH.Engine.Reflection
 {
@@ -43,6 +50,8 @@ namespace BH.Engine.Reflection
 
             if (obj is CustomObject)
                 return PropertyNames(obj as CustomObject);
+            else if (obj is IDynamicObject)
+                return PropertyNames(obj as IDynamicObject);
             else
                 return obj.GetType().PropertyNames();
         }
@@ -73,6 +82,46 @@ namespace BH.Engine.Reflection
         private static List<string> PropertyNames(this CustomObject obj)
         {
             return obj.GetType().PropertyNames().Where(x => x != "CustomData").Concat(obj.CustomData.Keys.ToList()).ToList();
+        }
+
+        /***************************************************/
+
+        private static List<string> PropertyNames(this IDynamicObject obj)
+        {
+            if (obj is IDynamicPropertyProvider)
+            {
+                object result;
+                bool success = BH.Engine.Base.Compute.TryRunExtensionMethod(obj, "GetProperties", new object[] { }, out result);
+                List<Property> properties = result as List<Property>;
+
+                if (success && properties != null)
+                    return properties.Select(x => x.Name).ToList();
+                else
+                    return new List<string>();
+            }
+            else
+            {
+                List<string> properties = new List<string>();
+
+                foreach (PropertyInfo prop in obj.GetType().GetProperties())
+                {
+                    if (prop.GetCustomAttribute<DynamicPropertyAttribute>() != null
+                        && typeof(IDictionary).IsAssignableFrom(prop.PropertyType)
+                        && prop.PropertyType.GenericTypeArguments.First().IsEnum)
+                    {
+                        IDictionary dic = prop.GetValue(obj) as IDictionary;
+                        properties.AddRange(dic.Keys.OfType<Enum>().OrderBy(x => x).Select(x => x.ToString()).Where(x => !string.IsNullOrEmpty(x)));
+
+                    }
+                    else
+                    {
+                        properties.Add(prop.Name);
+                    }
+                }
+
+                return properties;
+            }
+                
         }
 
         /***************************************************/

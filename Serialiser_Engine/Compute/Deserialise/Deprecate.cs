@@ -62,7 +62,7 @@ namespace BH.Engine.Serialiser
                 Engine.Base.Compute.RecordError($"The type {doc["_t"]} from version {(string.IsNullOrEmpty(version) ? "unknown" : version)} is unknown -> data returned as custom objects.");
 
             CustomObject customObj = DeserialiseCustomObject(doc, null, "", true);
-            customObj.CustomData["_t"] = doc["_t"];
+            customObj.CustomData["_t"] = doc["_t"].ToString();
             customObj.CustomData["_bhomVersion"] = version;
             return customObj;
         }

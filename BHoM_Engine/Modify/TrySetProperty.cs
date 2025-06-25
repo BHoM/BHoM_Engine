@@ -20,65 +20,35 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Reflection;
-using BH.oM.Base;
-using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Pipes;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using BH.oM.Base;
+using BH.oM.Base.Attributes;
 
-namespace BH.Engine.Versioning
+namespace BH.Engine.Base
 {
-    public static partial class Query
+    public static partial class Modify
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Provide the list of BHoM versions covered by an upgrader")]
-        [Output("versions", "BHoM versions covered by an upgrader.")]
-        public static List<string> UpgraderVersions()
+        [Description("Sets a property of a custom object.")]
+        [Input("obj", "Custom object to set the value for")]
+        [Input("propertyName", "name of the property to set the value of")]
+        [Input("value", "new value of the property.")]
+        [Output("result", "New custom object with its property changed to the new value")]
+        public static bool TrySetProperty(this CustomObject obj, string propertyName, object value)
         {
-            if (m_UpgraderVersions != null)
-                return m_UpgraderVersions;
-
-            string upgraderFolder = Path.Combine(Base.Query.BHoMFolder(), "..", "Upgrades");
-            if (!Directory.Exists(upgraderFolder))
-                return new List<string>();
-
-            m_UpgraderVersions = Directory.GetDirectories(upgraderFolder, "BHoMUpgrader*", SearchOption.TopDirectoryOnly).Select(folder =>
-            {
-                string number = Path.GetFileName(folder).Replace("BHoMUpgrader", "");
-                return number.Insert(number.Length - 1, ".");
-            })
-            .OrderBy(x =>
-            {
-                double n = 0;
-                double.TryParse(x, out n);
-                return n;
-            })
-            .ToList();
-
-            return m_UpgraderVersions;
+            SetPropertyFallback(obj, propertyName, value, true);
+            return true;
         }
-
-
-        /***************************************************/
-        /**** Private Fields                            ****/
-        /***************************************************/
-
-        private static List<string> m_UpgraderVersions = null;
 
         /***************************************************/
     }
 }
+
 
 
 

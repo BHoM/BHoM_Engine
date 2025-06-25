@@ -38,7 +38,6 @@ namespace BH.Engine.Graphics
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
-        [PreviousVersion("8.1", "BH.Engine.Graphics.Create.IMarker(BH.oM.Graphics.Components.IMarker, BH.oM.Geometry.Point, BH.oM.Geometry.Vector)")]
         [Description("Queries a set of Marker curves from the provided marker as well as endpoint and direction.")]
         [Input("end", "Point where the marker is attached.")]
         [Input("direction", "Vector representing the direction of the marker.")]
@@ -56,7 +55,6 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        [PreviousVersion("8.1", "BH.Engine.Graphics.Create.Marker(BH.oM.Graphics.Components.BasicArrowMarker, BH.oM.Geometry.Point, BH.oM.Geometry.Vector)")]
         [Description("Queries a set of Marker arrows from the provided marker as well as endpoint and direction.")]
         [Input("end", "Point where the marker is attached.")]
         [Input("direction", "Vector representing the direction of the marker.")]
@@ -93,7 +91,6 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        [PreviousVersion("8.1", "BH.Engine.Graphics.Create.Marker(BH.oM.Graphics.Components.IMarker, BH.oM.Geometry.Point, BH.oM.Geometry.Vector)")]
         public static List<ICurve> Marker(this IMarker markerr, Point end, Vector direction)
         {
             return new List<ICurve>();
