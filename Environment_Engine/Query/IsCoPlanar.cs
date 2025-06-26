@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using BH.oM.Environment.Elements;
 using System;
 using System.Collections.Generic;
@@ -33,8 +34,9 @@ namespace BH.Engine.Environment
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
+
         [Description("Determines whether the two Environment Panels are co-planar.")]
         [Input("panel", "An Environment Panel.")]
         [Input("panelToCompare", "An Environment Panel to compare against.")]
@@ -49,5 +51,7 @@ namespace BH.Engine.Environment
 
             return panel.Polyline().IsCoplanar(panelToCompare.Polyline());
         }
+
+        /***************************************************/
     }
 }

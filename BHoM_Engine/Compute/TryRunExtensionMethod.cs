@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using System;
@@ -34,8 +35,9 @@ namespace BH.Engine.Base
     public static partial class Compute
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
+
         [Description("Looks for an extension method applicable to the input object with the provided `methodName` and, if found, invokes it.\n" + "Extension methods are searched using Reflection through all BHoM assemblies.\n" + "If no method is found, this returns `false`, and the `result` is null.")]
         [Input("obj", "Object whose extension method is to be found, and to which the method will be applied in order to obtain the result.")]
         [Input("methodName", "Name of the extension method defined for the input object that is to be found in any of the BHoM assemblies.")]
@@ -47,6 +49,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Looks for an extension method applicable to the input object with the provided `methodName` and, if found, invokes it.\n" + "Extension methods are searched using Reflection through all BHoM assemblies.\n" + "If no method is found, this returns `false`, and the `result` is null.")]
         [Input("obj", "Object whose extension method is to be found, and to which the method will be applied in order to obtain the result.")]
         [Input("methodName", "Name of the extension method defined for the input object that is to be found in any of the BHoM assemblies.")]
@@ -59,6 +62,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Looks for an extension method applicable to the input object with the provided `methodName` and, if found, invokes it asynchronously.\n" + "Extension methods are searched using Reflection through all BHoM assemblies.\n" + "If no method is found, this returns `false`, and the `result` is null.")]
         [Input("obj", "Object whose extension method is to be found, and to which the method will be applied in order to obtain the result.")]
         [Input("methodName", "Name of the extension method defined for the input object that is to be found in any of the BHoM assemblies.")]
@@ -69,6 +73,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Looks for an extension method applicable to the input object with the provided `methodName` and, if found, invokes it asynchronously.\n" + "Extension methods are searched using Reflection through all BHoM assemblies.\n" + "If no method is found, this returns `false`, and the `result` is null.")]
         [Input("obj", "Object whose extension method is to be found, and to which the method will be applied in order to obtain the result.")]
         [Input("methodName", "Name of the extension method defined for the input object that is to be found in any of the BHoM assemblies.")]
@@ -80,8 +85,9 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
-        /**** Private Methods                           ****/
+        /****              Private Methods              ****/
         /***************************************************/
+
         [Description("Runs the requested method and returns the result. For performance reasons compiles the method to a function the first time it is run, then stores it for subsequent calls.")]
         private static bool TryRunExtensionMethod(string methodName, object[] parameters, out object result)
         {
@@ -109,6 +115,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Asynchronously runs the requested method and returns the result. For performance reasons compiles the method to a function the first time it is run, then stores it for subsequent calls.")]
         private static async Task<Output<bool, object>> TryRunExtensionMethodAsync(string methodName, object[] parameters)
         {
@@ -129,6 +136,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Finds an extension method with given name and parameters. For performance reasons compiles the method to a function the first time it is run, then stores it for subsequent calls.")]
         private static Func<object[], object> ExtensionMethodToRun(string methodName, object[] parameters)
         {
@@ -197,6 +205,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Checks if an entry with the provided key has already been extracted. Put in its own method to simplify the use of locks to provide thread safety.")]
         private static bool FunctionPreviouslyCompiled(string methodKey)
         {
@@ -207,6 +216,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Gets a previously compiled function from the stored functions. Put in its own method to simplify the use of locks to provide thread safety.")]
         private static Func<object[], object> GetStoredCompiledFunction(string methodKey)
         {
@@ -217,6 +227,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Stores a compiled function. Put in its own method to simplify the use of locks to provide thread safety.")]
         private static void StoreCompiledFunction(string methodKey, Func<object[], object> method)
         {
@@ -227,10 +238,12 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
-        /**** Private fields                            ****/
+        /****              Private Fields               ****/
         /***************************************************/
+
         private static ConcurrentDictionary<string, Func<object[], object>> m_CompiledFunctions = new ConcurrentDictionary<string, Func<object[], object>>();
         private static readonly object m_RunExtensionMethodLock = new object ();
-    /***************************************************/
+
+        /***************************************************/
     }
 }

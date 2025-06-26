@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.SectionProperties;
 using BH.oM.Structure.Offsets;
@@ -42,7 +43,7 @@ namespace BH.Engine.Structure
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods - Profiles                 ****/
+        /****        Public Methods - Profiles          ****/
         /***************************************************/
         [Description("Generates a default description for the profile as 'I Height x Width x WebThickness x FlangeThickness'.")]
         [Input("profile", "The profile to generate a default description for.")]
@@ -199,7 +200,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Public Methods - Sections                 ****/
+        /****        Public Methods - Sections          ****/
         /***************************************************/
         [Description("Generates a default description for the Section as 'Steel ProfileDescription - MaterialName'.")]
         [Input("section", "The section to generate a default description for.")]
@@ -278,7 +279,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Public Methods - Surface Properties       ****/
+        /****     Public Methods - Surface Properties   ****/
         /***************************************************/
         [Description("Generates a default description for the SurfaceProperty as 'THK Thickness - MaterialName'.")]
         [Input("property", "The SurfaceProperty to generate a default description for.")]
@@ -400,7 +401,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Public Methods - Constraints              ****/
+        /****        Public Methods - Constraints       ****/
         /***************************************************/
         [Description("Generates a default description for the Constraint3DOF based on the constraints at each degree of freedom.")]
         [Input("constraint", "The Constraint3DOF to generate a default description for.")]
@@ -487,7 +488,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Public Methods - Offset                   ****/
+        /****         Public Methods - Offset           ****/
         /***************************************************/
         [Description("Generates a default description for the Offset as 'Start - End'.")]
         [Input("offset", "The Offset to generate a default description for.")]
@@ -500,7 +501,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Public Methods - Material                 ****/
+        /****        Public Methods - Material          ****/
         /***************************************************/
         [Description("Generates a default description for the material based on its properties.")]
         [Input("material", "The material to generate a default description for.")]
@@ -583,7 +584,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Public Methods - Interfaces               ****/
+        /****        Public Methods - Interfaces        ****/
         /***************************************************/
         [Description("Generates a default description for the IProperty, based on its properties.")]
         [Input("property", "The property to generate a default description for.")]
@@ -629,7 +630,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        /**** Private Methods                           ****/
+        /****              Private Methods              ****/
         /***************************************************/
         private static string Description(IObject obj)
         {

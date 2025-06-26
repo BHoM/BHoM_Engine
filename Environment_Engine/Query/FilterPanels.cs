@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,8 +40,9 @@ namespace BH.Engine.Environment
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
+
         [Description("Returns a collection of Environment Panels that match the given element ID.")]
         [Input("panels", "A collection of Environment Panels.")]
         [Input("elementID", "The Element ID to filter by.")]
@@ -196,5 +198,7 @@ namespace BH.Engine.Environment
         {
             return new Output<List<Panel>, List<Panel>>{Item1 = panels.Where(x => types.Contains(x.Type)).ToList(), Item2 = panels.Where(x => !types.Contains(x.Type)).ToList(), };
         }
+
+        /***************************************************/
     }
 }

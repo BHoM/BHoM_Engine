@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -33,8 +34,9 @@ namespace BH.Engine.Data
     public static partial class Create
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
+
         [Description("Passes the data down through the tree to the leaves and creates the parent nodes on the way back up. " + "i.e. The data will be stored in the leaves and the parent node can be defined through its children.")]
         [Input("dataItems", "The data to store in the Node tree, formatted as leaf nodes.")]
         [Input("splitDataMethod", "Method clustering a collection of leaves into two collections based on their data.")]
@@ -82,6 +84,7 @@ namespace BH.Engine.Data
         }
 
         /***************************************************/
+
         [Description("Passes the data down through the tree to the leaves and creates the parent nodes on the way back up. " + "i.e. The data will be stored in the leaves and the parent node can be defined through its children.")]
         [Input("dataItems", "The data to store in the Node tree, formatted as leaf nodes.")]
         [Input("partitionMethod", "Method to separate a flat collection of data into the data collections for the child nodes. " + "Number of collections returned will be the degree of the tree. Breaks the recursion when it only returns a single collection.")]
@@ -117,8 +120,9 @@ namespace BH.Engine.Data
         }
 
         /***************************************************/
-        /**** Private Methods                           ****/
+        /****              Private Methods              ****/
         /***************************************************/
+
         private static int LargestList<T>(List<List<T>> lists)
         {
             int index = 0;
@@ -130,6 +134,7 @@ namespace BH.Engine.Data
 
             return index;
         }
-    /***************************************************/
+
+        /***************************************************/
     }
 }

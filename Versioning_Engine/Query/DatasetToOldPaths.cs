@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using System;
@@ -33,8 +34,9 @@ namespace BH.Engine.Versioning
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
+
         [Description("Fetches paths going from a new dataset path to all old paths to the same data.")]
         [Output("upgradePaths", "A dictionary containing strings going from a new to all old versions of library paths.")]
         public static Dictionary<string, List<string>> DatasetToOldPaths()
@@ -43,6 +45,7 @@ namespace BH.Engine.Versioning
                 ExtractDataSetUpgraders();
             return m_DatasetToOldPaths;
         }
+
     /***************************************************/
     }
 }

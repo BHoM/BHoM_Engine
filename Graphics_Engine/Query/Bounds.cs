@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using BH.oM.Geometry;
 using BH.oM.Graphics;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace BH.Engine.Graphics
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
         [Description("Computes and returns the BoundingBox of the SVGObject which is the concatenated BoundingBox of all Shapes contained within the object.")]
         public static BoundingBox Bounds(this SVGObject svg)
@@ -134,7 +135,7 @@ namespace BH.Engine.Graphics
         }
 
         /***************************************************/
-        /**** Public Methods - Interfaces               ****/
+        /****        Public Methods - Interfaces        ****/
         /***************************************************/
         [Description("Computes and returns the BoundingBox of the IRender.")]
         public static BoundingBox IBounds(this IRender render)
@@ -149,7 +150,7 @@ namespace BH.Engine.Graphics
         }
 
         /***************************************************/
-        /**** Private Methods - Fallback                ****/
+        /****         Private Methods - Fallback        ****/
         /***************************************************/
         private static BoundingBox Bounds(this IRender render)
         {

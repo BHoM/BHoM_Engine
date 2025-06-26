@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using System;
@@ -32,8 +33,9 @@ namespace BH.Engine.Library
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
+
         [Description("Validates that the provided string is a valid full library path, and attempts to upgrade the path if it is not. Returns the input path if valid, or failing to upgrade. Returns the upgraded path if an upgrade is possible.")]
         [Input("fullLibraryName", "The full library path to the particular Library to validate. Only full paths supported, not super paths or partial paths to libraries.")]
         [Output("path", "Returns the input path if valid or failing to upgrade. Returns the upgraded path if able to upgrade.")]
@@ -78,6 +80,7 @@ namespace BH.Engine.Library
 
             return newName;
         }
-    /***************************************************/
+
+        /***************************************************/
     }
 }

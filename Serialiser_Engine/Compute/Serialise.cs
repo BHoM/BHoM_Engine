@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using BH.oM.Base;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
@@ -30,9 +31,10 @@ namespace BH.Engine.Serialiser
 {
     public static partial class Compute
     {
-        /*******************************************/
-        /**** Public Methods                    ****/
-        /*******************************************/
+        /***************************************************/
+        /****               Public Methods              ****/
+        /***************************************************/
+
         [Description("Used to support ToJson, not recommended to be used in isolation.")]
         public static void ISerialise(this object value, BsonDocumentWriter writer)
         {
@@ -42,9 +44,10 @@ namespace BH.Engine.Serialiser
                 Serialise(value as dynamic, writer, typeof(object));
         }
 
-        /*******************************************/
-        /**** Private Methods                   ****/
-        /*******************************************/
+        /***************************************************/
+        /****              Private Methods              ****/
+        /***************************************************/
+
         private static void ISerialise(this object value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null)
@@ -53,9 +56,10 @@ namespace BH.Engine.Serialiser
                 Serialise(value as dynamic, writer, targetType);
         }
 
-        /*******************************************/
-        /**** Fallback Methods                  ****/
-        /*******************************************/
+        /***************************************************/
+        /****             Fallback Methods              ****/
+        /***************************************************/
+
         private static void Serialise(this object value, BsonDocumentWriter writer, Type targetType)
         {
             if (value == null || value.GetType() == typeof(System.DBNull))
@@ -72,9 +76,10 @@ namespace BH.Engine.Serialiser
             }
         }
 
-        /*******************************************/
-        /**** Private Methods - Support         ****/
-        /*******************************************/
+        /***************************************************/
+        /****         Private Methods - Support         ****/
+        /***************************************************/
+
         private static void WriteAsDocumentIfUnmatchingType(object value, BsonDocumentWriter writer, Type targetType, Action action)
         {
             bool asDocument = value.GetType() != targetType;
@@ -90,6 +95,7 @@ namespace BH.Engine.Serialiser
             if (asDocument)
                 writer.WriteEndDocument();
         }
-    /*******************************************/
+
+        /***************************************************/
     }
 }

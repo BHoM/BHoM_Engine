@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using BH.Engine.Geometry;
 using BH.oM.Geometry;
 using BH.oM.Dimensional;
@@ -32,9 +33,10 @@ namespace BH.Engine.Spatial
 {
     public static partial class Query
     {
-        /******************************************/
-        /****            IElement1D            ****/
-        /******************************************/
+        /***************************************************/
+        /****                IElement1D                ****/
+        /***************************************************/
+
         [Description("Gets the dominant vector (orientation) of an Element1D based on its line lengths.")]
         [Input("element1D", "Element1D to evaluate.")]
         [Input("orthogonalPriority", "Optional, if true gives priority to curves that are on the orthogonal axis (X, Y or Z vectors).")]
@@ -72,9 +74,10 @@ namespace BH.Engine.Spatial
             return dominantVector;
         }
 
-        /******************************************/
-        /****            IElement2D            ****/
-        /******************************************/
+        /***************************************************/
+        /****                IElement2D                ****/
+        /***************************************************/
+
         [Description("Gets the dominant vector (orientation) of an Element2D based on its line lengths.")]
         [Input("element2D", "Element2D to evaluate.")]
         [Input("orthogonalPriority", "Optional, if true gives priority to curves that are on the orthogonal axis (X, Y or Z vectors).")]
@@ -93,9 +96,10 @@ namespace BH.Engine.Spatial
             return DominantVector(outline, orthogonalPriority, orthogonalLengthFactor, angleTolerance);
         }
 
-        /******************************************/
-        /****              Private             ****/
-        /******************************************/
+        /***************************************************/
+        /****              Private Methods              ****/
+        /***************************************************/
+
         [Description("Groups vectors by direction whilst allowing for an angle discrepancy tolerance.")]
         [Input("vectors", "Vectors to evaluate.")]
         [Input("angleTolerance", "The angle in radians to compare vectors with each other for tolerance when grouping.")]
@@ -123,6 +127,7 @@ namespace BH.Engine.Spatial
 
             return result;
         }
-    /******************************************/
+
+        /***************************************************/
     }
 }

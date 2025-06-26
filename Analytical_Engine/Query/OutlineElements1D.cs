@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using BH.oM.Dimensional;
 using System.Linq;
 using BH.oM.Geometry;
@@ -35,6 +36,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /****               Public Methods              ****/
         /***************************************************/
+
         [Description("Gets the edge elements from an IOpening defining the boundary of the element. Method required for all IElement2Ds. \n" + "For an IOpening this will return a list of its Edges.")]
         [Input("opening", "The IOpening to get outline elements from.")]
         [Output("elements", "Outline elements of the IOpening, i.e. the Edges of the Opening.")]
@@ -45,6 +47,7 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
+
         [Description("Gets the edge elements from an IPanel defining the boundary of the element. Method required for all IElement2Ds. \n" + "For an IPanel this will return a list of its ExternalEdges.")]
         [Input("panel", "The IPanel to get outline elements from.")]
         [Output("elements", "Outline elements of the IPanel, i.e. the ExternalEdges of the Panel.")]
@@ -55,6 +58,7 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
+
         [Description("Gets the boundary from an IRegion defining the boundary of the element as the subparts of the perimeter curve. Method required for all IElement2Ds.")]
         [Input("region", "The IRegion to get outline elements from.")]
         [Output("elements", "Outline elements of the IRegion, i.e. the subparts of the Perimeter curve.")]
@@ -68,6 +72,7 @@ namespace BH.Engine.Analytical
 
             return region.Perimeter.ISubParts().Cast<IElement1D>().ToList();
         }
-    /***************************************************/
+
+        /***************************************************/
     }
 }

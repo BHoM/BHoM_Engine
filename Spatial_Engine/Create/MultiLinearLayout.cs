@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -34,8 +35,9 @@ namespace BH.Engine.Spatial
     public static partial class Create
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
+
         [Description("Creates a MultiLinearLayout from its core properties. Ensures all vectors are in the global XY-plane.")]
         [InputFromProperty("numberOfPoints")]
         [Input("minimumSpacing", "Minimum spacing between points in layers and between each layer.", typeof(Length))]
@@ -49,6 +51,7 @@ namespace BH.Engine.Spatial
         }
 
         /***************************************************/
+
         [Description("Creates a MultiLinearLayout from its core properties. Ensures all vectors are in the global XY-plane.")]
         [InputFromProperty("numberOfPoints")]
         [InputFromProperty("parallelMinimumSpacing")]
@@ -80,6 +83,7 @@ namespace BH.Engine.Spatial
 
             return new MultiLinearLayout(numberOfPoints, parallelMinimumSpacing, perpendicularMinimumSpacing, projDir, offset, referencePoint);
         }
-    /***************************************************/
+
+        /***************************************************/
     }
 }

@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Concurrent;
@@ -32,8 +33,9 @@ namespace BH.Engine.Base
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
+
         [Description("Finds an extension method that accepts multiple arguments based on a provided main object and method name.\n" + "The method is found via reflection the first time it is queried, then it is stored for subsequent calls.")]
         [Input("target", "The first argument of the method to find.")]
         [Input("methodName", "The name of the method to be sought.")]
@@ -44,6 +46,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Finds an extension method that accepts multiple arguments based on a provided main object, method name and additional arguments.\n" + "The method is found via reflection the first time it is queried, then it is stored for subsequent calls.")]
         [Input("target", "The first argument of the method to find.")]
         [Input("methodName", "The name of the method to be sought.")]
@@ -55,6 +58,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Performs the core functionality of ExtensionMethodToCall. Finds the matching method via reflection and caches it for subsequent calls.\n" + "Finds an extension method that accepts multiple arguments with extra emphasis on the first argument in terms of type matching.\n" + "The method found can have more arguments than the provided parameters, if all of those additional arguments have default values.")]
         [Input("methodName", "The name of the method to be sought.")]
         [Input("parameters", "The arguments for the method call.")]
@@ -111,6 +115,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         private static bool IsApplicable(this MethodInfo method, object[] parameters)
         {
             ParameterInfo[] paramInfo = method.GetParameters();
@@ -139,6 +144,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Checks if an entry with the provided key has already been extracted. This method is separated to simplify the use of locks for thread safety.")]
         private static bool MethodPreviouslyExtracted(Tuple<Type, string> key)
         {
@@ -149,6 +155,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Retrieves a previously extracted method from the stored methods. This method is separated to simplify the use of locks for thread safety.")]
         private static MethodInfo GetStoredExtensionMethod(Tuple<Type, string> key)
         {
@@ -159,6 +166,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Stores an extracted method for future use. This method is separated to simplify the use of locks for thread safety.")]
         private static void StoreExtensionMethod(Tuple<Type, string> key, MethodInfo method)
         {
@@ -169,10 +177,12 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
-        /**** Private fields                            ****/
+        /****              Private fields               ****/
         /***************************************************/
+
         private static ConcurrentDictionary<Tuple<Type, string>, MethodInfo> m_PreviousFoundMethods = new ConcurrentDictionary<Tuple<Type, string>, MethodInfo>();
         private static readonly object m_ExtensionMethodToCallLock = new object ();
-    /***************************************************/
+
+        /***************************************************/
     }
 }

@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using BH.oM.Base.Attributes;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Base;
@@ -36,7 +37,7 @@ namespace BH.Engine.Reflection
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
         [Description("Return the custom description of a C# class member (e.g. property, method, field).")]
         public static string Description(this MemberInfo member, bool addTypeDescription = true)

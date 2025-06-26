@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using System;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
@@ -37,6 +38,7 @@ namespace BH.Engine.Analytical
         /***************************************************/
         /****               Public Methods              ****/
         /***************************************************/
+
         [Description("Sets the Outline Element1Ds of an opening, i.e. the Edges of an Opening. Method required for all IElement2Ds.")]
         [Input("opening", "The Opening to update the Edges of.")]
         [Input("edges", "A list of IElement1Ds which all should be of a type of Edge accepted by the Opening or Geometrical ICurve. \n" + "ICurve will default the outlines properties.")]
@@ -50,6 +52,7 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
+
         [Description("Sets the outline Element1Ds of a IPanel, i.e. the ExternalEdges of a IPanel. Method required for all IElement2Ds.")]
         [Input("panel", "The IPanel to update the ExternalEdges of.")]
         [Input("edges", "A list of IElement1Ds which all should be of a type of Edge accepted by the IPanel or Geometrical ICurve. \n" + "ICurve will default the outlines properties.")]
@@ -63,6 +66,7 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
+
         [Description("Sets the Outline Element1Ds of an IRegion, i.e. the perimeter. Method required for all IElement2Ds.")]
         [Input("region", "The IRegion to update the Perimeter of.")]
         [Input("outlineElements", "A list of IElement1Ds which all should be Geometrical ICurves.")]
@@ -95,8 +99,9 @@ namespace BH.Engine.Analytical
         }
 
         /***************************************************/
-        /****               Private Methods             ****/
+        /****              Private Methods              ****/
         /***************************************************/
+
         [Description("Takes a list of IElement1D and returns a TEdge for each element. If the IElement1D is a curve a new TEdge is created and assigned the curve. If not, the IElement1D is cast to the TEdge.")]
         private static List<TEdge> ConvertToEdges<TEdge>(IEnumerable<IElement1D> element1ds)
             where TEdge : IEdge
@@ -118,6 +123,7 @@ namespace BH.Engine.Analytical
 
             return edges;
         }
-    /***************************************************/
+
+        /***************************************************/
     }
 }

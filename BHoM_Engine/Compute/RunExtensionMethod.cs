@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
@@ -29,8 +30,9 @@ namespace BH.Engine.Base
     public static partial class Compute
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
+
         [Description("Runs an extension method that accepts a single argument based on a provided object and method name.\n" + "Finds the method via reflection the first time it is run, then compiles it to a function and stores it for subsequent calls.")]
         [Input("target", "The object to find and run the extension method for.")]
         [Input("methodName", "The name of the method to be run.")]
@@ -44,6 +46,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Runs an extension method that accepts multiple arguments based on a provided main object, method name and additional arguments.\n" + "Finds the method via reflection the first time it is run, then compiles it to a function and stores it for subsequent calls.")]
         [Input("target", "The first argument of the method to find and run the extension method for.")]
         [Input("methodName", "The name of the method to be run.")]
@@ -58,6 +61,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Asynchronously runs an extension method accepting a single argument based on a provided object and method name.\n" + "Finds the method via reflection the first time it is run, then compiles it to a function and stores it for subsequent calls.")]
         [Input("target", "The object to find and run the extension method for.")]
         [Input("methodName", "The name of the method to be run.")]
@@ -72,6 +76,7 @@ namespace BH.Engine.Base
         }
 
         /***************************************************/
+
         [Description("Asynchronously runs an extension method accepting multiple arguments based on a provided main object and method name and additional arguments.\n" + "Finds the method via reflection the first time it is run, then compiles it to a function and stores it for subsequent calls.")]
         [Input("target", "The first of the argument of the method to find and run the extention method for.")]
         [Input("methodName", "The name of the method to be run.")]
@@ -85,6 +90,7 @@ namespace BH.Engine.Base
             else
                 return null;
         }
-    /***************************************************/
+
+        /***************************************************/
     }
 }

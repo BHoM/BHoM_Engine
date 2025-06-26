@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using BH.oM.Base;
 using BH.oM.Base.Attributes;
 using System;
@@ -33,8 +34,9 @@ namespace BH.Engine.Graphics
     public static partial class Convert
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
+
         [Description("Converts a gradient to a stepped gradient by extracting colours in intervals.")]
         [Input("gradient", "The gradient to convert. If it is already a stepped gradient, no action will be taken.")]
         [Input("steps", "(Optional, defaults to -1) Number of steps to be used. If -1, the markers of the provided gradient will be used.")]
@@ -66,6 +68,7 @@ namespace BH.Engine.Graphics
                 return null;
             }
         }
-    /***************************************************/
+
+        /***************************************************/
     }
 }
