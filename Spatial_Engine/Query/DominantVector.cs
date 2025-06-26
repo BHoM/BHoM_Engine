@@ -33,14 +33,14 @@ namespace BH.Engine.Spatial
 {
     public static partial class Query
     {
-        /******************************************/
-        /****            IElement1D            ****/
-        /******************************************/
-        
-        [Description("Gets the the dominant vector (orientation) of an Element1D based on its lines lengths.")]
+        /***************************************************/
+        /****                IElement1D                ****/
+        /***************************************************/
+
+        [Description("Gets the dominant vector (orientation) of an Element1D based on its line lengths.")]
         [Input("element1D", "Element1D to evaluate.")]
         [Input("orthogonalPriority", "Optional, if true gives priority to curves that are on the orthogonal axis (X, Y or Z vectors).")]
-        [Input("orthogonalLengthFactor", "Optional, tests the orthogonal vector length's in relation to the actual non-orthogonal dominant vector. For example if the dominant vector is 10 in length but the orthogonal is only 5 in length, then this number should be 0.5 for it to pass the test.")]
+        [Input("orthogonalLengthFactor", "Optional, tests the orthogonal vector lengths in relation to the actual non-orthogonal dominant vector. For example if the dominant vector is 10 in length but the orthogonal is only 5 in length, then this number should be 0.5 for it to pass the test.")]
         [Input("angleTolerance", "Optional, angle in radians that vectors will be considered similar.")]
         [Output("dominantVector", "The dominant vector of an Element1D.")]
         public static BH.oM.Geometry.Vector DominantVector(this IElement1D element1D, bool orthogonalPriority = true, double orthogonalLengthFactor = 0.5, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
@@ -52,21 +52,16 @@ namespace BH.Engine.Spatial
             }
 
             List<ICurve> curves = element1D.IGeometry().ISubParts().ToList();
-            
-            if(!curves.Any(x=> x.IIsLinear()))
+            if (!curves.Any(x => x.IIsLinear()))
                 BH.Engine.Base.Compute.RecordWarning("Non-linear curves are using an approximate vector between its start and end.");
-            
-            List<Vector> vectors = curves.Select(x => (x.IStartPoint() -x.IEndPoint())).ToList();
-
+            List<Vector> vectors = curves.Select(x => (x.IStartPoint() - x.IEndPoint())).ToList();
             //group vectors by direction whilst comparing angle for tolerance
             List<List<Vector>> groupByNormal = GroupSimilarVectorsWithTolerance(vectors, angleTolerance);
             groupByNormal = groupByNormal.OrderByDescending(x => x.Sum(y => y.Length())).ToList();
             List<Vector> largestGlobal = groupByNormal[0];
-
             Vector dominantVector = largestGlobal[0].Normalise();
             if (!orthogonalPriority)
                 return dominantVector;
-            
             List<Vector> largestOrthogonal = groupByNormal.FirstOrDefault(x => (x.First().IsOrthogonal(angleTolerance)));
             if (largestOrthogonal != null)
             {
@@ -79,14 +74,14 @@ namespace BH.Engine.Spatial
             return dominantVector;
         }
 
-        /******************************************/
-        /****            IElement2D            ****/
-        /******************************************/
-        
-        [Description("Gets the the dominant vector (orientation) of an Element2D based on its lines lengths.")]
+        /***************************************************/
+        /****                IElement2D                ****/
+        /***************************************************/
+
+        [Description("Gets the dominant vector (orientation) of an Element2D based on its line lengths.")]
         [Input("element2D", "Element2D to evaluate.")]
-        [Input("orthogonalPriority", "Optional, if true gives priority to curves that are on the orthogonal axis (X, Y or Z vectors.")]
-        [Input("orthogonalLengthFactor", "Optional, tests the orthogonal vector length's in relation to the actual non-orthogonal dominant vector. For example if the dominant vector is 10 in length but the orthogonal is only 5 in length, then this number should be 0.5 for it to pass the test.")]
+        [Input("orthogonalPriority", "Optional, if true gives priority to curves that are on the orthogonal axis (X, Y or Z vectors).")]
+        [Input("orthogonalLengthFactor", "Optional, tests the orthogonal vector lengths in relation to the actual non-orthogonal dominant vector. For example if the dominant vector is 10 in length but the orthogonal is only 5 in length, then this number should be 0.5 for it to pass the test.")]
         [Input("angleTolerance", "Optional, angle in radians that vectors will be considered similar.")]
         [Output("dominantVector", "The dominant vector of an Element2D.")]
         public static BH.oM.Geometry.Vector DominantVector(this IElement2D element2D, bool orthogonalPriority = true, double orthogonalLengthFactor = 0.5, double angleTolerance = BH.oM.Geometry.Tolerance.Angle)
@@ -97,36 +92,35 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
-            IElement1D outline = BH.Engine.Geometry.Create.PolyCurve(element2D.IOutlineElements1D().Select(x =>x.IGeometry()));
+            IElement1D outline = BH.Engine.Geometry.Create.PolyCurve(element2D.IOutlineElements1D().Select(x => x.IGeometry()));
             return DominantVector(outline, orthogonalPriority, orthogonalLengthFactor, angleTolerance);
         }
-        
-        /******************************************/
-        /****              Private             ****/
-        /******************************************/
+
+        /***************************************************/
+        /****              Private Methods              ****/
+        /***************************************************/
 
         [Description("Groups vectors by direction whilst allowing for an angle discrepancy tolerance.")]
         [Input("vectors", "Vectors to evaluate.")]
         [Input("angleTolerance", "The angle in radians to compare vectors with each other for tolerance when grouping.")]
-        [Output("GroupSimilarVectorsWithTolerance", "The grouped vectors.")]
+        [Output("groupedVectors", "The grouped vectors.")]
         private static List<List<Vector>> GroupSimilarVectorsWithTolerance(List<Vector> vectors, double angleTolerance)
         {
             List<List<Vector>> result = new List<List<Vector>>();
             List<Vector> orderByLength = vectors.OrderByDescending(x => x.Length()).ToList();
-
             while (orderByLength.Count != 0)
             {
                 List<Vector> sublist = new List<Vector>();
                 sublist.Add(orderByLength[0]);
-                
                 for (int i = orderByLength.Count - 1; i > 0; i--)
                 {
-                    if (orderByLength[0].IsParallel(orderByLength[i],angleTolerance) != 0)
+                    if (orderByLength[0].IsParallel(orderByLength[i], angleTolerance) != 0)
                     {
                         sublist.Add(orderByLength[i]);
                         orderByLength.RemoveAt(i);
                     }
                 }
+
                 orderByLength.RemoveAt(0);
                 result.Add(sublist);
             }
@@ -134,10 +128,6 @@ namespace BH.Engine.Spatial
             return result;
         }
 
-        /******************************************/
+        /***************************************************/
     }
 }
-
-
-
-

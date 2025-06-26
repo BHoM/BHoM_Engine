@@ -24,10 +24,8 @@ using BH.oM.Environment.Elements;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using BH.oM.Geometry;
 using BH.Engine.Geometry;
-
 using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
@@ -36,27 +34,24 @@ namespace BH.Engine.Environment
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Determines whether the two Environment Panels are co-planar")]
-        [Input("panel", "An Environment Panel")]
-        [Input("panelToCompare", "An Environment Panel to compare against")]
-        [Output("isCoPlanar", "True if the two panels are co-planar, false otherwise")]
+        [Description("Determines whether the two Environment Panels are co-planar.")]
+        [Input("panel", "An Environment Panel.")]
+        [Input("panelToCompare", "An Environment Panel to compare against.")]
+        [Output("isCoPlanar", "True if the two panels are co-planar, false otherwise.")]
         public static bool IsCoPlanar(this Panel panel, Panel panelToCompare)
         {
-            if(panel == null || panelToCompare == null)
+            if (panel == null || panelToCompare == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot query whether two panels are co planar if either panel is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot query whether two panels are co-planar if either panel is null.");
                 return false;
             }
 
             return panel.Polyline().IsCoplanar(panelToCompare.Polyline());
         }
+
+        /***************************************************/
     }
 }
-
-
-
-
-

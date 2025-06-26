@@ -31,7 +31,6 @@ using System.ComponentModel;
 using BH.Engine.Geometry;
 using BH.Engine.Base;
 
-
 namespace BH.Engine.Analytical
 {
     public static partial class Modify
@@ -42,14 +41,12 @@ namespace BH.Engine.Analytical
 
         [Description("Sets the Outline Element1Ds of an opening, i.e. the Edges of an Opening. Method required for all IElement2Ds.")]
         [Input("opening", "The Opening to update the Edges of.")]
-        [Input("edges", "A list of IElement1Ds which all should be of a type of Edge accepted by the Opening or Geometrical ICurve. \n" +
-                "ICurve will default the outlines properties.")]
+        [Input("edges", "A list of IElement1Ds which all should be of a type of Edge accepted by the Opening or Geometrical ICurve. \n" + "ICurve will default the outlines properties.")]
         [Output("opening", "The opening with updated Edges.")]
         public static IOpening<TEdge> SetOutlineElements1D<TEdge>(this IOpening<TEdge> opening, IEnumerable<IElement1D> edges)
-                where TEdge : IEdge
+            where TEdge : IEdge
         {
             IOpening<TEdge> o = opening.ShallowClone();
-
             o.Edges = ConvertToEdges<TEdge>(edges);
             return o;
         }
@@ -58,57 +55,51 @@ namespace BH.Engine.Analytical
 
         [Description("Sets the outline Element1Ds of a IPanel, i.e. the ExternalEdges of a IPanel. Method required for all IElement2Ds.")]
         [Input("panel", "The IPanel to update the ExternalEdges of.")]
-        [Input("edges", "A list of IElement1Ds which all should be of a type of Edge accepted by the IPanel or Geometrical ICurve. \n" +
-                        "ICurve will default the outlines properties.")]
+        [Input("edges", "A list of IElement1Ds which all should be of a type of Edge accepted by the IPanel or Geometrical ICurve. \n" + "ICurve will default the outlines properties.")]
         [Output("panel", "The IPanel with updated ExternalEdges.")]
         public static IPanel<TEdge, TOpening> SetOutlineElements1D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel, IEnumerable<IElement1D> edges)
-            where TEdge : IEdge
-            where TOpening : IOpening<TEdge>
+            where TEdge : IEdge where TOpening : IOpening<TEdge>
         {
             IPanel<TEdge, TOpening> pp = panel.ShallowClone();
-
             pp.ExternalEdges = ConvertToEdges<TEdge>(edges);
             return pp;
         }
 
         /***************************************************/
 
-        [Description("Sets the Outline Element1Ds of an IRegion, i.e. the perimiter. Method required for all IElement2Ds.")]
+        [Description("Sets the Outline Element1Ds of an IRegion, i.e. the perimeter. Method required for all IElement2Ds.")]
         [Input("region", "The IRegion to update the Perimeter of.")]
         [Input("outlineElements", "A list of IElement1Ds which all should be Geometrical ICurves.")]
-        [Output("region", "The region with updated perimiter.")]
+        [Output("region", "The region with updated perimeter.")]
         public static IRegion SetOutlineElements1D(this IRegion region, IEnumerable<IElement1D> outlineElements)
         {
-            if(region == null)
+            if (region == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot set the outline 1D elements of a null region.");
                 return null;
             }
 
             IRegion r = region.ShallowClone();
-
             IEnumerable<ICurve> joinedCurves = outlineElements.Cast<ICurve>();
             if (outlineElements.Count() != 1)
                 joinedCurves = Engine.Geometry.Compute.IJoin(outlineElements.Cast<ICurve>().ToList());
-
             if (joinedCurves.Count() == 1)
             {
                 if (!joinedCurves.First().IIsClosed())
                     Engine.Base.Compute.RecordWarning("The outline elements assigned to the region do not form a closed loop.");
-
                 r.Perimeter = joinedCurves.First();
             }
             else
             {
                 Engine.Base.Compute.RecordWarning("The outline elements assigned to the region are disjointed.");
-                r.Perimeter = new PolyCurve { Curves = outlineElements.Cast<ICurve>().ToList() };
+                r.Perimeter = new PolyCurve{Curves = outlineElements.Cast<ICurve>().ToList()};
             }
 
             return r;
         }
 
         /***************************************************/
-        /****               Private Methods             ****/
+        /****              Private Methods              ****/
         /***************************************************/
 
         [Description("Takes a list of IElement1D and returns a TEdge for each element. If the IElement1D is a curve a new TEdge is created and assigned the curve. If not, the IElement1D is cast to the TEdge.")]
@@ -127,17 +118,12 @@ namespace BH.Engine.Analytical
                 }
                 else
                     edge = (TEdge)element1D;
-
                 edges.Add(edge);
             }
+
             return edges;
         }
 
         /***************************************************/
     }
 }
-
-
-
-
-

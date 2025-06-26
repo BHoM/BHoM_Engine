@@ -32,13 +32,12 @@ namespace BH.Engine.Graphics
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
-
-        [Description("Computes and returns the BoundingBox the SVGObject which is the concatenated BoudingBox of all Shapes contained within the object.")]
+        [Description("Computes and returns the BoundingBox of the SVGObject which is the concatenated BoundingBox of all Shapes contained within the object.")]
         public static BoundingBox Bounds(this SVGObject svg)
         {
-            if(svg == null)
+            if (svg == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query the bounding box of a null SVG object.");
                 return null;
@@ -46,15 +45,12 @@ namespace BH.Engine.Graphics
 
             BoundingBox bb = new BoundingBox();
             List<IGeometry> geometry = svg.Shapes;
-
             for (int i = 0; i < svg.Shapes.Count; i++)
                 bb += Engine.Geometry.Query.IBounds(svg.Shapes[i]);
-
             return bb;
         }
 
         /***************************************************/
-
         [Description("Computes and returns the full BoundingBox of all SVGObject in the provided list.")]
         public static BoundingBox Bounds(this List<SVGObject> svg)
         {
@@ -65,16 +61,13 @@ namespace BH.Engine.Graphics
             }
 
             BoundingBox bb = new BoundingBox();
-
             for (int i = 0; i < svg.Count; i++)
                 bb += Bounds(svg[i]);
-
             return bb;
         }
 
         /***************************************************/
-
-        [Description("Returns the BoundingBox the SVGDocuments which is the Canvas.")]
+        [Description("Returns the BoundingBox of the SVGDocument which is the Canvas.")]
         public static BoundingBox Bounds(this SVGDocument svg)
         {
             if (svg == null)
@@ -87,7 +80,6 @@ namespace BH.Engine.Graphics
         }
 
         /***************************************************/
-
         [Description("Computes and returns the full BoundingBox of all SVGDocuments in the provided list.")]
         public static BoundingBox Bounds(this List<SVGDocument> svg)
         {
@@ -98,19 +90,16 @@ namespace BH.Engine.Graphics
             }
 
             BoundingBox bb = new BoundingBox();
-
             for (int i = 0; i < svg.Count; i++)
                 bb += Bounds(svg[i]);
-
             return bb;
         }
 
         /***************************************************/
-
         [Description("Computes and returns the BoundingBox of the RenderMesh as the bounding box of all Vertices.")]
         public static BoundingBox Bounds(this RenderMesh renderMesh)
         {
-            if(renderMesh == null)
+            if (renderMesh == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query the bounding box of a null RenderMesh.");
                 return null;
@@ -120,7 +109,6 @@ namespace BH.Engine.Graphics
         }
 
         /***************************************************/
-
         [Description("Computes and returns the BoundingBox of the RenderPoint as the bounding box of its Point.")]
         public static BoundingBox Bounds(this RenderPoint renderPoint)
         {
@@ -134,8 +122,7 @@ namespace BH.Engine.Graphics
         }
 
         /***************************************************/
-
-        [Description("Computes and returns the BoundingBox of the RenderGeometry as the bounding box of the its Geometry.")]
+        [Description("Computes and returns the BoundingBox of the RenderGeometry as the bounding box of its Geometry.")]
         public static BoundingBox Bounds(this RenderGeometry renderGeometry)
         {
             if (renderGeometry == null)
@@ -148,9 +135,8 @@ namespace BH.Engine.Graphics
         }
 
         /***************************************************/
-        /**** Public Methods - Interfaces               ****/
+        /****        Public Methods - Interfaces        ****/
         /***************************************************/
-
         [Description("Computes and returns the BoundingBox of the IRender.")]
         public static BoundingBox IBounds(this IRender render)
         {
@@ -159,29 +145,21 @@ namespace BH.Engine.Graphics
                 Base.Compute.RecordError("Cannot query the bounding box of a null IRender.");
                 return null;
             }
+
             return Bounds(render as dynamic);
         }
 
         /***************************************************/
-        /**** Private Methods - Fallback                ****/
+        /****         Private Methods - Fallback        ****/
         /***************************************************/
-
         private static BoundingBox Bounds(this IRender render)
         {
             object bounds;
             if (Base.Compute.TryRunExtensionMethod(render, "Bounds", out bounds) && bounds is BoundingBox)
                 return bounds as BoundingBox;
-
             Base.Compute.RecordError($"Bounds is not implemented for IRender of type: {render.GetType().Name}.");
             return null;
         }
-
-        /***************************************************/
+    /***************************************************/
     }
 }
-
-
-
-
-
-
