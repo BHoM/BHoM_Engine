@@ -41,87 +41,92 @@ namespace BH.Engine.Geometry
         [Input("radius", "The radius of the fillet arc at each corner.")]
         [Output("polyCurve", "A PolyCurve with fillets at each corner, or null if unsuccessful.")]
 
-        public static PolyCurve FilletWithTrim(this Polyline polyline, double radius)
+        public static PolyCurve Fillet(this Polyline polyline, double radius)
         {
             if (polyline == null || polyline.ControlPoints == null || polyline.ControlPoints.Count < 3)
-                return null;
-
-            List<ICurve> curves = new List<ICurve>();
-            var pts = polyline.ControlPoints;
-            bool isClosed = polyline.IsClosed();
-            int n = pts.Count;
-
-            int start = isClosed ? 0 : 1;
-            int end = isClosed ? n : n - 1;
-
-            // For each corner
-            for (int i = start; i < end - 1; i++)
             {
-                int prevIdx = (i - 1 + n) % n;
-                int currIdx = i;
-                int nextIdx = (i + 1) % n;
-
-                Point P0 = pts[prevIdx];
-                Point P1 = pts[currIdx];
-                Point P2 = pts[nextIdx];
-
-                // Directions
-                Vector v1 = (P1 - P0).Normalise();
-                Vector v2 = (P2 - P1).Normalise();
-
-                // Arc start/end and center (simple construction)
-                Point arcStart = P1 + v1 * radius;
-                Point arcEnd = P1 + v2 * radius;
-                Point arcCentre = P1 + v1 * radius + v2 * radius;
-
-                // Build arc (assuming method ArcByCentre exists: start, centre, end)
-                Arc filletArc = BH.Engine.Geometry.Create.ArcByCentre(arcStart, arcCentre, arcEnd);
-
-                // --- Trim Previous Segment ---
-                Line prevLine = BH.Engine.Geometry.Create.Line(P0, P1);
-                var intPrev = BH.Engine.Geometry.Query.CurveIntersections(prevLine, filletArc);
-                Point trimPrev = null;
-                if (intPrev != null && intPrev.Count > 0)
-                {
-                    // Use the intersection point closest to P1
-                    trimPrev = intPrev.OrderBy(pt => pt.Distance(P1)).First();
-                }
-
-                // --- Trim Next Segment ---
-                Line nextLine = BH.Engine.Geometry.Create.Line(P1, P2);
-                var intNext = BH.Engine.Geometry.Query.CurveIntersections(nextLine, filletArc);
-                Point trimNext = null;
-                if (intNext != null && intNext.Count > 0)
-                {
-                    trimNext = intNext.OrderBy(pt => pt.Distance(P1)).First();
-                }
-
-                // Add trimmed previous segment (if not at start of open polyline)
-                if (i > 1 || isClosed)
-                {
-                    if (trimPrev != null)
-                        curves.Add(BH.Engine.Geometry.Create.Line(P0, trimPrev));
-                }
-                else if (!isClosed && i == 1)
-                {
-                    // Add first segment of open polyline, untrimmed
-                    curves.Add(BH.Engine.Geometry.Create.Line(P0, arcStart));
-                }
-
-                // Add fillet arc
-                curves.Add(filletArc);
-
-                // For last corner in open polyline, add trailing segment
-                if (!isClosed && i == end - 2)
-                {
-                    if (trimNext != null)
-                        curves.Add(BH.Engine.Geometry.Create.Line(trimNext, P2));
-                    else
-                        curves.Add(BH.Engine.Geometry.Create.Line(arcEnd, P2));
-                }
+                Base.Compute.RecordError("incorrect polyline for filleting");
+                return null;
             }
 
-            return new PolyCurve { Curves = curves };
+            List<ICurve> resultCurves = new List<ICurve>();
+            IList<Point> pts = polyline.ControlPoints;
+            bool isClosed = polyline.IsClosed();
+            int ptCount = pts.Count;
+
+            int segCount = isClosed ? ptCount : ptCount - 1;
+
+            for (int i = 0; i < segCount; i++)
+            {
+                int prevIdx = (i - 1 + ptCount) % ptCount;
+                int currIdx = i;
+                int nextIdx = (i + 1) % ptCount;
+
+                Point prev = pts[prevIdx];
+                Point curr = pts[currIdx];
+                Point next = pts[nextIdx];
+
+                // For open polylines, add first and last segments unfilleted
+                if (!isClosed && (i == 0 || i == ptCount - 1))
+                {
+                    if (i == 0)
+                        resultCurves.Add(BH.Engine.Geometry.Create.Line(curr, next));
+                    else if (i == ptCount - 1)
+                        resultCurves.Add(BH.Engine.Geometry.Create.Line(prev, curr));
+                    continue;
+                }
+
+                // Vectors from current to prev/next
+                Vector v1 = (prev - curr).Normalise();
+                Vector v2 = (next - curr).Normalise();
+
+                double angle = Math.Acos(Math.Max(-1.0, Math.Min(1.0, v1.DotProduct(v2))));
+                if (Math.Abs(angle) < 1e-8 || Math.Abs(Math.PI - angle) < 1e-8)
+                {
+                    // Colinear, just add straight segment
+                    resultCurves.Add(BH.Engine.Geometry.Create.Line(curr, next));
+                    continue;
+                }
+
+                // Find tangent points for fillet
+                double filletDist = radius / Math.Tan(angle / 2.0);
+                double lenPrev = curr.Distance(prev);
+                double lenNext = curr.Distance(next);
+
+                if (filletDist > 0.5 * lenPrev || filletDist > 0.5 * lenNext)
+                {
+                    // Not enough space for fillet, just use straight segment
+                    resultCurves.Add(BH.Engine.Geometry.Create.Line(curr, next));
+                    continue;
+                }
+
+                Point filletStart = curr.Translate(v1 * filletDist);
+                Point filletEnd = curr.Translate(v2 * filletDist);
+
+                // Add segment before fillet (except for closed loop first corner)
+                if (i > 0 || isClosed)
+                    resultCurves.Add(BH.Engine.Geometry.Create.Line(prev, filletStart));
+
+                // Fillet arc
+                Vector bisector = (v1 + v2).Normalise();
+                double bisectorLength = radius / Math.Sin(angle / 2.0);
+                Point arcCenter = curr.Translate(bisector * bisectorLength);
+
+                Arc filletArc = BH.Engine.Geometry.Create.ArcByCentre(arcCenter, filletStart, filletEnd);
+
+                resultCurves.Add(filletArc);
+
+                // On last segment (open polyline), add segment after fillet
+                if (!isClosed && i == ptCount - 2)
+                    resultCurves.Add(BH.Engine.Geometry.Create.Line(filletEnd, next));
+            }
+
+            PolyCurve result = new PolyCurve
+            {
+                Curves = resultCurves
+            };
+
+            return result;
         }
     }
 }
