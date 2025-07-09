@@ -50,6 +50,8 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
+            //Return polyline as polycurve if radius is NaN or zero
+
             if (double.IsNaN(radius) || radius == 0)
             {
                 // Convert the input polyline to a PolyCurve
@@ -61,6 +63,8 @@ namespace BH.Engine.Geometry
 
                 return new PolyCurve { Curves = originalCurves };
             }
+
+            //Create for loop to iterate through segments and fillet each corner
 
             List<ICurve> resultCurves = new List<ICurve>();
             IList<Point> pts = polyline.ControlPoints;
@@ -89,10 +93,10 @@ namespace BH.Engine.Geometry
                     continue;
                 }
 
-                Vector v1 = (prev - curr).Normalise();
-                Vector v2 = (next - curr).Normalise();
+                Vector v1 = (prev - curr).Normalise(); // Ensure vectors are normalised to avoid issues with small angles
+                Vector v2 = (next - curr).Normalise(); // Ensure vectors are normalised to avoid issues with small angles
 
-                double angle = Math.Acos(Math.Max(-1.0, Math.Min(1.0, v1.DotProduct(v2))));
+                double angle = Math.Acos(Math.Max(-1.0, Math.Min(1.0, v1.DotProduct(v2)))); //Find the angle between the two vectors, ensuring it is within valid range
                 if (Math.Abs(angle) < 1e-8 || Math.Abs(Math.PI - angle) < 1e-8)
                 {
                     resultCurves.Add(BH.Engine.Geometry.Create.Line(curr, next));
@@ -103,7 +107,7 @@ namespace BH.Engine.Geometry
                 double lenPrev = curr.Distance(prev);
                 double lenNext = curr.Distance(next);
 
-                // Improved robust max radius: never allow tangent points to cross neighbor points
+                // Determine max radius: never allow tangent points to cross mid point of segment
                 double maxRadius = Math.Min(lenPrev/2, lenNext/2) * Math.Tan(angle / 2.0);
                 double usedRadius = Math.Min(radius, maxRadius);
 
@@ -116,17 +120,17 @@ namespace BH.Engine.Geometry
 
                 double filletDist = usedRadius / Math.Tan(angle / 2.0);
 
-                Point filletStart = curr.Translate(v1 * filletDist);
+                Point filletStart = curr.Translate(v1 * filletDist); // Translate the current point along the first vector by the fillet distance
                 Point filletEnd = curr.Translate(v2 * filletDist);
 
-                // Bisector
+                // Find the arc centre and create filletArc
                 Vector bisector = (v1 + v2).Normalise();
                 double bisectorLength = usedRadius / Math.Sin(angle / 2.0);
                 Point arcCenter = curr.Translate(bisector * bisectorLength);
 
                 Arc filletArc = BH.Engine.Geometry.Create.ArcByCentre(arcCenter, filletStart, filletEnd);
 
-                // Trim segments to arc intersection
+                // Trim line segments to arc intersection
                 Line prevLine = BH.Engine.Geometry.Create.Line(prev, curr);
                 var prevInts = BH.Engine.Geometry.Query.CurveIntersections(prevLine, filletArc);
                 Point trimmedFilletStart = filletStart;
