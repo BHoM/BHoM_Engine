@@ -124,6 +124,8 @@ namespace BH.Engine.Serialiser
                     return DeserialiseLong(bson);
                 case "System.UInt32": // unsigned integer (uint)
                     return DeserialiseUnsignedInteger(bson);
+                case "System.Numerics.Complex":
+                    return DeserialiseComplex(bson);
                 case "System.IntPtr":
                     return DeserialiseIntPtr(bson);
                 case "System.Object":
