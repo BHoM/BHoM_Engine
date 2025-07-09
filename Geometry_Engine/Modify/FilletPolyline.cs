@@ -91,7 +91,7 @@ namespace BH.Engine.Geometry
                 double lenNext = curr.Distance(next);
 
                 // Improved robust max radius: never allow tangent points to cross neighbor points
-                double maxRadius = Math.Min(lenPrev, lenNext) * Math.Tan(angle / 2.0);
+                double maxRadius = Math.Min(lenPrev/2, lenNext/2) * Math.Tan(angle / 2.0);
                 double usedRadius = Math.Min(radius, maxRadius);
 
                 if (usedRadius < 1e-8)
