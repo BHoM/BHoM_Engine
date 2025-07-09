@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.NetworkInformation;
 
 namespace BH.Engine.Geometry
 {
@@ -47,6 +48,18 @@ namespace BH.Engine.Geometry
             {
                 Base.Compute.RecordError("incorrect polyline for filleting");
                 return null;
+            }
+
+            if (double.IsNaN(radius) || radius == 0)
+            {
+                // Convert the input polyline to a PolyCurve
+                var originalCurves = new List<ICurve>();
+                for (int i = 1; i < polyline.ControlPoints.Count; i++)
+                    originalCurves.Add(BH.Engine.Geometry.Create.Line(polyline.ControlPoints[i - 1], polyline.ControlPoints[i]));
+                if (polyline.IsClosed())
+                    originalCurves.Add(BH.Engine.Geometry.Create.Line(polyline.ControlPoints.Last(), polyline.ControlPoints.First()));
+
+                return new PolyCurve { Curves = originalCurves };
             }
 
             List<ICurve> resultCurves = new List<ICurve>();
