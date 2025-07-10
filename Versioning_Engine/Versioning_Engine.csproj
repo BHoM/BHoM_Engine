@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyVersion>8.0.0.0</AssemblyVersion>
@@ -10,23 +9,18 @@
     <RootNamespace>BH.Engine.Versioning</RootNamespace>
     <FileVersion>8.3.0.0</FileVersion>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\Build\</OutputPath>
   </PropertyGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
   </Target>
-
   <ItemGroup>
     <PackageReference Include="MongoDB.Bson" Version="2.18.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <Reference Include="BHoM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\BHoM.dll</HintPath>
@@ -39,5 +33,4 @@
       <SpecificVersion>false</SpecificVersion>
     </Reference>
   </ItemGroup>
-
 </Project>
