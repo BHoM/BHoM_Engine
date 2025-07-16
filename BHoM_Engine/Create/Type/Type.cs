@@ -49,6 +49,13 @@ namespace BH.Engine.Base
                 return null;
             }
 
+            if (name.StartsWith("System.")) //If a system type, try create it before doing anything else. If failing, rest of method will handle unqualified, generics, reference etc
+            {
+                Type type = System.Type.GetType(name);
+                if (type != null)
+                    return type;
+            }
+
             if (name.Contains('<'))
                 return GenericTypeAngleBrackets(name, silent, takeFirstIfMultiple);
             else if (name.Contains('`') && name.Contains("[["))
@@ -67,9 +74,9 @@ namespace BH.Engine.Base
                 if (type == null)
                     type = System.Type.GetType(unQualifiedName);    //Fallback for when deserialising a type from a later net runtime to a lower net runtime. Can be critical when going between softwares of different net runtimes.
 
-                if (type == null && name.EndsWith("&"))
+                if (type == null && name.Contains("&"))
                 {
-                    type = Type(name.TrimEnd(new char[] { '&' }), true);
+                    type = Type(name.Replace("&", ""), silent, takeFirstIfMultiple);
                     if (type != null)
                         type = type.MakeByRefType();
                 }
@@ -103,7 +110,10 @@ namespace BH.Engine.Base
             ["System.Drawing.Bitmap"] = typeof(System.Drawing.Bitmap),
             ["System.Collections.Generic.SortedDictionary`2"] = typeof(System.Collections.Generic.SortedDictionary<,>),
             ["System.Data.DataTable"] = typeof(System.Data.DataTable),
-            ["System.Collections.Generic.HashSet`1"] = typeof(System.Collections.Generic.HashSet<>)
+            ["System.Collections.Generic.HashSet`1"] = typeof(System.Collections.Generic.HashSet<>),
+            ["System.Xml.XmlNode"] = typeof(System.Xml.XmlNode),
+            ["System.Xml.Linq.XDocument"] = typeof(System.Xml.Linq.XDocument),
+            ["System.Collections.Concurrent.ConcurrentBag`1"] = typeof(System.Collections.Concurrent.ConcurrentBag<>)
         };
 
         /*******************************************/

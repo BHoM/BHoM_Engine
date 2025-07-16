@@ -38,7 +38,7 @@ namespace BH.Engine.Serialiser
         /*******************************************/
         /**** Private Methods                   ****/
         /*******************************************/
-        
+
         private static Type DeserialiseType(this BsonValue bson, Type value, string version, bool isUpgraded)
         {
             // Handle the case where the type is represented as a string
@@ -146,16 +146,10 @@ namespace BH.Engine.Serialiser
             Type type = null;
             if (fullName == "T")
                 return null;
-            if (fullName.IsOmNamespace())
-                type = Base.Create.Type(fullName, true, true);
             else if (fullName.IsEngineNamespace())
                 type = Base.Create.EngineType(fullName, true, true);
             else
-            {
-                type = Type.GetType(fullName);
-                if (type == null)
-                    type = System.Type.GetType(Base.Query.UnqualifiedName(fullName));
-            }
+                type = Base.Create.Type(fullName, true, true);  //Use for all cases except engine methods as method able to handle both oM, and system types, as well as adapter. Also this method is called no matter what if the type is serialised as a string rather than document in this file
 
             if (type == null)
             {
