@@ -31,11 +31,11 @@ namespace BH.Engine.Serialiser
 {
     public static partial class Compute
     {
-        /*******************************************/
-        /**** Public Methods                    ****/
-        /*******************************************/
+        /***************************************************/
+        /****               Public Methods              ****/
+        /***************************************************/
 
-        [Description("Used to support ToJson, not recomended to be used in isolation.")]
+        [Description("Used to support ToJson, not recommended to be used in isolation.")]
         public static void ISerialise(this object value, BsonDocumentWriter writer)
         {
             if (value == null)
@@ -44,9 +44,9 @@ namespace BH.Engine.Serialiser
                 Serialise(value as dynamic, writer, typeof(object));
         }
 
-        /*******************************************/
-        /**** Private Methods                   ****/
-        /*******************************************/
+        /***************************************************/
+        /****              Private Methods              ****/
+        /***************************************************/
 
         private static void ISerialise(this object value, BsonDocumentWriter writer, Type targetType)
         {
@@ -56,10 +56,9 @@ namespace BH.Engine.Serialiser
                 Serialise(value as dynamic, writer, targetType);
         }
 
-
-        /*******************************************/
-        /**** Fallback Methods                  ****/
-        /*******************************************/
+        /***************************************************/
+        /****             Fallback Methods              ****/
+        /***************************************************/
 
         private static void Serialise(this object value, BsonDocumentWriter writer, Type targetType)
         {
@@ -74,17 +73,16 @@ namespace BH.Engine.Serialiser
             {
                 BH.Engine.Base.Compute.RecordError("Object of type " + value.GetType().ToString() + " cannot be serialised.");
                 writer.WriteNull();
-            } 
+            }
         }
 
-        /*******************************************/
-        /**** Private Methods - Support         ****/
-        /*******************************************/
+        /***************************************************/
+        /****         Private Methods - Support         ****/
+        /***************************************************/
 
         private static void WriteAsDocumentIfUnmatchingType(object value, BsonDocumentWriter writer, Type targetType, Action action)
         {
             bool asDocument = value.GetType() != targetType;
-
             if (asDocument)
             {
                 writer.WriteStartDocument();
@@ -94,15 +92,10 @@ namespace BH.Engine.Serialiser
             }
 
             action.Invoke();
-
             if (asDocument)
                 writer.WriteEndDocument();
-
         }
 
-        /*******************************************/
+        /***************************************************/
     }
 }
-
-
-

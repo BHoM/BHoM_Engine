@@ -40,10 +40,10 @@ namespace BH.Engine.Versioning
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Provide a list of all the versioning upgrades that occured this session.")]
+        [Description("Provide a list of all the versioning upgrades that occurred this session.")]
         [Output("events", "List of all exiting events describing a versioning upgrade.")]
         public static List<VersioningEvent> VersioningEvents()
         {
@@ -53,8 +53,3 @@ namespace BH.Engine.Versioning
         /***************************************************/
     }
 }
-
-
-
-
-

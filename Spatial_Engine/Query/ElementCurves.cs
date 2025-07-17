@@ -33,9 +33,9 @@ namespace BH.Engine.Spatial
 {
     public static partial class Query
     {
-        /******************************************/
-        /****            IElement0D            ****/
-        /******************************************/
+        /***************************************************/
+        /****                IElement0D                ****/
+        /***************************************************/
 
         [Description("Queries the defining curves of an IElement0D. Always returns empty collection due to zero-dimensionality of an IElement0D.")]
         [Input("element0D", "The IElement0D to extract the defining curves from.")]
@@ -46,34 +46,31 @@ namespace BH.Engine.Spatial
             return new List<ICurve>();
         }
 
-
-        /******************************************/
-        /****            IElement1D            ****/
-        /******************************************/
+        /***************************************************/
+        /****                IElement1D                ****/
+        /***************************************************/
 
         [Description("Queries the defining curves of an IElement1D.")]
-        [Input("element1D", "The IElement1D of which to get the curve definintion.")]
+        [Input("element1D", "The IElement1D of which to get the curve definition.")]
         [Input("recursive", "Has no effect for IElement1D. Input here to unify inputs between all IElements.")]
         [Output("elementCurves", "The curve defining the base geometry of the IElement1D.")]
         public static List<ICurve> ElementCurves(this IElement1D element1D, bool recursive = true)
         {
-            return new List<ICurve> { element1D.IGeometry() };
+            return new List<ICurve>{element1D.IGeometry()};
         }
 
-
-        /******************************************/
-        /****            IElement2D            ****/
-        /******************************************/
+        /***************************************************/
+        /****                IElement2D                ****/
+        /***************************************************/
 
         [PreviousInputNames("element2D", "panel,opening")]
-        [Description("Queries the geometricly defining curves of the IElement2Ds surface.")]
-        [Input("element2D", "The IElement2D of which to get the curve definintion.")]
+        [Description("Queries the geometrically defining curves of the IElement2Ds surface.")]
+        [Input("element2D", "The IElement2D of which to get the curve definition.")]
         [Input("recursive", "Ensures that the resulting curves are broken up into its smallest constituent parts.")]
         [Output("elementCurves", "The curves defining the base surface geometry of the IElement2D.")]
         public static List<ICurve> ElementCurves(this IElement2D element2D, bool recursive = true)
         {
             List<ICurve> result = new List<ICurve>();
-
             PolyCurve outline = element2D.OutlineCurve();
             foreach (ICurve curve in outline.Curves)
             {
@@ -91,11 +88,11 @@ namespace BH.Engine.Spatial
             return result;
         }
 
-        /******************************************/
+        /***************************************************/
 
         [PreviousInputNames("element2D", "panel")]
-        [Description("Queries the geometricly defining external curves of the IElement2Ds surface.")]
-        [Input("element2D", "The IElement2D of which to get the external curve definintion.")]
+        [Description("Queries the geometrically defining external curves of the IElement2Ds surface.")]
+        [Input("element2D", "The IElement2D of which to get the external curve definition.")]
         [Input("recursive", "Ensures that the resulting curves are broken up into its smallest constituent parts.")]
         [Output("elementCurves", "The curves defining the base surface geometry of the IElement2D.")]
         public static List<ICurve> ExternalElementCurves(this IElement2D element2D, bool recursive = true)
@@ -109,14 +106,15 @@ namespace BH.Engine.Spatial
                 else
                     result.Add(curve);
             }
+
             return result;
         }
 
-        /******************************************/
+        /***************************************************/
 
         [PreviousInputNames("element2D", "panel")]
-        [Description("Queries the geometricly defining internal curves, such as Openings, of the IElement2Ds surface.")]
-        [Input("element2D", "The IElement2D of which to get the internal curve definintion.")]
+        [Description("Queries the geometrically defining internal curves, such as Openings, of the IElement2Ds surface.")]
+        [Input("element2D", "The IElement2D of which to get the internal curve definition.")]
         [Input("recursive", "Ensures that the resulting curves are broken up into its smallest constituent parts.")]
         [Output("elementCurves", "The curves defining the base surface geometry of the IElement2D.")]
         public static List<ICurve> InternalElementCurves(this IElement2D element2D, bool recursive = true)
@@ -124,12 +122,12 @@ namespace BH.Engine.Spatial
             return element2D.IInternalElements2D().Where(x => x != null).SelectMany(x => x.ElementCurves(recursive)).ToList();
         }
 
-        /******************************************/
-        /****            IElement              ****/
-        /******************************************/
+        /***************************************************/
+        /****                 IElement                 ****/
+        /***************************************************/
 
-        [Description("Queries the geometricly defining curves of the IElements geometries.")]
-        [Input("elements", "The IElements of which to get the curve definintions.")]
+        [Description("Queries the geometrically defining curves of the IElements geometries.")]
+        [Input("elements", "The IElements of which to get the curve definitions.")]
         [Input("recursive", "Ensures that the resulting curves are broken up into its smallest constituent parts if it is an IElement2D.")]
         [Output("elementCurves", "The curves defining the base geometry of the IElements.")]
         public static List<ICurve> ElementCurves(this IEnumerable<IElement> elements, bool recursive = true)
@@ -139,28 +137,23 @@ namespace BH.Engine.Spatial
             {
                 result.AddRange(element.IElementCurves(recursive));
             }
+
             return result;
         }
 
+        /***************************************************/
+        /****        Public Methods - Interfaces       ****/
+        /***************************************************/
 
-        /******************************************/
-        /**** Public Methods - Interfaces      ****/
-        /******************************************/
-
-        [Description("Queries the geometricly defining curves of the IElements geometry.")]
-        [Input("element", "The IElement of which to get the curve definintion.")]
+        [Description("Queries the geometrically defining curves of the IElements geometry.")]
+        [Input("element", "The IElement of which to get the curve definition.")]
         [Input("recursive", "Ensures that the resulting curves are broken up into its smallest constituent parts if it is an IElement2D.")]
         [Output("elementCurves", "The curves defining the base geometry of the IElement.")]
         public static List<ICurve> IElementCurves(this IElement element, bool recursive = true)
         {
             return ElementCurves(element as dynamic, recursive);
         }
-        
-        /******************************************/
+
+        /***************************************************/
     }
 }
-
-
-
-
-

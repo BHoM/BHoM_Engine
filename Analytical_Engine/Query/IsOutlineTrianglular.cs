@@ -25,7 +25,6 @@ using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
 using BH.Engine.Geometry;
 using BH.Engine.Reflection;
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,27 +35,19 @@ namespace BH.Engine.Analytical
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
         [Description("Determines whether a Panel's outline is triangular.")]
-        [Input("panel", "The IPanel to check if the outline is a triangular.")]
+        [Input("panel", "The IPanel to check if the outline is triangular.")]
         [Output("bool", "True for Panels with a triangular outline or false for Panels with a non-triangular outline.")]
         public static bool IsOutlineTriangular<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
-            where TEdge : IEdge
-            where TOpening : IOpening<TEdge>
+            where TEdge : IEdge where TOpening : IOpening<TEdge>
         {
             PolyCurve polycurve = ExternalPolyCurve(panel);
-
             return polycurve.IsTriangular();
-
         }
 
         /***************************************************/
-
     }
 }
-
-
-
-

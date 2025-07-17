@@ -33,41 +33,36 @@ namespace BH.Engine.Base
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Finds an extension method accepting a multiple argument based on a provided main object and method name.\n" +
-                     "The method is found via reflection at the first time it is queried, then it is stored for subsequent calls.")]
-        [Input("target", "First argument of the method to find.")]
+        [Description("Finds an extension method that accepts multiple arguments based on a provided main object and method name.\n" + "The method is found via reflection the first time it is queried, then it is stored for subsequent calls.")]
+        [Input("target", "The first argument of the method to find.")]
         [Input("methodName", "The name of the method to be sought.")]
-        [Output("method", "Most suitable extension method with requested target, name and parameters. If no method was found, null is returned.")]
+        [Output("method", "The most suitable extension method with the requested target, name and parameters. Returns null if no method was found.")]
         public static MethodInfo ExtensionMethodToCall(this object target, string methodName)
         {
-            return ExtensionMethodToCall(methodName, new object[] { target });
+            return ExtensionMethodToCall(methodName, new object[]{target});
         }
 
         /***************************************************/
 
-        [Description("Finds an extension method accepting a multiple argument based on a provided main object and method name and additional arguments.\n" +
-                     "The method is found via reflection at the first time it is queried, then it is stored for subsequent calls.")]
-        [Input("target", "First argument of the method to find.")]
+        [Description("Finds an extension method that accepts multiple arguments based on a provided main object, method name and additional arguments.\n" + "The method is found via reflection the first time it is queried, then it is stored for subsequent calls.")]
+        [Input("target", "The first argument of the method to find.")]
         [Input("methodName", "The name of the method to be sought.")]
-        [Input("parameters", "The additional arguments of the call to the method, skipping the first argument provided by 'target'.")]
-        [Output("method", "Most suitable extension method with requested target, name and parameters. If no method was found, null is returned.")]
+        [Input("parameters", "The additional arguments for the method call, excluding the first argument provided by 'target'.")]
+        [Output("method", "The most suitable extension method with the requested target, name and parameters. Returns null if no method was found.")]
         public static MethodInfo ExtensionMethodToCall(this object target, string methodName, object[] parameters)
         {
-            return ExtensionMethodToCall(methodName, new object[] { target }.Concat(parameters).ToArray());
+            return ExtensionMethodToCall(methodName, new object[]{target}.Concat(parameters).ToArray());
         }
-
 
         /***************************************************/
 
-        [Description("Method doing the heavy lifting of ExtensionMethodToCall. Finds the matching method via reflection and caches if for subsequent calls.\n" +
-                     "Finds an extension method accepting multiple arguments with extra emphasis on the first argument in terms of type matching.\n" +
-                     "Method found can have more arguments than the provided parameters, if all of those additional arguments have default values.")]
+        [Description("Performs the core functionality of ExtensionMethodToCall. Finds the matching method via reflection and caches it for subsequent calls.\n" + "Finds an extension method that accepts multiple arguments with extra emphasis on the first argument in terms of type matching.\n" + "The method found can have more arguments than the provided parameters, if all of those additional arguments have default values.")]
         [Input("methodName", "The name of the method to be sought.")]
-        [Input("parameters", "The arguments of the call to the method.")]
-        [Output("method", "Most suitable extension method with requested name and parameters. If no method was found, null is returned.")]
+        [Input("parameters", "The arguments for the method call.")]
+        [Output("method", "The most suitable extension method with the requested name and parameters. Returns null if no method was found.")]
         public static MethodInfo ExtensionMethodToCall(string methodName, object[] parameters)
         {
             if (parameters == null || parameters.Length == 0 || parameters[0] == null)
@@ -84,18 +79,14 @@ namespace BH.Engine.Base
 
             // Get types of input arguments, to be used for first method extraction filtering
             Type[] types = parameters.Select(x => x?.GetType()).ToArray();
-
             // Construct key used to store/extract method
             string name = methodName + parameters.Select(x => x?.GetType()?.ToString() ?? "null").Aggregate((a, b) => a + b);
             Tuple<Type, string> key = new Tuple<Type, string>(types[0], name);
-
             // If the method has been called before, just use that
             if (MethodPreviouslyExtracted(key))
                 return GetStoredExtensionMethod(key);
-
             // Loop through all methods with matching name, pick applicable ones, then sort by best match to the provided inputs
             var applicableMethods = types[0].ExtensionMethods(methodName).Where(x => x.IsApplicable(parameters)).ExtensionMethodHierarchy(types);
-            
             // Return null if no applicable methods
             if (applicableMethods.Count == 0 || applicableMethods[0].Count == 0)
             {
@@ -108,7 +99,6 @@ namespace BH.Engine.Base
             foreach (List<MethodInfo> mostApplicable in applicableMethods.Select(x => x[0]))
             {
                 candidates.IntersectWith(mostApplicable);
-
                 // If no candidates left, there is ambiguity that cannot be solved, stop iterating
                 if (candidates.Count == 0)
                     break;
@@ -119,7 +109,6 @@ namespace BH.Engine.Base
             MethodInfo methodToCall = null;
             if (candidates.Count == 1)
                 methodToCall = candidates.First()?.MakeGenericFromInputs(parameters.Select(x => x?.GetType()).ToList());
-
             // Cache and return the method
             StoreExtensionMethod(key, methodToCall);
             return methodToCall;
@@ -132,7 +121,6 @@ namespace BH.Engine.Base
             ParameterInfo[] paramInfo = method.GetParameters();
             if (paramInfo.Length < parameters.Length)
                 return false;
-
             // Make sure the type of parameters is matching, skipping first as already used to extract parameters
             for (int i = 1; i < paramInfo.Length; i++)
             {
@@ -145,8 +133,7 @@ namespace BH.Engine.Base
                         return false;
                     }
                 }
-                else if ((parameters[i] != null && !paramInfo[i].ParameterType.IsAssignableFromIncludeGenerics(parameters[i].GetType()))
-                    || (parameters[i] == null && !paramInfo[i].ParameterType.IsNullable()))
+                else if ((parameters[i] != null && !paramInfo[i].ParameterType.IsAssignableFromIncludeGenerics(parameters[i].GetType())) || (parameters[i] == null && !paramInfo[i].ParameterType.IsNullable()))
                 {
                     //Parameter does not match, not applicable
                     return false;
@@ -158,7 +145,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [Description("Checks if an entry with the provided key has already been extracted. Put in its own method to simplify the use of locks to provide thread safety.")]
+        [Description("Checks if an entry with the provided key has already been extracted. This method is separated to simplify the use of locks for thread safety.")]
         private static bool MethodPreviouslyExtracted(Tuple<Type, string> key)
         {
             lock (m_ExtensionMethodToCallLock)
@@ -169,7 +156,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [Description("Gets a previously extracted method from the stored methods. Put in its own method to simplify the use of locks to provide thread safety.")]
+        [Description("Retrieves a previously extracted method from the stored methods. This method is separated to simplify the use of locks for thread safety.")]
         private static MethodInfo GetStoredExtensionMethod(Tuple<Type, string> key)
         {
             lock (m_ExtensionMethodToCallLock)
@@ -180,7 +167,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [Description("Stores an extracted method. Put in its own method to simplify the use of locks to provide thread safety.")]
+        [Description("Stores an extracted method for future use. This method is separated to simplify the use of locks for thread safety.")]
         private static void StoreExtensionMethod(Tuple<Type, string> key, MethodInfo method)
         {
             lock (m_ExtensionMethodToCallLock)
@@ -189,19 +176,13 @@ namespace BH.Engine.Base
             }
         }
 
-
         /***************************************************/
-        /**** Private fields                            ****/
+        /****              Private fields               ****/
         /***************************************************/
 
         private static ConcurrentDictionary<Tuple<Type, string>, MethodInfo> m_PreviousFoundMethods = new ConcurrentDictionary<Tuple<Type, string>, MethodInfo>();
-        private static readonly object m_ExtensionMethodToCallLock = new object();
+        private static readonly object m_ExtensionMethodToCallLock = new object ();
 
         /***************************************************/
     }
 }
-
-
-
-
-

@@ -37,8 +37,7 @@ namespace BH.Engine.Analytical
         /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Gets the edge elements from an IOpening defining the boundary of the element. Method required for all IElement2Ds. \n" +
-             "For an IOpening this will return a list of its Edges.")]
+        [Description("Gets the edge elements from an IOpening defining the boundary of the element. Method required for all IElement2Ds. \n" + "For an IOpening this will return a list of its Edges.")]
         [Input("opening", "The IOpening to get outline elements from.")]
         [Output("elements", "Outline elements of the IOpening, i.e. the Edges of the Opening.")]
         public static List<IElement1D> OutlineElements1D<TEdge>(this IOpening<TEdge> opening)
@@ -49,25 +48,23 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Gets the edge elements from an IPanel defining the boundary of the element. Method required for all IElement2Ds. \n" +
-                     "For an IPanel this will return a list of its ExternalEdges.")]
+        [Description("Gets the edge elements from an IPanel defining the boundary of the element. Method required for all IElement2Ds. \n" + "For an IPanel this will return a list of its ExternalEdges.")]
         [Input("panel", "The IPanel to get outline elements from.")]
         [Output("elements", "Outline elements of the IPanel, i.e. the ExternalEdges of the Panel.")]
         public static List<IElement1D> OutlineElements1D<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
-            where TEdge : IEdge
-            where TOpening : IOpening<TEdge>
+            where TEdge : IEdge where TOpening : IOpening<TEdge>
         {
             return panel.ExternalEdges.Cast<IElement1D>().ToList();
         }
 
         /***************************************************/
 
-        [Description("Gets the boundary from an IRegion defining the boundary of the element as the subparts of the perimiter curve. Method required for all IElement2Ds.")]
+        [Description("Gets the boundary from an IRegion defining the boundary of the element as the subparts of the perimeter curve. Method required for all IElement2Ds.")]
         [Input("region", "The IRegion to get outline elements from.")]
-        [Output("elements", "Outline elements of the IRegion, i.e. the subparts of the Perimiter curve.")]
+        [Output("elements", "Outline elements of the IRegion, i.e. the subparts of the Perimeter curve.")]
         public static List<IElement1D> OutlineElements1D(this IRegion region)
         {
-            if(region == null)
+            if (region == null)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot query the outline 1D elements of a null region.");
                 return new List<IElement1D>();
@@ -79,8 +76,3 @@ namespace BH.Engine.Analytical
         /***************************************************/
     }
 }
-
-
-
-
-

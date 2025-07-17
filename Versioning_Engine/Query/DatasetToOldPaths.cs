@@ -34,22 +34,18 @@ namespace BH.Engine.Versioning
     public static partial class Query
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Fetches paths going from an new dataset path to all old paths to the same data.")]
-        [Output("upgradePaths", "A dictionary containing strings going from an new to all old versions of library paths.")]
+        [Description("Fetches paths going from a new dataset path to all old paths to the same data.")]
+        [Output("upgradePaths", "A dictionary containing strings going from a new to all old versions of library paths.")]
         public static Dictionary<string, List<string>> DatasetToOldPaths()
         {
             if (m_DatasetToOldPaths == null)
                 ExtractDataSetUpgraders();
-
             return m_DatasetToOldPaths;
         }
 
-        /***************************************************/
+    /***************************************************/
     }
 }
-
-
-

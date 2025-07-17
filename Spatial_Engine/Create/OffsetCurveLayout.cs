@@ -34,22 +34,17 @@ namespace BH.Engine.Spatial
     public static partial class Create
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Creates an offseet curve layout.")]
+        [Description("Creates an offset curve layout.")]
         [InputFromProperty("offset")]
         [Output("curveLayout", "Created offset curve layout.")]
         public static OffsetCurveLayout OffsetCurveLayout(double offset = 0)
-        {            
+        {
             return new OffsetCurveLayout(offset);
         }
 
         /***************************************************/
     }
 }
-
-
-
-
-

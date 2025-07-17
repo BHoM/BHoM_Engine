@@ -35,7 +35,7 @@ namespace BH.Engine.Spatial
     public static partial class Create
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
         [Description("Creates a MultiLinearLayout from its core properties. Ensures all vectors are in the global XY-plane.")]
@@ -52,7 +52,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        [Description("Creates a MultiLinearLayout from its core proeprties. Ensures all vectors are in the global XY-plane.")]
+        [Description("Creates a MultiLinearLayout from its core properties. Ensures all vectors are in the global XY-plane.")]
         [InputFromProperty("numberOfPoints")]
         [InputFromProperty("parallelMinimumSpacing")]
         [InputFromProperty("perpendicularMinimumSpacing")]
@@ -67,6 +67,7 @@ namespace BH.Engine.Spatial
                 Engine.Base.Compute.RecordError("MultiLinearLayout requires number of points to be at least 1.");
                 return null;
             }
+
             if (parallelMinimumSpacing <= 0 || perpendicularMinimumSpacing <= 0)
             {
                 Engine.Base.Compute.RecordError("MultiLinearLayout requires the minimum spacing to be larger than 0.");
@@ -76,7 +77,7 @@ namespace BH.Engine.Spatial
             Vector projDir = direction ?? Vector.XAxis;
             if (projDir.Z != 0)
             {
-                projDir = new Vector { X = direction.X, Y = direction.Y };
+                projDir = new Vector{X = direction.X, Y = direction.Y};
                 Engine.Base.Compute.RecordWarning("Direction vector has been projected to the global XY-plane.");
             }
 
@@ -86,8 +87,3 @@ namespace BH.Engine.Spatial
         /***************************************************/
     }
 }
-
-
-
-
-

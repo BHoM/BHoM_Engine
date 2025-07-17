@@ -34,10 +34,10 @@ namespace BH.Engine.Graphics
     public static partial class Convert
     {
         /***************************************************/
-        /**** Public Methods                            ****/
+        /****               Public Methods              ****/
         /***************************************************/
 
-        [Description("Coverts a gradient to a stepped gradient by extracting colours in intervals.")]
+        [Description("Converts a gradient to a stepped gradient by extracting colours in intervals.")]
         [Input("gradient", "The gradient to convert. If it is already a stepped gradient, no action will be taken.")]
         [Input("steps", "(Optional, defaults to -1) Number of steps to be used. If -1, the markers of the provided gradient will be used.")]
         [Output("stepGradient", "The new stepped gradient.")]
@@ -45,12 +45,10 @@ namespace BH.Engine.Graphics
         {
             if (gradient == null)
                 return null;
-
             if (gradient is SteppedGradient)
                 return gradient as SteppedGradient;
-
             if (steps == -1)
-                return new SteppedGradient { Markers = new SortedDictionary<decimal, System.Drawing.Color>(gradient.Markers) };
+                return new SteppedGradient{Markers = new SortedDictionary<decimal, System.Drawing.Color>(gradient.Markers)};
             else if (steps > 0)
             {
                 decimal stepSize = 1.0m / (decimal)(steps + 1);
@@ -61,6 +59,7 @@ namespace BH.Engine.Graphics
                     decimal markerVal = stepSize * i;
                     steppedGradient.Markers[markerVal] = gradient.IColor(colourStepSize * i);
                 }
+
                 return steppedGradient;
             }
             else
@@ -73,6 +72,3 @@ namespace BH.Engine.Graphics
         /***************************************************/
     }
 }
-
-
-
