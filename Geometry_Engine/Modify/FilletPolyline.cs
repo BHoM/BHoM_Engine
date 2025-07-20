@@ -37,7 +37,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods - Curves                  ****/
         /***************************************************/
 
-        [Description("Returns a PolyCurve representing the input Polyline with fillets of the given radius at each internal vertex.")]
+        [Description("Returns a PolyCurve representing the input Polyline with fillets of the given radius at each internal vertex. Fillet Radius has been limited to half the shortest segment length at each vertex.")]
         [Input("polyline", "The Polyline to fillet.")]
         [Input("radius", "The radius of the fillet arc at each corner.")]
         [Output("polyCurve", "A PolyCurve with fillets at each corner, or null if unsuccessful.")]
@@ -46,22 +46,20 @@ namespace BH.Engine.Geometry
         {
             if (polyline == null || polyline.ControlPoints == null || polyline.ControlPoints.Count < 3)
             {
-                Base.Compute.RecordError("incorrect polyline for filleting");
-                return null;
+                Base.Compute.RecordError("Polyline is null or ControlPoint count is less that 3.");
+
+                // Convert the input polyline to a PolyCurve
+                return new PolyCurve { Curves = polyline.SubParts().Cast<ICurve>().ToList() };
             }
 
             //Return polyline as polycurve if radius is NaN or zero
 
             if (double.IsNaN(radius) || radius == 0)
             {
-                // Convert the input polyline to a PolyCurve
-                var originalCurves = new List<ICurve>();
-                for (int i = 1; i < polyline.ControlPoints.Count; i++)
-                    originalCurves.Add(BH.Engine.Geometry.Create.Line(polyline.ControlPoints[i - 1], polyline.ControlPoints[i]));
-                if (polyline.IsClosed())
-                    originalCurves.Add(BH.Engine.Geometry.Create.Line(polyline.ControlPoints.Last(), polyline.ControlPoints.First()));
+                Base.Compute.RecordError("Radius has not been defined correctly. Must be greater than 0.");
 
-                return new PolyCurve { Curves = originalCurves };
+                // Convert the input polyline to a PolyCurve
+                return new PolyCurve { Curves = polyline.SubParts().Cast<ICurve>().ToList() };
             }
 
             //Create for loop to iterate through segments and fillet each corner
@@ -77,11 +75,10 @@ namespace BH.Engine.Geometry
             for (int i = 0; i < segCount; i++)
             {
                 int prevIdx = (i - 1 + ptCount) % ptCount;
-                int currIdx = i;
                 int nextIdx = (i + 1) % ptCount;
 
                 Point prev = pts[prevIdx];
-                Point curr = pts[currIdx];
+                Point curr = pts[i];
                 Point next = pts[nextIdx];
 
                 if (!isClosed && (i == 0 || i == ptCount - 1))
@@ -107,7 +104,7 @@ namespace BH.Engine.Geometry
                 double lenPrev = curr.Distance(prev);
                 double lenNext = curr.Distance(next);
 
-                // Determine max radius: never allow tangent points to cross mid point of segment
+                // Determine max radius: never allow radius to be greater than half the length of the shortest segment
                 double maxRadius = Math.Min(lenPrev/2, lenNext/2) * Math.Tan(angle / 2.0);
                 double usedRadius = Math.Min(radius, maxRadius);
 
