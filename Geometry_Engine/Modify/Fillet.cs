@@ -38,8 +38,8 @@ namespace BH.Engine.Geometry
 
         [Description("Returns a PolyCurve representing the input Polyline with fillets of the given radius at each internal vertex. Fillet Radius has been limited to half the shortest segment length at each vertex.")]
         [Input("polyline", "The Polyline to fillet.")]
-        [Input("radius", "The radius of the fillet arc at each corner.")]
-        [Output("polyCurve", "A PolyCurve with fillets at each corner, or null if unsuccessful.")]
+        [Input("radius", "The radius of the fillet arc at each vertex.")]
+        [Output("polyCurve", "A PolyCurve with fillets at each vertex, or null if unsuccessful.")]
         public static PolyCurve Fillet(this Polyline polyline, double radius)
         {
             if (polyline == null || polyline.ControlPoints == null || polyline.ControlPoints.Count < 3)
