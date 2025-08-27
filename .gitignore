@@ -59,3 +59,7 @@ bld/
 *.suo
 *.user
 .vs/
+
+# Cursor AI Files #
+###################
+.cursor/

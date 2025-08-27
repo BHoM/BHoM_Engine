@@ -39,8 +39,8 @@ namespace BH.Engine.Programming
         /***************************************************/
 
         [Description("Automatically set the DataType and default value of all parameters of the input syntax node.")]
-        [Input("node", "syntax node to modify")]
-        [Output("Modified node")]
+        [Input("node", "Syntax node to modify.")]
+        [Output("node", "Modified node.")]
         public static INode IPopulateTypes(this INode node)
         {
             return PopulateTypes(node as dynamic);
@@ -52,8 +52,8 @@ namespace BH.Engine.Programming
         /***************************************************/
 
         [Description("Automatically set the DataType and default value of all parameters of the syntax nodes inside the cluster.")]
-        [Input("content", "cluster content to modify")]
-        [Output("Modified node")]
+        [Input("content", "Cluster content to modify.")]
+        [Output("content", "Modified content.")]
         public static ClusterContent PopulateTypes(this ClusterContent content)
         {
             if (content == null)
@@ -84,8 +84,8 @@ namespace BH.Engine.Programming
         /***************************************************/
 
         [Description("Automatically set the DataType and default value of all parameters of the input method node.")]
-        [Input("node", "method node to modify")]
-        [Output("Modified node")]
+        [Input("node", "Method node to modify.")]
+        [Output("node", "Modified node.")]
         public static MethodNode PopulateTypes(this MethodNode node)
         {
             if (node == null || node.Method == null)
@@ -121,8 +121,8 @@ namespace BH.Engine.Programming
         /***************************************************/
 
         [Description("Automatically set the DataType and default value of all parameters of the input constructor node.")]
-        [Input("node", "constructor node to modify")]
-        [Output("Modified node")]
+        [Input("node", "Constructor node to modify.")]
+        [Output("node", "Modified node.")]
         public static ConstructorNode PopulateTypes(this ConstructorNode node)
         {
             if (node == null || node.Constructor == null)
@@ -149,8 +149,8 @@ namespace BH.Engine.Programming
         /***************************************************/
 
         [Description("Automatically set the DataType and default value of all parameters of the input initialiser node.")]
-        [Input("node", "initialiser node to modify")]
-        [Output("Modified node")]
+        [Input("node", "Initialiser node to modify.")]
+        [Output("node", "Modified node.")]
         public static InitialiserNode PopulateTypes(this InitialiserNode node)
         {
             if (node == null || node.ObjectType == null)
@@ -178,8 +178,8 @@ namespace BH.Engine.Programming
         /***************************************************/
 
         [Description("Automatically set the DataType and default value of all parameters of the input type node.")]
-        [Input("node", "type node to modify")]
-        [Output("Modified node")]
+        [Input("node", "Type node to modify.")]
+        [Output("node", "Modified node.")]
         public static TypeNode PopulateTypes(this TypeNode node)
         {
             if (node == null || node.Type == null)

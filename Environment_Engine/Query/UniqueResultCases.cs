@@ -35,9 +35,9 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        [Description("Returns a collection of unique Result Cases from a collection of MeshResult objects")]
-        [Input("meshResults", "A collection of Environment Mesh Results to obtain the unique result cases from")]
-        [Output("uniqueResultCases", "The collection of unique result cases from the Mesh Results")]
+        [Description("Returns a collection of unique Result Cases from a collection of MeshResult objects.")]
+        [Input("meshResults", "A collection of Environment Mesh Results to obtain the unique result cases from.")]
+        [Output("uniqueResultCases", "The collection of unique result cases from the Mesh Results.")]
         public static List<IComparable> UniqueResultCases(this List<MeshResult> meshResults)
         {
             return meshResults.Select(x => x.ResultCase).Distinct().ToList();

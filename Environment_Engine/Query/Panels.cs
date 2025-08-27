@@ -50,9 +50,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Panels from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("panels", "A collection of Environment Panel objects")]
+        [Description("Returns a collection of Environment Panels from a list of generic BHoM objects.")]
+        [Input("bhomObjects", "A collection of generic BHoM objects.")]
+        [Output("panels", "A collection of Environment Panel objects.")]
         public static List<Panel> Panels(this List<IBHoMObject> bhomObjects)
         {
             bhomObjects = bhomObjects.ObjectsByType(typeof(Panel));

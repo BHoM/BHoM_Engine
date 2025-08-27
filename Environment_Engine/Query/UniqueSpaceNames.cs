@@ -34,9 +34,9 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        [Description("Returns a collection of space names the panels are connected to")]
-        [Input("panels", "A collection of Environment Panels")]
-        [Output("spaceNames", "A collection of space names the panels are connected to")]
+        [Description("Returns a collection of space names the panels are connected to.")]
+        [Input("panels", "A collection of Environment Panels.")]
+        [Output("spaceNames", "A collection of space names the panels are connected to.")]
         public static List<string> UniqueSpaceNames(this List<Panel> panels)
         {
             List<string> spaceNames = new List<string>();

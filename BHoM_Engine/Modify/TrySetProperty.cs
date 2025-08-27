@@ -35,10 +35,10 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Sets a property of a custom object.")]
-        [Input("obj", "Custom object to set the value for")]
-        [Input("propertyName", "name of the property to set the value of")]
-        [Input("value", "new value of the property.")]
-        [Output("result", "New custom object with its property changed to the new value")]
+        [Input("obj", "Custom object to set the value for.")]
+        [Input("propertyName", "Name of the property to set the value of.")]
+        [Input("value", "New value of the property.")]
+        [Output("result", "New custom object with its property changed to the new value.")]
         public static bool TrySetProperty(this CustomObject obj, string propertyName, object value)
         {
             SetPropertyFallback(obj, propertyName, value, true);

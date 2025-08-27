@@ -41,9 +41,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the absorptance of a construction")]
-        [Input("construction", "A Construction object")]
-        [Output("absorptance", "The total absorptance of all materials on the construction")]
+        [Description("Returns the absorptance of a construction.")]
+        [Input("construction", "A Construction object.")]
+        [Output("absorptance", "The total absorptance of all materials on the construction.")]
         public static double Absorptance(this Construction construction)
         {
             if(construction == null)
@@ -59,9 +59,9 @@ namespace BH.Engine.Environment
             return absorptance;
         }
 
-        [Description("Returns the absorptance of a layer")]
-        [Input("layer", "A Layer object")]
-        [Output("absorptance", "The absorptance of the material on the layer")]
+        [Description("Returns the absorptance of a layer.")]
+        [Input("layer", "A Layer object.")]
+        [Output("absorptance", "The absorptance of the material on the layer.")]
         public static double Absorptance(this Layer layer)
         {
             if (layer == null || layer.Material == null)
@@ -73,9 +73,9 @@ namespace BH.Engine.Environment
             return layer.Material.Absorptance();
         }
 
-        [Description("Returns the absorptance of a material calculated as 1 minus the maximum emissivity (external and internal)")]
-        [Input("material", "A Material object")]
-        [Output("absorptance", "The absorptance of the material")]
+        [Description("Returns the absorptance of a material calculated as 1 minus the maximum emissivity (external and internal).")]
+        [Input("material", "A Material object.")]
+        [Output("absorptance", "The absorptance of the material.")]
         public static double Absorptance(this Material material)
         {
             if (material == null)

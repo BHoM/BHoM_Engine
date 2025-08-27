@@ -73,10 +73,10 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Sets the Outline Element1Ds of an IRegion, i.e. the perimiter. Method required for all IElement2Ds.")]
+        [Description("Sets the Outline Element1Ds of an IRegion, i.e. the perimeter. Method required for all IElement2Ds.")]
         [Input("region", "The IRegion to update the Perimeter of.")]
         [Input("outlineElements", "A list of IElement1Ds which all should be Geometrical ICurves.")]
-        [Output("region", "The region with updated perimiter.")]
+        [Output("region", "The region with updated perimeter.")]
         public static IRegion SetOutlineElements1D(this IRegion region, IEnumerable<IElement1D> outlineElements)
         {
             if(region == null)

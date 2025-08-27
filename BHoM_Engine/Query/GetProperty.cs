@@ -36,10 +36,10 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the value of a property with a given name from a custom object")]
-        [Input("obj", "Custom object to get the value from")]
-        [Input("propertyName", "name of the property to get the value from")]
-        [Output("value", "value of the property")]
+        [Description("Get the value of a property with a given name from a custom object.")]
+        [Input("obj", "Custom object to get the value from.")]
+        [Input("propertyName", "Name of the property to get the value from.")]
+        [Output("value", "Value of the property.")]
         public static object GetProperty(this CustomObject obj, string propertyName)
         {
             return GetPropertyFallback(obj, propertyName);

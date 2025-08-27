@@ -39,10 +39,10 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the value of a property with a given name from an object")]
-        [Input("obj", "object to get the value from")]
-        [Input("propName", "name of the property to get the value from")]
-        [Output("value", "value of the property")]
+        [Description("Get the value of a property with a given name from an object.")]
+        [Input("obj", "Object to get the value from.")]
+        [Input("propName", "Name of the property to get the value from.")]
+        [Output("value", "Value of the property.")]
         public static object PropertyValue(this object obj, string propName)
         {
             if (obj == null || propName == null)

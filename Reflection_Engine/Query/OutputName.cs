@@ -35,7 +35,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the custom name of the output of a C# method")]
+        [Description("Return the custom name of the output of a C# method.")]
         public static string OutputName(this MethodBase method)
         {
             if (method == null)

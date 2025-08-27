@@ -54,7 +54,7 @@ namespace BH.Engine.Structure
         [Input("loadcase", "Loadcase to display results for. Should generally be either an identifier matching the one used in the analysis package that the results were pulled from or a Loadcase/LoadCombination.")]
         [Input("scaleFactor", "Controls by how much the results should be scaled.")]
         [Input("drawSections", "Toggles if output should be just centrelines or include section geometry. Note that currently section geometry only supports displacements, no rotations!")]
-        [Output("deformed","The shape of the Bars from the displacements.")]
+        [Output("deformed", "The shape of the Bars from the displacements.")]
         public static List<IGeometry> DeformedShape(this List<Bar> bars, List<BarDisplacement> barDisplacements, Type adapterIdType, object loadcase, double scaleFactor = 1.0, bool drawSections = false)
         {
             if (adapterIdType == null)

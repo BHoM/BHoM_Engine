@@ -36,11 +36,11 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the angle to north of a given environmental object on an xyPlane")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its orientation queried")]
+        [Description("Returns the angle to north of a given environmental object on an xyPlane.")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its orientation queried.")]
         [Input("northAngle", "The angle in radians for north. Default is 0.")]
         [Input("returnAzimuthAngle", "Set to true to return the azimuth angle from north, instead of the angle between north and the object normal. Default is false.")]
-        [Output("orientation", "The orientation of the Environment Object")]
+        [Output("orientation", "The orientation of the Environment Object.")]
         public static double? Orientation(this IEnvironmentObject environmentObject, double northAngle = 0.0, bool returnAzimuthAngle = false)
         {
             if(environmentObject == null)

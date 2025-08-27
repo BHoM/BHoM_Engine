@@ -44,10 +44,10 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the Setting Out Level that the Environment Panel resides on")]
-        [Input("panel", "An Environment Panel to find the level from")]
-        [Input("levels", "A collection of Setting Out Levels to search from")]
-        [Output("level", "The Setting Out Level of the panel")]
+        [Description("Returns the Setting Out Level that the Environment Panel resides on.")]
+        [Input("panel", "An Environment Panel to find the level from.")]
+        [Input("levels", "A collection of Setting Out Levels to search from.")]
+        [Output("level", "The Setting Out Level of the panel.")]
         public static Level Level(this Panel panel, IEnumerable<Level> levels)
         {
             if(panel == null)
@@ -62,10 +62,10 @@ namespace BH.Engine.Environment
             return levels.Where(x => x.Elevation >= min && x.Elevation <= max).FirstOrDefault();
         }
 
-        [Description("Returns the Setting Out Level that the space (represented by a collection of Environment Panels) resides on")]
-        [Input("panelsAsSpace", "A collection of Environment Panels that represent a single space to find the level from")]
-        [Input("level", "The Setting Out Level to check against")]
-        [Output("level", "The Setting Out Level of the space if the space resides on this level, otherwise returns null if the space does not reside on this level")]
+        [Description("Returns the Setting Out Level that the space (represented by a collection of Environment Panels) resides on.")]
+        [Input("panelsAsSpace", "A collection of Environment Panels that represent a single space to find the level from.")]
+        [Input("level", "The Setting Out Level to check against.")]
+        [Output("level", "The Setting Out Level of the space if the space resides on this level, otherwise returns null if the space does not reside on this level.")]
         public static Level Level(this List<Panel> panelsAsSpace, Level level)
         {
             Polyline floor = panelsAsSpace.FloorGeometry();
@@ -84,10 +84,10 @@ namespace BH.Engine.Environment
             return level;
         }
 
-        [Description("Returns the Setting Out Level that the space (represented by a collection of Environment Panels) resides on")]
-        [Input("panelsAsSpace", "A collection of Environment Panels that represent a single space to find the level from")]
-        [Input("levels", "A collection of Setting Out Levels to search from")]
-        [Output("level", "The Setting Out Level of the space")]
+        [Description("Returns the Setting Out Level that the space (represented by a collection of Environment Panels) resides on.")]
+        [Input("panelsAsSpace", "A collection of Environment Panels that represent a single space to find the level from.")]
+        [Input("levels", "A collection of Setting Out Levels to search from.")]
+        [Output("level", "The Setting Out Level of the space.")]
         public static Level Level(this List<Panel> panelsAsSpace, List<Level> levels)
         {
             foreach (Level l in levels)
@@ -99,9 +99,9 @@ namespace BH.Engine.Environment
             return null;
         }
 
-        [Description("Returns a collection of Setting Out Levels from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("levels", "A collection of Setting Out Level objects")]
+        [Description("Returns a collection of Setting Out Levels from a list of generic BHoM objects.")]
+        [Input("bhomObjects", "A collection of generic BHoM objects.")]
+        [Output("levels", "A collection of Setting Out Level objects.")]
         public static List<Level> Levels(this List<IBHoMObject> bhomObjects)
         {
             bhomObjects = bhomObjects.ObjectsByType(typeof(Level));

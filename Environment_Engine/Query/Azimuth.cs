@@ -40,10 +40,10 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the azimuth of a given environmental object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its azimuth queried")]
-        [Input("refVector", "The reference vector for querying the azimuth from the object")]
-        [Output("azimuth", "The azimuth of the Environment Object")]
+        [Description("Returns the azimuth of a given environmental object.")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its azimuth queried.")]
+        [Input("refVector", "The reference vector for querying the azimuth from the object.")]
+        [Output("azimuth", "The azimuth of the Environment Object.")]
         public static double Azimuth(this IEnvironmentObject environmentObject, Vector refVector)
         {
             if(environmentObject == null)
@@ -61,10 +61,10 @@ namespace BH.Engine.Environment
             return environmentObject.Polyline().Azimuth(refVector);
         }
 
-        [Description("Returns the azimuth of a BHoM Geometry Polyline")]
-        [Input("polyline", "A BHoM Geometry Polyline")]
-        [Input("refVector", "The reference vector for querying the azimuth from the polyline")]
-        [Output("azimuth", "The azimuth of the polyline")]
+        [Description("Returns the azimuth of a BHoM Geometry Polyline.")]
+        [Input("polyline", "A BHoM Geometry Polyline.")]
+        [Input("refVector", "The reference vector for querying the azimuth from the polyline.")]
+        [Output("azimuth", "The azimuth of the polyline.")]
         public static double Azimuth(this Polyline polyline, Vector refVector)
         {
             if (polyline == null)

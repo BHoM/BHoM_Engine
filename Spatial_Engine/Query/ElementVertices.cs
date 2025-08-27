@@ -37,7 +37,7 @@ namespace BH.Engine.Spatial
         /****            IElement0D            ****/
         /******************************************/
 
-        [Description("Returns the point from the IElement0D. Mainly to accomodate the interface method.")]
+        [Description("Returns the point from the IElement0D. Mainly to accommodate the interface method.")]
         [Input("element0D", "The IElement0D to query for its vertices.")]
         [Output("vertices", "The location point of IElement0D.")]
         public static List<Point> ElementVertices(this IElement0D element0D)
@@ -51,7 +51,7 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [Description("Returns the discontinuity points from the defining ICurve of the IElement1D.")]
-        [Input("element1D", "The IElement1D of which to get the vertecies from.")]
+        [Input("element1D", "The IElement1D of which to get the vertices from.")]
         [Output("vertices", "The IElement1Ds curves discontinuity points.")]
         public static List<Point> ElementVertices(this IElement1D element1D)
         {
@@ -82,7 +82,7 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [Description("Returns the discontinuity points from the defining ICurves of the IElement2D.")]
-        [Input("element2D", "The IElement2D of which to get the vertecies from.")]
+        [Input("element2D", "The IElement2D of which to get the vertices from.")]
         [Output("vertices", "The IElement2Ds element curves discontinuity points.")]
         public static List<Point> ElementVertices(this IElement2D element2D)
         {
@@ -99,7 +99,7 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [Description("Returns the discontinuity points from the defining ICurves of the IElements.")]
-        [Input("elements", "The IElements of which to get the vertecies from.")]
+        [Input("elements", "The IElements of which to get the vertices from.")]
         [Output("vertices", "The IElements element curves discontinuity points.")]
         public static List<Point> ElementVertices(this IEnumerable<IElement> elements)
         {
@@ -117,7 +117,7 @@ namespace BH.Engine.Spatial
         /******************************************/
 
         [Description("Returns the discontinuity points from the defining ICurves of the IElement.")]
-        [Input("element", "The IElement of which to get the vertecies from.")]
+        [Input("element", "The IElement of which to get the vertices from.")]
         [Output("vertices", "The IElements element curves discontinuity points.")]
         public static List<Point> IElementVertices(this IElement element)
         {

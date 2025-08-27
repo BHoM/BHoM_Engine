@@ -49,9 +49,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Environment Openings from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("openings", "A collection of Environment Opening objects")]
+        [Description("Returns a collection of Environment Openings from a list of generic BHoM objects.")]
+        [Input("bhomObjects", "A collection of generic BHoM objects.")]
+        [Output("openings", "A collection of Environment Opening objects.")]
         public static List<Opening> Openings(this List<IBHoMObject> bhomObjects)
         {
             bhomObjects = bhomObjects.ObjectsByType(typeof(Opening));

@@ -41,9 +41,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the thickness of an Environment Panel based on its construction")]
-        [Input("panel", "An Environment Panel")]
-        [Output("thickness", "The total thickness of the panel as a result of the construction placed on it")]
+        [Description("Returns the thickness of an Environment Panel based on its construction.")]
+        [Input("panel", "An Environment Panel.")]
+        [Output("thickness", "The total thickness of the panel as a result of the construction placed on it.")]
         public static double Thickness(this Panel panel)
         {
             if (panel == null || panel.Construction == null)
@@ -52,9 +52,9 @@ namespace BH.Engine.Environment
             return panel.Construction.IThickness();
         }
 
-        [Description("Returns the thickness of an Environment Opening based on its construction")]
-        [Input("opening", "An Environment Opening")]
-        [Output("thickness", "The thickness of the opening as the largest thickness between the frame construction and opening construction")]
+        [Description("Returns the thickness of an Environment Opening based on its construction.")]
+        [Input("opening", "An Environment Opening.")]
+        [Output("thickness", "The thickness of the opening as the largest thickness between the frame construction and opening construction.")]
         public static double Thickness(this Opening opening)
         {
             if (opening == null || opening.OpeningConstruction == null && opening.FrameConstruction == null)
@@ -72,10 +72,10 @@ namespace BH.Engine.Environment
             return 0;
         }
 
-        [Description("Returns the thickness of an Environment Opening based on its construction")]
-        [Input("opening", "An Environment Opening")]
-        [Input("useFrameConstruction", "Determine whether to use the frame construction for thickness or the glazing construction. Default false - default will be to use the glazing construction")]
-        [Output("thickness", "The thickness of the opening")]
+        [Description("Returns the thickness of an Environment Opening based on its construction.")]
+        [Input("opening", "An Environment Opening.")]
+        [Input("useFrameConstruction", "Determine whether to use the frame construction for thickness or the glazing construction. Default false - default will be to use the glazing construction.")]
+        [Output("thickness", "The thickness of the opening.")]
         public static double Thickness(this Opening opening, bool useFrameConstruction = false)
         {
             if (opening == null)

@@ -42,9 +42,9 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        [Description("Gets all the Materials a Panel is composed of and in which ratios")]
-        [Input("panel", "The Panel to get the MaterialComposition from")]
-        [Output("materialComposition", "The kind of matter the Panel is composed of and in which ratios")]
+        [Description("Gets all the Materials a Panel is composed of and in which ratios.")]
+        [Input("panel", "The Panel to get the MaterialComposition from.")]
+        [Output("materialComposition", "The kind of matter the Panel is composed of and in which ratios.")]
         public static MaterialComposition MaterialComposition(this Panel panel)
         {
             if(panel == null)
@@ -80,9 +80,9 @@ namespace BH.Engine.Environment
             return pMat;
         }
 
-        [Description("Gets all the Materials a Opening is composed of and in which ratios")]
-        [Input("opening", "The Opening to get the MaterialComposition from")]
-        [Output("materialComposition", "The kind of matter the Opening is composed of and in which ratios")]
+        [Description("Gets all the Materials a Opening is composed of and in which ratios.")]
+        [Input("opening", "The Opening to get the MaterialComposition from.")]
+        [Output("materialComposition", "The kind of matter the Opening is composed of and in which ratios.")]
         public static MaterialComposition MaterialComposition(this Opening opening)
         {
             if(opening == null)

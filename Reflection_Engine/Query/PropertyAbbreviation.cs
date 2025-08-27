@@ -33,10 +33,10 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Get the abbreviated name of the given property from an object")]
-        [Input("obj", "Object to query the property from")]
-        [Input("propName", "Name of abbreviated property")]
-        [Output("abbreviation", "Abbreviated property name")]
+        [Description("Get the abbreviated name of the given property from an object.")]
+        [Input("obj", "Object to query the property from.")]
+        [Input("propName", "Name of abbreviated property.")]
+        [Output("abbreviation", "Abbreviated property name.")]
         public static string PropertyAbbreviation(this object obj, string propName)
         {
             if(obj == null)

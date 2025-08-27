@@ -184,9 +184,9 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Gets the geometry of a IRegion as its Perimiter curve. Method required for automatic display in UI packages.")]
+        [Description("Gets the geometry of a IRegion as its Perimeter curve. Method required for automatic display in UI packages.")]
         [Input("region", "IRegion to get the curve geometry from.")]
-        [Output("curve", "The geometry of the IRegion as its Perimiter curve.")]
+        [Output("curve", "The geometry of the IRegion as its Perimeter curve.")]
         public static ICurve Geometry(this IRegion region)
         {
             return region?.Perimeter;
@@ -194,7 +194,7 @@ namespace BH.Engine.Analytical
 
         /***************************************************/
 
-        [Description("Gets the geometry of a Graph as its relation curve arrows. For relations between entities of IElement0D types and outmatic curve is created if it does not exist. Method required for automatic display in UI packages.")]
+        [Description("Gets the geometry of a Graph as its relation curve arrows. For relations between entities of IElement0D types and automatic curve is created if it does not exist. Method required for automatic display in UI packages.")]
         [Input("graph", "Graph to get the geometry from.")]
         [Output("Composite Geometry", "The CompositeGeometry geometry of the Graph.")]
         public static CompositeGeometry Geometry(this Graph graph)

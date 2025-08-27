@@ -21,37 +21,34 @@
  */
 
 using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel;
-using BH.oM.Base.Attributes;
-using BH.oM.Base;
+using System.Numerics;
+using MongoDB.Bson.IO;
 
-namespace BH.Engine.Base
+namespace BH.Engine.Serialiser
 {
-    public static partial class Query
+    public static partial class Compute
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Groups a list of objects by their type.")]
-        [Input("list", "List of objects to group.")]
-        [Output("Groups", "List of List of objects. Each inner list will correspond to one object type.")]
-        public static List<List<T>> GroupByType<T>(this IEnumerable<T> list)
+        /*******************************************/
+        /**** Private Methods                   ****/
+        /*******************************************/
+        
+        private static void Serialise(this Complex value, BsonDocumentWriter writer, Type targetType)
         {
-            if (list == null)
-                return null;
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
 
-            return list.GroupBy(x => x?.GetType()).Select(x => x?.ToList()).ToList();
+            WriteAsDocumentIfUnmatchingType(value, writer, targetType, () =>
+            {
+                writer.WriteStartDocument();
+                writer.WriteName("Real");
+                writer.WriteDouble(value.Real);
+                writer.WriteName("Imaginary");
+                writer.WriteDouble(value.Imaginary);
+                writer.WriteEndDocument();
+            });
         }
-
-        /***************************************************/
     }
-}
-
-
-
-
-
-
+} 

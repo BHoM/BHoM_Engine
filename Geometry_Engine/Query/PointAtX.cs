@@ -35,12 +35,12 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Gets the point at the global x-value for a line passing through point a and b")]
-        [Input("a", "One of the points the line passes through")]
-        [Input("b", "One of the points the line passes through")]
-        [Input("x", "The global x coordinate to evaluate the line at")]
-        [Input("tol", "The tolerance for deciding the line is parallel to the Y-axis")]
-        [Output("pt", "The Point at x on the line passing through the two points")]
+        [Description("Gets the point at the global x-value for a line passing through point a and b.")]
+        [Input("a", "One of the points the line passes through.")]
+        [Input("b", "One of the points the line passes through.")]
+        [Input("x", "The global x coordinate to evaluate the line at.")]
+        [Input("tol", "The tolerance for deciding the line is parallel to the Y-axis.")]
+        [Output("pt", "The Point at x on the line passing through the two points.")]
         public static Point PointAtX(this Point a, Point b, double x, double tol = Tolerance.MicroDistance)
         {
             if (Math.Abs(b.X - a.X) < tol)

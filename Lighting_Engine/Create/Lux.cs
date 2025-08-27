@@ -46,6 +46,7 @@ namespace BH.Engine.Lighting
         /***************************************************/
 
         [Description("Create a Lux result for a specific node or face. This can be a list of values corresponding to values per a series of timesteps.")]
+        [Input("lux", "The list of lux values.")]
         [Input("objectId", "The id of the mesh the result belongs to.")]
         [Input("nodeId", "The id of the node the result belongs to. If the result is face based, this value should be null.")]
         [Input("meshFaceId", "The id of the face the result belongs to. If the result is node based, this value should be null.")]

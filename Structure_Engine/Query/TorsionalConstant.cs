@@ -473,7 +473,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Diameter of a circle inscribed in a tapered flange T-junction connection such as a taper flange I-section. Taken from Johnston & El Darwish, 1964, Figure 6 Case 2")]
+        [Description("Diameter of a circle inscribed in a tapered flange T-junction connection such as a taper flange I-section. Taken from Johnston & El Darwish, 1964, Figure 6 Case 2.")]
         [Input("tw", "Web thickness, assumed to be the stem of the T.", typeof(Length))]
         [Input("t3", "Flange thickness at theoretical intersection of flange and web centerline.", typeof(Length))]
         [Input("r", "Root radius, assumed to be the same on both sides of the T.", typeof(Length))]
@@ -489,7 +489,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Diameter of a circle inscribed in a tapered L-junction connection such as a taper flange channel. Taken from Johnston & El Darwish, 1964, Figure 6 Case 4")]
+        [Description("Diameter of a circle inscribed in a tapered L-junction connection such as a taper flange channel. Taken from Johnston & El Darwish, 1964, Figure 6 Case 4.")]
         [Input("tw", "Web thickness.", typeof(Length))]
         [Input("t2", "Flange thickness at theoretical intersection of flange and near face of web.", typeof(Length))]
         [Input("r", "Root radius.", typeof(Length))]
@@ -527,7 +527,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Empirical formula used to correct the torsional constant with enhancement from a tapered T-junction such as a taper flange I-Section. Taken from Johnston & El Darwish, 1964")]
+        [Description("Empirical formula used to correct the torsional constant with enhancement from a tapered T-junction such as a taper flange I-Section. Taken from Johnston & El Darwish, 1964.")]
         [Input("tw", "Web thickness.", typeof(Length))]
         [Input("tf", "Mean flange thickness.", typeof(Length))]
         [Input("r", "Root radius.", typeof(Length))]
@@ -551,7 +551,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Empirical formula used to correct the torsional constant with enhancement from a tapered L-junction such as a taper flange channel. Taken from Johnston & El Darwish, 1964")]
+        [Description("Empirical formula used to correct the torsional constant with enhancement from a tapered L-junction such as a taper flange channel. Taken from Johnston & El Darwish, 1964.")]
         [Input("tw", "Web thickness.", typeof(Length))]
         [Input("tf", "Mean flange thickness.", typeof(Length))]
         [Input("r", "Root radius.", typeof(Length))]

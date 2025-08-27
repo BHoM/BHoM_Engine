@@ -45,7 +45,7 @@ namespace BH.Engine.Facade
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns 2D Geometry representing the frame's projected elevation extents")]
+        [Description("Returns 2D Geometry representing the frame's projected elevation extents.")]
         [Input("opening", "The opening to get the frame geometry for")]
         [Output("geo", "The projected elevation extents of the frame")]
 

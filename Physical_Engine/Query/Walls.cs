@@ -40,9 +40,9 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Physical Walls from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("walls", "A collection of Physical Wall objects")]
+        [Description("Returns a collection of Physical Walls from a list of generic BHoM objects.")]
+        [Input("bhomObjects", "A collection of generic BHoM objects.")]
+        [Output("walls", "A collection of Physical Wall objects.")]
         public static List<Wall> Walls(this List<IBHoMObject> bhomObjects)
         {
             bhomObjects = bhomObjects.ObjectsByType(typeof(Wall));

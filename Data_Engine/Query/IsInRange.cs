@@ -43,7 +43,7 @@ namespace BH.Engine.Data
         [Input("box1", "Box to evaluate intersection of.")]
         [Input("box2", "Box to evaluate intersection of.")]
         [Input("tolerance", "Numerical tolerance for the operation.")]
-        [Output("true if the two Domainboxes are in range of each other.")]
+        [Output("result", "True if the two Domainboxes are in range of each other.")]
         public static bool IsInRange(this DomainBox box1, DomainBox box2, double tolerance = Tolerance.Distance)
         {
             if (box1 == null || box2 == null)
@@ -58,7 +58,7 @@ namespace BH.Engine.Data
         [Input("domain1", "Domain to evaluate overlap with.")]
         [Input("domain2", "Domain to evaluate overlap with.")]
         [Input("tolerance", "Numerical tolerance for the operation.")]
-        [Output("true if the two Domains are in range of each other.")]
+        [Output("result", "True if the two Domains are in range of each other.")]
         public static bool IsInRange(this Domain domain1, Domain domain2, double tolerance = Tolerance.Distance)
         {
             if (domain1 == null || domain2 == null)
@@ -73,7 +73,7 @@ namespace BH.Engine.Data
         [Input("domain", "Domain to evaluate overlap with.")]
         [Input("val", "Value to query overlap with the domain.")]
         [Input("tolerance", "Numerical tolerance for the operation.")]
-        [Output("true if the value is in the domain.")]
+        [Output("result", "True if the value is in the domain.")]
         public static bool IsInRange(this Domain domain, double val, double tolerance = Tolerance.Distance)
         {
             if (domain == null)

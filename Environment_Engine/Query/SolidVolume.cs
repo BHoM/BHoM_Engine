@@ -41,9 +41,9 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        [Description("Returns an Openings solid volume based on its area, and construction thickness")]
-        [Input("panel", "The Panel to get the volume from")]
-        [Output("volume", "The Panel solid volume", typeof(Volume))]
+        [Description("Returns an Openings solid volume based on its area, and construction thickness.")]
+        [Input("panel", "The Panel to get the volume from.")]
+        [Output("volume", "The Panel solid volume.", typeof(Volume))]
         public static double SolidVolume(this Panel panel)
         {
             if(panel == null)
@@ -60,9 +60,9 @@ namespace BH.Engine.Environment
             return volume + panel.Openings.Sum(x => x.SolidVolume());
         }
 
-        [Description("Returns an Openings solid volume based on its area, and construction thickness")]
-        [Input("opening", "The Opening to get the volume from")]
-        [Output("volume", "The Opening solid volume", typeof(Volume))]
+        [Description("Returns an Openings solid volume based on its area, and construction thickness.")]
+        [Input("opening", "The Opening to get the volume from.")]
+        [Output("volume", "The Opening solid volume.", typeof(Volume))]
         public static double SolidVolume(this Opening opening)
         {
             if(opening == null)

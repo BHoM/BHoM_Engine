@@ -167,19 +167,19 @@ namespace BH.Engine.Environment
             return panels.Where(x => x.MinimumLevel() == searchLevel).ToList();
         }
 
-        [Description("Returns a collection of Environment Panels that are match the given name")]
+        [Description("Returns a collection of Environment Panels that match the given name")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("name", "The name of the panel to filter by")]
-        [Output("panels", "A collection of Environment Panel that match the given name")]
+        [Output("panels", "A collection of Environment Panels that match the given name")]
         public static List<Panel> FilterPanelsByName(this List<Panel> panels, string name)
         {
             return panels.Where(x => x.Name == name).ToList();
         }
 
-        [Description("Returns a collection of Environment Panels that are match the given tilt")]
+        [Description("Returns a collection of Environment Panels that match the given tilt")]
         [Input("panels", "A collection of Environment Panels")]
         [Input("tilt", "The tilt to filter by")]
-        [Output("panels", "A collection of Environment Panel that match the given tilt")]
+        [Output("panels", "A collection of Environment Panels that match the given tilt")]
         public static List<Panel> FilterPanelsByTilt(this List<Panel> panels, double tilt)
         {
             return panels.Where(x => x.Tilt() == tilt).ToList();

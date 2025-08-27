@@ -35,8 +35,8 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the custom description of all inputs of a C# method")]
-        [Output("Dictionary where the keys are the names of the inputs, and the values their descriptions")]
+        [Description("Return the custom description of all inputs of a C# method.")]
+        [Output("Dictionary where the keys are the names of the inputs, and the values their descriptions.")]
         public static Dictionary<string,string> InputDescriptions(this MethodBase method)
         {
             if(method == null)

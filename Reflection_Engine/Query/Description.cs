@@ -40,7 +40,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return the custom description of a C# class member (e.g. property, method, field)")]
+        [Description("Return the custom description of a C# class member (e.g. property, method, field).")]
         public static string Description(this MemberInfo member, bool addTypeDescription = true)
         {
             if(member == null)
@@ -70,7 +70,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        [Description("Return the custom description of a C# method argument")]
+        [Description("Return the custom description of a C# method argument.")]
         public static string Description(this ParameterInfo parameter, bool addTypeDescription = true)
         {
             if(parameter == null)
@@ -140,7 +140,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        [Description("Return the custom description of a C# class")]
+        [Description("Return the custom description of a C# class.")]
         public static string Description(this Type type)
         {
             return Description(type, null);
@@ -148,7 +148,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        [Description("Return the custom description of a C# class")]
+        [Description("Return the custom description of a C# class.")]
         public static string Description(this Type type, ClassificationAttribute classification)
         {
             if (type == null)
@@ -231,8 +231,8 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        [Description("Return the custom description of a C# element such as Type, MemberInfo, and ParamaterInfo")]
-        [Input("item", "This item can either be a Type, a MemberInfo, or a ParamaterInfo")]
+        [Description("Return the custom description of a C# element such as Type, MemberInfo, and ParameterInfo.")]
+        [Input("item", "This item can either be a Type, a MemberInfo, or a ParameterInfo.")]
         public static string IDescription(this object item)
         {
             if (item is ParameterInfo)

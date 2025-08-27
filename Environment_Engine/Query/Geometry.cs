@@ -36,9 +36,9 @@ namespace BH.Engine.Environment
 {
     public static partial class Query
     {
-        [Description("Gets the geometry of a Node as a Point. Method required for automatic display in UI packages")]
-        [Input("node", "Node to get the Point from")]
-        [Output("point", "The geometry of the Node")]
+        [Description("Gets the geometry of a Node as a Point. Method required for automatic display in UI packages.")]
+        [Input("node", "Node to get the Point from.")]
+        [Output("point", "The geometry of the Node.")]
         public static Point Geometry(this Node node)
         {
             if(node == null)
@@ -52,9 +52,9 @@ namespace BH.Engine.Environment
 
         /***************************************************/
 
-        [Description("Gets the geometry of an Edge as an ICurve")]
-        [Input("edge", "Edge to get the ICurve from")]
-        [Output("curve", "The geometry of the curve")]
+        [Description("Gets the geometry of an Edge as an ICurve.")]
+        [Input("edge", "Edge to get the ICurve from.")]
+        [Output("curve", "The geometry of the curve.")]
         public static ICurve Geometry(this Edge edge)
         {
             if(edge == null)

@@ -39,9 +39,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Determines whether the Environment Panel is internally facing")]
-        [Input("panel", "An Environment Panel")]
-        [Output("isInternal", "True if the panel is internally facing, false otherwise")]
+        [Description("Determines whether the Environment Panel is internally facing.")]
+        [Input("panel", "An Environment Panel.")]
+        [Output("isInternal", "True if the panel is internally facing, false otherwise.")]
         public static bool IsInternal(this Panel panel)
         {
             if (panel == null)

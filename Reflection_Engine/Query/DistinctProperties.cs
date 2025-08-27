@@ -36,9 +36,9 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Extract all the distinct objects of a specific type from the properties of a list of objects")]
-        [Input("objects", "List of objects to extract the properties from")]
-        [Input("propertyType", "Type of property to extract")]
+        [Description("Extract all the distinct objects of a specific type from the properties of a list of objects.")]
+        [Input("objects", "List of objects to extract the properties from.")]
+        [Input("propertyType", "Type of property to extract.")]
         public static IEnumerable<object> DistinctProperties<T>(this IEnumerable<T> objects, Type propertyType) where T : IBHoMObject
         {
             //MethodInfo method = typeof(Merge).GetMethod("MergePropertyObjects", new Type[] { typeof(List<T>) });
@@ -53,7 +53,7 @@ namespace BH.Engine.Reflection
 
         /***************************************************/
 
-        [Description("Extract all the distinct objects of a specific type P from the properties of a list of objects")]
+        [Description("Extract all the distinct objects of a specific type P from the properties of a list of objects.")]
         public static IEnumerable<P> DistinctProperties<T, P>(this IEnumerable<T> objects) where T : IBHoMObject where P : IBHoMObject
         {
             if (objects == null)

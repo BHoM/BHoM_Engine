@@ -38,7 +38,7 @@ namespace BH.Engine.Data
         [Description("Partition an enumerable collection into sublists based on the number of target sub-lists.")]
         [Input("collection", "An enumerable list of variable data types.")]
         [Input("nChunks", "The number of \"chunks\" into which the collection should be split.")]
-        [Output("chunks", "The chunked list")]
+        [Output("chunks", "The chunked list.")]
         public static IEnumerable<List<T>> ChunkByNumber<T>(this IEnumerable<T> collection, int nChunks)
         {
             int i = 0;

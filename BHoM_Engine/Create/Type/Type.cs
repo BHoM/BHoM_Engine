@@ -26,6 +26,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 
 namespace BH.Engine.Base
@@ -98,6 +99,7 @@ namespace BH.Engine.Base
 
         private static Dictionary<string, Type> m_ExplicitSystemTypes = new Dictionary<string, Type>
         {
+            ["System.Numerics.Complex"] = typeof(System.Numerics.Complex),
             ["System.Drawing.Color"] = typeof(System.Drawing.Color),
             ["System.Text.RegularExpressions.Regex"] = typeof(System.Text.RegularExpressions.Regex),
             ["System.Drawing.Bitmap"] = typeof(System.Drawing.Bitmap),

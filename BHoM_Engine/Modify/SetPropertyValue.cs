@@ -39,11 +39,11 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Set the value of a property with a given name for an object")]
-        [Input("obj", "object to set the value for")]
-        [Input("propName", "name of the property to set the value of")]
-        [Input("value", "new value of the property. \nIf left empty, the value for that property will be cleared \n(enumerables will be emptied, primitives will be set to their default value, and objects will be set to null)")]
-        [Output("result", "New object with its property changed to the new value")]
+        [Description("Set the value of a property with a given name for an object.")]
+        [Input("obj", "Object to set the value for.")]
+        [Input("propName", "Name of the property to set the value of.")]
+        [Input("value", "New value of the property. \nIf left empty, the value for that property will be cleared \n(enumerables will be emptied, primitives will be set to their default value, and objects will be set to null).")]
+        [Output("result", "New object with its property changed to the new value.")]
         public static object SetPropertyValue(this object obj, string propName, object value = null)
         {
             if(obj == null)

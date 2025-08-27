@@ -38,7 +38,7 @@ namespace BH.Engine.Spatial
         [Description("Linearly maps the domain of the source to the target.")]
         [Input("source", "The domain to be mapped.")]
         [Input("target", "The domain that the source will be mapped to.")]
-        [Output("mappedDomain", "The source domain mapped to the target domain")]
+        [Output("mappedDomain", "The source domain mapped to the target domain.")]
         public static List<double> MapDomain(List<double> source, List<double> target)
         {
             double minPosition = target.First();

@@ -40,9 +40,9 @@ namespace BH.Engine.Physical
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a collection of Physical Windows from a list of generic BHoM objects")]
-        [Input("bhomObjects", "A collection of generic BHoM objects")]
-        [Output("windows", "A collection of Physical Window objects")]
+        [Description("Returns a collection of Physical Windows from a list of generic BHoM objects.")]
+        [Input("bhomObjects", "A collection of generic BHoM objects.")]
+        [Output("windows", "A collection of Physical Window objects.")]
         public static List<Window> Windows(this List<IBHoMObject> bhomObjects)
         {
             bhomObjects = bhomObjects.ObjectsByType(typeof(Window));

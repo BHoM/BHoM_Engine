@@ -37,7 +37,7 @@ namespace BH.Engine.MEP
         [Input("line", "A line that determines the Wire's length and direction.")]
         [Input("flowRate", "The volume of fluid being conveyed by the Wire per second (m3/s).")]
         [Input("sectionProperty", "Provide a pipeSectionProperty to prepare a composite Wire section for accurate capacity and spatial quality.")]
-        [Output("wireSegment", "Wire object to work within an MEP systems.")]
+        [Output("wireSegment", "Wire object to work within an MEP system.")]
         public static WireSegment WireSegment(Line line, double flowRate = 0, WireSectionProperty sectionProperty = null)
         {
             if (line == null)

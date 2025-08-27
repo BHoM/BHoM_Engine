@@ -36,12 +36,13 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a Dataset. A Dataset contains a list of BHoMObjects as well as metadata such as source information and time of creation. \n The datasets are used together with the serialised datasets accessed with the Library_Engine")]
-        [Input("data", "The list of BHoMObjects to store in the Dataset")]
-        [Input("source", "Citation for the source of the data")]
-        [Input("name", "Name of the dataset")]
+        [Description("Creates a Dataset. A Dataset contains a list of BHoMObjects as well as metadata such as source information and time of creation. \n" +
+                     "The datasets are used together with the serialised datasets accessed with the Library_Engine.")]
+        [Input("data", "The list of BHoMObjects to store in the Dataset.")]
+        [Input("source", "Citation for the source of the data.")]
+        [Input("name", "Name of the dataset.")]
         [Input("timeOfCreation", "The time the Dataset was generated. If no time is provided, the current UTC time will be used.")]
-        [Output("Dataset", "The created Dataset")]
+        [Output("Dataset", "The created Dataset.")]
         public static Dataset Dataset(List<IBHoMObject> data, Source source, string name, DateTime? timeOfCreation = null)
         {
             DateTime time = timeOfCreation == null ? DateTime.UtcNow : (DateTime)timeOfCreation;

@@ -42,9 +42,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the height of a generic Environment Object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its height queried")]
-        [Output("height", "The height of the environment object")]
+        [Description("Returns the height of a generic Environment Object.")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its height queried.")]
+        [Output("height", "The height of the environment object.")]
         public static double Height(this IEnvironmentObject environmentObject)
         {
             if(environmentObject == null)
@@ -56,9 +56,9 @@ namespace BH.Engine.Environment
             return Height(environmentObject as dynamic);
         }
 
-        [Description("Returns the height of an Environment Panel")]
-        [Input("panel", "An Environment Panel")]
-        [Output("height", "The height of the panel")]
+        [Description("Returns the height of an Environment Panel.")]
+        [Input("panel", "An Environment Panel.")]
+        [Output("height", "The height of the panel.")]
         public static double Height(this Panel panel)
         {
             if (panel == null)
@@ -70,9 +70,9 @@ namespace BH.Engine.Environment
             return panel.Polyline().Height();
         }
 
-        [Description("Returns the height of an Environment Opening")]
-        [Input("opening", "An Environment Opening")]
-        [Output("height", "The height of the opening")]
+        [Description("Returns the height of an Environment Opening.")]
+        [Input("opening", "An Environment Opening.")]
+        [Output("height", "The height of the opening.")]
         public static double Height(this Opening opening)
         {
             if(opening == null)
@@ -84,9 +84,9 @@ namespace BH.Engine.Environment
             return opening.Polyline().Height();
         }
 
-        [Description("Returns the height of a BHoM Geometry ICurve based on the bounding box of the curve")]
-        [Input("curve", "BHoM Geometry ICurve")]
-        [Output("height", "The height of the curve based on the difference in z values for its bounding box")]
+        [Description("Returns the height of a BHoM Geometry ICurve based on the bounding box of the curve.")]
+        [Input("curve", "BHoM Geometry ICurve.")]
+        [Output("height", "The height of the curve based on the difference in z values for its bounding box.")]
         public static double Height(this ICurve curve)
         {
             if (curve == null)

@@ -37,11 +37,11 @@ namespace BH.Engine.Library
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Updates the settings used for accessing library datasets. These settings are stored in the Settings folder of your BHoM installation")]
+        [Description("Updates the settings used for accessing library datasets. These settings are stored in the Settings folder of your BHoM installation.")]
         [Input("settings", "The new LibrarySettings object.")]
         [Input("replacePreexisting", "If true, any preexisting settings file will be replaced. If false, settings will only be updated if none exists.")]
         [Input("refreshLibraries", "If true, all loaded libraries will be refreshed and reloaded, making use of the new library settings.")]
-        [Output("sucess", "Returns true if the settings were successfully updated.")]
+        [Output("success", "Returns true if the settings were successfully updated.")]
         public static bool SaveLibrarySettings(LibrarySettings settings, bool replacePreexisting = false, bool refreshLibraries = true)
         {
             if (settings == null)

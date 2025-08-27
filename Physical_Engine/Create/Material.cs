@@ -40,10 +40,10 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Returns a Material object")]
-        [Input("name", "The name of the material, default empty string")]
-        [Input("properties", "A collection of the specific properties of the material to be created, default null")]
-        [Output("A Material object")]
+        [Description("Returns a Material object.")]
+        [Input("name", "The name of the material, default empty string.")]
+        [Input("properties", "A collection of the specific properties of the material to be created, default null.")]
+        [Output("A Material object.")]
         public static Material Material(string name = "", List<IMaterialProperties> properties = null, double density = double.NaN, DensityExtractionOptions densityOptions = null)
         {
             properties = properties ?? new List<IMaterialProperties>();
@@ -64,9 +64,9 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Returns a Material object")]
-        [Input("property", "The specific property of the material to be created, its name will be carried over to the Material")]
-        [Output("A Material object")]
+        [Description("Returns a Material object.")]
+        [Input("property", "The specific property of the material to be created, its name will be carried over to the Material.")]
+        [Output("A Material object.")]
         public static Material Material(IMaterialProperties property)
         {
             if(property == null)

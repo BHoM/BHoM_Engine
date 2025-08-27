@@ -37,7 +37,7 @@ namespace BH.Engine.Spatial
 
         [Description("Maps the positions of a TaperedProfile to a domain of 0 and 1.")]
         [Input("taperedProfile", "The TaperedProfile to modify the position domain.")]
-        [Output("taperedProfile", "TaperedProfile with a position domain of 0 and 1")]
+        [Output("taperedProfile", "TaperedProfile with a position domain of 0 and 1.")]
         public static TaperedProfile MapPositionDomain(this TaperedProfile taperedProfile)
         {
             TaperedProfile newTaperedProfile = null;

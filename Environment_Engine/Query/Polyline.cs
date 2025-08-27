@@ -40,9 +40,9 @@ namespace BH.Engine.Environment
         /****          Public Methods                   ****/
         /***************************************************/
 
-        [Description("Returns a Polyline representation of an Environment Edge")]
-        [Input("edge", "An Environment Edge object")]
-        [Output("polyline", "BHoM Geometry Polyline")]
+        [Description("Returns a Polyline representation of an Environment Edge.")]
+        [Input("edge", "An Environment Edge object.")]
+        [Output("polyline", "BHoM Geometry Polyline.")]
         public static Polyline Polyline(this Edge edge)
         {
             if(edge == null)
@@ -54,9 +54,9 @@ namespace BH.Engine.Environment
             return edge.Curve.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
         }
 
-        [Description("Returns a Polyline representation of a collection of Environment Edges")]
-        [Input("edges", "A collection of Environment Edge objects to convert into a single polyline")]
-        [Output("polyline", "BHoM Geometry Polyline")]
+        [Description("Returns a Polyline representation of a collection of Environment Edges.")]
+        [Input("edges", "A collection of Environment Edge objects to convert into a single polyline.")]
+        [Output("polyline", "BHoM Geometry Polyline.")]
         public static Polyline Polyline(this List<Edge> edges)
         {
             if (edges == null || edges.Count == 0)
@@ -72,9 +72,9 @@ namespace BH.Engine.Environment
             return BH.Engine.Geometry.Create.Polyline(edgePoints);
         }
 
-        [Description("Returns the external boundary from an Environment Panel as a BHoM Geometry Polyline")]
-        [Input("panel", "An Environment Panel to obtain the external boundary from")]
-        [Output("polyline", "BHoM Geometry Polyline")]
+        [Description("Returns the external boundary from an Environment Panel as a BHoM Geometry Polyline.")]
+        [Input("panel", "An Environment Panel to obtain the external boundary from.")]
+        [Output("polyline", "BHoM Geometry Polyline.")]
         public static Polyline Polyline(this Panel panel)
         {
             if(panel == null)
@@ -86,9 +86,9 @@ namespace BH.Engine.Environment
             return panel.ExternalEdges.Polyline();
         }
 
-        [Description("Returns the external boundary from an Environment Opening as a BHoM Geometry Polyline")]
-        [Input("opening", "An Environment Opening to obtain the external boundary from")]
-        [Output("polyline", "BHoM Geometry Polyline")]
+        [Description("Returns the external boundary from an Environment Opening as a BHoM Geometry Polyline.")]
+        [Input("opening", "An Environment Opening to obtain the external boundary from.")]
+        [Output("polyline", "BHoM Geometry Polyline.")]
         public static Polyline Polyline(this Opening opening)
         {
             if(opening == null)
@@ -100,9 +100,9 @@ namespace BH.Engine.Environment
             return opening.Edges.Polyline();
         }
 
-        [Description("Returns the external boundary from an Environment Space as a BHoM Geometry Polyline")]
-        [Input("space", "An Environment Space to obtain the external boundary from")]
-        [Output("polyline", "BHoM Geometry Polyline")]
+        [Description("Returns the external boundary from an Environment Space as a BHoM Geometry Polyline.")]
+        [Input("space", "An Environment Space to obtain the external boundary from.")]
+        [Output("polyline", "BHoM Geometry Polyline.")]
         public static Polyline Polyline(this Space space)
         {
             if(space == null)
@@ -114,9 +114,9 @@ namespace BH.Engine.Environment
             return space.Perimeter.ICollapseToPolyline(BH.oM.Geometry.Tolerance.Angle);
         }
 
-        [Description("Returns the external boundary from a generic Environment Object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its boundaries extracted")]
-        [Output("polyline", "BHoM Geometry Polyline")]
+        [Description("Returns the external boundary from a generic Environment Object.")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its boundaries extracted.")]
+        [Output("polyline", "BHoM Geometry Polyline.")]
         public static Polyline Polyline(this IEnvironmentObject environmentObject)
         {
             if(environmentObject == null)

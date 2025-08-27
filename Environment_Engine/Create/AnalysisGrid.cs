@@ -38,15 +38,15 @@ namespace BH.Engine.Environment
 {
     public static partial class Create
     {
-        [Description("An AnalysisGrid generated from a boundary curve representing a surface. There will not be any nodes in areas within the inner boundaries, with the analysis grid only providing analysis nodes for the surface area without openings")]
-        [Input("externalBoundary", "Surface outline representing the external boundary of the surface")]
-        [Input("innerBoundaries", "Holes in the surface representing openings. There will not be any analysis grid nodes within the inner boundaries")]
-        [Input("id", "A unique identifier for this Analysis Grid. This should unqiuely identify only this analysis grid in a project, which is used to perform result analysis later on")]
-        [Input("name", "A name for the Analysis Grid which is human readable and represents what this Analysis Grid is for, to aid engineers know where this grid is being utilised")]
-        [Input("gridSpacing", "Analysis grid spacing/resolution (default = 0.2)")]
-        [Input("edgeOffset", "Distance from the curve edges within which nodes will be generated (default = 0.1)")]
-        [Input("pointOffset", "Distance offset from surface in normal direction (default = 0.765)")]
-        [Output("analysisGrid", "An analysis grid object containing nodes with positions")]
+        [Description("An AnalysisGrid generated from a boundary curve representing a surface. There will not be any nodes in areas within the inner boundaries, with the analysis grid only providing analysis nodes for the surface area without openings.")]
+        [Input("externalBoundary", "Surface outline representing the external boundary of the surface.")]
+        [Input("innerBoundaries", "Holes in the surface representing openings. There will not be any analysis grid nodes within the inner boundaries.")]
+        [Input("id", "A unique identifier for this Analysis Grid. This should unqiuely identify only this analysis grid in a project, which is used to perform result analysis later on.")]
+        [Input("name", "A name for the Analysis Grid which is human readable and represents what this Analysis Grid is for, to aid engineers know where this grid is being utilised.")]
+        [Input("gridSpacing", "Analysis grid spacing/resolution (default = 0.2).")]
+        [Input("edgeOffset", "Distance from the curve edges within which nodes will be generated (default = 0.1).")]
+        [Input("pointOffset", "Distance offset from surface in normal direction (default = 0.765).")]
+        [Output("analysisGrid", "An analysis grid object containing nodes with positions.")]
         public static AnalysisGrid AnalysisGrid(this Polyline externalBoundary, List<Polyline> innerBoundaries = null, int id = -1, string name = "", double gridSpacing = 0.2, double edgeOffset = 0.1, double pointOffset = 0.765)
         {
             if (externalBoundary == null)

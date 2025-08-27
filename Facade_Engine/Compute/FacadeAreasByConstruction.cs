@@ -45,7 +45,7 @@ namespace BH.Engine.Facade
         /***************************************************/
 
         [Description("Returns total areas of each unique Construction contained in the provided elements (as per Construction name), as well as the total Frame area (Used for a panel containing openings with FameEdgeProperties).")]
-        [Input("elems", "elements to find total areas for.")]
+        [Input("elems", "Elements to find total areas for.")]
         [MultiOutput(0, "areas", "Total area per each unique Construction. These areas account for decreased areas for openings where frame edges occur.")]
         [MultiOutput(1, "constructions", "Construction corresponding to each area value in areas.")]
         [MultiOutput(2, "frameArea", "Total frame area.")]

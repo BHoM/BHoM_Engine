@@ -45,7 +45,7 @@ namespace BH.Engine.Facade
         [Description("Returns frame and clear opening areas for an Opening.")]
         [Input("opening", "Opening to find areas for.")]
         [MultiOutput(0, "openingArea", "Area of the portion of the opening not covered by the frame as per a projected elevation of the opening.")]
-        [MultiOutput(1, "frameArea", "Adjacent Elements per adjacent edge")]
+        [MultiOutput(1, "frameArea", "Frame area of the opening.")]
         public static Output<double, double> ComponentAreas(this Opening opening)
         {
             if (opening == null)

@@ -37,7 +37,7 @@ namespace BH.Engine.Graphics
         /****           Public Methods                  ****/
         /***************************************************/
 
-        [Description("Gets a color from a gradient at the spacified position between 0 and 1.")]
+        [Description("Gets a color from a gradient at the specified position between 0 and 1.")]
         [Input("gradient", "The gradient to Query a Color from.")]
         [Input("val", "The number between 0 and 1 to use for interpolation of the markers colors.")]
         [Output("color", "The Color at the specified position.")]
@@ -74,7 +74,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        [Description("Gets a color from a gradient at the spacified position between 0 and 1.")]
+        [Description("Gets a color from a gradient at the specified position between 0 and 1.")]
         [Input("gradient", "The gradient to Query a Color from.")]
         [Input("val", "The number between 0 and 1 to use for extracting the colour from the gradient.")]
         [Output("color", "The Color at the specified position.")]
@@ -101,7 +101,7 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        [Description("Gets a color from a gradient at the spacified position scaled between from and to.")]
+        [Description("Gets a color from a gradient at the specified position scaled between from and to.")]
         [Input("gradient", "The gradient to Query a Color from.")]
         [Input("val", "The number between 'from' and 'to' to use for extraction of colour from the gradient.")]
         [Input("from", "The lower bound of 'val's rescaling to 0 to 1.")]
@@ -122,7 +122,7 @@ namespace BH.Engine.Graphics
         /**** Public Methods - Interface                ****/
         /***************************************************/
 
-        [Description("Gets a color from a gradient at the spacified position between 0 and 1.")]
+        [Description("Gets a color from a gradient at the specified position between 0 and 1.")]
         [Input("gradient", "The gradient to Query a Color from.")]
         [Input("val", "The number between 0 and 1 to use for extracting the colour from the gradient.")]
         [Output("color", "The Color at the specified position.")]

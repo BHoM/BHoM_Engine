@@ -42,9 +42,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the RValue of a construction layer")]
-        [Input("layer", "A Layer object")]
-        [Output("rValue", "The rValue of the layer calculated as the layers thickness divided by the materials conductivity")]
+        [Description("Returns the RValue of a construction layer.")]
+        [Input("layer", "A Layer object.")]
+        [Output("rValue", "The rValue of the layer calculated as the layers thickness divided by the materials conductivity.")]
         public static double RValue(this Layer layer)
         {
             if(layer == null)

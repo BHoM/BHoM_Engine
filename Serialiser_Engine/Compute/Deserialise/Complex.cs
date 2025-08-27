@@ -20,38 +20,42 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.ComponentModel;
-using BH.oM.Base.Attributes;
-using BH.oM.Base;
+using System.Numerics;
+using MongoDB.Bson;
 
-namespace BH.Engine.Base
+namespace BH.Engine.Serialiser
 {
-    public static partial class Query
+    public static partial class Compute
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Groups a list of objects by their type.")]
-        [Input("list", "List of objects to group.")]
-        [Output("Groups", "List of List of objects. Each inner list will correspond to one object type.")]
-        public static List<List<T>> GroupByType<T>(this IEnumerable<T> list)
+        /*******************************************/
+        /**** Private Methods                   ****/
+        /*******************************************/
+        
+        private static Complex DeserialiseComplex(this BsonValue bson)
         {
-            if (list == null)
-                return null;
+            if (bson.IsBsonNull)
+                return default(Complex);
 
-            return list.GroupBy(x => x?.GetType()).Select(x => x?.ToList()).ToList();
+            if (bson.IsBsonDocument)
+            {
+                BsonDocument value = bson.AsBsonDocument.GetValue("_v") as BsonDocument;
+                double real = 0;
+                double imaginary = 0;
+                if(value.Contains("Real"))
+                    real = value["Real"].AsDouble;
+                else
+                    Base.Compute.RecordWarning("Real property not found in the BsonDocument when deserialising Complex, default value set to 0.");
+
+                if (value.Contains("Imaginary"))
+                    imaginary = value["Imaginary"].AsDouble;
+                else
+                    Base.Compute.RecordWarning("Imaginary property not found in the BsonDocument when deserialising Complex, default value set to 0.");
+
+                return new Complex(real, imaginary);
+            }
+
+            Base.Compute.RecordError("Failed to deserialise Complex number from " + bson.ToString());
+            return default(Complex);
         }
-
-        /***************************************************/
     }
-}
-
-
-
-
-
-
+} 

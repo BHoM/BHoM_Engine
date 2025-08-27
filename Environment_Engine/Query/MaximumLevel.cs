@@ -44,10 +44,10 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the maximum level of the given polyline based on the z axis")]
-        [Input("polyline", "An Environment polyline to find the maximum level from")]
-        [Input("decimals", "Provide decimal location for the maximum levels")]
-        [Output("maximumLevel", "The maximum level of the z axis of the polyline")]
+        [Description("Returns the maximum level of the given polyline based on the z axis.")]
+        [Input("polyline", "An Environment polyline to find the maximum level from.")]
+        [Input("decimals", "Provide decimal location for the maximum levels.")]
+        [Output("maximumLevel", "The maximum level of the z axis of the polyline.")]
         public static double MaximumLevel(this Polyline polyline, int decimals = 3)
         {
             List<Point> crvPts = polyline.IControlPoints();
@@ -59,10 +59,10 @@ namespace BH.Engine.Environment
             return Math.Round(max, decimals);
         }
 
-        [Description("Returns the maximum level of the given panel based on the z axis")]
-        [Input("panel", "An Environment Panel to find the maximum level from")]
-        [Input("decimals", "Provide decimal location for the maximum levels")]
-        [Output("maximumLevel", "The maximum level of the z axis of the panel")]
+        [Description("Returns the maximum level of the given panel based on the z axis.")]
+        [Input("panel", "An Environment Panel to find the maximum level from.")]
+        [Input("decimals", "Provide decimal location for the maximum levels.")]
+        [Output("maximumLevel", "The maximum level of the z axis of the panel.")]
         public static double MaximumLevel(this Panel panel, int decimals = 3)
         {
             if(panel == null)
@@ -74,10 +74,10 @@ namespace BH.Engine.Environment
             return panel.Polyline().MaximumLevel(decimals);
         }
 
-        [Description("Returns the maximum level of the given opening based on the z axis")]
-        [Input("opening", "An Environment Opening to find the maximum level from")]
-        [Input("decimals", "Provide decimal location for the maximum levels")]
-        [Output("maximumLevel", "The maximum level of the z axis of the opening")]
+        [Description("Returns the maximum level of the given opening based on the z axis.")]
+        [Input("opening", "An Environment Opening to find the maximum level from.")]
+        [Input("decimals", "Provide decimal location for the maximum levels.")]
+        [Output("maximumLevel", "The maximum level of the z axis of the opening.")]
         public static double MaximumLevel(this Opening opening, int decimals = 3)
         {
             if (opening == null)

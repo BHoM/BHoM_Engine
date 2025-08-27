@@ -42,7 +42,7 @@ namespace BH.Engine.Environment
         [Description("Determines which Environment Panels are externally facing.")]
         [Input("panels", "List of Environment Panels.")]
         [MultiOutput(0, "externalPanels", "List of external panels.")]
-        [MultiOutput(1,"internalPanels","List of internal panels.")]
+        [MultiOutput(1, "internalPanels", "List of internal panels.")]
         public static Output<List<Panel>, List<Panel>> IsExternal(this List<Panel> panels)
          {
              List<List<Panel>> definedSpaces = panels.ToSpaces();

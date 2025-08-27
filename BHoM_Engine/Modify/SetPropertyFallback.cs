@@ -35,12 +35,12 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Fallback nethod to set a property of a BHoM object. This will try to set the property either as a fragment or into CustomData.")]
-        [Input("obj", "object to set the value for")]
-        [Input("propertyName", "name of the property to set the value of")]
-        [Input("value", "new value of the property.")]
+        [Description("Fallback method to set a property of a BHoM object. This will try to set the property either as a fragment or into CustomData.")]
+        [Input("obj", "Object to set the value for.")]
+        [Input("propertyName", "Name of the property to set the value of.")]
+        [Input("value", "New value of the property.")]
         [Input("isSilent", "If true, no warning will be recorded when the property is set in CustomData.")]
-        [Output("result", "New object with its property changed to the new value")]
+        [Output("result", "New object with its property changed to the new value.")]
         public static IBHoMObject SetPropertyFallback(this IBHoMObject obj, string propertyName, object value, bool isSilent = false)
         {
             if (value is IFragment)

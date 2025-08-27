@@ -39,13 +39,13 @@ namespace BH.Engine.Data
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Generates a Table from a list of BHoMObjects. To generate a custom table, use this in conjunction with CustomObjects")]
-        [Input("name", "Name of the table")]
-        [Input("bhomObjects", "The list of BHoMObjects to turn into a Table")]
-        [Input("ignoreName", "Toggles whether to skip the name property or not, defaults to false")]
-        [Input("ignoreGuid", "Toggles whether to skip the name Guid or not, defaults to false")]
-        [Input("ignoreTags", "Toggles whether to skip the name Tags or not, defaults to false")]
-        [Output("Table", "The created Table class")]
+        [Description("Generates a Table from a list of BHoMObjects. To generate a custom table, use this in conjunction with CustomObjects.")]
+        [Input("name", "Name of the table.")]
+        [Input("bhomObjects", "The list of BHoMObjects to turn into a Table.")]
+        [Input("ignoreName", "Toggles whether to skip the name property or not, defaults to false.")]
+        [Input("ignoreGuid", "Toggles whether to skip the name Guid or not, defaults to false.")]
+        [Input("ignoreTags", "Toggles whether to skip the name Tags or not, defaults to false.")]
+        [Output("Table", "The created Table class.")]
         public static Table Table(string name, List<IBHoMObject> bhomObjects, bool ignoreName = false, bool ignoreGuid = true, bool ignoreTags = true)
         {
             IBHoMObject first = bhomObjects.First();
@@ -85,14 +85,14 @@ namespace BH.Engine.Data
         /***************************************************/
 
         [Description("Generates a 2d tables based on the two main axis values in two directions and matrix of internal values.")]
-        [Input("name", "Name of the table")]
-        [Input("axis1Name", "Name of the first axis")]
-        [Input("axis1Values", "Values of the first axis")]
-        [Input("axis2Name", "Name of the second axis")]
-        [Input("axis2Values", "Values of the second axis")]
-        [Input("values", "Main values of the table")]
-        [Input("valuesName", "Optional name of the values of the table")]
-        [Output("table", "The generated table")]
+        [Input("name", "Name of the table.")]
+        [Input("axis1Name", "Name of the first axis.")]
+        [Input("axis1Values", "Values of the first axis.")]
+        [Input("axis2Name", "Name of the second axis.")]
+        [Input("axis2Values", "Values of the second axis.")]
+        [Input("values", "Main values of the table.")]
+        [Input("valuesName", "Optional name of the values of the table.")]
+        [Output("table", "The generated table.")]
         public static Table Table<T>(string name, string axis1Name, List<object> axis1Values, string axis2Name, List<object> axis2Values, List<List<T>> values, string valuesName = "Values")
         {
             DataTable table = new DataTable();

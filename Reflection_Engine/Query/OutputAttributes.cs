@@ -37,7 +37,7 @@ namespace BH.Engine.Reflection
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Return names and descriptions of the multiple outputs of a C# method")]
+        [Description("Return names and descriptions of the multiple outputs of a C# method.")]
         public static List<OutputAttribute> OutputAttributes(this MethodBase method)
         {
             if (method == null)

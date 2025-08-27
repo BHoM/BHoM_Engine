@@ -38,10 +38,10 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Updates the position of a Node")]
-        [Input("node", "The Node to set the postion to")]
-        [Input("point", "The new position of the Node")]
-        [Output("node", "The Node with updated geometry")]
+        [Description("Updates the position of a Node.")]
+        [Input("node", "The Node to set the postion to.")]
+        [Input("point", "The new position of the Node.")]
+        [Output("node", "The Node with updated geometry.")]
         public static Node SetGeometry(this Node node, Point point)
         {
             if(node == null)
@@ -61,19 +61,19 @@ namespace BH.Engine.Environment
             return clone;
         }
 
-        [Description("Assign a new ICurve boundary to a generic Environment Object")]
-        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its geometry changed")]
-        [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves")]
-        [Output("environmentObject", "The environment object with an updated external boundary")]
+        [Description("Assign a new ICurve boundary to a generic Environment Object.")]
+        [Input("environmentObject", "Any object implementing the IEnvironmentObject interface that can have its geometry changed.")]
+        [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves.")]
+        [Output("environmentObject", "The environment object with an updated external boundary.")]
         public static IEnvironmentObject ISetGeometry(this IEnvironmentObject environmentObject, ICurve curve)
         {
             return SetGeometry(environmentObject as dynamic, curve as dynamic);
         }
 
-        [Description("Assign a new ICurve external boundary to an Environment Panel")]
-        [Input("panel", "An Environment Panel to set the external boundary of")]
-        [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves")]
-        [Output("panel", "An Environment Panel with an updated external boundary")]
+        [Description("Assign a new ICurve external boundary to an Environment Panel.")]
+        [Input("panel", "An Environment Panel to set the external boundary of.")]
+        [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves.")]
+        [Output("panel", "An Environment Panel with an updated external boundary.")]
         public static Panel SetGeometry(this Panel panel, ICurve curve)
         {
             if (panel == null)
@@ -93,10 +93,10 @@ namespace BH.Engine.Environment
             return aPanel;
         }
 
-        [Description("Assign a new ICurve external boundary to an Environment Opening")]
-        [Input("opening", "An Environment Opening to set the external boundary of")]
-        [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves")]
-        [Output("opening", "An Environment Opening with an updated external boundary")]
+        [Description("Assign a new ICurve external boundary to an Environment Opening.")]
+        [Input("opening", "An Environment Opening to set the external boundary of.")]
+        [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves.")]
+        [Output("opening", "An Environment Opening with an updated external boundary.")]
         public static Opening SetGeometry(this Opening opening, ICurve curve)
         {
             if (opening == null)
@@ -116,10 +116,10 @@ namespace BH.Engine.Environment
             return aOpening;
         }
 
-        [Description("Assign a new ICurve definition to an Environment Edge")]
-        [Input("edge", "An Environment Edge to set the geometry of")]
-        [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves")]
-        [Output("edge", "An Environment Edge with an updated geometry")]
+        [Description("Assign a new ICurve definition to an Environment Edge.")]
+        [Input("edge", "An Environment Edge to set the geometry of.")]
+        [Input("curve", "Any object implementing the ICurve interface from BHoM Geometry Curves.")]
+        [Output("edge", "An Environment Edge with an updated geometry.")]
         public static Edge SetGeometry(this Edge edge, ICurve curve)
         {
             if (edge == null)
@@ -139,10 +139,10 @@ namespace BH.Engine.Environment
             return clone;
         }
 
-        [Description("Assign a new locaion point to an Environment Space")]
-        [Input("space", "An Environment Space to set the geometry of")]
-        [Input("locationPoint", "A BHoM Geometry Point defining the location of the space")]
-        [Output("space", "An Environment Space with an updated geometry")]
+        [Description("Assign a new locaion point to an Environment Space.")]
+        [Input("space", "An Environment Space to set the geometry of.")]
+        [Input("locationPoint", "A BHoM Geometry Point defining the location of the space.")]
+        [Output("space", "An Environment Space with an updated geometry.")]
         public static Space SetGeometry(this Space space, Point locationPoint)
         {
             if (space == null)

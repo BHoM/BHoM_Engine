@@ -44,10 +44,10 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns the minimum level of the given polyline based on the z axis")]
-        [Input("polyline", "An Environment polyline to find the minimum level from")]
-        [Input("decimals", "Provide decimal location for the minimum levels")]
-        [Output("minimumLevel", "The minimum level of the z axis of the polyline")]
+        [Description("Returns the minimum level of the given polyline based on the z axis.")]
+        [Input("polyline", "An Environment polyline to find the minimum level from.")]
+        [Input("decimals", "Provide decimal location for the minimum levels.")]
+        [Output("minimumLevel", "The minimum level of the z axis of the polyline.")]
         public static double MinimumLevel(this Polyline polyline, int decimals = 3)
         {
             List<Point> crvPts = polyline.IControlPoints();
@@ -59,10 +59,10 @@ namespace BH.Engine.Environment
             return Math.Round(min, decimals);
         }
 
-        [Description("Returns the minimum level of the given panel based on the z axis")]
-        [Input("panel", "An Environment Panel to find the minimum level from")]
-        [Input("decimals", "Provide decimal location for the minimum levels")]
-        [Output("minimumLevel", "The minimum level of the z axis of the panel")]
+        [Description("Returns the minimum level of the given panel based on the z axis.")]
+        [Input("panel", "An Environment Panel to find the minimum level from.")]
+        [Input("decimals", "Provide decimal location for the minimum levels.")]
+        [Output("minimumLevel", "The minimum level of the z axis of the panel.")]
         public static double MinimumLevel(this Panel panel, int decimals = 3)
         {
             if (panel == null)
@@ -74,10 +74,10 @@ namespace BH.Engine.Environment
             return panel.Polyline().MinimumLevel(decimals);
         }
 
-        [Description("Returns the minimum level of the given opening based on the z axis")]
-        [Input("opening", "An Environment Opening to find the minimum level from")]
-        [Input("decimals", "Provide decimal location for the minimum levels")]
-        [Output("minimumLevel", "The minimum level of the z axis of the opening")]
+        [Description("Returns the minimum level of the given opening based on the z axis.")]
+        [Input("opening", "An Environment Opening to find the minimum level from.")]
+        [Input("decimals", "Provide decimal location for the minimum levels.")]
+        [Output("minimumLevel", "The minimum level of the z axis of the opening.")]
         public static double MinimumLevel(this Opening opening, int decimals = 3)
         {
             if (opening == null)

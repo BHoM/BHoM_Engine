@@ -39,9 +39,9 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a volume from a collection of Environment Panels representing a space")]
-        [Input("panelsAsSpace", "A collection of Environment Panels representing a space")]
-        [Output("volume", "A volume for the space")]
+        [Description("Returns a volume from a collection of Environment Panels representing a space.")]
+        [Input("panelsAsSpace", "A collection of Environment Panels representing a space.")]
+        [Output("volume", "A volume for the space.")]
         public static double Volume(this List<Panel> panelsAsSpace)
         {
             //TODO: Make this more accurate for irregular spaces
