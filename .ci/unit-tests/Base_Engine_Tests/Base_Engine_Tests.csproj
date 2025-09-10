@@ -34,6 +34,16 @@
       <Private>True</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+	  <Reference Include="Diffing_oM">
+		  <HintPath>$(ProgramData)\BHoM\Assemblies\Diffing_oM.dll</HintPath>
+		  <Private>True</Private>
+		  <SpecificVersion>False</SpecificVersion>
+	  </Reference>
+	  <Reference Include="Diffing_Engine">
+		  <HintPath>$(ProgramData)\BHoM\Assemblies\Diffing_Engine.dll</HintPath>
+		  <Private>True</Private>
+		  <SpecificVersion>False</SpecificVersion>
+	  </Reference>
     <Reference Include="Geometry_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Geometry_oM.dll</HintPath>
       <Private>True</Private>
@@ -49,6 +59,11 @@
       <Private>True</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+	  <Reference Include="Versioning_oM">
+		  <HintPath>$(ProgramData)\BHoM\Assemblies\Versioning_oM.dll</HintPath>
+		  <Private>True</Private>
+		  <SpecificVersion>False</SpecificVersion>
+	  </Reference>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

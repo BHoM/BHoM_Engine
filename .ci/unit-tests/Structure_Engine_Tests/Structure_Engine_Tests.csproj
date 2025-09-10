@@ -42,13 +42,13 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="CodeComplianceTest_Engine">
-      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\CodeComplianceTest_Engine.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\CodeComplianceTest_Engine.dll</HintPath>
     </Reference>
     <Reference Include="CodeComplianceTest_oM">
-      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\CodeComplianceTest_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\CodeComplianceTest_oM.dll</HintPath>
     </Reference>
     <Reference Include="Data_oM">
-      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\Data_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Data_oM.dll</HintPath>
     </Reference>
     <Reference Include="Dimensional_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Dimensional_oM.dll</HintPath>
@@ -57,6 +57,11 @@
     </Reference>
     <Reference Include="Geometry_oM">
       <HintPath>$(ProgramData)\BHoM\Assemblies\Geometry_oM.dll</HintPath>
+      <Private>True</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Matter_oM">
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Matter_oM.dll</HintPath>
       <Private>True</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -71,22 +76,22 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="TestSetup_Engine">
-      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\TestSetup_Engine.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\TestSetup_Engine.dll</HintPath>
     </Reference>
     <Reference Include="Test_Engine">
-      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\Test_Engine.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Test_Engine.dll</HintPath>
     </Reference>
     <Reference Include="Test_oM">
-      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\Test_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Test_oM.dll</HintPath>
     </Reference>
     <Reference Include="UnitTest_Engine">
-      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\UnitTest_Engine.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\UnitTest_Engine.dll</HintPath>
     </Reference>
     <Reference Include="UnitTest_oM">
-      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\UnitTest_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\UnitTest_oM.dll</HintPath>
     </Reference>
     <Reference Include="Versioning_oM">
-      <HintPath>..\..\..\..\..\ProgramData\BHoM\Assemblies\Versioning_oM.dll</HintPath>
+      <HintPath>$(ProgramData)\BHoM\Assemblies\Versioning_oM.dll</HintPath>
     </Reference>
   </ItemGroup>
 

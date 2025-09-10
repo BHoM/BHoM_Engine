@@ -16,10 +16,16 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Tests.Engine.Structure
+namespace BH.Tests.Engine.Structure.Compliance
 {
-    public class Compliance : ComplianceTestBase
+    //[TestFixtureSource("TestFiles")]
+    public class Compliance : ComplianceTestBase2
     {
+        
+        public Compliance(string filePath) : base(filePath)
+        {
+        }
+
         public static IEnumerable<string> TestFiles()
         {
             return GetCsFiles("Structure_Engine");

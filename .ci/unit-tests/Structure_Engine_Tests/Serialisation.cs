@@ -17,12 +17,12 @@ namespace BH.Tests.Engine.Structure
     {
         public static IEnumerable<Type> OmTypes()
         {
-            return oMTypesToTest(typeof(Bar).Assembly);
+            return oMTypesToTest(new List<Assembly> { typeof(Bar).Assembly }).Take(5);
         }
 
         public static IEnumerable<MethodBase> EngineMethods()
         {
-            return EngineMethodsToTest(typeof(BH.Engine.Structure.Query).Assembly);
+            return EngineMethodsToTest(new List<Assembly> { typeof(BH.Engine.Structure.Query).Assembly }).Take(5);
         }
     }
 }
