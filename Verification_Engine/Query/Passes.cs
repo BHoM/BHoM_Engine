@@ -55,14 +55,29 @@ namespace BH.Engine.Verification
                 return null;
             }
 
-            object result;
-            if (!BH.Engine.Base.Compute.TryRunExtensionMethod(obj, nameof(Passes), new object[] { condition }, out result))
-            {
-                BH.Engine.Base.Compute.RecordError($"Condition check failed because condition of type {condition.GetType().Name} is currently not supported.");
-                return null;
-            }
+            if (condition is IsOfType isOfType)
+                return Passes(obj, isOfType);
 
-            return (bool?)result;
+            if (condition is HasId hasId)
+                return Passes(obj, hasId);
+
+            if (condition is LogicalNotCondition logicalNot)
+                return Passes(obj, logicalNot);
+
+            if (condition is LogicalAndCondition logicalAnd)
+                return Passes(obj, logicalAnd);
+
+            if (condition is LogicalOrCondition logicalOr)
+                return Passes(obj, logicalOr);
+
+            if (condition is FormulaCondition formula)
+                return Passes(obj, formula);
+
+            if (condition is IValueCondition valueCondition)
+                return Passes(obj, valueCondition);
+
+            BH.Engine.Base.Compute.RecordError($"Condition check failed because condition of type {condition.GetType().Name} is currently not supported.");
+            return null;
         }
 
 
@@ -257,4 +272,3 @@ namespace BH.Engine.Verification
         /***************************************************/
     }
 }
-

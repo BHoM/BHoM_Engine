@@ -63,16 +63,35 @@ namespace BH.Engine.Verification
                 return null;
             }
 
-            object result;
-            if (!BH.Engine.Base.Compute.TryRunExtensionMethod(obj, nameof(VerifyCondition), new object[] { condition }, out result))
-            {
-                if (BH.Engine.Base.Query.CurrentEvents().LastOrDefault()?.Message?.StartsWith($"Failed to run {nameof(VerifyCondition)} extension method") != true)
-                    BH.Engine.Base.Compute.RecordError($"Verification failed because condition of type {condition.GetType().Name} is currently not supported.");
+			if (condition is LogicalNotCondition logicalNot)
+				return VerifyCondition(obj, logicalNot);
 
-                return null;
-            }
+			if (condition is ILogicalCollectionCondition logicalCollection)
+				return VerifyCondition(obj, logicalCollection);
 
-            return result as IConditionResult;
+			if (condition is IsInDomain isInDomain)
+				return VerifyCondition(obj, isInDomain);
+
+			if (condition is HasId hasId)
+				return VerifyCondition(obj, hasId);
+
+			if (condition is IsInSet isInSet)
+				return VerifyCondition(obj, isInSet);
+
+			if (condition is IsOfType isOfType)
+				return VerifyCondition(obj, isOfType);
+
+			if (condition is HasValue hasValue)
+				return VerifyCondition(obj, hasValue);
+
+			if (condition is ValueCondition valueCondition)
+				return VerifyCondition(obj, valueCondition);
+
+			if (condition is FormulaCondition formula)
+				return VerifyCondition(obj, formula);
+
+			BH.Engine.Base.Compute.RecordError($"Verification failed because condition of type {condition.GetType().Name} is currently not supported.");
+			return null;
         }
 
 
@@ -723,4 +742,3 @@ namespace BH.Engine.Verification
         /***************************************************/
     }
 }
-
