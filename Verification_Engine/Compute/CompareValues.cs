@@ -53,7 +53,7 @@ namespace BH.Engine.Verification
                     return null;
             }
 
-            return BH.Engine.Base.Compute.RunExtensionMethod(value, nameof(CompareValues), new object[] { referenceValue, comparisonType, tolerance }) as bool?;
+			return CompareValues(value, referenceValue, comparisonType, tolerance);
         }
 
 
@@ -256,4 +256,3 @@ namespace BH.Engine.Verification
         /***************************************************/
     }
 }
-
