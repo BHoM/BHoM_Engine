@@ -58,14 +58,11 @@ namespace BH.Engine.Verification
                 return null;
             }
 
-            object result;
-            if (!BH.Engine.Base.Compute.TryRunExtensionMethod(obj, nameof(TryGetValueFromSource), new object[] { valueSource }, out result))
-            {
-                BH.Engine.Base.Compute.RecordError($"Extraction failed because value source of type {valueSource.GetType().Name} is currently not supported.");
-                return ValueNotFound();
-            }
+			if (valueSource is PropertyValueSource propertyValueSource)
+				return TryGetValueFromSource(obj, propertyValueSource);
 
-            return result as Output<bool, object>;
+			BH.Engine.Base.Compute.RecordError($"Extraction failed because value source of type {valueSource.GetType().Name} is currently not supported.");
+			return ValueNotFound();
         }
 
 
