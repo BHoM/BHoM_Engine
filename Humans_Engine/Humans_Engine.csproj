@@ -9,7 +9,7 @@
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
 	<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	<RootNamespace>BH.Engine.Humans</RootNamespace>
-    <FileVersion>9.0.0.0</FileVersion>
+    <FileVersion>9.1.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
