@@ -38,15 +38,15 @@ namespace BH.Engine.Environment
         [Input("oldSpaceNames", "The old space names to replace for the panel.")]
         [Input("newSpaceNames", "The replacement space names for the panel.")]
         [Output("panel", "The panel with updated space names if the panel contained the old space name.")]
-        public static List<Panel> ReplaceConnectedSpaceName(this List<Panel> panels, List<string> oldSpaceNames, List<string> newSpaceNames)
+        public static List<Panel> ReplaceSpaceName(this IEnumerable<Panel> panels, List<string> oldSpaceNames, List<string> newSpaceNames)
         {
             if (panels == null)
-                return panels;
+                return null;
 
             if(oldSpaceNames.Count != newSpaceNames.Count)
             {
                 BH.Engine.Base.Compute.RecordError("Length of the list of the old space names must be equal to the length of the list of new space names to ensure appropriate mapping between the old and new. The index of each old space name is matched to the index of the new space name to become the replacement. No changes have been made.");
-                return panels;
+                return panels.ToList();
             }
 
             List<Panel> rtnPanels = new List<Panel>();

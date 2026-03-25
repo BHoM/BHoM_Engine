@@ -38,9 +38,9 @@ namespace BH.Engine.Base
         [Input("suppressErrors", "Determine whether to suppress BHoM Events of type ERROR from the log. Set to true to suppress these events.")]
         [Input("suppressWarnings", "Determine whether to suppress BHoM Events of type WARNING from the log. Set to true to suppress these events.")]
         [Input("suppressNotes", "Determine whether to suppress BHoM Events of type NOTE from the log. Set to true to suppress these events.")]
-        public static void StartSuppressRecordingEvents(bool suppressErrors = false, bool suppressWarnings = false, bool suppressNotes = false)
+        public static void StartSuppressRecording(bool suppressErrors = false, bool suppressWarnings = false, bool suppressNotes = false)
         {
-            //Only change the state of each suppresion flag if it is set to true - this will prevent the scenario where MethodA suppresses everything, then calls MethodB which suppresses only Warnings and the false flags would turn on errors/notes which MethodA wouldn't want - this will ensure that the suppresions are set until the StopSuppressRecordingEvents is called
+            //Only change the state of each suppresion flag if it is set to true - this will prevent the scenario where MethodA suppresses everything, then calls MethodB which suppresses only Warnings and the false flags would turn on errors/notes which MethodA wouldn't want - this will ensure that the suppresions are set until the StopSuppressRecording is called
             if(suppressErrors)
                 m_SuppressError = suppressErrors;
 
@@ -54,7 +54,7 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Switch on the entire logging system used within BHoM. By default all recording systems are switched on when BHoM is initialised. Events of all types will be logged after this component has been used regardless of which ones were previously suppressed.")]
-        public static void StopSuppressRecordingEvents()
+        public static void StopSuppressRecording()
         {
             m_SuppressError = false;
             m_SuppressWarning = false;

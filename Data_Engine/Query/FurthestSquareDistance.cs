@@ -55,7 +55,7 @@ namespace BH.Engine.Data
         [Input("box1", "Box to evaluate furthest possible square distance from.")]
         [Input("box2", "Box to evaluate furthest possible square distance from.")]
         [Output("sqDist", "The furthest possible square distance between two vectors confined in the respective tight DomainBoxes.")]
-        public static double FurthestTightSquareDistance(this DomainBox box1, DomainBox box2)
+        public static double FurthestSquareDistanceTight(this DomainBox box1, DomainBox box2)
         {
             if (box1 == null || box2 == null)
             {

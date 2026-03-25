@@ -70,7 +70,7 @@ namespace BH.Engine.Data
 
             Func<DomainTree<T>, double> worstCaseMethod;
             if (tightBox)
-                worstCaseMethod = (x) => x.DomainBox?.FurthestTightSquareDistance(searchBox) ?? double.PositiveInfinity;
+                worstCaseMethod = (x) => x.DomainBox?.FurthestSquareDistanceTight(searchBox) ?? double.PositiveInfinity;
             else
                 worstCaseMethod = (x) => x.DomainBox?.FurthestSquareDistance(searchBox) ?? double.PositiveInfinity;
 

@@ -48,7 +48,7 @@ namespace BH.Engine.Analytical
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {
-            PolyCurve polycurve = ExternalPolyCurve(panel);
+            PolyCurve polycurve = ExternalPolycurve(panel);
 
             if (!polycurve.IsPlanar())
                 return false;

@@ -49,7 +49,7 @@ namespace BH.Engine.Graphics
         [Input("component", "The configuration properties for the box representation.")]
         [Input("dataset", "Dataset of a BH.oM.Analytical.Elements.Graph where Graph.Entities are one element of type BHoMGroup in Dataset.Data.")]
         [Input("viewConfig", "The configuration properties for the view.")]
-        public static void RepresentationFragment(this Boxes component, Dataset dataset, ViewConfig viewConfig)
+        private static void RepresentationFragment(this Boxes component, Dataset dataset, ViewConfig viewConfig)
         {
             if(component == null || dataset == null || viewConfig == null)
             {

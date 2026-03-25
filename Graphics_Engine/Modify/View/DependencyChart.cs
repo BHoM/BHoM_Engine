@@ -46,7 +46,7 @@ namespace BH.Engine.Graphics
         [Description("Modifies a dataset by adding representation fragments to define a view of the data.")]
         [Input("view", "The configuration properties for the view representation.")]
         [Input("dataset", "Dataset of a BH.oM.Analytical.Elements.Graph where Graph.Entities are one element of type BHoMGroup in Dataset.Data and Graph.Relations are another element of type BHoMGroup in Dataset.Data.")]
-        public static void View(this DependencyChart view, Dataset dataset)
+        public static void DependencyChart(this DependencyChart view, Dataset dataset)
         {
             if (view == null || dataset == null)
             {
