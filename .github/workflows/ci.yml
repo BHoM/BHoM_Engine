@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - '**/*.cs'
+      - '**/*.csproj'
+      - 'dependencies.txt'
+      - 'altConfigs.txt'
+  push:
+    branches: [main]
+    paths:
+      - '**/*.cs'
+      - '**/*.csproj'
+      - 'dependencies.txt'
+      - 'altConfigs.txt'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Union of permissions required by the DevOps_Toolkit orchestrator and nested workflows.S
+permissions:
+  actions: write
+  checks: write
+  contents: read
+  pull-requests: write
+  security-events: write
+
+jobs:
+  # Format, compliance, build, and unit tests are driven by repository topics on this repo:
+  # bhom-prototype | bhom-alpha | bhom-beta (see DevOps_Toolkit ci-orchestrator + bhom-stage-matrix.json).
+  orchestrator:
+    uses: BuroHappoldEngineeringSandbox/DevOps_Toolkit/.github/workflows/ci-orchestrator.yml@main
+    secrets: inherit
+
+  # -------------------------------------------------------
+  # Integration Tests (optional)
+  # -------------------------------------------------------
+#   integration-tests:
+#     needs: orchestrator
+#     if: |
+#       github.event_name == 'pull_request' ||
+#       startsWith(github.ref, 'refs/heads/develop') ||
+#       startsWith(github.ref, 'refs/heads/release/') ||
+#       github.ref == 'refs/heads/main'
+#     uses: BuroHappoldEngineeringSandbox/DevOps_Toolkit/.github/workflows/integration-tests.yml@main
+#     secrets: inherit
