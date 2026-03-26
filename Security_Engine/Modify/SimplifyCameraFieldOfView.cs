@@ -47,74 +47,35 @@ namespace BH.Engine.Security
             if (cameraFieldOfView == null || cameraDevice == null)
                 return null;
 
-            //convert to polyline and simplify
-            List<Line> cameraLines = new List<Line>();
-
-            foreach (ICurve curve in cameraFieldOfView.SubParts())
-            {
-                if (curve is Line)
-                    cameraLines.Add(curve as Line);
-                else
-                {
-                    Line line = BH.Engine.Geometry.Create.Line(curve.IStartPoint(), curve.IEndPoint());
-                    cameraLines.Add(line);
-                }
-            }
-
-            Polyline cameraPolyline = BH.Engine.Geometry.Create.Polyline(cameraLines);
-
-            cameraPolyline = cameraPolyline.Simplify(distanceTolerance, angleTolerance);
-
-            //camera cone arc
+            //camera cone arc used to identify which input curves are cone arcs
             PolyCurve cameraCone = cameraDevice.ViewCone(2 * Math.PI);
 
             Arc coneArc = cameraCone.Curves[0] as Arc;
 
-            //create simplified polycurve
+            //preserve arcs that lie on the cone circle; collect line segments into runs for simplification
             PolyCurve simplifiedPolyCurve = new PolyCurve();
+            List<Line> lineRun = new List<Line>();
 
-            ICurve lastCurve = null;
-
-            Circle circle = BH.Engine.Geometry.Create.Circle(cameraDevice.EyePosition, coneArc.Radius);
-
-            foreach (Line line in cameraPolyline.SubParts())
+            foreach (ICurve curve in cameraFieldOfView.SubParts())
             {
-                Point startPoint = line.Start;
-                Point endPoint = line.End;
-
-                if ((startPoint.Distance(coneArc) < distanceTolerance) && (endPoint.Distance(coneArc) < distanceTolerance))
+                if (curve is Arc arc && IsOnConeCircle(arc, coneArc, distanceTolerance))
                 {
-                    //check if line is length is equal to the diameter of the cone arc, if so, add it as it is; apply only for 180 degree angles
-                    if (Math.Abs(cameraDevice.Angle - Math.PI) < angleTolerance && Math.Abs(startPoint.Distance(endPoint) - 2 * coneArc.Radius) < distanceTolerance)
-                    {
-                        simplifiedPolyCurve.Curves.Add(line);
-                        lastCurve = line;
-                        continue;
-                    }
-
-                    List<ICurve> newArcList = circle.SplitAtPoints(new List<Point> { startPoint, endPoint }, distanceTolerance);
-
-                    if (newArcList.Count < 2)
-                    {
-                        simplifiedPolyCurve.Curves.Add(line);
-                        lastCurve = line;
-                        continue;
-                    }
-
-                    Arc arc0 = newArcList[0] as Arc;
-                    Arc arc1 = newArcList[1] as Arc;
-
-                    Arc newArc = arc0.StartPoint().Distance(startPoint) <= distanceTolerance ? arc0 : arc1;
-
-                    simplifiedPolyCurve.Curves.Add(newArc);
-                    lastCurve = newArc;
+                    FlushLineRun(lineRun, simplifiedPolyCurve, distanceTolerance, angleTolerance);
+                    lineRun.Clear();
+                    simplifiedPolyCurve.Curves.Add(arc);
+                }
+                else if (curve is Line line)
+                {
+                    lineRun.Add(line);
                 }
                 else
                 {
-                    lastCurve = line;
-                    simplifiedPolyCurve.Curves.Add(line);
+                    //non-cone arc or unsupported curve type: approximate with chord
+                    lineRun.Add(BH.Engine.Geometry.Create.Line(curve.IStartPoint(), curve.IEndPoint()));
                 }
             }
+
+            FlushLineRun(lineRun, simplifiedPolyCurve, distanceTolerance, angleTolerance);
 
             //if polyCurve is not closed, try to close it
             EnsurePolyCurveIsClosed(simplifiedPolyCurve);
@@ -127,6 +88,27 @@ namespace BH.Engine.Security
 
         /***************************************************/
         /****              Private Methods              ****/
+        /***************************************************/
+
+        private static bool IsOnConeCircle(Arc arc, Arc coneArc, double distanceTolerance)
+        {
+            return arc.CoordinateSystem.Origin.Distance(coneArc.CoordinateSystem.Origin) <= distanceTolerance
+                && Math.Abs(arc.Radius - coneArc.Radius) <= distanceTolerance;
+        }
+
+        /***************************************************/
+
+        private static void FlushLineRun(List<Line> lineRun, PolyCurve target, double distanceTolerance, double angleTolerance)
+        {
+            if (lineRun.Count == 0)
+                return;
+
+            Polyline simplified = BH.Engine.Geometry.Create.Polyline(lineRun).Simplify(distanceTolerance, angleTolerance);
+
+            foreach (Line l in simplified.SubParts())
+                target.Curves.Add(l);
+        }
+
         /***************************************************/
 
         private static void CheckForTwoCurvesOnly(PolyCurve simplifiedPolyCurve, double angleTolerance = Tolerance.Angle)
