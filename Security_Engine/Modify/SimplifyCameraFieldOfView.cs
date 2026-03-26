@@ -20,16 +20,13 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Collections.Generic;
-using BH.oM.Dimensional;
-using BH.oM.Geometry;
-using System.ComponentModel;
-using BH.oM.Base.Attributes;
 using BH.Engine.Geometry;
+using BH.oM.Base.Attributes;
+using BH.oM.Geometry;
 using BH.oM.Security.Elements;
-using System.Linq;
-using BH.Engine.Base;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BH.Engine.Security
 {
@@ -93,30 +90,24 @@ namespace BH.Engine.Security
                         simplifiedPolyCurve.Curves.Add(line);
                         lastCurve = line;
                         continue;
-                    }                    
+                    }
 
                     List<ICurve> newArcList = circle.SplitAtPoints(new List<Point> { startPoint, endPoint }, distanceTolerance);
 
-                    double p1Param = (newArcList[0] as Arc).ParameterAtPoint(startPoint, distanceTolerance);
-                    double p2Param = (newArcList[0] as Arc).ParameterAtPoint(endPoint, distanceTolerance);
-
-                    Arc newArc;
-
-                    if (p1Param < distanceTolerance && p2Param - 1 < distanceTolerance)
-                        newArc = (newArcList[0] as Arc);
-                    else
-                        newArc = (newArcList[1] as Arc);
-                    
-                    if (lastCurve is Arc && !(cameraPolyline.SubParts().Count == 2))
+                    if (newArcList.Count < 2)
                     {
                         simplifiedPolyCurve.Curves.Add(line);
                         lastCurve = line;
+                        continue;
                     }
-                    else
-                    {
-                        simplifiedPolyCurve.Curves.Add(newArc);
-                        lastCurve = newArc;
-                    }                                                           
+
+                    Arc arc0 = newArcList[0] as Arc;
+                    Arc arc1 = newArcList[1] as Arc;
+
+                    Arc newArc = arc0.StartPoint().Distance(startPoint) <= distanceTolerance ? arc0 : arc1;
+
+                    simplifiedPolyCurve.Curves.Add(newArc);
+                    lastCurve = newArc;
                 }
                 else
                 {
@@ -129,7 +120,7 @@ namespace BH.Engine.Security
             EnsurePolyCurveIsClosed(simplifiedPolyCurve);
 
             //check if simplifiedPolyCurve has two curves only, if so make sure to convert smaller arc to a line
-            CheckForTwoCurvesOnly(simplifiedPolyCurve);
+            CheckForTwoCurvesOnly(simplifiedPolyCurve, angleTolerance);
 
             return simplifiedPolyCurve;
         }
@@ -138,7 +129,7 @@ namespace BH.Engine.Security
         /****              Private Methods              ****/
         /***************************************************/
 
-        private static void CheckForTwoCurvesOnly(PolyCurve simplifiedPolyCurve)
+        private static void CheckForTwoCurvesOnly(PolyCurve simplifiedPolyCurve, double angleTolerance = Tolerance.Angle)
         {
             if (simplifiedPolyCurve.Curves.Count == 2)
             {
@@ -147,7 +138,7 @@ namespace BH.Engine.Security
                     Arc arc1 = simplifiedPolyCurve.Curves[0] as Arc;
                     Arc arc2 = simplifiedPolyCurve.Curves[1] as Arc;
 
-                    if (arc1.Length() > arc2.Length())
+                    if (arc1.Length() > arc2.Length() && arc2.Angle() < angleTolerance)
                     {
                         Point startPoint = arc1.EndPoint();
                         Point endPoint = arc1.StartPoint();
@@ -159,7 +150,7 @@ namespace BH.Engine.Security
                         simplifiedPolyCurve.Curves.Add(arc1);
                         simplifiedPolyCurve.Curves.Add(line);
                     }
-                    else
+                    else if (arc1.Length() <= arc2.Length() && arc1.Angle() < angleTolerance)
                     {
                         Point startPoint = arc2.EndPoint();
                         Point endPoint = arc2.StartPoint();
@@ -176,43 +167,39 @@ namespace BH.Engine.Security
         }
 
         /***************************************************/
+
         private static void EnsurePolyCurveIsClosed(PolyCurve simplifiedPolyCurve, double distanceTolerance = Tolerance.Distance)
         {
-            if (simplifiedPolyCurve.IsClosed())
+            if (simplifiedPolyCurve.Curves.Count == 0 || simplifiedPolyCurve.IsClosed())
                 return;
 
-            for (int i = 0; i < simplifiedPolyCurve.Curves.Count - 1; i++)
+            List<ICurve> fixedCurves = new List<ICurve>();
+
+            for (int i = 0; i < simplifiedPolyCurve.Curves.Count; i++)
             {
-                ICurve currentCurve = simplifiedPolyCurve.Curves[i];
-                ICurve nextCurve = simplifiedPolyCurve.Curves[i + 1];
+                fixedCurves.Add(simplifiedPolyCurve.Curves[i]);
 
-                Point currentEnd = currentCurve.IEndPoint();
-                Point nextStart = nextCurve.IStartPoint();
-
-                if (currentEnd.Distance(nextStart) > distanceTolerance)
+                if (i < simplifiedPolyCurve.Curves.Count - 1)
                 {
-                    if (nextCurve is Arc)
-                        simplifiedPolyCurve.Curves[i] = BH.Engine.Geometry.Create.Line(currentCurve.IStartPoint(), nextStart);
+                    Point currentEnd = simplifiedPolyCurve.Curves[i].IEndPoint();
+                    Point nextStart = simplifiedPolyCurve.Curves[i + 1].IStartPoint();
 
-                    if (currentCurve is Arc)
-                        simplifiedPolyCurve.Curves[i + 1] = BH.Engine.Geometry.Create.Line(nextStart, nextCurve.IEndPoint());
+                    if (currentEnd.Distance(nextStart) > distanceTolerance)
+                        fixedCurves.Add(BH.Engine.Geometry.Create.Line(currentEnd, nextStart));
                 }
             }
 
-            if (simplifiedPolyCurve.Curves[0] is Arc)
-            {
-                Point startPoint = ((Arc)simplifiedPolyCurve.Curves[simplifiedPolyCurve.Curves.Count - 1]).StartPoint();
-                Point endPoint = simplifiedPolyCurve.Curves[0].IStartPoint();
-                simplifiedPolyCurve.Curves[simplifiedPolyCurve.Curves.Count - 1] = BH.Engine.Geometry.Create.Line(startPoint, endPoint);
-            }
+            simplifiedPolyCurve.Curves.Clear();
+            simplifiedPolyCurve.Curves.AddRange(fixedCurves);
 
-            if (simplifiedPolyCurve.Curves[simplifiedPolyCurve.Curves.Count - 1] is Arc)
-            {
-                Point startPoint = ((Arc)simplifiedPolyCurve.Curves[simplifiedPolyCurve.Curves.Count - 1]).EndPoint();
-                Point endPoint = simplifiedPolyCurve.Curves[0].IEndPoint();
-                simplifiedPolyCurve.Curves[0] = BH.Engine.Geometry.Create.Line(startPoint, endPoint);
-            }
+            Point lastEnd = simplifiedPolyCurve.Curves[simplifiedPolyCurve.Curves.Count - 1].IEndPoint();
+            Point firstStart = simplifiedPolyCurve.Curves[0].IStartPoint();
+
+            if (lastEnd.Distance(firstStart) > distanceTolerance)
+                simplifiedPolyCurve.Curves.Add(BH.Engine.Geometry.Create.Line(lastEnd, firstStart));
         }
+
+        /***************************************************/
     }
 }
 
