@@ -52,6 +52,21 @@ namespace BH.Engine.Security
 
             Arc coneArc = cameraCone.Curves[0] as Arc;
 
+            if (coneArc == null)
+            {
+                BH.Engine.Base.Compute.RecordWarning("Could not determine cone arc from CameraDevice. All input curves will be treated as line segments.");
+
+                PolyCurve fallbackPolyCurve = new PolyCurve();
+                List<Line> fallbackLines = new List<Line>();
+
+                foreach (ICurve curve in cameraFieldOfView.SubParts())
+                    fallbackLines.Add(BH.Engine.Geometry.Create.Line(curve.IStartPoint(), curve.IEndPoint()));
+
+                FlushLineRun(fallbackLines, fallbackPolyCurve, distanceTolerance, angleTolerance);
+                EnsurePolyCurveIsClosed(fallbackPolyCurve);
+                return fallbackPolyCurve;
+            }
+
             //preserve arcs that lie on the cone circle; collect line segments into runs for simplification
             PolyCurve simplifiedPolyCurve = new PolyCurve();
             List<Line> lineRun = new List<Line>();
@@ -77,6 +92,9 @@ namespace BH.Engine.Security
 
             FlushLineRun(lineRun, simplifiedPolyCurve, distanceTolerance, angleTolerance);
 
+            //merge any arc whose sweep is below angleTolerance into a line
+            simplifiedPolyCurve.Curves = MergeTinyArcs(simplifiedPolyCurve.Curves, angleTolerance);
+
             //if polyCurve is not closed, try to close it
             EnsurePolyCurveIsClosed(simplifiedPolyCurve);
 
@@ -88,27 +106,6 @@ namespace BH.Engine.Security
 
         /***************************************************/
         /****              Private Methods              ****/
-        /***************************************************/
-
-        private static bool IsOnConeCircle(Arc arc, Arc coneArc, double distanceTolerance)
-        {
-            return arc.CoordinateSystem.Origin.Distance(coneArc.CoordinateSystem.Origin) <= distanceTolerance
-                && Math.Abs(arc.Radius - coneArc.Radius) <= distanceTolerance;
-        }
-
-        /***************************************************/
-
-        private static void FlushLineRun(List<Line> lineRun, PolyCurve target, double distanceTolerance, double angleTolerance)
-        {
-            if (lineRun.Count == 0)
-                return;
-
-            Polyline simplified = BH.Engine.Geometry.Create.Polyline(lineRun).Simplify(distanceTolerance, angleTolerance);
-
-            foreach (Line l in simplified.SubParts())
-                target.Curves.Add(l);
-        }
-
         /***************************************************/
 
         private static void CheckForTwoCurvesOnly(PolyCurve simplifiedPolyCurve, double angleTolerance = Tolerance.Angle)
@@ -179,6 +176,42 @@ namespace BH.Engine.Security
 
             if (lastEnd.Distance(firstStart) > distanceTolerance)
                 simplifiedPolyCurve.Curves.Add(BH.Engine.Geometry.Create.Line(lastEnd, firstStart));
+        }
+
+        /***************************************************/
+
+        private static bool IsOnConeCircle(Arc arc, Arc coneArc, double distanceTolerance)
+        {
+            return arc.CoordinateSystem.Origin.Distance(coneArc.CoordinateSystem.Origin) <= distanceTolerance
+                && Math.Abs(arc.Radius - coneArc.Radius) <= distanceTolerance;
+        }
+
+        /***************************************************/
+
+        private static void FlushLineRun(List<Line> lineRun, PolyCurve target, double distanceTolerance, double angleTolerance)
+        {
+            if (lineRun.Count == 0)
+                return;
+
+            Polyline simplified = BH.Engine.Geometry.Create.Polyline(lineRun).Simplify(distanceTolerance, angleTolerance);
+
+            foreach (Line l in simplified.SubParts())
+                target.Curves.Add(l);
+        }
+
+        /***************************************************/
+
+        private static List<ICurve> MergeTinyArcs(List<ICurve> curves, double angleTolerance)
+        {
+            List<ICurve> result = new List<ICurve>();
+            foreach (ICurve curve in curves)
+            {
+                if (curve is Arc arc && arc.Angle() < angleTolerance)
+                    result.Add(BH.Engine.Geometry.Create.Line(arc.StartPoint(), arc.EndPoint()));
+                else
+                    result.Add(curve);
+            }
+            return result;
         }
 
         /***************************************************/
