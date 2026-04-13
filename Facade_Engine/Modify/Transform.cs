@@ -23,10 +23,10 @@
 using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
+using BH.oM.Base.Attributes;
 using BH.oM.Facade.Elements;
 using BH.oM.Geometry;
 using BH.oM.Physical.FramingProperties;
-using BH.oM.Base.Attributes;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -39,16 +39,16 @@ namespace BH.Engine.Facade
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Transforms the FrameEdge's location curve and profile orientations by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the FrameEdge's location curve and profile orientations by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("edge", "FrameEdge to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified FrameEdge with unchanged properties, but transformed location curve and profile orientations.")]
         public static FrameEdge Transform(this FrameEdge edge, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -84,16 +84,16 @@ namespace BH.Engine.Facade
 
         /***************************************************/
 
-        [Description("Transforms the Opening's edges by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the Opening's edges by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("opening", "Opening to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified Opening with unchanged properties, but transformed edges.")]
         public static Opening Transform(this Opening opening, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -104,16 +104,16 @@ namespace BH.Engine.Facade
 
         /***************************************************/
 
-        [Description("Transforms the Panel's edges and openings by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the Panel's edges and openings by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("panel", "Panel to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified Panel with unchanged properties, but transformed edges and openings.")]
         public static Panel Transform(this Panel panel, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -126,16 +126,16 @@ namespace BH.Engine.Facade
 
         /***************************************************/
 
-        [Description("Transforms the CurtainWall's edges and openings by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the CurtainWall's edges and openings by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("wall", "CurtainWall to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified CurtainWall with unchanged properties, but transformed edges and openings.")]
         public static CurtainWall Transform(this CurtainWall wall, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 

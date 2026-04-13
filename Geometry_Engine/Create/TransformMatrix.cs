@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2026, the respective contributors. All rights reserved.
  *
@@ -20,12 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Quantities.Attributes;
 using System;
 using System.ComponentModel;
-using BH.oM.Base.Attributes;
-using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -90,6 +90,74 @@ namespace BH.Engine.Geometry
                     {  0,  0,  0,  1   }
                 }
             };
+        }
+
+        /***************************************************/
+
+        [Description("Creates a TransformMatrix corresponding to a reflection against a given plane.")]
+        [Input("plane", "Plane to reflect against.")]
+        [Output("transform", "The created TransformMatrix.")]
+        public static TransformMatrix ReflectionMatrix(Plane plane)
+        {
+            if (plane == null)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot create mirror matrix: plane is null.");
+                return null;
+            }
+
+            Vector n = plane.Normal;
+            Point p = plane.Origin;
+
+            // Normalize normal
+            double len = Math.Sqrt(n.X * n.X + n.Y * n.Y + n.Z * n.Z);
+            if (len == 0)
+            {
+                BH.Engine.Base.Compute.RecordError("Cannot create mirror matrix: plane normal is zero.");
+                return null;
+            }
+
+            double nx = n.X / len;
+            double ny = n.Y / len;
+            double nz = n.Z / len;
+
+            // Build reflection matrix R = I - 2 n nᵀ
+            double r00 = 1 - 2 * nx * nx;
+            double r01 = -2 * nx * ny;
+            double r02 = -2 * nx * nz;
+
+            double r10 = -2 * ny * nx;
+            double r11 = 1 - 2 * ny * ny;
+            double r12 = -2 * ny * nz;
+
+            double r20 = -2 * nz * nx;
+            double r21 = -2 * nz * ny;
+            double r22 = 1 - 2 * nz * nz;
+
+            // Compute translation t = p - R * p
+            double tx = p.X - (r00 * p.X + r01 * p.Y + r02 * p.Z);
+            double ty = p.Y - (r10 * p.X + r11 * p.Y + r12 * p.Z);
+            double tz = p.Z - (r20 * p.X + r21 * p.Y + r22 * p.Z);
+
+            TransformMatrix result = new TransformMatrix();
+            double[,] m = result.Matrix;
+
+            // Linear part
+            m[0, 0] = r00; m[0, 1] = r01; m[0, 2] = r02;
+            m[1, 0] = r10; m[1, 1] = r11; m[1, 2] = r12;
+            m[2, 0] = r20; m[2, 1] = r21; m[2, 2] = r22;
+
+            // Translation
+            m[0, 3] = tx;
+            m[1, 3] = ty;
+            m[2, 3] = tz;
+
+            // Homogeneous row
+            m[3, 0] = 0;
+            m[3, 1] = 0;
+            m[3, 2] = 0;
+            m[3, 3] = 1;
+
+            return result;
         }
 
         /***************************************************/

@@ -38,16 +38,16 @@ namespace BH.Engine.Security
         /**** Interface Methods - IElements             ****/
         /***************************************************/
 
-        [Description("Transforms the CameraDevice's eye position and target position by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the CameraDevice's eye position and target position by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("camera", "CameraDevice to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified CameraDevice with unchanged properties, but transformed eye position and target position.")]
         public static CameraDevice Transform(this CameraDevice camera, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
