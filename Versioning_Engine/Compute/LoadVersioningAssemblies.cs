@@ -36,7 +36,6 @@ using BH.oM.Base.Attributes;
 using MongoDB.Bson;
 using System.Text.RegularExpressions;
 using BH.oM.Versioning;
-using ICSharpCode.Decompiler.CSharp.Syntax;
 using BH.Engine.Versioning.Objects;
 
 namespace BH.Engine.Versioning
