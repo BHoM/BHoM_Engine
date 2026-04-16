@@ -25,7 +25,6 @@ using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
 using BH.oM.Geometry.CoordinateSystem;
-using Humanizer;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
 using System.Reflection.Emit;
