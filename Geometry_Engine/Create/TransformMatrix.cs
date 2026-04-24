@@ -105,20 +105,19 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            Vector n = plane.Normal;
-            Point p = plane.Origin;
-
-            // Normalize normal
-            double len = Math.Sqrt(n.X * n.X + n.Y * n.Y + n.Z * n.Z);
-            if (len == 0)
+            Vector normal = plane.Normal;
+            Vector unitNormal = normal.Normalise();
+            if (normal == unitNormal)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot create mirror matrix: plane normal is zero.");
                 return null;
             }
 
-            double nx = n.X / len;
-            double ny = n.Y / len;
-            double nz = n.Z / len;
+            double nx = unitNormal.X;
+            double ny = unitNormal.Y;
+            double nz = unitNormal.Z;
+
+            Point o = plane.Origin;
 
             // Build reflection matrix R = I - 2 n nᵀ
             double r00 = 1 - 2 * nx * nx;
@@ -134,9 +133,9 @@ namespace BH.Engine.Geometry
             double r22 = 1 - 2 * nz * nz;
 
             // Compute translation t = p - R * p
-            double tx = p.X - (r00 * p.X + r01 * p.Y + r02 * p.Z);
-            double ty = p.Y - (r10 * p.X + r11 * p.Y + r12 * p.Z);
-            double tz = p.Z - (r20 * p.X + r21 * p.Y + r22 * p.Z);
+            double tx = o.X - (r00 * o.X + r01 * o.Y + r02 * o.Z);
+            double ty = o.Y - (r10 * o.X + r11 * o.Y + r12 * o.Z);
+            double tz = o.Z - (r20 * o.X + r21 * o.Y + r22 * o.Z);
 
             TransformMatrix result = new TransformMatrix();
             double[,] m = result.Matrix;
