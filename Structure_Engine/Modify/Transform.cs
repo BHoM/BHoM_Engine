@@ -26,6 +26,8 @@ using BH.Engine.Spatial;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
+using BH.oM.Structure.Offsets;
+using BH.oM.Structure.SectionProperties;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -84,7 +86,8 @@ namespace BH.Engine.Structure
                 return bar;
             }
 
-            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
+            bool reflection = transform.IsPureReflection(tolerance);
+            if (!reflection && !transform.IsRigidTransformation(tolerance))
             {
                 BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
@@ -97,6 +100,35 @@ namespace BH.Engine.Structure
             Vector normalBefore = new Line { Start = bar.Start.Position, End = bar.End.Position }.ElementNormal(bar.OrientationAngle);
             Vector normalAfter = normalBefore.Transform(transform);
             result.OrientationAngle = normalAfter.OrientationAngleLinear(new Line { Start = result.Start.Position, End = result.End.Position });
+
+            if (reflection)
+            {
+                if (bar.SectionProperty != null)
+                {
+                    ISectionProperty flippedSectionProperty = Flip(bar.SectionProperty);
+                    result.SectionProperty = flippedSectionProperty;
+                }
+
+                Offset flippedOffset = bar.Offset?.ShallowClone();
+                if (flippedOffset != null)
+                {
+                    flippedOffset.Start = new Vector
+                    {
+                        X = bar.Offset.Start.X,
+                        Y = -bar.Offset.Start.Y,
+                        Z = bar.Offset.Start.Z
+                    };
+
+                    flippedOffset.End = new Vector
+                    {
+                        X = bar.Offset.End.X,
+                        Y = -bar.Offset.End.Y,
+                        Z = bar.Offset.End.Z
+                    };
+
+                    result.Offset = flippedOffset;
+                }
+            }
 
             return result;
         }
