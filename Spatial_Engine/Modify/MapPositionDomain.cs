@@ -20,9 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
 using BH.oM.Spatial.ShapeProfiles;
@@ -40,20 +38,9 @@ namespace BH.Engine.Spatial
         [Output("taperedProfile", "TaperedProfile with a position domain of 0 and 1.")]
         public static TaperedProfile MapPositionDomain(this TaperedProfile taperedProfile)
         {
-            TaperedProfile newTaperedProfile = null;
             List<double> positions = new List<double>(taperedProfile.Profiles.Keys);
-
-            if (!positions.Contains(0) && !positions.Contains(1))
-            {
-                List<double> newPositions = Compute.MapDomain(positions, positions);
-                newTaperedProfile = Create.TaperedProfile(newPositions, new List<IProfile>(taperedProfile.Profiles.Values), taperedProfile.InterpolationOrder);
-            }
-            else
-            {
-                newTaperedProfile = taperedProfile;
-            }
-
-            return newTaperedProfile;
+            List<double> newPositions = Compute.MapDomain(positions, positions);
+            return Create.TaperedProfile(newPositions, new List<IProfile>(taperedProfile.Profiles.Values), taperedProfile.InterpolationOrder);
         }
     }
 }
