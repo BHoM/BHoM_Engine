@@ -22,6 +22,7 @@
 
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -40,27 +41,38 @@ namespace BH.Engine.Geometry
         [Input("angleTolerance", "Angular tolerance used when comparing edge directions for parallelism.")]
         [Output("direction", "Direction vector of the longest edge.")]
 
-        public static Vector LongestEdgeDirection(this Polyline polyline, double tolerance, double angleTolerance = Tolerance.Angle)
+        public static Vector LongestEdgeDirection(this Polyline polyline, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
             List<Line> edges = polyline.SubParts().Where(x => x != null && x.Length() > tolerance).ToList();
-            Line longest = edges.OrderByDescending(x => x.Length()).First();
-            Vector longestDir = longest.Direction();
-            longestDir.Z = 0;
 
             Dictionary<Vector, double> dirLen = new Dictionary<Vector, double>();
+
             foreach (Line edge in edges)
             {
                 Vector direction = edge.Direction();
                 direction.Z = 0;
 
-                Vector dir = dirLen.Keys.FirstOrDefault(x => x.IsParallel(direction, angleTolerance) != 0);
-                if (dir != null)
-                    dirLen[dir] += edge.Length();
+                if (direction.Length() <= tolerance)
+                    continue;
+
+                if (direction.X < 0 || (Math.Abs(direction.X) < tolerance && direction.Y < 0))
+                {
+                    direction = -direction;
+                }
+
+                Vector existDir = dirLen.Keys.FirstOrDefault(x => x.IsParallel(direction, angleTolerance) != 0);
+
+                if (existDir != null)
+                {
+                    dirLen[existDir] = edge.Length();
+                }
                 else
+                {
                     dirLen[direction] = edge.Length();
+                }
             }
 
-            return longestDir;
+            return dirLen.OrderByDescending(x => x.Value).First().Key;
         }
     }
 }
