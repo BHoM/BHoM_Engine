@@ -44,6 +44,9 @@ namespace BH.Engine.Geometry
             if (pts == null || pts.Count != 5)
                 return false;
 
+            if (polyline.IsPlanar(tolerance) != true)
+                return false;
+
             if (polyline.IsClosed(tolerance) != true)
                 return false;
 
