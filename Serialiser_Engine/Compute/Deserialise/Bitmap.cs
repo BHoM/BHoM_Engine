@@ -58,7 +58,15 @@ namespace BH.Engine.Serialiser
             }
 
             var stream = new MemoryStream(binaryData.Bytes);
-            return new Bitmap(stream);
+            try
+            {
+                return new Bitmap(stream);
+            }
+            catch (PlatformNotSupportedException)
+            {
+                BH.Engine.Base.Compute.RecordWarning("Bitmap deserialisation is not supported in this environment. The icon will be null.");
+                return value;
+            }
         }
 
         /*******************************************/
