@@ -1,34 +1,4 @@
-# BHoM_Engine REPO CODEOWNERS
+# This file is managed by github-governance. Do not edit manually.
+# Source: orgs/BHoM/codeowners.yml
 
-# default global
-* @al-fisher @rwemay @adecler @FraserGreenroyd
-
-
-# project owners 
-
-#NEED OWNER: /Acoustic_Engine
-/Analytical_Engine @al-fisher @rwemay @IsakNaslundBh @FraserGreenroyd
-#NEED OWNER: /Architecture_Engine
-/BHoM_Engine @adecler @al-fisher @FraserGreenroyd
-/Data_Engine @adecler @IsakNaslundBh
-/Diffing_Engine @alelom @al-fisher @adecler
-/Environment_Engine @FraserGreenroyd @tg359 @jamesramsden-bh
-/Geometry_Engine @pawelbaran @al-fisher @IsakNaslundBh
-/Ground_Engine @peterjamesnugent @IsakNaslundBh @FraserGreenroyd
-/Humans_Engine @al-fisher @rwemay
-/Library_Engine @adecler @IsakNaslundBh
-/Matter_Engine @al-fisher @IsakNaslundBh @pawelbaran
-/MEP_Engine @kayleighhoude @FraserGreenroyd @travispotterBH
-/Physical_Engine @al-fisher @rwemay @IsakNaslundBh @FraserGreenroyd
-/Planning_Engine @rwemay @al-fisher
-/Programming_Engine @adecler @FraserGreenroyd @al-fisher
-/Reflection_Engine @adecler @FraserGreenroyd @al-fisher
-/Results_Engine @IsakNaslundBh @FraserGreenroyd @rwemay
-#NEED OWNER: /SVG_Engine
-/Search_Engine @peterjamesnugent @adecler @FraserGreenroyd
-/Serialiser_Engine @adecler @FraserGreenroyd
-/Settings_Engine @FraserGreenroyd @adecler
-/Spatial_Engine @al-fisher @IsakNaslundBh @pawelbaran
-#NEED OWNER: /Speech_Engine
-/Structure_Engine @IsakNaslundBh @rwemay
-/Versioning_Engine @adecler @FraserGreenroyd @IsakNaslundBh
+* @BHoM/bhom_engine @BHoM/devops
