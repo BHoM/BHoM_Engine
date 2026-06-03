@@ -66,22 +66,22 @@ namespace BH.Engine.Geometry
         [Input("polyline", "The Polyline to check if it is rectangular.")]
         [Input("tolerance", "Maximum allowed distance deviation for closure and diagonal equality checks.")]
         [Output("isRectangular", "True for the Polylines that are rectangular or false for Polylines that are not rectangular.")]
-        public static bool IsRectangular(this Polyline polyline)
+        public static bool IsRectangular(this Polyline polyline, double tolerance = Tolerance.Distance)
         {
             List<Point> pts = polyline?.ControlPoints;
             if (pts == null || pts.Count != 5)
                 return false;
 
-            if (polyline.IsPlanar(Tolerance.Distance) != true)
+            if (polyline.IsPlanar(tolerance) != true)
                 return false;
 
-            if (polyline.IsClosed(Tolerance.Distance) != true)
+            if (polyline.IsClosed(tolerance) != true)
                 return false;
 
             double diagonal1 = pts[2].Distance(pts[0]);
             double diagonal2 = pts[3].Distance(pts[1]);
 
-            return Math.Abs(diagonal1 - diagonal2) <= Tolerance.Distance;
+            return Math.Abs(diagonal1 - diagonal2) <= tolerance;
         }
 
         /***************************************************/
