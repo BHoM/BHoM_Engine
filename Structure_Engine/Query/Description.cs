@@ -33,6 +33,7 @@ using BH.oM.Base;
 using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Structure.MaterialFragments;
 using BH.oM.Structure.Constraints;
+using BH.oM.Structure.Springs;
 using BH.oM.Base.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
@@ -571,6 +572,32 @@ namespace BH.Engine.Structure
 
             desc += constraint.ZtoXX ? "x" : "f";
             desc += constraint.ZtoYY ? "x" : "f";
+
+            return desc;
+        }
+
+        /***************************************************/
+        /**** Public Methods - Springs                  ****/
+        /***************************************************/
+
+        [Description("Generates a default description for the PointSpringProperty based on its translational and rotational stiffness, noting whether it carries nonlinear force-deformation curves.")]
+        [Input("property", "The PointSpringProperty to generate a default description for.")]
+        [Output("desc", "The generated description for the property.")]
+        public static string Description(this PointSpringProperty property)
+        {
+            if (property == null)
+                return "null property";
+
+            string desc = $"PointSpring {property.TranslationalStiffnessX:G3}, {property.TranslationalStiffnessY:G3}, {property.TranslationalStiffnessZ:G3}, " +
+                          $"{property.RotationalStiffnessX:G3}, {property.RotationalStiffnessY:G3}, {property.RotationalStiffnessZ:G3}";
+
+            ForceDeformationCurves c = property.ForceDeformationCurves;
+            bool hasCurves = c != null && (
+                c.TranslationX?.Count > 0 || c.TranslationY?.Count > 0 || c.TranslationZ?.Count > 0 ||
+                c.RotationX?.Count > 0 || c.RotationY?.Count > 0 || c.RotationZ?.Count > 0);
+
+            if (hasCurves)
+                desc += " (nonlinear)";
 
             return desc;
         }

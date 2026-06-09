@@ -34,6 +34,7 @@ using BH.oM.Structure.SurfaceProperties;
 using BH.oM.Base.Attributes;
 using BH.oM.Quantities.Attributes;
 using System.ComponentModel;
+using BH.oM.Structure.Springs;
 
 namespace BH.Engine.Structure
 {
@@ -86,7 +87,7 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-        
+
     }
 }
 

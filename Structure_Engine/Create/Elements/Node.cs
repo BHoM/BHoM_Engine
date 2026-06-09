@@ -43,9 +43,9 @@ namespace BH.Engine.Structure
         [Input("coordinates", "The Cartesian coordinate system to control the position and orientation of the Node.")]
         [Input("name", "The name of the created Node.")]
         [InputFromProperty("support")]
-        [InputFromProperty("nonLinearSpring")]
+        [InputFromProperty("springProperty")]
         [Output("node", "The created structural Node.")]
-        public static Node Node(Cartesian coordinates, string name = "", Constraint6DOF support = null, NonLinearSpring nonLinearSpring = null)
+        public static Node Node(Cartesian coordinates, string name = "", Constraint6DOF support = null, PointSpringProperty springProperty = null)
         {
             return coordinates.IsNull() ? null : new Node
             {
@@ -53,7 +53,7 @@ namespace BH.Engine.Structure
                 Orientation = (Basis)coordinates,
                 Name = name,
                 Support = support,
-                NonLinearSpring = nonLinearSpring
+                SpringProperty = springProperty
             };
         }
 
