@@ -20,15 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
-using BH.Engine.Reflection;
-
+using BH.oM.Geometry;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Geometry
 {
@@ -40,7 +37,7 @@ namespace BH.Engine.Geometry
 
         [Description("Determines whether a Polycurve is a rectangular.")]
         [Input("polycurve", "The Polycurve to check if it is rectangular.")]
-        [Output("bool", "True for Polycurves that are rectangular or false for Polycurves that are rectangular.")]
+        [Output("bool", "True for Polycurves that are rectangular or false for Polycurves that are not rectangular.")]
         public static bool IsRectangular(this PolyCurve polycurve)
         {
             if (polycurve == null)
@@ -61,6 +58,30 @@ namespace BH.Engine.Geometry
 
             //Check the three angles are pi/2 degrees within tolerance
             return (angles.Any(x => Math.Abs(Math.PI / 2 - x) > Tolerance.Angle)) ? false : true;
+        }
+
+        /***************************************************/
+
+        [Description("Checks whether a Polyline is a rectangular.")]
+        [Input("polyline", "The Polyline to check if it is rectangular.")]
+        [Input("tolerance", "Maximum allowed distance deviation for closure and diagonal equality checks.")]
+        [Output("isRectangular", "True for the Polylines that are rectangular or false for Polylines that are not rectangular.")]
+        public static bool IsRectangular(this Polyline polyline, double tolerance = Tolerance.Distance)
+        {
+            List<Point> pts = polyline?.ControlPoints;
+            if (pts == null || pts.Count != 5)
+                return false;
+
+            if (polyline.IsPlanar(tolerance) != true)
+                return false;
+
+            if (polyline.IsClosed(tolerance) != true)
+                return false;
+
+            double diagonal1 = pts[2].Distance(pts[0]);
+            double diagonal2 = pts[3].Distance(pts[1]);
+
+            return Math.Abs(diagonal1 - diagonal2) <= tolerance;
         }
 
         /***************************************************/
