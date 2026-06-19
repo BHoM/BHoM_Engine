@@ -239,7 +239,12 @@ namespace BH.Engine.Structure
 
             Basis orientation = panel.LocalOrientation()?.Transform(transform);
             if (orientation != null)
+            {
                 result.OrientationAngle = orientation.Z.OrientationAngleAreaElement(orientation.X);
+
+                if (transform.IsPureReflection(tolerance))
+                    result.OrientationAngle = -result.OrientationAngle;
+            }
             else
                 BH.Engine.Base.Compute.RecordWarning("Local orientation of the panel could not be transformed. Please note that the orientation of the resultant panel may be incorrect.");
 
