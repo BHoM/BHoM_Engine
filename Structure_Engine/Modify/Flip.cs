@@ -20,22 +20,24 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
-using BH.Engine.Geometry;
-using BH.Engine.Spatial;
-using BH.oM.Base.Attributes;
-using BH.oM.Geometry;
-using BH.oM.Spatial.Layouts;
-using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Structure.Elements;
-using BH.oM.Structure.MaterialFragments;
-using BH.oM.Structure.Reinforcement;
-using BH.oM.Structure.SectionProperties;
-using System;
-using System.Collections.Generic;
+using BH.oM.Geometry;
+using BH.Engine.Geometry;
+using BH.oM.Base.Attributes;
 using System.ComponentModel;
-using System.Data;
+using BH.Engine.Base;
+using BH.oM.Structure.Constraints;
+using BH.oM.Structure.Offsets;
+using System;
+using BH.oM.Structure.SectionProperties;
+using BH.oM.Spatial.ShapeProfiles;
+using BH.oM.Structure.MaterialFragments;
+using System.Collections.Generic;
 using System.Linq;
+using BH.Engine.Spatial;
+using System.Data;
+using BH.oM.Structure.Reinforcement;
+using BH.oM.Spatial.Layouts;
 
 
 namespace BH.Engine.Structure
@@ -54,15 +56,60 @@ namespace BH.Engine.Structure
             if (bar.IsNull())
                 return null;
 
-            Point start = bar.Start.Position;
-            Point end = bar.End.Position;
-            Plane plane = new Plane
-            {
-                Origin = (start + end) / 2,
-                Normal = (end - start)
-            };
+            Bar flipped = bar.ShallowClone();
 
-            return bar.IMirror(plane) as Bar;
+            // Flip Nodes
+            Node tempNode = flipped.Start;
+            flipped.Start = flipped.End;
+            flipped.End = tempNode;
+
+            if (bar.IsVertical())
+                flipped.OrientationAngle = -bar.OrientationAngle + Math.PI;
+            else
+                flipped.OrientationAngle = -bar.OrientationAngle;
+
+            // Flip releases
+            BarRelease flippedRelease = bar.Release?.ShallowClone();
+            if (flippedRelease != null)
+            {
+                Constraint6DOF tempRelease = flippedRelease.StartRelease;
+                flippedRelease.StartRelease = flippedRelease.EndRelease;
+                flippedRelease.EndRelease = tempRelease;
+                flipped.Release = flippedRelease;
+            }
+
+            // Flip section property
+            if (bar.SectionProperty != null)
+            {
+                ISectionProperty flippedSectionProperty = Flip(bar.SectionProperty);
+                flipped.SectionProperty = flippedSectionProperty;
+            }
+
+            // Flip offsets
+            if (bar.Offset != null)
+            {
+                Offset flippedOffset = new Offset()
+                {
+                    Start = new Vector()
+                    {
+                        X = -bar.Offset.End.X,
+                        Y = -bar.Offset.End.Y,
+                        Z = bar.Offset.End.Z
+                    },
+                    End = new Vector()
+                    {
+                        X = -bar.Offset.Start.X,
+                        Y = -bar.Offset.Start.Y,
+                        Z = bar.Offset.Start.Z
+                    }
+                };
+
+                flipped.Offset = flippedOffset;
+            }
+
+
+
+            return flipped;
         }
 
         /***************************************************/
