@@ -96,6 +96,7 @@ namespace BH.Engine.Geometry
 
         [Description("Creates a TransformMatrix corresponding to a reflection against a given plane.")]
         [Input("plane", "Plane to reflect against.")]
+        [Input("tolerance", "Tolerance used to validate plane normal.", typeof(Length))]
         [Output("transform", "The created TransformMatrix.")]
         public static TransformMatrix ReflectionMatrix(Plane plane, double tolerance = Tolerance.Distance)
         {
