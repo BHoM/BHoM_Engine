@@ -97,22 +97,22 @@ namespace BH.Engine.Geometry
         [Description("Creates a TransformMatrix corresponding to a reflection against a given plane.")]
         [Input("plane", "Plane to reflect against.")]
         [Output("transform", "The created TransformMatrix.")]
-        public static TransformMatrix ReflectionMatrix(Plane plane)
+        public static TransformMatrix ReflectionMatrix(Plane plane, double tolerance = Tolerance.Distance)
         {
-            if (plane == null)
+            if (plane?.Normal == null || plane.Origin == null)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot create mirror matrix: plane is null.");
+                BH.Engine.Base.Compute.RecordError("Cannot create mirror matrix: plane or one of its components is null.");
                 return null;
             }
 
             Vector normal = plane.Normal;
-            Vector unitNormal = normal.Normalise();
-            if (normal == unitNormal)
+            if (normal.Length() < tolerance)
             {
                 BH.Engine.Base.Compute.RecordError("Cannot create mirror matrix: plane normal is zero.");
                 return null;
             }
 
+            Vector unitNormal = normal.Normalise();
             double nx = unitNormal.X;
             double ny = unitNormal.Y;
             double nz = unitNormal.Z;
