@@ -23,7 +23,6 @@
 using BH.Engine.Base;
 using BH.Engine.Base.Objects;
 using BH.oM.Base;
-using Humanizer;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;

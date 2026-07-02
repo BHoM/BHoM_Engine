@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2026, the respective contributors. All rights reserved.
  *
@@ -20,33 +20,41 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
+using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Base.Attributes;
-using BH.oM.Spatial.ShapeProfiles;
+using System.Linq;
 
-namespace BH.Engine.Spatial
+namespace BH.Engine.Geometry
 {
-    public static partial class Modify
+    public static partial class Query
     {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Maps the positions of a TaperedProfile to a domain of 0 and 1.")]
-        [Input("taperedProfile", "The TaperedProfile to modify the position domain.")]
-        [Output("taperedProfile", "TaperedProfile with a position domain of 0 and 1.")]
-        public static TaperedProfile MapPositionDomain(this TaperedProfile taperedProfile)
+        [Description("Returns the direction of the dominant edge of a polyline.")]
+        [Input("polyline", "Polyline whose edge directions are evaluated.")]
+        [Input("tolerance", "Minimum edge length.")]
+        [Input("angleTolerance", "Angular tolerance used when comparing edge directions for parallelism.")]
+        [Output("direction", "Direction vector of the dominant edge.")]
+        public static Vector DominantEdgeDirection(this Polyline polyline, double tolerance = Tolerance.Distance, double angleTolerance = Tolerance.Angle)
         {
-            List<double> positions = new List<double>(taperedProfile.Profiles.Keys);
-            List<double> newPositions = Compute.MapDomain(positions, positions);
-            return Create.TaperedProfile(newPositions, new List<IProfile>(taperedProfile.Profiles.Values), taperedProfile.InterpolationOrder);
+            List<Line> edges = polyline.SubParts().Where(x => x != null && x.Length() > tolerance).ToList();
+            Dictionary<Vector, double> dirLen = new Dictionary<Vector, double>();
+            foreach (Line edge in edges)
+            {
+                Vector direction = edge.Direction();
+                Vector existDir = dirLen.Keys.FirstOrDefault(x => x.IsParallel(direction, angleTolerance) != 0);
+
+                if (existDir != null)
+                    dirLen[existDir] += edge.Length();
+                else
+                    dirLen[direction] = edge.Length();
+            }
+
+            return dirLen.OrderByDescending(x => x.Value).First().Key;
         }
     }
 }
-
-
-
-
-
-

@@ -7,7 +7,7 @@
     <Authors>BHoM</Authors>
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
     <RootNamespace>BH.Engine.Versioning</RootNamespace>
-    <FileVersion>9.1.0.0</FileVersion>
+    <FileVersion>9.2.0.0</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\Build\</OutputPath>
@@ -16,7 +16,7 @@
     <Exec Command="xcopy &quot;$(TargetDir)$(TargetFileName)&quot;  &quot;C:\ProgramData\BHoM\Assemblies&quot; /Y" />
   </Target>
   <ItemGroup>
-    <PackageReference Include="MongoDB.Bson" Version="2.18.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.19.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Reflection_Engine\Reflection_Engine.csproj" />

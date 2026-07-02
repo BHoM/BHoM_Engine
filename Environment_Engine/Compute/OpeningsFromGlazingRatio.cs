@@ -27,13 +27,11 @@ using BH.oM.Environment.Configuration;
 using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
 using BH.oM.Quantities.Attributes;
-using ICSharpCode.Decompiler.IL.Patterns;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using static Humanizer.In;
 
 namespace BH.Engine.Environment
 {
