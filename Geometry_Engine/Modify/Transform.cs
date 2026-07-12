@@ -20,11 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
-using BH.oM.Base.Attributes;
-using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -92,6 +90,7 @@ namespace BH.Engine.Geometry
         public static Basis Transform(this Basis basis, TransformMatrix transform)
         {
             return Create.Basis(basis.X.Transform(transform), basis.Y.Transform(transform));
+
         }
 
         /***************************************************/
