@@ -39,6 +39,12 @@ namespace BH.Engine.Geometry
         [Output("isReflection", "True if the transformation matrix represents a pure reflection, false otherwise.")]
         public static bool IsPureReflection(this TransformMatrix transform, double tolerance = 1e-6)
         {
+            if (!transform.IsValid())
+            {
+                BH.Engine.Base.Compute.RecordError("The given TransformMatrix is not valid.");
+                return false;
+            }
+
             double[,] m = transform.Matrix;
 
             // 1. Affine bottom row
