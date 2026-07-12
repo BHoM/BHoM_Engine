@@ -89,7 +89,12 @@ namespace BH.Engine.Geometry
         [Output("basis", "The transformed Basis.")]
         public static Basis Transform(this Basis basis, TransformMatrix transform)
         {
-            return new Basis(basis.X.Transform(transform), basis.Y.Transform(transform), basis.Z.Transform(transform));
+            // Create the basis using Create method to handle non-orthogonal X and Y. Then reflect Z if needed (when transforming a mirrored basis or when transform itself is a mirror).
+            Basis result = Create.Basis(basis.X.Transform(transform), basis.Y.Transform(transform));
+            if (result.Z.DotProduct(basis.Z.Transform(transform)) < 0)
+                result = new Basis(result.X, result.Y, -result.Z);
+
+            return result;
         }
 
         /***************************************************/
