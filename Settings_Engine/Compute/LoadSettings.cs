@@ -70,9 +70,14 @@ namespace BH.Engine.Settings
                 try
                 {
                     ISettings settings = BH.Engine.Serialiser.Convert.FromJson(contents) as ISettings;
-                    Type type = settings.GetType();
-                    Global.BHoMSettings[type] = settings;
-                    Global.BHoMSettingsFilePaths[type] = file;
+                    if (settings != null)
+                    {
+                        Type type = settings.GetType();
+                        Global.BHoMSettings[type] = settings;
+                        Global.BHoMSettingsFilePaths[type] = file;
+                    }
+                    else
+                        BH.Engine.Base.Compute.RecordWarning($"Cannot deserialise the contents of {file} to an ISettings object.");
                 }
                 catch (Exception ex)
                 {
@@ -121,9 +126,14 @@ namespace BH.Engine.Settings
             try
             {
                 ISettings settings = BH.Engine.Serialiser.Convert.FromJson(contents) as ISettings;
-                Type type = settings.GetType();
-                Global.BHoMSettings[type] = settings;
-                Global.BHoMSettingsFilePaths[type] = filePath;
+                if (settings != null)
+                {
+                    Type type = settings.GetType();
+                    Global.BHoMSettings[type] = settings;
+                    Global.BHoMSettingsFilePaths[type] = filePath;
+                }
+                else
+                    BH.Engine.Base.Compute.RecordWarning($"Cannot deserialise the contents of {filePath} to an ISettings object.");
             }
             catch (Exception ex)
             {
