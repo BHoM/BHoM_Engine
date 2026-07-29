@@ -38,17 +38,26 @@ namespace BH.Engine.Structure
         [Output("FactorOfSafetyUtilization", "The utilisation of the factor of safety.", typeof(Ratio))]
         public static double FactorOfSafetyUtilisation(this DesignResult result)
         {
-            if (result == null || result.RequiredFactorOfSafety == double.NaN || result.FactorOfSafety() == double.NaN)
+            if (result.CheckType == DesignCheckType.Capacity)
             {
-                Base.Compute.RecordError("Design result information is null or invalid.");
+                if (result == null || double.IsNaN(result.RequiredFactorOfSafety) || double.IsNaN(result.FactorOfSafety()))
+                {
+                    Base.Compute.RecordError("Design result information is null or invalid.");
+                    return double.NaN;
+                }
+                if (result.FactorOfSafety() == 0.0)
+                {
+                    Base.Compute.RecordError("Factor of safety is zero, cannot calculate factor of safety utilisation for this design result.");
+                    return double.NaN;
+                }
+                return result.RequiredFactorOfSafety / result.FactorOfSafety();
+            }
+            else
+            {
+                Base.Compute.RecordWarning("Factor of safety is only applicable to capacity checks where Action <= Resistance. " +
+                                           "This result uses a different check type (UpperBound or LowerBound), for which a safety factor utilisation is not defined.");
                 return double.NaN;
             }
-            if (result.FactorOfSafety() == 0.0)
-            {
-                Base.Compute.RecordError("Factor of safety is zero, cannot calculate factor of safety utilisation for this design result.");
-                return double.NaN;
-            }
-            return result.RequiredFactorOfSafety / result.FactorOfSafety();
         }
         /***************************************************/
     }

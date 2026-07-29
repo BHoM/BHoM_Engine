@@ -20,7 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using System;
 using System.ComponentModel;
+using BH.oM.Analytical.Results;
 using BH.oM.Base.Attributes;
 using BH.oM.Structure.Results;
 
@@ -32,17 +34,43 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Evaluates the design result by comparing Action and Resistance.")]
+        [Description("Evaluates the design result by comparing Action and Resistance according to the specified check type. " +
+                     "Capacity checks use factor of safety utilisation (RequiredFactorOfSafety / FactorOfSafety), " +
+                     "while UpperBound and LowerBound checks verify that the response satisfies the defined limit condition.")]
         [Input("result", "The DesignResult containing Action, Resistance, RequiredFactorOfSafety, and CheckType used to evaluate the design condition.")]
         [Output("Evaluation", "Returns \"Pass\" if the design satisfies the check condition, otherwise \"Fail\".")]
         public static string EvaluateResult(this DesignResult result)
         {
-            if (result == null || result.FactorOfSafetyUtilisation() == double.NaN)
+            if (result == null || double.IsNaN(result.Action) || double.IsNaN(result.Resistance))
             {
-                Base.Compute.RecordError("Design result or factor of safety utilisation is null or invalid.");
+                Base.Compute.RecordError("Design result is null or contains invalid values.");
                 return null;
             }
-            return result.FactorOfSafetyUtilisation() <= 1.0 ? "Pass" : "Fail";
+            switch (result.CheckType)
+            {
+                case DesignCheckType.Capacity:
+                    {
+                        if (result.FactorOfSafetyUtilisation() == double.NaN)
+                        {
+                            Base.Compute.RecordError("Factor of safety utilisation is null or invalid.");
+                            return null;
+                        }
+                        return result.FactorOfSafetyUtilisation() <= 1.0 ? "Pass" : "Fail";
+                    }
+                case DesignCheckType.UpperBound:
+                    {
+                        return result.Action <= result.Resistance ? "Pass" : "Fail";
+                    }
+                case DesignCheckType.LowerBound:
+                    {
+                        return result.Action >= result.Resistance ? "Pass" : "Fail";
+                    }
+                default:
+                    {
+                        Base.Compute.RecordError("Unknown check type, unable to evaluate result.");
+                        return null;
+                    }
+            }
         }
         /***************************************************/
     }

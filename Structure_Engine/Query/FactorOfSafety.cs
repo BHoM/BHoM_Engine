@@ -39,17 +39,27 @@ namespace BH.Engine.Structure
         [Output("FactorOfSafety", "The achieved factor of safety.", typeof(Ratio))]
         public static double FactorOfSafety(this DesignResult result)
         {
-            if (result == null || result.Resistance == double.NaN || result.Action == double.NaN)
+            if (result == null || double.IsNaN(result.Resistance) || double.IsNaN(result.Action))
             {
                 Base.Compute.RecordError("Design result information is null or invalid.");
                 return double.NaN;
             }
-            if (result.Action == 0.0)
+            if (result.CheckType == DesignCheckType.Capacity)
             {
-                Base.Compute.RecordError("Action is zero, cannot calculate factor of safety for this design result.");
+                if (result.Action == 0.0)
+                {
+                    Base.Compute.RecordError("Action is zero, cannot calculate factor of safety for this design result.");
+                    return double.NaN;
+                }
+
+                return Math.Abs(result.Resistance / result.Action);
+            }
+            else
+            {
+                Base.Compute.RecordWarning("Factor of safety is only applicable to capacity checks where Action <= Resistance. " +
+                                           "This result uses a different check type (UpperBound or LowerBound), for which a safety factor is not defined.");
                 return double.NaN;
             }
-            return Math.Abs(result.Resistance / result.Action);
         }
         /***************************************************/
     }
