@@ -65,6 +65,12 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
+            if (positions.First() != 0 || positions.Last() != 1)
+            {
+                Base.Compute.RecordError("Positions must include 0 (start) and 1 (end).");
+                return null;
+            }
+
             //Checks for interpolationOrder
             if (interpolationOrder == null || interpolationOrder.Count == 0)
             {
