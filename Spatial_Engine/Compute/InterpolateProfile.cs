@@ -22,10 +22,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using BH.oM.Geometry;
 using BH.oM.Spatial.ShapeProfiles;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
+using BH.Engine.Geometry;
 
 namespace BH.Engine.Spatial
 {
@@ -219,6 +221,75 @@ namespace BH.Engine.Spatial
         }
 
         /***************************************************/
+
+        public static TaperFlangeISectionProfile InterpolateProfile(TaperFlangeISectionProfile startProfile, TaperFlangeISectionProfile endProfile, double parameter, int interpolationOrder,
+            double domainStart = 0, double domainEnd = 1)
+        {
+            return Create.TaperFlangeISectionProfile(
+                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.FlangeThickness, endProfile.FlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.FlangeSlope, endProfile.FlangeSlope, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.RootRadius, endProfile.RootRadius, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.ToeRadius, endProfile.ToeRadius, parameter, interpolationOrder, domainStart, domainEnd));
+        }
+
+        /***************************************************/
+
+        public static TaperFlangeChannelProfile InterpolateProfile(TaperFlangeChannelProfile startProfile, TaperFlangeChannelProfile endProfile, double parameter, int interpolationOrder,
+            double domainStart = 0, double domainEnd = 1)
+        {
+            return Create.TaperFlangeChannelProfile(
+                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.FlangeWidth, endProfile.FlangeWidth, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.FlangeThickness, endProfile.FlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.FlangeSlope, endProfile.FlangeSlope, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.RootRadius, endProfile.RootRadius, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.ToeRadius, endProfile.ToeRadius, parameter, interpolationOrder, domainStart, domainEnd),
+                startProfile.MirrorAboutLocalZ);
+        }
+
+        /***************************************************/
+
+        public static VoidedISectionProfile InterpolateProfile(VoidedISectionProfile startProfile, VoidedISectionProfile endProfile, double parameter, int interpolationOrder,
+            double domainStart = 0, double domainEnd = 1)
+        {
+            return Create.VoidedISectionProfile(
+                Interpolate(startProfile.Height, endProfile.Height, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.OpeningHeight, endProfile.OpeningHeight, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.Width, endProfile.Width, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.FlangeThickness, endProfile.FlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.RootRadius, endProfile.RootRadius, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.ToeRadius, endProfile.ToeRadius, parameter, interpolationOrder, domainStart, domainEnd));
+        }
+
+        /***************************************************/
+
+        public static FreeFormProfile InterpolateProfile(FreeFormProfile startProfile, FreeFormProfile endProfile, double parameter, int interpolationOrder,
+            double domainStart = 0, double domainEnd = 1)
+        {
+            List<ICurve> startEdges = startProfile.Edges.ToList();
+            List<ICurve> endEdges = endProfile.Edges.ToList();
+
+            if (startEdges.Count != endEdges.Count)
+            {
+                Base.Compute.RecordError("Cannot interpolate FreeFormProfiles with different numbers of edges.");
+                return null;
+            }
+
+            List<ICurve> interpolatedEdges = new List<ICurve>();
+            for (int i = 0; i < startEdges.Count; i++)
+            {
+                interpolatedEdges.Add(InterpolateEdge(startEdges[i], endEdges[i], parameter, interpolationOrder, domainStart, domainEnd));
+            }
+
+            return Create.FreeFormProfile(interpolatedEdges, false);
+        }
+
+        /***************************************************/
         /**** Private Methods                           ****/
         /***************************************************/
 
@@ -244,6 +315,52 @@ namespace BH.Engine.Spatial
             return startValue + (endValue - startValue) * scaledInterpolationValue;
 
         }
+
+        /***************************************************/
+
+        private static ICurve InterpolateEdge(ICurve startEdge, ICurve endEdge, double parameter, int interpolationOrder, double domainStart = 0, double domainEnd = 1)
+        {
+            List<Point> startPoints = startEdge.IControlPoints();
+            List<Point> endPoints = endEdge.IControlPoints();
+
+            if (startPoints.Count != endPoints.Count)
+            {
+                Base.Compute.RecordError("Cannot interpolate edges with different numbers of control points.");
+                return null;
+            }
+
+            List<Point> interpolatedPoints = new List<Point>();
+            for (int i = 0; i < startPoints.Count; i++)
+            {
+                double x = Interpolate(startPoints[i].X, endPoints[i].X, parameter, interpolationOrder, domainStart, domainEnd);
+                double y = Interpolate(startPoints[i].Y, endPoints[i].Y, parameter, interpolationOrder, domainStart, domainEnd);
+                double z = Interpolate(startPoints[i].Z, endPoints[i].Z, parameter, interpolationOrder, domainStart, domainEnd);
+                interpolatedPoints.Add(new Point { X = x, Y = y, Z = z });
+            }
+
+            if (interpolatedPoints.Count == 2)
+                return new Line { Start = interpolatedPoints[0], End = interpolatedPoints[1] };
+
+            return new Polyline { ControlPoints = interpolatedPoints };
+        }
+
+        /***************************************************/
+        /**** Private fallback method                   ****/
+        /***************************************************/
+
+        [Description("Compute an IProfile by using parabolic interpolation at a given parameter between two IProfile objects of the same type.")]
+        [Input("startProfile", "The IProfile at the start.")]
+        [Input("endProfile", "The IProfile at the end.")]
+        [Input("parameter", "A number between 0 and 1 that describes the distance along the line.")]
+        [Input("interpolationOrder", "The value of the polynomimal function used the describe the transition between the startProfile and endProfile.")]
+        [Output("interpolatedProfile", "The profile evaluated at the parameter given using interpolation between the startProfile and endProfile using a function with the given interpolation order.")]
+        public static IProfile InterpolateProfile(IProfile startProfile, IProfile endProfile, double parameter, int interpolationOrder, double domainStart = 0, double domainEnd = 1)
+        {
+            Base.Compute.RecordError("The profile provided is not supported for interpolation.");
+            return null;
+        }
+
+        /***************************************************/
 
         /***************************************************/
         /**** Public Methods - Interfaces               ****/
