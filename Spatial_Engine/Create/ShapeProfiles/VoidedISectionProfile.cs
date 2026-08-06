@@ -20,16 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
-using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Geometry;
-using System;
-using BH.Engine.Reflection;
 using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
+using BH.oM.Geometry;
+using BH.oM.Spatial.ShapeProfiles;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Spatial
 {
@@ -88,7 +84,7 @@ namespace BH.Engine.Spatial
             Vector translationVector = new Vector { Y = move };
             curves = curves.Select(x => Geometry.Modify.ITranslate(x, translationVector)).ToList();
             Plane mirrorPlane = Plane.XZ;
-            curves = curves.Concat(curves.Select(x => x.IMirror(mirrorPlane))).ToList();
+            curves = curves.Concat(curves.Select(x => Geometry.Modify.IMirror(x, mirrorPlane))).ToList();
 
 
             return new VoidedISectionProfile(height, openingHeight, (height - openingHeight) / 2, width, webThickness, flangeThickness, rootRadius, toeRadius, curves);

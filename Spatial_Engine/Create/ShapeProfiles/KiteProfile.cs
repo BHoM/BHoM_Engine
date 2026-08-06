@@ -20,16 +20,14 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
-using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Geometry;
-using System;
-using BH.Engine.Reflection;
-using BH.oM.Base.Attributes;
 using BH.Engine.Geometry;
+using BH.oM.Base.Attributes;
+using BH.oM.Geometry;
+using BH.oM.Spatial.ShapeProfiles;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Spatial
 {
@@ -39,6 +37,11 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Creates a kite profile based on input dimensions. Method generates edge curves based on the inputs.")]
+        [InputFromProperty("width1")]
+        [InputFromProperty("angle1")]
+        [InputFromProperty("thickness")]
+        [Output("kite", "The created KiteProfile.")]
         public static KiteProfile KiteProfile(double width1, double angle1, double thickness)
         {
             if ((width1 * Math.Sin(angle1 / 2) / Math.Sqrt(2)) / (Math.Sin(Math.PI * 0.75 - (angle1 / 2))) <= thickness)
@@ -95,7 +98,7 @@ namespace BH.Engine.Spatial
             int extCount = externalEdges.Count;
             for (int i = 0; i < extCount; i++)
             {
-                externalEdges.Add(externalEdges[i].IMirror(new Plane { Origin = origin, Normal = yAxis }));
+                externalEdges.Add(Geometry.Modify.IMirror(externalEdges[i], new Plane { Origin = origin, Normal = yAxis }));
             }
 
             internalEdges.Add(new Line { Start = p2, End = p2 = p2 + dirVec1 * (width1 - thickness - (thickness * Math.Cos(angle1 / 2)) / Math.Sin(angle1 / 2)) });
@@ -104,7 +107,7 @@ namespace BH.Engine.Spatial
             int intCount = internalEdges.Count;
             for (int i = 0; i < intCount; i++)
             {
-                internalEdges.Add(internalEdges[i].IMirror(new Plane { Origin = origin, Normal = yAxis }));
+                internalEdges.Add(Geometry.Modify.IMirror(internalEdges[i], new Plane { Origin = origin, Normal = yAxis }));
             }
 
             Point centroid = externalEdges.IJoin().Centroid(internalEdges.IJoin());
