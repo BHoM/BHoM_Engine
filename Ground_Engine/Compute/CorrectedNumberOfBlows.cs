@@ -39,7 +39,7 @@ namespace BH.Engine.Ground
         [Output("n60", "The number of blows for the main test drive corrected by the energy ratio.")]
         public static double CorrectedNumberOfBlows(SPT standardPenetrationTest)
         {
-            return standardPenetrationTest != null ? N60(standardPenetrationTest.NumberofBlows, standardPenetrationTest.EnergyRatio) : double.NaN;
+            return standardPenetrationTest != null ? CorrectedNumberOfBlows(standardPenetrationTest.NumberofBlows, standardPenetrationTest.EnergyRatio) : double.NaN;
 
         }
 
@@ -49,7 +49,7 @@ namespace BH.Engine.Ground
         [Input("numberOfBlows", "The number of blows from the standard penetration test.")]
         [Input("energyRatio", "The energy ratio of the hammer.")]
         [Output("n60", "The number of blows for the main test drive corrected by the energy ratio (N60).")]
-        public static double N60(int numberOfBlows, double energyRatio)
+        public static double CorrectedNumberOfBlows(int numberOfBlows, double energyRatio)
         {
             return numberOfBlows > 0 && energyRatio > 0 ? numberOfBlows * energyRatio / 60 : double.NaN;
         }
