@@ -111,7 +111,7 @@ namespace BH.Engine.Spatial
                 Interpolate(startProfile.BotFlangeWidth, endProfile.BotFlangeWidth, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.WebThickness, endProfile.WebThickness, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.TopFlangeThickness, endProfile.TopFlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
-                Interpolate(startProfile.BotFlangeThickness, endProfile.TopFlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
+                Interpolate(startProfile.BotFlangeThickness, endProfile.BotFlangeThickness, parameter, interpolationOrder, domainStart, domainEnd),
                 Interpolate(startProfile.WeldSize, endProfile.WeldSize, parameter, interpolationOrder, domainStart, domainEnd));
         }
 
@@ -286,7 +286,9 @@ namespace BH.Engine.Spatial
                 interpolatedEdges.Add(InterpolateEdge(startEdges[i], endEdges[i], parameter, interpolationOrder, domainStart, domainEnd));
             }
 
-            return Create.FreeFormProfile(interpolatedEdges, false);
+            Engine.Base.Compute.RecordWarning("Freeform profiles are centred by default when interpolating profiles");
+
+            return Create.FreeFormProfile(interpolatedEdges, true);
         }
 
         /***************************************************/
