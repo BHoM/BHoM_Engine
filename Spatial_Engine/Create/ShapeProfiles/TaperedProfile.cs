@@ -112,7 +112,7 @@ namespace BH.Engine.Spatial
 
         [Description("Creates a TaperedProfile using a start and end profile.")]
         [Input("startProfile", "The IProfile at the start of the Bar (i.e. position = 0).")]
-        [Input("profiles", "The IProfile at the end of the Bar (i.e. position = 1).")]
+        [Input("endProfile", "The IProfile at the end of the Bar (i.e. position = 1).")]
         [Input("interpolationOrder", "Describes the order of the polynomial function between profiles whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc. " +
             "There should be one fewer (n-1) interpolation values than profiles. For nonlinear profiles a concave profile is achieved by setting the larger profile at the smallest position. " +
             "To achieve a convex profile, the larger profile must be at the largest position.")]
