@@ -70,8 +70,10 @@ namespace BH.Engine.Serialiser
                     List<object> arguments = new List<object>();
                     foreach (var match in matches)
                     {
-                        object propertyValue = IDeserialise(match.Properties.First().Value, match.Parameter.ParameterType, null, version, isUpgraded);
-                        if (CanSetValueToProperty(match.Parameter.ParameterType, propertyValue))
+                        BsonValue bsonValue = match.Properties.First().Value;
+                        object propertyValue = IDeserialise(bsonValue, match.Parameter.ParameterType, null, version, isUpgraded);
+
+                        if (CanSetValueToProperty(match.Parameter.ParameterType, propertyValue, bsonValue))
                             arguments.Add(propertyValue);
                         else
                         {
