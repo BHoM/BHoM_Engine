@@ -531,6 +531,8 @@ namespace BH.Engine.Spatial
         [Input("endProfile", "The IProfile at the end.")]
         [Input("parameter", "A number between 0 and 1 that describes the distance along the line.")]
         [Input("interpolationOrder", "The value of the polynomimal function used the describe the transition between the startProfile and endProfile.")]
+        [Input("domainStart", "The start of the domain for the interpolation. Defaults to 0.")]
+        [Input("domainEnd", "The end of the domain for the interpolation. Defaults to 1.")]
         [Output("interpolatedProfile", "The profile evaluated at the parameter given using interpolation between the startProfile and endProfile using a function with the given interpolation order.")]
         public static IProfile InterpolateProfile(IProfile startProfile, IProfile endProfile, double parameter, int interpolationOrder, double domainStart = 0, double domainEnd = 1)
         {
