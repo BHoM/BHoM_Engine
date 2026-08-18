@@ -42,10 +42,21 @@ namespace BH.Engine.Structure
         [Output("transform", "The generated transformation matrix.")]
         public static TransformMatrix BarSectionTranformation(this Bar bar)
         {
+            return bar.BarSectionTranformation(0);
+        }
+
+        /***************************************************/
+
+        [Description("Constructs the transformation matrix needed to move the section curves of the Bar from the default drawing position around the global origin to a point along the Bar centreline and aligned with its tangent.")]
+        [Input("bar", "The Bar to extract the transformation matrix from. Will make use of the position, tangent and normal of the Bar to generate the matrix.")]
+        [Input("position", "Normalised position along the Bar centreline between 0 (start) and 1 (end) at which to place the section.")]
+        [Output("transform", "The generated transformation matrix.")]
+        public static TransformMatrix BarSectionTranformation(this Bar bar, double position)
+        {
             if (bar.IsNull())
                 return null;
 
-            Vector trans = bar.Start.Position - Point.Origin;
+            Vector trans = bar.Centreline().PointAtParameter(position) - Point.Origin;
 
             Vector gX = Vector.XAxis;
             Vector gY = Vector.YAxis;
@@ -71,8 +82,6 @@ namespace BH.Engine.Structure
             localToGlobal.Matrix[3, 3] = 1;
 
             return Engine.Geometry.Create.TranslationMatrix(trans) * localToGlobal * GlobalToSectionAxes;
-
-
         }
 
         /***************************************************/

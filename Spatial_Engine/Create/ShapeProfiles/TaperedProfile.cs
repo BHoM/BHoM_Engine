@@ -39,12 +39,15 @@ namespace BH.Engine.Spatial
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Input("positions", "Describes the position of each profile parametrically (i.e. between 0 and 1) along the Bar it is assigned to. " +
+        [Description("Creates a TaperedProfile using a list of positions (parametric between 0 and 1) and list of profiles \n" +
+            "corresponding to those positions.")]
+        [Input("positions", "Describes the position of each profile parametrically (i.e. between 0 and 1) along the Bar it is assigned to. \n" +
             "The smallest position indicates the start profile and the largest position indicates the end profile.")]
-        [Input("profiles", "The ShapeProfile at each of the positions specified.")]
+        [Input("profiles", "The ShapeProfile at each of the positions specified. A profile must be provided at the start and end as a minimum.")]
         [Input("interpolationOrder", "Describes the order of the polynomial function between profiles whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc. " +
             "There should be one fewer (n-1) interpolation values than profiles. For nonlinear profiles a concave profile is achieved by setting the larger profile at the smallest position. " +
             "To achieve a convex profile, the larger profile must be at the largest position.")]
+        [Output("taperedProfile", "The created TaperedProfile.")]
         public static TaperedProfile TaperedProfile(List<double> positions, List<IProfile> profiles, List<int> interpolationOrder = null)
         {
             //Checks for positions and profiles
@@ -62,6 +65,12 @@ namespace BH.Engine.Spatial
             if (positions.Zip(positions.Skip(1), (a, b) => new { a, b }).Any(p => p.a > p.b))
             {
                 Base.Compute.RecordError("Positions must be sorted in ascending order.");
+                return null;
+            }
+
+            if (positions.First() != 0 || positions.Last() != 1)
+            {
+                Base.Compute.RecordError("Positions must include 0 (start) and 1 (end).");
                 return null;
             }
 
@@ -101,8 +110,13 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        [Input("interpolationOrder", "Describes the polynomial function between each profile whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc." +
-            "For nonlinear profiles a concave profile is achieved by setting the larger profile at the startProfile. To achieve a convex profile, the larger profile must be at the endProfile.")]
+        [Description("Creates a TaperedProfile using a start and end profile.")]
+        [Input("startProfile", "The IProfile at the start of the Bar (i.e. position = 0).")]
+        [Input("endProfile", "The IProfile at the end of the Bar (i.e. position = 1).")]
+        [Input("interpolationOrder", "Describes the order of the polynomial function between profiles whereby 1 = Linear, 2 = Quadratic, 3 = Cubic etc. " +
+            "There should be one fewer (n-1) interpolation values than profiles. For nonlinear profiles a concave profile is achieved by setting the larger profile at the smallest position. " +
+            "To achieve a convex profile, the larger profile must be at the largest position.")]
+        [Output("taperedProfile", "The created TaperedProfile.")]
         public static TaperedProfile TaperedProfile(IProfile startProfile, IProfile endProfile, int interpolationOrder = 1)
         {
             return TaperedProfile(new List<double>() { 0, 1 }, new List<IProfile>() { startProfile, endProfile }, new List<int>() { interpolationOrder });
