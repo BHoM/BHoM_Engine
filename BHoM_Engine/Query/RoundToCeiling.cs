@@ -32,39 +32,21 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Rounds a number using the given tolerance, rounding to ceiling to the nearest tolerance multiplier." +
-            "Supports any fractional, integer, positive or negative numbers." +
+        [Description("Rounds a number using the given tolerance, always rounding the magnitude of the number away " +
+            "from zero to the next tolerance multiple, regardless of sign. Supports any fractional, integer, " +
+            "positive or negative numbers." +
             "\nSome examples:" +
             "\n\t RoundToCeiling(12, 20) ==> 20" +
             "\n\t RoundToCeiling(121, 2) ==> 122" +
             "\n\t RoundToCeiling(1.2345, 1.1) ==> 2.2" +
             "\n\t RoundToCeiling(0.014, 0.01) ==> 0.02" +
-            "\n\t RoundToCeiling(-0.014, 0.01) ==> -0.01" +
+            "\n\t RoundToCeiling(-0.014, 0.01) ==> -0.02" +
             "\n\t RoundToCeiling(0.015, 0.01) ==> 0.02" +
             "\n\t RoundToCeiling(0.014, 0.02) ==> 0.02" +
             "\nand so on.")]
         [Input("number", "Number to be rounded.")]
         [Input("tolerance", "Tolerance to use for rounding.")]
         public static double RoundToCeiling(this double number, double tolerance)
-        {
-            return number.RoundToCeiling(tolerance, false);
-        }
-
-        /***************************************************/
-
-        [Description("Rounds a number using the given tolerance, rounding to ceiling to the nearest tolerance multiplier." +
-            "Supports any fractional, integer, positive or negative numbers." +
-            "\nWhen preserveMagnitude is true, ceiling always grows the absolute magnitude of the number away from zero " +
-            "regardless of sign, rather than rounding toward positive infinity — useful for conservative rounding of " +
-            "signed engineering quantities such as forces or moments." +
-            "\nSome examples:" +
-            "\n\t RoundToCeiling(-0.014, 0.01, false) ==> -0.01" +
-            "\n\t RoundToCeiling(-0.014, 0.01, true) ==> -0.02" +
-            "\nand so on.")]
-        [Input("number", "Number to be rounded.")]
-        [Input("tolerance", "Tolerance to use for rounding.")]
-        [Input("preserveMagnitude", "If true, always grows the magnitude of the number away from zero regardless of sign, instead of rounding toward positive infinity.")]
-        public static double RoundToCeiling(this double number, double tolerance, bool preserveMagnitude)
         {
             if (tolerance < 0)
             {
@@ -76,14 +58,8 @@ namespace BH.Engine.Base
             if (number == 0 || tolerance == 0 || Double.IsNaN(tolerance) || Double.IsNaN(number) || Double.IsInfinity(number) || Double.IsInfinity(tolerance))
                 return number;
 
-            if (preserveMagnitude)
-            {
-                double sign = number < 0 ? -1.0 : 1.0;
-                return sign * tolerance * Math.Ceiling(Math.Abs(number) / tolerance);
-            }
-
-            // Otherwise, perform the approximation with the given tolerance.
-            return tolerance * Math.Ceiling(number / tolerance);
+            double sign = number < 0 ? -1.0 : 1.0;
+            return sign * tolerance * Math.Ceiling(Math.Abs(number) / tolerance);
         }
 
         /***************************************************/

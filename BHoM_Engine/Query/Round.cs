@@ -47,31 +47,6 @@ namespace BH.Engine.Base
         [Input("tolerance", "Tolerance to use for rounding.")]
         public static double Round(this double number, double tolerance)
         {
-            return number.Round(tolerance, true);
-        }
-
-        /***************************************************/
-
-        [Description("Rounds a number using the given tolerance, rounding to the nearest tolerance multiplier." +
-            "Supports any fractional, integer, positive or negative numbers." +
-            "\nWhen preserveMagnitude is true, ties round to the nearest multiple based on the absolute magnitude " +
-            "of the number, breaking exact ties away from zero regardless of sign — consistent with " +
-            "RoundToCeiling/RoundToFloor's own preserveMagnitude convention. When false, rounds the raw signed " +
-            "value directly (ties break using .NET's default banker's rounding)." +
-            "\nSome examples:" +
-            "\n\t Round(12, 20) ==> 20" +
-            "\n\t Round(121, 2) ==> 122" +
-            "\n\t Round(1.2345, 1.1) ==> 1.1" +
-            "\n\t Round(0.014, 0.01) ==> 0.01" +
-            "\n\t Round(-0.014, 0.01) ==> -0.01" +
-            "\n\t Round(0.015, 0.01) ==> 0.02" +
-            "\n\t Round(0.014, 0.02) ==> 0.02" +
-            "\nand so on.")]
-        [Input("number", "Number to be rounded.")]
-        [Input("tolerance", "Tolerance to use for rounding.")]
-        [Input("preserveMagnitude", "If true, rounds by absolute magnitude with exact ties breaking away from zero regardless of sign. If false, rounds the raw signed value directly, using .NET's default (banker's) tie-breaking.")]
-        public static double Round(this double number, double tolerance, bool preserveMagnitude)
-        {
             if (tolerance < 0)
             {
                 BH.Engine.Base.Compute.RecordError("Tolerance cannot be less than 0.");
@@ -81,9 +56,6 @@ namespace BH.Engine.Base
             // If the tolerance is the smallest possible double, or if the inputs are invalid, just return.
             if (number == 0 || tolerance == 0 || Double.IsNaN(tolerance) || Double.IsNaN(number) || Double.IsInfinity(number) || Double.IsInfinity(tolerance))
                 return number;
-
-            if (!preserveMagnitude)
-                return tolerance * Math.Round(number / tolerance);
 
             // First check if the tolerance can be converted into fractional digits, i.e. is a number in the form of 10^someExp.
             // This avoids imprecisions with the approximation formula below. If so, just return Math.Round().
