@@ -27,7 +27,7 @@ using BH.oM.Base.Attributes;
 
 namespace BH.Engine.Base
 {
-    public static partial class Compute
+    public static partial class Query
     {
         /*******************************************/
         /**** Public Methods                    ****/
@@ -36,14 +36,15 @@ namespace BH.Engine.Base
         [Description("Rounds a value to the nearest multiple of a step. Unit-agnostic — the caller may feed " +
             "any consistent unit.")]
         [Input("value", "The value to round.")]
-        [Input("step", "The increment to round to. A non-positive step leaves the value unchanged.")]
-        [Input("mode", "Round to the nearest step, or always Ceiling/Floor.")]
+        [Input("step", "The increment to round to. A non-positive step leaves the value unchanged. For " +
+            "mode == SignificantFigures, this is instead truncated to an integer figures count.")]
+        [Input("mode", "Round to the nearest step, always Ceiling/Floor, or to N significant figures.")]
         [Input("preserveSign", "If true (the default), Ceiling always grows the magnitude (away from zero) and " +
             "Floor always shrinks it (towards zero), regardless of whether the value is positive or negative. " +
             "If false, Ceiling/Floor/Round follow the standard mathematical convention instead (toward +∞/−∞/nearest " +
-            "on the raw signed value).")]
+            "on the raw signed value). Not applicable to SignificantFigures.")]
         [Output("rounded", "The rounded value.")]
-        public static double RoundToStep(double value, double step, RoundingMode mode = RoundingMode.Round, bool preserveSign = true)
+        public static double RoundToStep(this double value, double step, RoundingMode mode = RoundingMode.Round, bool preserveSign = true)
         {
             if (step <= 0)
                 return value;
@@ -54,8 +55,10 @@ namespace BH.Engine.Base
                     return value.RoundToCeiling(step, preserveSign);
                 case RoundingMode.Floor:
                     return value.RoundToFloor(step, preserveSign);
+                case RoundingMode.SignificantFigures:
+                    return value.RoundToSignificantFigures((int)step);
                 default:
-                    return Query.Round(value, step, preserveSign);
+                    return value.Round(step, preserveSign);
             }
         }
 
