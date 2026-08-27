@@ -47,6 +47,25 @@ namespace BH.Engine.Base
         [Input("tolerance", "Tolerance to use for rounding.")]
         public static double RoundToFloor(this double number, double tolerance)
         {
+            return number.RoundToFloor(tolerance, false);
+        }
+
+        /***************************************************/
+
+        [Description("Rounds a number using the given tolerance, rounding to floor to the nearest tolerance multiplier." +
+            "Supports any fractional, integer, positive or negative numbers." +
+            "\nWhen preserveMagnitude is true, floor always shrinks the absolute magnitude of the number toward zero " +
+            "regardless of sign, rather than rounding toward negative infinity — useful for conservative rounding of " +
+            "signed engineering quantities such as forces or moments." +
+            "\nSome examples:" +
+            "\n\t RoundToFloor(-0.014, 0.01, false) ==> -0.02" +
+            "\n\t RoundToFloor(-0.014, 0.01, true) ==> -0.01" +
+            "\nand so on.")]
+        [Input("number", "Number to be rounded.")]
+        [Input("tolerance", "Tolerance to use for rounding.")]
+        [Input("preserveMagnitude", "If true, always shrinks the magnitude of the number toward zero regardless of sign, instead of rounding toward negative infinity.")]
+        public static double RoundToFloor(this double number, double tolerance, bool preserveMagnitude)
+        {
             if (tolerance < 0)
             {
                 BH.Engine.Base.Compute.RecordError("Tolerance cannot be less than 0.");
@@ -56,6 +75,12 @@ namespace BH.Engine.Base
             // If the tolerance is the smallest possible double, or if the inputs are invalid, just return.
             if (number == 0 || tolerance == 0 || Double.IsNaN(tolerance) || Double.IsNaN(number) || Double.IsInfinity(number) || Double.IsInfinity(tolerance))
                 return number;
+
+            if (preserveMagnitude)
+            {
+                double sign = number < 0 ? -1.0 : 1.0;
+                return sign * tolerance * Math.Floor(Math.Abs(number) / tolerance);
+            }
 
             // Otherwise, perform the approximation with the given tolerance.
             return tolerance * Math.Floor(number / tolerance);

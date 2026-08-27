@@ -20,7 +20,6 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
-using System;
 using System.ComponentModel;
 
 using BH.oM.Base;
@@ -47,17 +46,14 @@ namespace BH.Engine.Base
             if (step <= 0)
                 return value;
 
-            double sign = value < 0 ? -1.0 : 1.0;
-            double magnitude = Math.Abs(value) / step;
-
             switch (mode)
             {
                 case RoundingMode.Ceiling:
-                    return sign * Math.Ceiling(magnitude) * step;
+                    return value.RoundToCeiling(step, true);
                 case RoundingMode.Floor:
-                    return sign * Math.Floor(magnitude) * step;
+                    return value.RoundToFloor(step, true);
                 default:
-                    return sign * Math.Round(magnitude, MidpointRounding.AwayFromZero) * step;
+                    return Query.Round(value, step);
             }
         }
 
