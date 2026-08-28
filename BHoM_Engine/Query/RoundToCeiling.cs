@@ -39,7 +39,7 @@ namespace BH.Engine.Base
             "\n\t RoundToCeiling(121, 2) ==> 122" +
             "\n\t RoundToCeiling(1.2345, 1.1) ==> 2.2" +
             "\n\t RoundToCeiling(0.014, 0.01) ==> 0.02" +
-            "\n\t RoundToCeiling(-0.014, 0.01) ==> -0.02" +
+            "\n\t RoundToCeiling(-0.014, 0.01) ==> -0.01" +
             "\n\t RoundToCeiling(0.015, 0.01) ==> 0.02" +
             "\n\t RoundToCeiling(0.014, 0.02) ==> 0.02" +
             "\nand so on.")]
