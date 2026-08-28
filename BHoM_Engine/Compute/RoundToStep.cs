@@ -40,9 +40,19 @@ namespace BH.Engine.Base
             "caller may feed any consistent unit.")]
         [Input("value", "The value to round.")]
         [Input("step", "The increment to round to. A non-positive step leaves the value unchanged.")]
+<<<<<<< HEAD
         [Input("mode", "Round to the nearest step, or always Ceiling/Floor away from/towards zero.")]
         [Output("rounded", "The rounded value.")]
         public static double RoundToStep(double value, double step, RoundingMode mode = RoundingMode.Round)
+=======
+        [Input("mode", "Round to the nearest step, or always Ceiling/Floor.")]
+        [Input("preserveSign", "If true (the default), Ceiling always grows the magnitude (away from zero) and " +
+            "Floor always shrinks it (towards zero), regardless of whether the value is positive or negative. " +
+            "If false, Ceiling/Floor/Round follow the standard mathematical convention instead (toward +∞/−∞/nearest " +
+            "on the raw signed value).")]
+        [Output("rounded", "The rounded value.")]
+        public static double RoundToStep(double value, double step, RoundingMode mode = RoundingMode.Round, bool preserveSign = true)
+>>>>>>> parent of 4f8341a63 (change to query method)
         {
             if (step <= 0)
                 return value;
@@ -55,9 +65,15 @@ namespace BH.Engine.Base
                 case RoundingMode.Ceiling:
                     return sign * Math.Ceiling(magnitude) * step;
                 case RoundingMode.Floor:
+<<<<<<< HEAD
                     return sign * Math.Floor(magnitude) * step;
                 default:
                     return sign * Math.Round(magnitude, MidpointRounding.AwayFromZero) * step;
+=======
+                    return value.RoundToFloor(step, preserveSign);
+                default:
+                    return Query.Round(value, step, preserveSign);
+>>>>>>> parent of 4f8341a63 (change to query method)
             }
         }
 
