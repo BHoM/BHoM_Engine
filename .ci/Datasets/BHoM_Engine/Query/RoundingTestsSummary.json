@@ -1,0 +1,99 @@
+{
+  "summary": "Test cases for RoundToCeilingAwayFromZero and RoundToFloorAwayFromZero methods",
+  "dateCreated": "2026-08-28",
+  "author": "Christopher Short",
+  "testSuites": [
+    {
+      "methodName": "RoundToCeilingAwayFromZero",
+      "description": "Rounds the magnitude of the number away from zero to the nearest tolerance multiple, regardless of sign",
+      "doubleOverload": {
+        "description": "RoundToCeilingAwayFromZero(double number, double tolerance)",
+        "keyCharacteristics": [
+          "Positive numbers: rounds up to nearest tolerance",
+          "Negative numbers: rounds down (away from zero) to nearest tolerance",
+          "Key difference from RoundToCeiling: negative handling",
+          "Zero tolerance or zero input: returns input unchanged"
+        ],
+        "testCases": [
+          { "input": [12.0, 20.0], "expected": 20.0, "description": "Positive with large tolerance" },
+          { "input": [121.0, 2.0], "expected": 122.0, "description": "Positive with small tolerance" },
+          { "input": [1.2345, 1.1], "expected": 2.2, "description": "Positive fractional" },
+          { "input": [0.014, 0.01], "expected": 0.02, "description": "Positive small value" },
+          { "input": [-0.014, 0.01], "expected": -0.02, "description": "Negative small value (KEY: away from zero)" },
+          { "input": [0.015, 0.01], "expected": 0.02, "description": "Rounding edge case" },
+          { "input": [0.014, 0.02], "expected": 0.02, "description": "Tolerance larger than value" },
+          { "input": [-3.5, 2.0], "expected": -4.0, "description": "Negative away from zero" },
+          { "input": [-0.5, 2.0], "expected": -2.0, "description": "Negative small value away from zero" },
+          { "input": [0.5, 2.0], "expected": 2.0, "description": "Positive small value" }
+        ]
+      },
+      "intOverload": {
+        "description": "RoundToCeilingAwayFromZero(int number, double tolerance)",
+        "testCases": [
+          { "input": [12, 20.0], "expected": 20, "description": "Positive with large tolerance" },
+          { "input": [121, 2.0], "expected": 122, "description": "Positive with small tolerance" },
+          { "input": [-35, 20.0], "expected": -40, "description": "Negative away from zero" }
+        ]
+      }
+    },
+    {
+      "methodName": "RoundToFloorAwayFromZero",
+      "description": "Rounds the magnitude of the number toward zero to the previous tolerance multiple, regardless of sign",
+      "doubleOverload": {
+        "description": "RoundToFloorAwayFromZero(double number, double tolerance)",
+        "keyCharacteristics": [
+          "Positive numbers: rounds down to nearest tolerance (like Floor)",
+          "Negative numbers: rounds up (toward zero) to nearest tolerance",
+          "Opposite behavior to RoundToCeilingAwayFromZero",
+          "Zero tolerance or zero input: returns input unchanged"
+        ],
+        "testCases": [
+          { "input": [12.0, 20.0], "expected": 0.0, "description": "Positive with large tolerance" },
+          { "input": [121.0, 2.0], "expected": 120.0, "description": "Positive with small tolerance" },
+          { "input": [1.2345, 1.1], "expected": 1.1, "description": "Positive fractional" },
+          { "input": [0.014, 0.01], "expected": 0.01, "description": "Positive small value" },
+          { "input": [-0.014, 0.01], "expected": -0.01, "description": "Negative small value (KEY: toward zero)" },
+          { "input": [0.015, 0.01], "expected": 0.01, "description": "Rounding edge case" },
+          { "input": [0.014, 0.02], "expected": 0.0, "description": "Tolerance larger than value" },
+          { "input": [-3.5, 2.0], "expected": -2.0, "description": "Negative toward zero" },
+          { "input": [-0.5, 2.0], "expected": 0.0, "description": "Negative small value toward zero" },
+          { "input": [0.5, 2.0], "expected": 0.0, "description": "Positive small value" }
+        ]
+      },
+      "intOverload": {
+        "description": "RoundToFloorAwayFromZero(int number, double tolerance)",
+        "testCases": [
+          { "input": [12, 20.0], "expected": 0, "description": "Positive with large tolerance" },
+          { "input": [121, 2.0], "expected": 120, "description": "Positive with small tolerance" },
+          { "input": [-35, 20.0], "expected": 0, "description": "Negative toward zero" },
+          { "input": [-5, 3.0], "expected": -3, "description": "Negative toward zero with smaller tolerance" }
+        ]
+      }
+    }
+  ],
+  "keyDifferences": {
+    "RoundToCeilingAwayFromZero_vs_RoundToCeiling": [
+      "RoundToCeiling(-0.014, 0.01) → -0.01 (toward positive/ceiling)",
+      "RoundToCeilingAwayFromZero(-0.014, 0.01) → -0.02 (away from zero)",
+      "RoundToCeiling(-3.5, 2.0) → -2.0 (toward positive)",
+      "RoundToCeilingAwayFromZero(-3.5, 2.0) → -4.0 (away from zero)"
+    ],
+    "RoundToFloorAwayFromZero_vs_RoundToFloor": [
+      "RoundToFloor(-0.014, 0.01) → -0.02 (away from zero)",
+      "RoundToFloorAwayFromZero(-0.014, 0.01) → -0.01 (toward zero)",
+      "RoundToFloor(-3.5, 2.0) → -4.0 (away from zero)",
+      "RoundToFloorAwayFromZero(-3.5, 2.0) → -2.0 (toward zero)"
+    ]
+  },
+  "comprehensiveTestCoverage": {
+    "included": [
+      "All examples from method XML documentation",
+      "Both double and int overloads",
+      "Positive and negative values",
+      "Fractional tolerances (0.33, 0.67, 1.33, 1.67)",
+      "Whole number tolerances (1.0, 2.0, 3.0, 20.0)",
+      "Edge cases (zero input, zero tolerance, values smaller than tolerance)",
+      "Range of values (-35 to 121) to verify behavior consistency"
+    ]
+  }
+}
