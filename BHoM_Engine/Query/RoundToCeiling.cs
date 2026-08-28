@@ -32,9 +32,8 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Rounds a number using the given tolerance, always rounding the magnitude of the number away " +
-            "from zero to the next tolerance multiple, regardless of sign. Supports any fractional, integer, " +
-            "positive or negative numbers." +
+        [Description("Rounds a number using the given tolerance, rounding to ceiling to the nearest tolerance multiplier." +
+            "Supports any fractional, integer, positive or negative numbers." +
             "\nSome examples:" +
             "\n\t RoundToCeiling(12, 20) ==> 20" +
             "\n\t RoundToCeiling(121, 2) ==> 122" +
@@ -58,8 +57,8 @@ namespace BH.Engine.Base
             if (number == 0 || tolerance == 0 || Double.IsNaN(tolerance) || Double.IsNaN(number) || Double.IsInfinity(number) || Double.IsInfinity(tolerance))
                 return number;
 
-            double sign = number < 0 ? -1.0 : 1.0;
-            return sign * tolerance * Math.Ceiling(Math.Abs(number) / tolerance);
+            // Otherwise, perform the approximation with the given tolerance.
+            return tolerance * Math.Ceiling(number / tolerance);
         }
 
         /***************************************************/

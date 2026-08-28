@@ -32,15 +32,14 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Rounds a number using the given tolerance, always rounding the magnitude of the number toward " +
-            "zero to the previous tolerance multiple, regardless of sign. Supports any fractional, integer, " +
-            "positive or negative numbers." +
+        [Description("Rounds a number using the given tolerance, rounding to floor to the nearest tolerance multiplier." +
+            "Supports any fractional, integer, positive or negative numbers." +
             "\nSome examples:" +
             "\n\t RoundToFloor(12, 20) ==> 0" +
             "\n\t RoundToFloor(121, 2) ==> 120" +
             "\n\t RoundToFloor(1.2345, 1.1) ==> 1.1" +
             "\n\t RoundToFloor(0.014, 0.01) ==> 0.01" +
-            "\n\t RoundToFloor(-0.014, 0.01) ==> -0.01" +
+            "\n\t RoundToFloor(-0.014, 0.01) ==> -0.02" +
             "\n\t RoundToFloor(0.015, 0.01) ==> 0.01" +
             "\n\t RoundToFloor(0.014, 0.02) ==> 0" +
             "\nand so on.")]
@@ -58,8 +57,8 @@ namespace BH.Engine.Base
             if (number == 0 || tolerance == 0 || Double.IsNaN(tolerance) || Double.IsNaN(number) || Double.IsInfinity(number) || Double.IsInfinity(tolerance))
                 return number;
 
-            double sign = number < 0 ? -1.0 : 1.0;
-            return sign * tolerance * Math.Floor(Math.Abs(number) / tolerance);
+            // Otherwise, perform the approximation with the given tolerance.
+            return tolerance * Math.Floor(number / tolerance);
         }
 
         /***************************************************/
