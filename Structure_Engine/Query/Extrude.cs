@@ -53,29 +53,18 @@ namespace BH.Engine.Structure
             if (bar.SectionProperty == null || !(bar.SectionProperty is IGeometricalSection))
                 return new List<IGeometry>();
 
-            IProfile sectionProfile = (bar.SectionProperty as IGeometricalSection).SectionProfile;
+            IProfile profile = (bar.SectionProperty as IGeometricalSection).SectionProfile;
+
+            List<ICurve> secCurves = profile.Edges.ToList();
+
             Vector tan = bar.Tangent();
 
-            if (sectionProfile is TaperedProfile taperedProfile)
-            {
-                if (taperedProfile.InterpolationOrder.Any(x => x > 1))
-                    Base.Compute.RecordWarning("Extrusion of TaperedProfiles with interpolation order greater than one is not yet supported. Linear interpolation will be used.");
-
-                if (simple)
-                    return ExtrudeTaperedSimple(taperedProfile, bar, tan);
-                else
-                    return ExtrudeTaperedCurves(taperedProfile, bar, tan);
-            }
+            TransformMatrix totalTransform = bar.BarSectionTranformation();
+            if (simple)
+                return ExtrudeSimple(secCurves, totalTransform, tan);
             else
-            {
-                List<ICurve> secCurves = sectionProfile.Edges.ToList();
-                TransformMatrix totalTransform = bar.BarSectionTranformation();
+                return ExtrudeFullCurves(secCurves, totalTransform, tan);
 
-                if (simple)
-                    return ExtrudeSimple(secCurves, totalTransform, tan);
-                else
-                    return ExtrudeFullCurves(secCurves, totalTransform, tan);
-            }
         }
 
 
@@ -138,67 +127,6 @@ namespace BH.Engine.Structure
 
             return new List<IGeometry> { mesh };
 
-        }
-
-        /***************************************************/
-
-        private static List<IGeometry> ExtrudeTaperedCurves(TaperedProfile taperedProfile, Bar bar, Vector tangent)
-        {
-            List<double> positions = taperedProfile.Profiles.Keys.ToList();
-            List<IProfile> profiles = taperedProfile.Profiles.Values.ToList();
-            List<List<ICurve>> allCurveSets = new List<List<ICurve>>();
-
-            for (int i = 0; i < positions.Count; i++)
-            {
-                List<ICurve> secCurves = profiles[i].Edges.ToList();
-                TransformMatrix transform = bar.BarSectionTranformation(positions[i]);
-
-                List<PolyCurve> joined = Engine.Geometry.Compute.IJoin(secCurves);
-                List<ICurve> transformed = new List<ICurve>();
-                for (int k = 0; k < joined.Count; k++)
-                {
-                    ICurve curve = joined[k];
-                    curve = BH.Engine.Geometry.Modify.ITransform(curve, transform);
-                    transformed.Add(curve);
-                }
-
-                allCurveSets.Add(transformed);
-            }
-
-            List<IGeometry> result = new List<IGeometry>();
-            if (allCurveSets.Count > 1)
-            {
-                int curveCount = allCurveSets[0].Count;
-                for (int c = 0; c < curveCount; c++)
-                {
-                    for (int p = 0; p < allCurveSets.Count - 1; p++)
-                    {
-                        if (c < allCurveSets[p].Count && c < allCurveSets[p + 1].Count)
-                            result.Add(Engine.Geometry.Create.Loft(new List<ICurve> { allCurveSets[p][c], allCurveSets[p + 1][c] }));
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        /***************************************************/
-
-        private static List<IGeometry> ExtrudeTaperedSimple(TaperedProfile taperedProfile, Bar bar, Vector tangent)
-        {
-            List<IGeometry> result = new List<IGeometry>();
-            List<double> positions = taperedProfile.Profiles.Keys.ToList();
-            List<IProfile> profiles = taperedProfile.Profiles.Values.ToList();
-
-            for (int i = 0; i < positions.Count - 1; i++)
-            {
-                List<ICurve> secCurves = profiles[i].Edges.ToList();
-                TransformMatrix transform = bar.BarSectionTranformation(positions[i]);
-                Vector subTangent = tangent * (positions[i + 1] - positions[i]);
-                result.AddRange(ExtrudeSimple(secCurves, transform, subTangent));
-            }
-
-            return result;
         }
 
         /***************************************************/
