@@ -118,7 +118,7 @@ namespace BH.Engine.Structure
                     {
                         pileCap = pileCap.ShallowClone();
                         pileCapCloned = true;
-                        pileCap.AddFragment(topLevelReinforcementDensity);
+                        pileCap.Fragments.Add(topLevelReinforcementDensity);
                     }
                 }
             }
@@ -131,7 +131,7 @@ namespace BH.Engine.Structure
                 {
                     if (!pileCapCloned)
                         pileCap = pileCap.ShallowClone();
-                    pileCap.AddFragment(topLevelConnectionAllowance);
+                    pileCap.Fragments.Add(topLevelConnectionAllowance);
                 }
             }
 
@@ -162,7 +162,7 @@ namespace BH.Engine.Structure
                     else
                     { 
                         pile = pile.ShallowClone();
-                        pile.AddFragment(topLevelReinforcementDensity);
+                        pile.Fragments.Add(topLevelReinforcementDensity);
                     }
                 }
 
@@ -174,7 +174,7 @@ namespace BH.Engine.Structure
                     {
                         if (!pileCLoned)
                             pile = pile.ShallowClone();
-                        pile.AddFragment(topLevelConnectionAllowance);
+                        pile.Fragments.Add(topLevelConnectionAllowance);
                     }
                 }
                 
@@ -247,7 +247,7 @@ namespace BH.Engine.Structure
                 {
                     stem = stem.ShallowClone();
                     stemCloned = true;
-                    stem.AddFragment(topLevelReinforcementDensity);
+                    stem.Fragments.Add(topLevelReinforcementDensity);
                 }
 
                 if (footing.FindFragment<ReinforcementDensity>() != null)
@@ -256,7 +256,7 @@ namespace BH.Engine.Structure
                 {
                     footing = footing.ShallowClone();
                     footingCloned = true;
-                    footing.AddFragment(topLevelReinforcementDensity);
+                    footing.Fragments.Add(topLevelReinforcementDensity);
                 }
             }
 
@@ -270,7 +270,7 @@ namespace BH.Engine.Structure
                 {
                     if(!stemCloned)
                         stem = stem.ShallowClone();
-                    stem.AddFragment(topLevelConnectionAllowance);
+                    stem.Fragments.Add(topLevelConnectionAllowance);
                 }
 
                 if (footing.FindFragment<ConnectionAllowance>() != null)
@@ -279,7 +279,7 @@ namespace BH.Engine.Structure
                 {
                     if(!footingCloned)
                         footing = footing.ShallowClone();
-                    footing.AddFragment(topLevelConnectionAllowance);
+                    footing.Fragments.Add(topLevelConnectionAllowance);
                 }
             }
 
