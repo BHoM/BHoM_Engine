@@ -4,20 +4,20 @@
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
- *                                           
- *                                                                              
- * The BHoM is free software: you can redistribute it and/or modify         
- * it under the terms of the GNU Lesser General Public License as published by  
- * the Free Software Foundation, either version 3.0 of the License, or          
- * (at your option) any later version.                                          
- *                                                                              
- * The BHoM is distributed in the hope that it will be useful,              
- * but WITHOUT ANY WARRANTY; without even the implied warranty of               
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
- * GNU Lesser General Public License for more details.                          
- *                                                                            
- * You should have received a copy of the GNU Lesser General Public License     
- * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ *
+ *
+ * The BHoM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3.0 of the License, or
+ * (at your option) any later version.
+ *
+ * The BHoM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
 using BH.oM.Base.Attributes;
@@ -36,17 +36,18 @@ namespace BH.Engine.Base
             "zero to the previous tolerance multiple, regardless of sign. Supports any fractional, integer, " +
             "positive or negative numbers." +
             "\nSome examples:" +
-            "\n\t RoundToFloor(12, 20) ==> 0" +
-            "\n\t RoundToFloor(121, 2) ==> 120" +
-            "\n\t RoundToFloor(1.2345, 1.1) ==> 1.1" +
-            "\n\t RoundToFloor(0.014, 0.01) ==> 0.01" +
-            "\n\t RoundToFloor(-0.014, 0.01) ==> -0.01" +
-            "\n\t RoundToFloor(0.015, 0.01) ==> 0.01" +
-            "\n\t RoundToFloor(0.014, 0.02) ==> 0" +
+            "\n\t RoundToFloorTowardZero(12, 20) ==> 0" +
+            "\n\t RoundToFloorTowardZero(121, 2) ==> 120" +
+            "\n\t RoundToFloorTowardZero(1.2345, 1.1) ==> 1.1" +
+            "\n\t RoundToFloorTowardZero(0.014, 0.01) ==> 0.01" +
+            "\n\t RoundToFloorTowardZero(-0.014, 0.01) ==> -0.01" +
+            "\n\t RoundToFloorTowardZero(0.015, 0.01) ==> 0.01" +
+            "\n\t RoundToFloorTowardZero(0.014, 0.02) ==> 0" +
             "\nand so on.")]
         [Input("number", "Number to be rounded.")]
         [Input("tolerance", "Tolerance to use for rounding.")]
-        public static double RoundToFloorAwayFromZero(this double number, double tolerance)
+        [Output("roundedNumber", "The rounded number.")]
+        public static double RoundToFloorTowardZero(this double number, double tolerance)
         {
             if (tolerance < 0)
             {
@@ -64,15 +65,16 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [Description("Rounds an integer number using the given tolerance, rounding to floor to the nearest tolerance multiplier." +
+        [Description("Rounds an integer number using the given tolerance, rounding the magnitude toward zero to the nearest tolerance multiple." +
             "\nSome examples:" +
-            "\n\t RoundToFloor(12, 20) ==> 0" +
-            "\n\t RoundToFloor(121, 2) ==> 120" +
-            "\n\t RoundToFloor(-35, 20) ==> -40" +
+            "\n\t RoundToFloorTowardZero(12, 20) ==> 0" +
+            "\n\t RoundToFloorTowardZero(121, 2) ==> 120" +
+            "\n\t RoundToFloorTowardZero(-35, 20) ==> -20" +
             "\nand so on.")]
         [Input("number", "Number to be rounded.")]
         [Input("tolerance", "Tolerance to use for rounding.")]
-        public static int RoundToFloorAwayFromZero(this int number, double tolerance)
+        [Output("roundedNumber", "The rounded number.")]
+        public static int RoundToFloorTowardZero(this int number, double tolerance)
         {
             if (tolerance < 0)
             {
@@ -90,11 +92,10 @@ namespace BH.Engine.Base
                 return 0;
             }
 
-            return (int)(Math.Floor(number / tolerance) * tolerance);
+            int sign = number < 0 ? -1 : 1;
+            return sign * (int)(Math.Floor(Math.Abs(number) / tolerance) * tolerance);
         }
 
         /***************************************************/
     }
 }
-
-
