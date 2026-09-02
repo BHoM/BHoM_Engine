@@ -53,7 +53,7 @@ namespace BH.Engine.Structure
 
 
         [Description("Returns a Bar's GeneralMaterialTakeoff which contains information about the Bar's materiality and corresponding quantities.")]
-        [Input("bar", "The Bar to query.")]
+        [Input("bar", "The Bar to evaluate.")]
         [Output("takeoff", "The GeneralMaterialTakeoff of the bar.")]
         public static GeneralMaterialTakeoff GeneralMaterialTakeoff(this Bar bar)
         {
@@ -66,7 +66,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a Pile's GeneralMaterialTakeoff which contains information about the Pile's materiality and corresponding quantities.")]
-        [Input("pile", "The Pile to query.")]
+        [Input("pile", "The Pile to evaluate.")]
         [Output("takeoff", "The GeneralMaterialTakeoff of the pile.")]
         public static GeneralMaterialTakeoff GeneralMaterialTakeoff(this Pile pile)
         {
@@ -79,7 +79,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns an Area Element's (Panel, FEMesh, Surface etc.) GeneralMaterialTakeoff which contains information about the element's materiality and corresponding quantities.")]
-        [Input("areaElement", "The IAreaElement to query.")]
+        [Input("areaElement", "The IAreaElement to evaluate.")]
         [Output("takeoff", "The GeneralMaterialTakeoff of the area element.")]
         public static GeneralMaterialTakeoff GeneralMaterialTakeoff(this IAreaElement areaElement)
         {
@@ -96,7 +96,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a PileFoundation's GeneralMaterialTakeoff, aggregating pile cap and piles. The takeoff contains information about the materiality and corresponding quantities of all the elements in the PileFoundation.")]
-        [Input("pileFoundation", "The PileFoundation to query.")]
+        [Input("pileFoundation", "The PileFoundation to evaluate.")]
         [Output("takeoff", "The aggregated GeneralMaterialTakeoff of the PileFoundation.")]
         public static GeneralMaterialTakeoff GeneralMaterialTakeoff(this PileFoundation pileFoundation)
         {
@@ -194,7 +194,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a Stem's GeneralMaterialTakeoff using the stem solid volume and material. The takeoff contains information about the materiality and corresponding quantities of the Stem.")]
-        [Input("stem", "The Stem to query.")]
+        [Input("stem", "The Stem to evaluate.")]
         [Output("takeoff", "The GeneralMaterialTakeoff of the stem.")]
         public static GeneralMaterialTakeoff GeneralMaterialTakeoff(this Stem stem)
         {
@@ -224,7 +224,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a RetainingWall's GeneralMaterialTakeoff by aggregating its stem and footing takeoffs. The takeoff contains information about the materiality and corresponding quantities of all the elements in the RetainingWall.")]
-        [Input("retainingWall", "The RetainingWall to query.")]
+        [Input("retainingWall", "The RetainingWall to evaluate.")]
         [Output("takeoff", "The aggregated GeneralMaterialTakeoff of the retaining wall.")]
         public static GeneralMaterialTakeoff GeneralMaterialTakeoff(this RetainingWall retainingWall)
         {
@@ -384,7 +384,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Dispatches to the appropriate section property GeneralMaterialTakeoff implementation based on runtime type.")]
-        [Input("sectionProperty", "The section property to query.")]
+        [Input("sectionProperty", "The section property to evaluate.")]
         [Input("length", "The length over which to compute the section volume.", typeof(Length))]
         [Input("reinforcementDensity", "Optional ReinforcementDensity fragment to apply.")]
         [Input("connectionAllowance", "Optional ConnectionAllowance fragment to apply.")]
@@ -396,8 +396,8 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Returns a homogenous ISectionProperty's GeneralMaterialTakeoff based on section area and length.")]
-        [Input("sectionProperty", "The ISectionProperty to query.")]
+        [Description("Returns a homogeneous ISectionProperty's GeneralMaterialTakeoff based on section area and length.")]
+        [Input("sectionProperty", "The ISectionProperty to evaluate.")]
         [Input("length", "The length of the element.", typeof(Length))]
         [Input("reinforcementDensity", "Optional ReinforcementDensity fragment to apply.")]
         [Input("connectionAllowance", "Optional ConnectionAllowance fragment to apply.")]
@@ -427,7 +427,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a ConcreteSection's GeneralMaterialTakeoff including explicit bar reinforcement from the RebarIntent.")]
-        [Input("sectionProperty", "The ConcreteSection to query.")]
+        [Input("sectionProperty", "The ConcreteSection to evaluate.")]
         [Input("length", "The length of the section to evaluate.", typeof(Length))]
         [Input("reinforcementDensity", "Optional ReinforcementDensity fragment to apply to the concrete.")]
         [Input("connectionAllowance", "Optional ConnectionAllowance fragment to apply.")]
@@ -452,8 +452,8 @@ namespace BH.Engine.Structure
                 List<ICurve> outerProfileEdges = new List<ICurve>();
                 List<ICurve> innerProfileEdges = new List<ICurve>();
 
-                //If the section contains transverse reinforcement with and offset layout, extract the inner and outer edges of the section profile to determine the length of the transverse reinforcement.
-                //Only do this is the section contains transverse reinforcement with an offset layout, as this operation is relatively costly and is not required for longitudinal reinforcement or transverse reinforcement with a standard layout.
+                //If the section contains transverse reinforcement with an offset layout, extract the inner and outer edges of the section profile to determine the length of the transverse reinforcement.
+                //Only do this if the section contains transverse reinforcement with an offset layout, as this operation is relatively costly and is not required for longitudinal reinforcement or transverse reinforcement with a standard layout.
                 if (sectionProperty.RebarIntent.BarReinforcement.OfType<TransverseReinforcement>().Any(x => x.CenterlineLayout is OffsetCurveLayout))
                     ExtractInnerAndOuterEdges(sectionProperty, out outerProfileEdges, out innerProfileEdges);
 
@@ -502,7 +502,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a CompositeSection's GeneralMaterialTakeoff by combining concrete and steel section takeoffs.")]
-        [Input("sectionProperty", "The CompositeSection to query.")]
+        [Input("sectionProperty", "The CompositeSection to evaluate.")]
         [Input("length", "The length of the section to evaluate.", typeof(Length))]
         [Input("reinforcementDensity", "Optional ReinforcementDensity fragment to apply to concrete portion.")]
         [Input("connectionAllowance", "Optional ConnectionAllowance fragment to apply.")]
@@ -525,7 +525,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a SurfaceProperty's GeneralMaterialTakeoff.")]
-        [Input("property", "The SurfaceProperty to query.")]
+        [Input("property", "The SurfaceProperty to evaluate.")]
         [Input("area", "The surface area to evaluate.", typeof(Area))]
         [Input("reinforcementDensity", "Optional ReinforcementDensity assigned to the SurfaceProperty.")]
         [Input("panelRebarIntent", "Optional explicit panel rebar intent to include in the takeoff.")]
@@ -571,7 +571,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Gets the GeneralMaterialTakeoff for homogenous SurfaceProperties.")]
-        [Input("property", "The SurfaceProperty to query.")]
+        [Input("property", "The SurfaceProperty to evaluate.")]
         [Input("area", "The surface area to evaluate.", typeof(Area))]
         [Output("takeoff", "The GeneralMaterialTakeoff of the SurfaceProperty.")]
         private static GeneralMaterialTakeoff GeneralMaterialTakeoff(this ISurfaceProperty property, double area)
@@ -597,7 +597,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a Layered surface property's GeneralMaterialTakeoff by summing solid layers.")]
-        [Input("property", "The Layered surface property to query.")]
+        [Input("property", "The Layered surface property to evaluate.")]
         [Input("area", "The surface area to evaluate.", typeof(Area))]
         [Output("takeoff", "The GeneralMaterialTakeoff of the layered property.")]
         private static GeneralMaterialTakeoff GeneralMaterialTakeoff(this Layered property, double area)
@@ -631,7 +631,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a ToppedSlab property's GeneralMaterialTakeoff by combining base and topping layers.")]
-        [Input("property", "The ToppedSlab property to query.")]
+        [Input("property", "The ToppedSlab property to evaluate.")]
         [Input("area", "The surface area to evaluate.", typeof(Area))]
         [Output("takeoff", "The GeneralMaterialTakeoff of the topped slab.")]
         private static GeneralMaterialTakeoff GeneralMaterialTakeoff(this ToppedSlab property, double area)
@@ -661,7 +661,7 @@ namespace BH.Engine.Structure
 
 
         [Description("Returns a SlabOnDeck property's GeneralMaterialTakeoff by separating deck and slab volumes.")]
-        [Input("property", "The SlabOnDeck property to query.")]
+        [Input("property", "The SlabOnDeck property to evaluate.")]
         [Input("area", "The surface area to evaluate.", typeof(Area))]
         [Output("takeoff", "The GeneralMaterialTakeoff of the slab on deck.")]
         private static GeneralMaterialTakeoff GeneralMaterialTakeoff(this SlabOnDeck property, double area)
@@ -700,7 +700,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a Cassette surface property's GeneralMaterialTakeoff splitting top, bottom and rib zones.")]
-        [Input("property", "The Cassette property to query.")]
+        [Input("property", "The Cassette property to evaluate.")]
         [Input("area", "The surface area to evaluate.", typeof(Area))]
         [Output("takeoff", "The GeneralMaterialTakeoff of the cassette property.")]
         private static GeneralMaterialTakeoff GeneralMaterialTakeoff(this Cassette property, double area)
@@ -758,7 +758,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a BuiltUpRibbed surface property's GeneralMaterialTakeoff splitting top and rib zones.")]
-        [Input("property", "The BuiltUpRibbed property to query.")]
+        [Input("property", "The BuiltUpRibbed property to evaluate.")]
         [Input("area", "The surface area to evaluate.", typeof(Area))]
         [Output("takeoff", "The GeneralMaterialTakeoff of the built-up ribbed property.")]
         private static GeneralMaterialTakeoff GeneralMaterialTakeoff(this BuiltUpRibbed property, double area)
@@ -807,7 +807,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Returns a BuiltUpDoubleRibbed surface property's GeneralMaterialTakeoff splitting top and rib zones.")]
-        [Input("property", "The BuiltUpDoubleRibbed property to query.")]
+        [Input("property", "The BuiltUpDoubleRibbed property to evaluate.")]
         [Input("area", "The surface area to evaluate.", typeof(Area))]
         [Output("takeoff", "The GeneralMaterialTakeoff of the built-up double ribbed property.")]
         private static GeneralMaterialTakeoff GeneralMaterialTakeoff(this BuiltUpDoubleRibbed property, double area)
@@ -863,7 +863,7 @@ namespace BH.Engine.Structure
 
 
         [Description("Dispatches to the appropriate rebar takeoff implementation based on reinforcement runtime type.")]
-        [Input("reinforcement", "The IBarReinforcement to query.")]
+        [Input("reinforcement", "The IBarReinforcement to evaluate.")]
         [Input("length", "The length of the parent element.", typeof(Length))]
         [Input("cover", "Minimum cover to offset transverse reinforcement.")]
         [Input("outerProfileEdges", "Optional outer profile edges used for transverse reinforcement layout.")]
@@ -877,7 +877,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Computes the takeoff for longitudinal reinforcement (bars) within a section.")]
-        [Input("reinforcement", "The LongitudinalReinforcement to query.")]
+        [Input("reinforcement", "The LongitudinalReinforcement to evaluate.")]
         [Input("length", "The length of the parent element.", typeof(Length))]
         [Input("cover", "Minimum cover (unused for longitudinal bars).")]
         [Input("outerProfileEdges", "Not used for longitudinal reinforcement.")]
@@ -908,7 +908,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Computes the takeoff for transverse reinforcement (stirrups/hoops) using layout outlines and spacing.")]
-        [Input("reinforcement", "The TransverseReinforcement to query.")]
+        [Input("reinforcement", "The TransverseReinforcement to evaluate.")]
         [Input("length", "The length of the parent element.", typeof(Length))]
         [Input("cover", "Minimum cover to offset stirrup centerline.")]
         [Input("outerProfileEdges", "Optional outer profile edges used for determining stirrup outlines.")]
@@ -957,7 +957,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Approximates panel reinforcement takeoff based on region area and reinforcement spacings.")]
-        [Input("reinforcement", "The PanelReinforcement to query.")]
+        [Input("reinforcement", "The PanelReinforcement to evaluate.")]
         [Input("regionArea", "The region area to approximate reinforcement for (overridden by explicit perimeter if present).", typeof(Area))]
         [Output("takeoffItem", "The TakeoffItem representing panel reinforcement.")]
         private static TakeoffItem RebarTakeoff(this PanelReinforcement reinforcement, double regionArea)
