@@ -182,12 +182,8 @@ namespace BH.Engine.Structure
         [Output("volume", "The solid volume of the cellular section over the given length.")]
         private static double SolidVolume(CellularSection sectionProperty, double length)
         {
-            //If contains tapered profile, that is used
-            double solidArea;
-            if (sectionProperty.SectionProfile is TaperedProfile)
-                solidArea = (sectionProperty.SectionProfile as TaperedProfile).Area();
-            else
-                solidArea = sectionProperty.Area;
+            //Gets the area of the solid profile (without openings) and subtracts the volume of the openings along the length
+            double solidArea = sectionProperty.SolidProfile.Area();
 
             double openingCount = Math.Floor((length - sectionProperty.Opening.WidthWebPost) / sectionProperty.Opening.Spacing);
 
