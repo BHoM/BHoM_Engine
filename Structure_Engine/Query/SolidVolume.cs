@@ -183,6 +183,7 @@ namespace BH.Engine.Structure
         private static double SolidVolume(CellularSection sectionProperty, double length)
         {
             //Gets the area of the solid profile (without openings) and subtracts the volume of the openings along the length
+            //Can't simply use the area of the section here as it refers to the area of the profile at the point of the largest opening
             double solidArea = sectionProperty.SolidProfile.Area();
 
             double openingCount = Math.Floor((length - sectionProperty.Opening.WidthWebPost) / sectionProperty.Opening.Spacing);
