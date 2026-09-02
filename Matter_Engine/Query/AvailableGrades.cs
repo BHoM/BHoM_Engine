@@ -51,6 +51,7 @@ namespace BH.Engine.Matter
             return filteredMaterials.Select(material => material.MaterialClassification()?.Grade)
                                      .Where(grade => !string.IsNullOrWhiteSpace(grade))
                                      .Distinct(StringComparer.OrdinalIgnoreCase)
+                                     .OrderBy(grade => grade)
                                      .ToList();
         }
 
@@ -71,6 +72,7 @@ namespace BH.Engine.Matter
             return filteredProperties.Select(materialProperty => materialProperty.MaterialClassification()?.Grade)
                                       .Where(grade => !string.IsNullOrWhiteSpace(grade))
                                       .Distinct(StringComparer.OrdinalIgnoreCase)
+                                      .OrderBy(grade => grade)
                                       .ToList();
         }
 

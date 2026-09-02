@@ -51,6 +51,7 @@ namespace BH.Engine.Matter
             return filteredMaterials.Select(material => material.MaterialClassification()?.Constituent)
                                      .Where(constituent => !string.IsNullOrWhiteSpace(constituent))
                                      .Distinct(StringComparer.OrdinalIgnoreCase)
+                                     .OrderBy(constituent => constituent)
                                      .ToList();
         }
 
@@ -71,6 +72,7 @@ namespace BH.Engine.Matter
             return filteredProperties.Select(materialProperty => materialProperty.MaterialClassification()?.Constituent)
                                       .Where(constituent => !string.IsNullOrWhiteSpace(constituent))
                                       .Distinct(StringComparer.OrdinalIgnoreCase)
+                                      .OrderBy(constituent => constituent)
                                       .ToList();
         }
 
