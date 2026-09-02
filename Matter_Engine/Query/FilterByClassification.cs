@@ -132,29 +132,30 @@ namespace BH.Engine.Matter
 
             //Ignore case when comparing classification properties
             //This is to avoid issues with different casing in the classification properties, e.g. "Concrete" vs "concrete"
+            //The comparisons below also ignore any whitespaces to make sure for example `CEM 1` matches to `CEM1` as well as `CEM 1 `
             StringComparison comparison = StringComparison.OrdinalIgnoreCase;
 
             if(!string.IsNullOrWhiteSpace(other.Category))
             {
-                if(!string.Equals(classification.Category, other.Category, comparison))
+                if(!string.Equals(classification.Category.Replace(" ", string.Empty), other.Category.Replace(" ", string.Empty), comparison))
                     return false;
             }
     
             if(!string.IsNullOrWhiteSpace(other.Type))
             {
-                if(!string.Equals(classification.Type, other.Type, comparison))
+                if(!string.Equals(classification.Type.Replace(" ", string.Empty), other.Type.Replace(" ", string.Empty), comparison))
                     return false;
             }
 
             if(!string.IsNullOrWhiteSpace(other.Grade))
             {
-                if(!string.Equals(classification.Grade, other.Grade, comparison))
+                if(!string.Equals(classification.Grade.Replace(" ", string.Empty), other.Grade.Replace(" ", string.Empty), comparison))
                     return false;
             }
 
             if(!string.IsNullOrWhiteSpace(other.Constituent))
             {
-                if(!string.Equals(classification.Constituent, other.Constituent, comparison))
+                if(!string.Equals(classification.Constituent.Replace(" ", string.Empty), other.Constituent.Replace(" ", string.Empty), comparison))
                     return false;
             }
 
