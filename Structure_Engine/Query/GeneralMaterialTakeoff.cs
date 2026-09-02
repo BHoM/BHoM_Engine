@@ -106,6 +106,8 @@ namespace BH.Engine.Structure
             ReinforcementDensity topLevelReinforcementDensity = pileFoundation.FindFragment<ReinforcementDensity>();
             ConnectionAllowance topLevelConnectionAllowance = pileFoundation.FindFragment<ConnectionAllowance>();
 
+            bool elementContainsConcrete = pileFoundation.PileCap.Property.Material is Concrete || pileFoundation.Piles.Any(x => x.Section.Material is Concrete);   //Check if any element contains concrete. This is to be able to apply the top level reinforcement density correctly for the case of for example piles being mixed between steel and concrete.
+
             PadFoundation pileCap = pileFoundation.PileCap;
             bool pileCapCloned = false;
             if (topLevelReinforcementDensity != null)
@@ -114,7 +116,7 @@ namespace BH.Engine.Structure
                 {
                     if (pileCap.FindFragment<ReinforcementDensity>() != null)
                         Base.Compute.RecordWarning("A ReinforcementDensity Fragment is found on both the PileFoundation and on the pileCap. The reinforcement density applied directly to the pileCap is used.");
-                    else
+                    else if(!elementContainsConcrete || pileCap.Property.Material is Concrete)   //If the pile cap is concrete, or if none of the elements are concrete, apply the reinforcement density to the pile cap.
                     {
                         pileCap = pileCap.ShallowClone();
                         pileCapCloned = true;
@@ -159,7 +161,7 @@ namespace BH.Engine.Structure
                 {
                     if (pile.FindFragment<ReinforcementDensity>() != null)
                         pileReinforcementDensityOverlapFound = true;
-                    else
+                    else if(!elementContainsConcrete || pile.Section.Material is Concrete)   //If the Pile is Concrete or non of the elements in the pilecap is concrete, apply the reinforcement density to the pile. 
                     { 
                         pile = pile.ShallowClone();
                         pile.Fragments.Add(topLevelReinforcementDensity);
@@ -724,7 +726,7 @@ namespace BH.Engine.Structure
                 topVolume
             };
 
-            if (property.BottomMaterial != null)
+            if (property.BottomMaterial.IsTakeoffMaterialDifferent(property.Material))
             { 
                 materials.Add(property.BottomMaterial);
                 volumes.Add(bottomVolume);
@@ -732,7 +734,7 @@ namespace BH.Engine.Structure
             else
                 volumes[0] += bottomVolume; //Add bottom volume to top volume if no bottom material is specified as the bottom material is assumed to be the same as the top material.
 
-            if(property.RibMaterial != null)
+            if(property.RibMaterial.IsTakeoffMaterialDifferent(property.Material))
             {
                 materials.Add(property.RibMaterial);
                 volumes.Add(ribVolume);
@@ -781,7 +783,7 @@ namespace BH.Engine.Structure
                 topVolume
             };
 
-            if (property.RibMaterial != null)
+            if (property.RibMaterial.IsTakeoffMaterialDifferent(property.Material))
             {
                 materials.Add(property.RibMaterial);
                 volumes.Add(ribVolume);
@@ -803,6 +805,7 @@ namespace BH.Engine.Structure
             };
 
         }
+
 
         /***************************************************/
 
@@ -830,7 +833,7 @@ namespace BH.Engine.Structure
                 topVolume
             };
 
-            if (property.RibMaterial != null)
+            if (property.RibMaterial.IsTakeoffMaterialDifferent(property.Material))
             {
                 materials.Add(property.RibMaterial);
                 volumes.Add(ribVolume);
@@ -847,10 +850,19 @@ namespace BH.Engine.Structure
                     Volume = volumes[i],
                     Mass = volumes[i] * m.Density,
                     Area = area,
-                    NumberItem = 1
                 }).ToList()
             };
         }
+
+        /***************************************************/
+
+        private static bool IsTakeoffMaterialDifferent(this IMaterialFragment material, IMaterialFragment reference)
+        {
+            if (material == null || reference == null)
+                return false;
+            return material.Name != reference.Name || material.BHoM_Guid != reference.BHoM_Guid || material.Hash() != reference.Hash(); //Hash will check the name and Guid as well, but quicker the check those explicitly first to avoid the hash calculation if possible.
+        }
+
 
         #endregion
 
