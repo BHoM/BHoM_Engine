@@ -45,7 +45,7 @@ namespace BH.Engine.Matter
         [Output("filteredMaterials", "The filtered collection of materials.")]
         public static List<Material> FilterByClassification(this IEnumerable<Material> materials, MaterialClassification classification)
         {
-            if(materials == null)
+            if (materials == null)
             {
                 Base.Compute.RecordError("Cannot filter by material classification on a null collection of materials.");
                 return null;
@@ -65,13 +65,13 @@ namespace BH.Engine.Matter
         [Output("filteredMaterials", "The filtered collection of materials.")]
         public static List<Material> FilterByClassification(this IEnumerable<Material> materials, string category = "", string type = "", string grade = "", string constituent = "")
         {
-            if(materials == null)
+            if (materials == null)
             {
                 Base.Compute.RecordError("Cannot filter by material classification on a null collection of materials.");
                 return null;
             }
 
-            if(string.IsNullOrWhiteSpace(category) && string.IsNullOrWhiteSpace(type) && string.IsNullOrWhiteSpace(grade) && string.IsNullOrWhiteSpace(constituent))
+            if (string.IsNullOrWhiteSpace(category) && string.IsNullOrWhiteSpace(type) && string.IsNullOrWhiteSpace(grade) && string.IsNullOrWhiteSpace(constituent))
             {
                 return materials.ToList();
             }
@@ -87,7 +87,7 @@ namespace BH.Engine.Matter
         [Output("filteredProperties", "The filtered collection of material properties.")]
         public static List<T> FilterByClassification<T>(this IEnumerable<T> materialProperties, MaterialClassification classification) where T : IMaterialProperties
         {
-            if(materialProperties == null)
+            if (materialProperties == null)
             {
                 Base.Compute.RecordError("Cannot filter by material classification on a null collection of material properties.");
                 return null;
@@ -107,13 +107,13 @@ namespace BH.Engine.Matter
         [Output("filteredMaterials", "The filtered collection of materials.")]
         public static List<T> FilterByClassification<T>(this IEnumerable<T> materials, string category = "", string type = "", string grade = "", string constituent = "") where T : IMaterialProperties
         {
-            if(materials == null)
+            if (materials == null)
             {
                 Base.Compute.RecordError("Cannot filter by material classification on a null collection of material properties.");
                 return null;
             }
 
-            if(string.IsNullOrWhiteSpace(category) && string.IsNullOrWhiteSpace(type) && string.IsNullOrWhiteSpace(grade) && string.IsNullOrWhiteSpace(constituent))
+            if (string.IsNullOrWhiteSpace(category) && string.IsNullOrWhiteSpace(type) && string.IsNullOrWhiteSpace(grade) && string.IsNullOrWhiteSpace(constituent))
             {
                 return materials.ToList();
             }
@@ -127,39 +127,64 @@ namespace BH.Engine.Matter
 
         private static bool ClassificationMatches(this MaterialClassification classification, MaterialClassification other)
         {
-            if(classification == null || other == null)
+            if (classification == null || other == null)
                 return false;
+
+            if (!classification.Category.OtherStringEmptyOrEqual(other.Category))
+                return false;
+
+            if (classification.Type.OtherStringEmptyOrEqual(other.Type))
+                return false;
+
+            if (classification.Grade.OtherStringEmptyOrEqual(other.Grade))
+                return false;
+
+            if (classification.Constituent.OtherStringEmptyOrEqual(other.Constituent))
+                return false;
+
+            return true;
+        }
+
+        /******************************************/
+
+        private static bool OtherStringEmptyOrEqual(this string classificationString, string other)
+        {
+            //Do not filter by empty strings
+            if (string.IsNullOrWhiteSpace(other)) 
+                return true;
+
+            if (ReferenceEquals(classificationString, other))
+                return true;
+
+            if (classificationString is null)
+                return false;
+
+            int i = 0;
+            int j = 0;
 
             //Ignore case when comparing classification properties
             //This is to avoid issues with different casing in the classification properties, e.g. "Concrete" vs "concrete"
             //The comparisons below also ignore any whitespaces to make sure for example `CEM 1` matches to `CEM1` as well as `CEM 1 `
-            StringComparison comparison = StringComparison.OrdinalIgnoreCase;
-
-            if(!string.IsNullOrWhiteSpace(other.Category))
+            while (true)
             {
-                if(!string.Equals(classification.Category.Replace(" ", string.Empty), other.Category.Replace(" ", string.Empty), comparison))
-                    return false;
-            }
-    
-            if(!string.IsNullOrWhiteSpace(other.Type))
-            {
-                if(!string.Equals(classification.Type.Replace(" ", string.Empty), other.Type.Replace(" ", string.Empty), comparison))
-                    return false;
-            }
+                while (i < classificationString.Length && char.IsWhiteSpace(classificationString[i]))
+                    i++;
 
-            if(!string.IsNullOrWhiteSpace(other.Grade))
-            {
-                if(!string.Equals(classification.Grade.Replace(" ", string.Empty), other.Grade.Replace(" ", string.Empty), comparison))
-                    return false;
-            }
+                while (j < other.Length && char.IsWhiteSpace(other[j]))
+                    j++;
 
-            if(!string.IsNullOrWhiteSpace(other.Constituent))
-            {
-                if(!string.Equals(classification.Constituent.Replace(" ", string.Empty), other.Constituent.Replace(" ", string.Empty), comparison))
-                    return false;
-            }
+                bool classificationEnd = i >= classificationString.Length;
+                bool otherEnd = j >= other.Length;
 
-            return true;
+                if (classificationEnd || otherEnd)
+                    return classificationEnd && otherEnd;
+
+                if (char.ToUpperInvariant(classificationString[i]) != char.ToUpperInvariant(other[j]))
+                    return false;
+
+                i++;
+                j++;
+            }
         }
 
         /******************************************/
