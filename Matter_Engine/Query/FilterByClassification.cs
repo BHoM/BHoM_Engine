@@ -133,13 +133,13 @@ namespace BH.Engine.Matter
             if (!classification.Category.OtherStringEmptyOrEqual(other.Category))
                 return false;
 
-            if (classification.Type.OtherStringEmptyOrEqual(other.Type))
+            if (!classification.Type.OtherStringEmptyOrEqual(other.Type))
                 return false;
 
-            if (classification.Grade.OtherStringEmptyOrEqual(other.Grade))
+            if (!classification.Grade.OtherStringEmptyOrEqual(other.Grade))
                 return false;
 
-            if (classification.Constituent.OtherStringEmptyOrEqual(other.Constituent))
+            if (!classification.Constituent.OtherStringEmptyOrEqual(other.Constituent))
                 return false;
 
             return true;
