@@ -94,7 +94,7 @@ namespace BH.Engine.Structure
             if (surfaceProperty.IsNull())
                 return null;
 
-            MaterialComposition comp = surfaceProperty.IMaterialComposition();
+            MaterialComposition comp = surfaceProperty.MaterialComposition();
             double volume = surfaceProperty.IVolumePerArea();
             if (volume == 0)
                 Base.Compute.RecordWarning("the SurfaceProperty has zero volume - a Construction has been created, but will also have zero volume.");

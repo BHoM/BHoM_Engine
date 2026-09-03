@@ -136,6 +136,10 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
+        [Description("Dispatches to the appropriate SolidVolume implementation for a section property.")]
+        [Input("sectionProperty", "The ISectionProperty to evaluate.")]
+        [Input("length", "The length over which to compute the solid volume.", typeof(Length))]
+        [Output("volume", "The solid volume of the section over the given length.")]
         private static double ISolidVolume(this ISectionProperty sectionProperty, double length)
         {
             return SolidVolume(sectionProperty as dynamic, length);
@@ -143,6 +147,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Computes the solid volume for a generic ISectionProperty using area * length.")]
+        [Input("sectionProperty", "The ISectionProperty to evaluate.")]
+        [Input("length", "The length over which to compute the solid volume.", typeof(Length))]
+        [Output("volume", "The solid volume of the section over the given length.")]
         private static double SolidVolume(ISectionProperty sectionProperty, double length)
         {
             return sectionProperty.Area * length;
@@ -150,6 +158,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Computes the solid volume for a geometrical section, using tapered profile area if present.")]
+        [Input("sectionProperty", "The IGeometricalSection to evaluate.")]
+        [Input("length", "The length over which to compute the solid volume.", typeof(Length))]
+        [Output("volume", "The solid volume of the geometrical section over the given length.")]
         private static double SolidVolume(IGeometricalSection sectionProperty, double length)
         {
             //If contains tapered profile, that is used
@@ -164,10 +176,16 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Computes the solid volume for a CellularSection accounting for openings along the length.")]
+        [Input("sectionProperty", "The CellularSection to evaluate.")]
+        [Input("length", "The length over which to compute the solid volume.", typeof(Length))]
+        [Output("volume", "The solid volume of the cellular section over the given length.")]
         private static double SolidVolume(CellularSection sectionProperty, double length)
         {
-            //If contains tapered profile, that is used
+            //Gets the area of the solid profile (without openings) and subtracts the volume of the openings along the length
+            //Can't simply use the area of the section here as it refers to the area of the profile at the point of the largest opening
             double solidArea = sectionProperty.SolidProfile.Area();
+
             double openingCount = Math.Floor((length - sectionProperty.Opening.WidthWebPost) / sectionProperty.Opening.Spacing);
 
             return solidArea * length - openingCount * sectionProperty.Opening.IOpeningArea() * sectionProperty.SolidProfile.WebThickness;
@@ -175,6 +193,10 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Computes the solid volume for a CompositeSection by summing concrete and steel solid volumes.")]
+        [Input("sectionProperty", "The CompositeSection to evaluate.")]
+        [Input("length", "The length over which to compute the solid volume.", typeof(Length))]
+        [Output("volume", "The solid volume of the composite section over the given length.")]
         private static double SolidVolume(CompositeSection sectionProperty, double length)
         {
             //TODO: Handle embedment etc..
