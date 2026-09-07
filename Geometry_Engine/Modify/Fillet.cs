@@ -26,6 +26,7 @@ using System.ComponentModel;
 using System.Linq;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
+using BH.oM.Quantities.Attributes;
 
 namespace BH.Engine.Geometry
 {
@@ -35,11 +36,13 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Fillets a Polyline by inserting a circular arc at each internal vertex; the end points of an open Polyline stay sharp. The trim taken from either side of a corner is capped at half the adjacent segment, so an arc never runs past a segment midpoint. A corner that cannot be rounded - a joint running straight through or doubling back, or one where the requested radius leaves no room - is left sharp rather than dropped, so the result is always a single contiguous curve.")]
+        [Description("Fillets a Polyline by inserting a circular arc at each internal vertex; the end points of an open Polyline stay sharp.\n" +
+                     "Where two corners share a segment too short to carry both fillets, the two are reduced in proportion until they fit, and a warning is raised.\n" +
+                     "A corner that cannot be rounded - a joint running straight through or doubling back, or one where there is no room at all - is left sharp rather than dropped, so the result is always a single contiguous curve.")]
         [Input("polyline", "Polyline to fillet.")]
-        [Input("radius", "Target fillet radius (> 0). The radius achieved at a corner reduces where the trim-length cap bites.")]
-        [Input("distTol", "Distance tolerance.")]
-        [Input("angleTol", "Angle tolerance (radians). A joint is left sharp where it comes within this of running straight through, or of doubling back on itself.")]
+        [Input("radius", "Target fillet radius, which must be greater than zero. A corner achieves less than this only where the adjacent segments are too short to carry the full radius.", typeof(Length))]
+        [Input("distTol", "Distance tolerance used for checking point coincidence and segment lengths equal to zero.", typeof(Length))]
+        [Input("angleTol", "Angle tolerance. A joint is left sharp where it comes within this of running straight through, or of doubling back on itself.", typeof(Angle))]
         [Output("polyCurve", "The filleted curve, as trimmed Lines joined by Arc fillets, or null where there is nothing to fillet - a null Polyline, fewer than two control points, fewer than three distinct vertices, or a radius that is not a positive number.")]
         public static PolyCurve Fillet(this Polyline polyline, double radius,
             double distTol = Tolerance.Distance, double angleTol = Tolerance.Angle)
@@ -78,11 +81,14 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            // A closed polyline carries a segment from its last vertex back to its first; an open one does not.
+            // A closed polyline carries a segment from its last vertex back to its first, now that
+            // FilletVertices has stripped the repeated closing point; an open one does not.
             int segCount = closed ? vertices.Count : vertices.Count - 1;
 
             double[] trim = FilletTrimLengths(vertices, segCount, closed, radius, distTol, angleTol);
             Arc[] arcs = FilletArcs(vertices, trim, distTol);
+
+            WarnOnReducedRadius(arcs, radius, distTol);
 
             return FilletedCurve(vertices, trim, arcs, segCount, closed, distTol);
         }
@@ -91,19 +97,11 @@ namespace BH.Engine.Geometry
         /**** Private Methods                           ****/
         /***************************************************/
 
-        // Fraction of a segment's own length that its two trims may occupy, on a segment too short for
-        // the distTol margin to leave any room at all.
-        private const double ShortSegmentFallbackFraction = 0.99;
-
-        /***************************************************/
-
         // The polyline's vertices with coincident points collapsed, so that every returned vertex is
         // further than distTol from both its neighbours - the closing pair of a closed polyline included.
-        // Everything downstream relies on that: it is what makes every segment long enough to trim and
-        // build on, and so what keeps the assembled curve contiguous.
-        // Not Modify.RemoveShortSegments, which cannot offer that guarantee here: it restores the
-        // original end point of an open polyline, so the last segment may come back shorter than the
-        // tolerance, and it re-closes a closed one, whereas the wrap is handled by segCount below.
+        // Everything downstream relies on that to keep the assembled curve contiguous.
+        // Not Modify.RemoveShortSegments, which re-closes a closed polyline by repeating its first point,
+        // whereas here the wrap is carried by segCount instead.
         private static List<Point> FilletVertices(IList<Point> pts, bool closed, double distTol)
         {
             List<Point> vertices = new List<Point>();
@@ -117,8 +115,10 @@ namespace BH.Engine.Geometry
                     vertices.Add(pt);
             }
 
-            // A closed polyline repeats its first point last. Drop that repeat, and any further vertex
-            // that has collapsed onto the first, so the closing segment is no shorter than the rest.
+            // The loop above only ever compares a point against its predecessor, never against the first
+            // vertex, so dropping the repeated closing point of a closed polyline is not enough on its own:
+            // any vertex that has collapsed onto the first has to go too, or the closing segment comes back
+            // shorter than distTol.
             while (closed && vertices.Count > 1 && vertices[0].Distance(vertices[vertices.Count - 1]) <= distTol)
                 vertices.RemoveAt(vertices.Count - 1);
 
@@ -128,18 +128,23 @@ namespace BH.Engine.Geometry
         /***************************************************/
 
         // How far back along each adjacent segment a corner is cut before its fillet arc starts, per
-        // vertex, and zero where no fillet applies. This owns every trim decision: the cap from the
-        // requested radius, the balancing of the two trims a segment carries, and the final check that
-        // a segment keeps some length between them.
+        // vertex, and zero where no fillet applies. This owns every trim decision: what the requested radius
+        // costs at each corner, the sharing of a segment between the two corners that pull on it, and the
+        // final check that a segment keeps some length between them.
         private static double[] FilletTrimLengths(List<Point> vertices, int segCount, bool closed, double radius, double distTol, double angleTol)
         {
             int nVerts = vertices.Count;
 
             double[] segLengths = new double[segCount];
             for (int s = 0; s < segCount; s++)
+            {
+                // The modulo wraps the closing segment of a closed polyline back round to the first vertex.
                 segLengths[s] = vertices[s].Distance(vertices[(s + 1) % nVerts]);
+            }
 
-            double[] trim = new double[nVerts];
+            // Trim consumed per unit of achieved radius at each corner, and zero where no fillet applies.
+            // A sharp corner has a high rate: it pays a lot of segment for very little radius.
+            double[] rate = new double[nVerts];
 
             for (int i = 0; i < nVerts; i++)
             {
@@ -150,61 +155,24 @@ namespace BH.Engine.Geometry
                 Vector v1 = vertices[(i - 1 + nVerts) % nVerts] - corner;
                 Vector v2 = vertices[(i + 1) % nVerts] - corner;
 
-                double len1 = v1.Length();
-                double len2 = v2.Length();
-                if (len1 < distTol || len2 < distTol)
+                if (v1.Length() < distTol || v2.Length() < distTol)
                     continue;
 
-                v1 /= len1;
-                v2 /= len2;
-
-                // Clamped so that rounding on near-parallel vectors cannot push Acos outside its domain.
-                double d = Math.Max(-1.0, Math.Min(1.0, v1.DotProduct(v2)));
-                double theta = Math.Acos(d);
+                double theta = v1.Angle(v2);
 
                 // There is nothing to round on a joint that runs straight through, or that doubles back
                 // on itself.
                 if (theta < angleTol || Math.Abs(Math.PI - theta) < angleTol)
                     continue;
 
-                // The segment leaving vertex i is segment i, and the one arriving is segment i-1. Capping
-                // at half of each keeps an arc clear of the corner at the far end of either segment.
-                double tDesired = radius / Math.Tan(theta / 2.0);
-                double prevHalf = 0.5 * segLengths[(i - 1 + segCount) % segCount];
-                double nextHalf = 0.5 * segLengths[i];
-
-                double t = Math.Min(tDesired, Math.Min(prevHalf, nextHalf));
-                if (t > distTol)
-                    trim[i] = t;
+                double cornerRate = 1.0 / Math.Tan(theta / 2.0);
+                if (radius * cornerRate > distTol)
+                    rate[i] = cornerRate;
             }
 
-            // Balance the two trims a segment carries against its length. The half-segment cap above
-            // already holds their sum to the segment length, so this only bites inside the distTol margin
-            // band - but that band is reachable on a near-regular polygon with a large radius.
-            double margin = distTol * 2.0;
-            for (int s = 0; s < segCount; s++)
-            {
-                int vEnd = (s + 1) % nVerts;
-                double sum = trim[s] + trim[vEnd];
+            double[] trim = ShareTrims(rate, segLengths, segCount, nVerts, radius, distTol);
 
-                double maxAllowed = segLengths[s] - margin;
-                if (maxAllowed < distTol)
-                    maxAllowed = segLengths[s] * ShortSegmentFallbackFraction;
-
-                if (sum <= maxAllowed || (trim[s] <= distTol && trim[vEnd] <= distTol))
-                    continue;
-
-                double scale = maxAllowed / sum;
-                trim[s] *= scale;
-                trim[vEnd] *= scale;
-
-                if (trim[s] <= distTol)
-                    trim[s] = 0;
-                if (trim[vEnd] <= distTol)
-                    trim[vEnd] = 0;
-            }
-
-            // A segment short enough to have fallen back to ShortSegmentFallbackFraction above can still
+            // A segment short enough to have fallen back to ShortSegmentFallbackFraction in ShareTrims can still
             // be left with no straight length between its two trims. Give up the smaller corner first,
             // and both only if that is not enough - a sharp corner is recoverable, a zero-length or
             // reversed segment is not.
@@ -231,6 +199,102 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
+        // The trim allowed at each corner once the corners pulling on the same segment have been reconciled.
+        // Every corner's radius is raised together from zero. A corner stops growing when it reaches the
+        // radius that was asked for, or when a segment it sits on runs out of room; whatever a stopped corner
+        // leaves behind is then available to those still growing. That is what keeps a corner held back on
+        // one segment from squeezing its neighbour on the other with a trim it is never going to take.
+        // Raising the achieved radius rather than the trim length is deliberate: the caller asked for a
+        // radius, so corners that can reach it keep it and the rest settle at a common achievable radius.
+        // Growing every corner together also makes the result independent of the order the segments happen
+        // to be visited in, so a regular polygon fillets symmetrically.
+        private static double[] ShareTrims(double[] rate, double[] segLengths, int segCount, int nVerts, double radius, double distTol)
+        {
+            double margin = distTol * 2.0;
+
+            double[] capacity = new double[segCount];
+            for (int s = 0; s < segCount; s++)
+            {
+                capacity[s] = segLengths[s] - margin;
+                if (capacity[s] < distTol)
+                    capacity[s] = segLengths[s] * ShortSegmentFallbackFraction;
+            }
+
+            double[] trim = new double[nVerts];
+            bool[] growing = new bool[nVerts];
+            int growingCount = 0;
+
+            for (int i = 0; i < nVerts; i++)
+            {
+                growing[i] = rate[i] > 0;
+                if (growing[i])
+                    growingCount++;
+            }
+
+            double level = 0.0;
+
+            // Each pass stops at least one corner, so it cannot need more passes than there are corners.
+            for (int pass = 0; pass < nVerts && growingCount > 0; pass++)
+            {
+                // The radius at which the next corner stops: the one that was asked for, or the point at
+                // which some segment runs out of room for the corners still growing on it.
+                double next = radius;
+                for (int s = 0; s < segCount; s++)
+                {
+                    int vEnd = (s + 1) % nVerts;
+
+                    double growingRate = (growing[s] ? rate[s] : 0) + (growing[vEnd] ? rate[vEnd] : 0);
+                    if (growingRate <= 0)
+                        continue;
+
+                    double headroom = capacity[s] - (growing[s] ? 0 : trim[s]) - (growing[vEnd] ? 0 : trim[vEnd]);
+                    next = Math.Min(next, headroom / growingRate);
+                }
+
+                level = Math.Max(level, next);
+
+                for (int i = 0; i < nVerts; i++)
+                {
+                    if (growing[i])
+                        trim[i] = level * rate[i];
+                }
+
+                // Everything stops once the requested radius is reached; short of that, only the pair on
+                // each segment that has just filled up.
+                if (level >= radius)
+                    break;
+
+                for (int s = 0; s < segCount; s++)
+                {
+                    int vEnd = (s + 1) % nVerts;
+                    if (trim[s] + trim[vEnd] < capacity[s] - distTol)
+                        continue;
+
+                    if (growing[s])
+                    {
+                        growing[s] = false;
+                        growingCount--;
+                    }
+
+                    if (growing[vEnd])
+                    {
+                        growing[vEnd] = false;
+                        growingCount--;
+                    }
+                }
+            }
+
+            for (int i = 0; i < nVerts; i++)
+            {
+                if (trim[i] <= distTol)
+                    trim[i] = 0;
+            }
+
+            return trim;
+        }
+
+        /***************************************************/
+
         // The fillet arc at each vertex, or null where the vertex is not filleted or its arc could not be
         // built. Resolving every arc before any curve is assembled is what keeps the result contiguous:
         // assembly treats a null arc as an untrimmed corner, so a corner can never be cut back and then
@@ -245,7 +309,7 @@ namespace BH.Engine.Geometry
                 if (trim[i] <= 0)
                     continue;
 
-                arcs[i] = FilletArc(vertices[(i - 1 + nVerts) % nVerts], vertices[i], vertices[(i + 1) % nVerts], trim[i], distTol);
+                arcs[i] = CornerArc(vertices[(i - 1 + nVerts) % nVerts], vertices[i], vertices[(i + 1) % nVerts], trim[i], distTol);
             }
 
             return arcs;
@@ -255,30 +319,51 @@ namespace BH.Engine.Geometry
 
         // The arc rounding a single corner, tangent to both adjacent segments at the trim distance from
         // the corner, or null where no valid arc exists.
-        private static Arc FilletArc(Point prev, Point corner, Point next, double trim, double distTol)
+        private static Arc CornerArc(Point prev, Point corner, Point next, double trim, double distTol)
         {
             Vector v1 = (prev - corner).Normalise();
             Vector v2 = (next - corner).Normalise();
 
-            // Clamped so that rounding on near-parallel vectors cannot push Acos outside its domain.
-            double d = Math.Max(-1.0, Math.Min(1.0, v1.DotProduct(v2)));
-            double theta = Math.Acos(d);
+            double theta = v1.Angle(v2);
 
-            // The arc sweeps pi - theta. Create.ArcByCentre throws out of CartesianCoordinateSystem
-            // rather than returning null when asked for a sweep below Tolerance.Angle, and the joint test
-            // in FilletTrimLengths only rules that out while the caller leaves angleTol at its default.
+            // The arc sweeps pi - theta. Create.ArcByCentre guards a sweep near pi but not one near zero,
+            // and CartesianCoordinateSystem throws rather than returning null on parallel vectors, so
+            // without this check a doubling-back joint becomes an unhandled exception. The joint test in
+            // FilletTrimLengths only rules that out while the caller leaves angleTol at its default.
             if (Math.PI - theta < Tolerance.Angle)
                 return null;
 
-            double R = trim * Math.Tan(theta / 2.0);
-            if (R <= distTol)
+            double arcRadius = trim * Math.Tan(theta / 2.0);
+            if (arcRadius <= distTol)
                 return null;
 
             // Non-zero because the sweep check above holds theta away from pi.
-            Vector bis = (v1 + v2).Normalise();
-            Point centre = corner + bis * (R / Math.Sin(theta / 2.0));
+            Vector bisector = (v1 + v2).Normalise();
+            Point centre = corner + bisector * (arcRadius / Math.Sin(theta / 2.0));
 
             return BH.Engine.Geometry.Create.ArcByCentre(centre, corner + v1 * trim, corner + v2 * trim, distTol);
+        }
+
+        /***************************************************/
+
+        // Warns where the segments available could not carry the radius that was asked for, so that a
+        // reduced fillet does not have to be spotted by eye.
+        private static void WarnOnReducedRadius(Arc[] arcs, double radius, double distTol)
+        {
+            int reduced = 0;
+            double smallest = radius;
+
+            foreach (Arc arc in arcs)
+            {
+                if (arc == null || arc.Radius >= radius - distTol)
+                    continue;
+
+                reduced++;
+                smallest = Math.Min(smallest, arc.Radius);
+            }
+
+            if (reduced > 0)
+                Base.Compute.RecordWarning("The requested fillet radius of " + radius + " did not fit at " + reduced + " corner(s), where the adjacent segments were too short to carry it. The smallest radius achieved was " + smallest + ".");
         }
 
         /***************************************************/
@@ -321,5 +406,15 @@ namespace BH.Engine.Geometry
             return new PolyCurve { Curves = output };
         }
 
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        // Fraction of a segment's own length that its two trims may occupy, on a segment too short for
+        // the distTol margin to leave any room at all. Deliberately not an input: it has no physical
+        // meaning a caller could set it from, and only ever applies to a degenerate segment.
+        private const double ShortSegmentFallbackFraction = 0.99;
+
+        /***************************************************/
     }
 }
