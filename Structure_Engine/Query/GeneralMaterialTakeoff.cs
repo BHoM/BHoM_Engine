@@ -60,7 +60,7 @@ namespace BH.Engine.Structure
             if (bar.IsNull() || bar.SectionProperty.IsNull())
                 return null;
 
-            return bar.SectionProperty.IGeneralMaterialTakeoff(bar.Length(), bar.FindFragment<ReinforcementDensity>(), bar.FindFragment<ConnectionAllowance>());
+            return bar.SectionProperty.IGeneralMaterialTakeoff(bar.Length(), bar.Name, bar.FindFragment<ReinforcementDensity>(), bar.FindFragment<ConnectionAllowance>());
         }
 
         /***************************************************/
@@ -73,7 +73,7 @@ namespace BH.Engine.Structure
             if (pile.IsNull() || pile.Section.IsNull())
                 return null;
 
-            return pile.Section.IGeneralMaterialTakeoff(pile.Length(), pile.FindFragment<ReinforcementDensity>(), pile.FindFragment<ConnectionAllowance>());
+            return pile.Section.IGeneralMaterialTakeoff(pile.Length(), pile.Name, pile.FindFragment<ReinforcementDensity>(), pile.FindFragment<ConnectionAllowance>());
         }
 
         /***************************************************/
@@ -86,7 +86,7 @@ namespace BH.Engine.Structure
             if (areaElement.IIsNull() || areaElement.Property.IsNull())
                 return null;
 
-            GeneralMaterialTakeoff takeoff = areaElement.Property.IGeneralMaterialTakeoff(areaElement.IArea(), areaElement.FindFragment<ReinforcementDensity>(), areaElement.FindFragment<PanelRebarIntent>());
+            GeneralMaterialTakeoff takeoff = areaElement.Property.IGeneralMaterialTakeoff(areaElement.IArea(), areaElement.Name, areaElement.FindFragment<ReinforcementDensity>(), areaElement.FindFragment<PanelRebarIntent>());
 
             takeoff.AddConnectionAllowance(areaElement.FindFragment<ConnectionAllowance>());
 
@@ -190,6 +190,7 @@ namespace BH.Engine.Structure
                 BH.Engine.Base.Compute.RecordWarning("A ConnectionAllowance Fragment is found on both the PileFoundation and on one or more of the piles. The connection allowance applied directly to the pile(s) is used.");
 
             GeneralMaterialTakeoff aggregateTakeoff = Matter.Compute.AggregateGeneralMaterialTakeoff(takeoffs);
+            aggregateTakeoff.Name = pileFoundation.Name ?? "";
             return aggregateTakeoff;
         }
 
@@ -213,13 +214,14 @@ namespace BH.Engine.Structure
                     {
                         Material = Physical.Create.Material(stem.Material),
                         Volume = volume,
-                        Mass = volume * stem.Material.Density
+                        Mass = volume * stem.Material.Density,
+                        NumberItem = 1
                     }
                 }
             };
 
             takeoff.ApplyReinforcementDensity(stem.FindFragment<ReinforcementDensity>());
-
+            takeoff.Name = stem.Name ?? "";
             return takeoff;
         }
 
@@ -291,7 +293,9 @@ namespace BH.Engine.Structure
                 footing.GeneralMaterialTakeoff()
             };
 
-            return Matter.Compute.AggregateGeneralMaterialTakeoff(takeoffs);
+            GeneralMaterialTakeoff takeoff = Matter.Compute.AggregateGeneralMaterialTakeoff(takeoffs);
+            takeoff.Name = retainingWall.Name ?? "";
+            return takeoff;
         }
 
         #region Fragments
@@ -391,9 +395,11 @@ namespace BH.Engine.Structure
         [Input("reinforcementDensity", "Optional ReinforcementDensity fragment to apply.")]
         [Input("connectionAllowance", "Optional ConnectionAllowance fragment to apply.")]
         [Output("takeoff", "The GeneralMaterialTakeoff of the section property.")]
-        private static GeneralMaterialTakeoff IGeneralMaterialTakeoff(this ISectionProperty sectionProperty, double length, ReinforcementDensity reinforcementDensity = null, ConnectionAllowance connectionAllowance = null)
+        private static GeneralMaterialTakeoff IGeneralMaterialTakeoff(this ISectionProperty sectionProperty, double length, string name, ReinforcementDensity reinforcementDensity = null, ConnectionAllowance connectionAllowance = null)
         {
-            return GeneralMaterialTakeoff(sectionProperty as dynamic, length, reinforcementDensity, connectionAllowance);
+            GeneralMaterialTakeoff takeoff = GeneralMaterialTakeoff(sectionProperty as dynamic, length, reinforcementDensity, connectionAllowance);
+            takeoff.Name = name ?? "";
+            return takeoff;
         }
 
         /***************************************************/
@@ -512,8 +518,8 @@ namespace BH.Engine.Structure
         private static GeneralMaterialTakeoff GeneralMaterialTakeoff(this CompositeSection sectionProperty, double length, ReinforcementDensity reinforcementDensity = null, ConnectionAllowance connectionAllowance = null)
         {
             //TODO: Handle embedment etc..
-            GeneralMaterialTakeoff takeoff = sectionProperty.ConcreteSection.IGeneralMaterialTakeoff(length, reinforcementDensity, connectionAllowance);
-            GeneralMaterialTakeoff steelTakeoff = sectionProperty.SteelSection.IGeneralMaterialTakeoff(length, null, connectionAllowance);  //Not applying any reinforcement density to the steel section
+            GeneralMaterialTakeoff takeoff = sectionProperty.ConcreteSection.IGeneralMaterialTakeoff(length, "", reinforcementDensity, connectionAllowance);
+            GeneralMaterialTakeoff steelTakeoff = sectionProperty.SteelSection.IGeneralMaterialTakeoff(length, "", null, connectionAllowance);  //Not applying any reinforcement density to the steel section
             takeoff.MaterialTakeoffItems.AddRange(steelTakeoff.MaterialTakeoffItems);
             return takeoff;
         }
@@ -532,7 +538,7 @@ namespace BH.Engine.Structure
         [Input("reinforcementDensity", "Optional ReinforcementDensity assigned to the SurfaceProperty.")]
         [Input("panelRebarIntent", "Optional explicit panel rebar intent to include in the takeoff.")]
         [Output("takeoff", "The GeneralMaterialTakeoff of the SurfaceProperty.")]
-        private static GeneralMaterialTakeoff IGeneralMaterialTakeoff(this ISurfaceProperty property, double area, ReinforcementDensity reinforcementDensity = null, PanelRebarIntent panelRebarIntent = null)
+        private static GeneralMaterialTakeoff IGeneralMaterialTakeoff(this ISurfaceProperty property, double area, string name, ReinforcementDensity reinforcementDensity = null, PanelRebarIntent panelRebarIntent = null)
         {
             if (property.IsNull()) //Specific GeneralMaterialTakeoff(SurfaceProp) methods must check for material null- some properties ignore the base material.
                 return null;
@@ -567,6 +573,7 @@ namespace BH.Engine.Structure
             }
 
             takeoff.ApplyReinforcementDensity(reinforcementDensity);
+            takeoff.Name = name ?? "";
             return takeoff;
         }
 
@@ -645,7 +652,7 @@ namespace BH.Engine.Structure
             double toppingThickness = property.ToppingThickness;
 
             //Generate takeoff for the base property
-            GeneralMaterialTakeoff takeoff = property.BaseProperty.IGeneralMaterialTakeoff(area);
+            GeneralMaterialTakeoff takeoff = property.BaseProperty.IGeneralMaterialTakeoff(area, "");
 
             //Add takeoff for topping layer
             takeoff.MaterialTakeoffItems.Add(new TakeoffItem {

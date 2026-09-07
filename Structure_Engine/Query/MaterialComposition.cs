@@ -173,7 +173,7 @@ namespace BH.Engine.Structure
             if (property.IsNull()) //Specific MaterialComposition(SurfaceProp) methods must check for material null- some properties ignore the base material.
                 return null;
 
-            return Engine.Matter.Create.MaterialComposition(property.IGeneralMaterialTakeoff(1, reinforcementDensity));
+            return Engine.Matter.Create.MaterialComposition(property.IGeneralMaterialTakeoff(1, "", reinforcementDensity));
         }
 
         /***************************************************/
