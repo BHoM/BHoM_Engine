@@ -101,6 +101,9 @@ namespace BH.Engine.Geometry
         // further than distTol from both its neighbours - the closing pair of a closed polyline included.
         // Everything downstream relies on that: it is what makes every segment long enough to trim and
         // build on, and so what keeps the assembled curve contiguous.
+        // Not Modify.RemoveShortSegments, which cannot offer that guarantee here: it restores the
+        // original end point of an open polyline, so the last segment may come back shorter than the
+        // tolerance, and it re-closes a closed one, whereas the wrap is handled by segCount below.
         private static List<Point> FilletVertices(IList<Point> pts, bool closed, double distTol)
         {
             List<Point> vertices = new List<Point>();
@@ -301,7 +304,7 @@ namespace BH.Engine.Geometry
                 double tStart = arcs[s] == null ? 0 : trim[s];
                 double tEnd = arcs[vEnd] == null ? 0 : trim[vEnd];
 
-                output.Add(new Line { Start = pA + dir * tStart, End = pB - dir * tEnd });
+                output.Add(BH.Engine.Geometry.Create.Line(pA + dir * tStart, pB - dir * tEnd));
 
                 if (arcs[vEnd] != null)
                     output.Add(arcs[vEnd]);
