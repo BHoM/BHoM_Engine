@@ -964,36 +964,36 @@ namespace BH.Engine.Structure
             List<ICurve> rebarLines = new List<ICurve>();
             if (reinforcement.CenterlineLayout is OffsetCurveLayout offsetLayout)
             {
-                cover += reinforcement.Diameter / 2;  //Add half the diameter of the stirrup to the cover to get the offset for the centerline of the stirrup
+                cover += reinforcement.Diameter / 2;  //Add half the diameter of the transverse to the cover to get the offset for the centerline of the transverse
             }
 
-            List<ICurve> stirrupOutline = reinforcement.ReinforcementLayout(cover, outerProfileEdges, innerProfileEdges);
+            List<ICurve> transverseOutline = reinforcement.ReinforcementLayout(cover, outerProfileEdges, innerProfileEdges);
 
-            double stirrupRange = (reinforcement.EndLocation - reinforcement.StartLocation) * length - (2 * cover + reinforcement.Diameter);
+            double range = (reinforcement.EndLocation - reinforcement.StartLocation) * length - (2 * cover + reinforcement.Diameter);
             int count;
             double spacing = reinforcement.Spacing;
 
             if (reinforcement.AdjustSpacingToFit)
             {
-                count = (int)Math.Ceiling(stirrupRange / reinforcement.Spacing);
-                spacing = stirrupRange / count;
+                count = (int)Math.Ceiling(range / reinforcement.Spacing);
+                spacing = range / count;
             }
             else
-                count = (int)Math.Floor(stirrupRange / reinforcement.Spacing);
+                count = (int)Math.Floor(range / reinforcement.Spacing);
 
-            count += 1; //Add one for the first stirrup at the start location
+            count += 1; //Add one for the first transverse at the start location
 
-            double stirupLength = stirrupOutline.Sum(x => x.ILength());
-            double stirupArea = reinforcement.BarArea();
-            double totalStirrupLength = stirupLength * count;
-            double reinforcementVolume = stirupArea * totalStirrupLength;
+            double singleItemLength = transverseOutline.Sum(x => x.ILength());
+            double barArea = reinforcement.BarArea();
+            double totalLength = singleItemLength * count;
+            double reinforcementVolume = barArea * totalLength;
 
             return new TakeoffItem()
             {
                 Material = Physical.Create.Material(reinforcement.Material),
                 Volume = reinforcementVolume,
                 Mass = reinforcementVolume * reinforcement.Material.Density,
-                Length = totalStirrupLength,
+                Length = totalLength,
                 NumberItem = count
             };
 
