@@ -310,8 +310,14 @@ namespace BH.Engine.Structure
         [Output("takeoff", "The modified GeneralMaterialTakeoff with reinforcement applied.")]
         private static void ApplyReinforcementDensity(this GeneralMaterialTakeoff takeoff, ReinforcementDensity reinforcementDensity)
         {
-            if (reinforcementDensity == null || reinforcementDensity.Density == 0)
+            if (reinforcementDensity == null)
                 return;
+
+            if (reinforcementDensity.Density == 0)
+            {
+                BH.Engine.Base.Compute.RecordWarning("ReinforcementDensity fragment has a density of 0. No changes will be made to the GeneralMaterialTakeoff.");
+                return;
+            }
 
             //Check if any of the materials in the composition are concrete. If so, apply the reinforcement density just to those elements.
             //If not, apply the reinforcement density to all materials in the composition.
@@ -363,7 +369,7 @@ namespace BH.Engine.Structure
                 else
                     BH.Engine.Base.Compute.RecordWarning("ConnectionAllowance fragment has a negative allowance. This will lead to a reduction in the mass of the GeneralMaterialTakeoff.");
             }
-            else if(connectionAllowance.Allowance > 1)
+            else if(connectionAllowance.Allowance >= 1)
             {
                 BH.Engine.Base.Compute.RecordWarning("ConnectionAllowance fragment has an allowance greater than 1. This will lead to a more than doubling of the mass of the GeneralMaterialTakeoff. Please ensure that the value was intentional. The allowance is specified as a ratio of the mass, i.e. for a connection allowance of 10% please set the allowance to 0.1.");
             }
