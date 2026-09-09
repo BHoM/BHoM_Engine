@@ -827,7 +827,7 @@ namespace BH.Engine.Structure
             if (property.IsNull() || property.Material.IsNull())
                 return null;
 
-            double volPerAreaRibZone = 2.0d * property.RibHeight * (property.RibThickness / property.RibSpacing);
+            double volPerAreaRibZone = 2.0 * property.RibHeight * (property.RibThickness / property.RibSpacing);
 
             double topVolume = property.TopThickness * area;
             double ribVolume = volPerAreaRibZone * area;
