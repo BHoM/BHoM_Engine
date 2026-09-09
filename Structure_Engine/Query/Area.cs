@@ -65,7 +65,7 @@ namespace BH.Engine.Structure
         [Output("area", "The area of the LongitudinalReinforcement.", typeof(Area))]
         public static double Area(this LongitudinalReinforcement reinforcement)
         {
-            return reinforcement.IsNull() ? 0 : reinforcement.ReinforcingBarCount() * reinforcement.Diameter * reinforcement.Diameter / 4 * Math.PI;
+            return reinforcement.IsNull() ? 0 : reinforcement.ReinforcingBarCount() * reinforcement.BarArea();
         }
 
         /***************************************************/

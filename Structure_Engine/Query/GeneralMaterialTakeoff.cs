@@ -907,7 +907,7 @@ namespace BH.Engine.Structure
         private static TakeoffItem RebarTakeoff(this LongitudinalReinforcement reinforcement, double length, double cover, List<ICurve> outerProfileEdges, List<ICurve> innerProfileEdges)
         {
             int barCount = reinforcement.ReinforcingBarCount();
-            double singleBarArea = reinforcement.Diameter * reinforcement.Diameter / 4 * Math.PI;   //Single bar area based on diameter
+            double singleBarArea = reinforcement.BarArea();   //Single bar area based on diameter
 
             //Scale lengths to account for reinforcement that does not span the entire length of the section
             double factor = Math.Min(reinforcement.EndLocation - reinforcement.StartLocation, 1);
@@ -960,7 +960,7 @@ namespace BH.Engine.Structure
             count += 1; //Add one for the first stirrup at the start location
 
             double stirupLength = stirrupOutline.Sum(x => x.ILength());
-            double stirupArea = reinforcement.Diameter * reinforcement.Diameter / 4 * Math.PI;
+            double stirupArea = reinforcement.BarArea();
             double totalStirrupLength = stirupLength * count;
             double reinforcementVolume = stirupArea * totalStirrupLength;
 
@@ -989,13 +989,13 @@ namespace BH.Engine.Structure
 
             //Approximates the total length of longitudinal reinforcement based on the area of the region and the spacing of the reinforcement. This is a rough estimate and may not be accurate for all shapes.
             double approxLongTotalLength = regionArea / reinforcement.LongitudinalSpacing;
-            double longitudinalArea = reinforcement.LongitudinalDiameter * reinforcement.LongitudinalDiameter / 4 * Math.PI;
+            double longitudinalArea = reinforcement.LongitudinalBarArea();
             double longitudinalVolume = approxLongTotalLength * longitudinalArea;
 
 
             //Approximates the total length of transverse reinforcement based on the area of the region and the spacing of the reinforcement. This is a rough estimate and may not be accurate for all shapes.
             double approxTransTotalLength = regionArea / reinforcement.TransverseSpacing;
-            double transverseArea = reinforcement.TransverseDiameter * reinforcement.TransverseDiameter / 4 * Math.PI;
+            double transverseArea = reinforcement.TransversalBarArea();
             double transverseVolume = approxLongTotalLength * transverseArea;
 
             double totalVolume = longitudinalVolume + transverseVolume;
