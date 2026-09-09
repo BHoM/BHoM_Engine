@@ -886,7 +886,7 @@ namespace BH.Engine.Structure
         [Description("Dispatches to the appropriate rebar takeoff implementation based on reinforcement runtime type.")]
         [Input("reinforcement", "The IBarReinforcement to evaluate.")]
         [Input("length", "The length of the parent element.", typeof(Length))]
-        [Input("cover", "Minimum cover to offset transverse reinforcement.")]
+        [Input("cover", "Minimum cover to offset transverse reinforcement.", typeof(Length))]
         [Input("outerProfileEdges", "Optional outer profile edges used for transverse reinforcement layout.")]
         [Input("innerProfileEdges", "Optional inner profile edges used for transverse reinforcement layout.")]
         [Output("takeoffItem", "The TakeoffItem for the reinforcement, or null if none.")]
