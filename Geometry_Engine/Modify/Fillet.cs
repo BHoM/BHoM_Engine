@@ -52,7 +52,7 @@ namespace BH.Engine.Geometry
                 return null;
             }
 
-            IList<Point> pts = polyline.ControlPoints;
+            List<Point> pts = polyline.ControlPoints;
             if (pts == null || pts.Count < 2)
             {
                 Base.Compute.RecordError("The Polyline needs at least two control points to be filleted.");
@@ -147,6 +147,7 @@ namespace BH.Engine.Geometry
                 if (!closed && (i == 0 || i == nVerts - 1))
                     continue;
 
+                //Vectors go in opposite directions from the corner, so the angle between them is the internal angle of the joint.
                 Point corner = vertices[i];
                 Vector v1 = vertices[(i - 1 + nVerts) % nVerts] - corner;
                 Vector v2 = vertices[(i + 1) % nVerts] - corner;
