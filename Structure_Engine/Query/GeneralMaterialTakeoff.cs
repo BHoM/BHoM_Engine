@@ -931,7 +931,7 @@ namespace BH.Engine.Structure
         [Description("Computes the takeoff for transverse reinforcement (stirrups/hoops) using layout outlines and spacing.")]
         [Input("reinforcement", "The TransverseReinforcement to evaluate.")]
         [Input("length", "The length of the parent element.", typeof(Length))]
-        [Input("cover", "Minimum cover to offset stirrup centerline.")]
+        [Input("cover", "Minimum cover to offset stirrup centerline.", typeof(Length))]
         [Input("outerProfileEdges", "Optional outer profile edges used for determining stirrup outlines.")]
         [Input("innerProfileEdges", "Optional inner profile edges used for determining stirrup outlines.")]
         [Output("takeoffItem", "The TakeoffItem representing transverse reinforcement.")]
