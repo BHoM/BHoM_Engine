@@ -350,6 +350,24 @@ namespace BH.Engine.Structure
             if (connectionAllowance == null || connectionAllowance.Allowance == 0)
                 return;
 
+            if (connectionAllowance.Allowance == 0)
+            { 
+                BH.Engine.Base.Compute.RecordWarning("ConnectionAllowance fragment has an allowance of 0. No changes will be made to the GeneralMaterialTakeoff.");
+                return;
+            }
+
+            if(connectionAllowance.Allowance < 0)
+            {
+                if(connectionAllowance.Allowance < 1)
+                    BH.Engine.Base.Compute.RecordWarning("ConnectionAllowance fragment has a negative allowance less than -1. This will lead to a negative mass of the GeneralMaterialTakeoff. Please ensure that the inputs given are correct.");
+                else
+                    BH.Engine.Base.Compute.RecordWarning("ConnectionAllowance fragment has a negative allowance. This will lead to a reduction in the mass of the GeneralMaterialTakeoff.");
+            }
+            else if(connectionAllowance.Allowance > 1)
+            {
+                BH.Engine.Base.Compute.RecordWarning("ConnectionAllowance fragment has an allowance greater than 1. This will lead to a more than doubling of the mass of the GeneralMaterialTakeoff. Please ensure that the value was intentional. The allowance is specified as a ratio of the mass, i.e. for a connection allowance of 10% please set the allowance to 0.1.");
+            }
+
             if (connectionAllowance.Material == null && string.IsNullOrWhiteSpace(connectionAllowance.Name))    //No allowance material specified and no name specified -> simply scale up the mass of the existing materials in the takeoff by the allowance factor.
             {
                 foreach (TakeoffItem item in takeoff.MaterialTakeoffItems)
