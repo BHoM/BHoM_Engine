@@ -41,7 +41,7 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Calculates the area of a single rebar in the IBarReinforcement. To get the total reinforcement area for the reinforcement layout please call the Area method.")]
-        [Input("reinforcement", "The LongitudinalReinforcement to calculate the area for.")]
+        [Input("reinforcement", "The IBarReinforcement to calculate the area for.")]
         [Output("area", "The area of a single rebar the IBarReinforcement.", typeof(Area))]
         public static double BarArea(this IBarReinforcement reinforcement)
         {
