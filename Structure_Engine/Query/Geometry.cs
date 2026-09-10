@@ -91,6 +91,16 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
+        [Description("Gets the geometry of a Bar as the line between its Start and End nodes. No offsets or similar are taken into account. Method required for automatic display in UI packages, and for any IElement1D-generic query (e.g. Length, Tangent) that dispatches through IGeometry.")]
+        [Input("bar", "Bar to get the line geometry from.")]
+        [Output("line", "The line defining the Bar.")]
+        public static IGeometry Geometry(this Bar bar)
+        {
+            return bar.IsNull() ? null : new Line { Start = bar.Start.Position, End = bar.End.Position };
+        }
+
+        /***************************************************/
+
         [Description("Gets the geometry of a Pile as a single line. Method required for automatic display in UI packages.")]
         [Input("pile", "Pile to get the line geometry from.")]
         [Output("line", "The line defining the Pile.")]
