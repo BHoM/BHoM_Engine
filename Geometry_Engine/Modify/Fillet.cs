@@ -67,8 +67,8 @@ namespace BH.Engine.Geometry
 
             if (radius <= 0)
             {
-                Base.Compute.RecordError("The fillet radius is zero or negative, so no corner has been rounded.");
-                return null;
+                Base.Compute.RecordWarning("The fillet radius is zero or negative, so no corner has been rounded. Polyline returned as a PolyCurve without modification.");
+                return new PolyCurve { Curves = new List<ICurve> { polyline } };
             }
 
             bool closed = polyline.IsClosed(distTol);
