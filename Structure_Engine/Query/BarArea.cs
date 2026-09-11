@@ -40,56 +40,36 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates the area of a FEMesh as the sum of the area of all faces. Quad faces will be triangulated to perform the area calculation.")]
-        [Input("mesh", "The FEMesh to calculate the area for.")]
-        [Output("area", "The area of the FEMesh.", typeof(Area))]
-        public static double Area(this FEMesh mesh)
+        [Description("Calculates the area of a single rebar in the IBarReinforcement. To get the total reinforcement area for the reinforcement layout please call the Area method.")]
+        [Input("reinforcement", "The IBarReinforcement to calculate the area for.")]
+        [Output("area", "The area of a single rebar the IBarReinforcement.", typeof(Area))]
+        public static double BarArea(this IBarReinforcement reinforcement)
         {
-            return mesh.IsNull() ? 0 : Analytical.Query.Geometry(mesh).Area();
+            return reinforcement.Diameter * reinforcement.Diameter / 4 * Math.PI;
         }
 
         /***************************************************/
 
-        [Description("Calculates the area of a Surface based on the area of the geometrical surface stored in Extents.")]
-        [Input("surface", "The Surface to calculate the area for.")]
-        [Output("area", "The area of the Surface.", typeof(Area))]
-        public static double Area(this Surface surface)
+        [Description("Calculates the area of a single rebar in the PanelReinforcement in the logitudinal direction.")]
+        [Input("reinforcement", "The PanelReinforcement to calculate the area for.")]
+        [Output("area", "The area of a single rebar in the logitudinal direction the PanelReinforcement.", typeof(Area))]
+        public static double LongitudinalBarArea(this PanelReinforcement reinforcement)
         {
-            return surface.IsNull() ? 0 : surface.Extents.IArea();
+            return reinforcement.LongitudinalDiameter * reinforcement.LongitudinalDiameter / 4 * Math.PI;
         }
 
         /***************************************************/
 
-        [Description("Calculates the total section area of all rebars in the reinforcement object.")]
-        [Input("reinforcement", "The LongitudinalReinforcement to calculate the area for.")]
-        [Output("area", "The area of the LongitudinalReinforcement.", typeof(Area))]
-        public static double Area(this LongitudinalReinforcement reinforcement)
+        [Description("Calculates the area of a single rebar in the PanelReinforcement in the logitudinal direction.")]
+        [Input("reinforcement", "The PanelReinforcement to calculate the area for.")]
+        [Output("area", "The area of a single rebar in the transversal direction the PanelReinforcement.", typeof(Area))]
+        public static double TransversalBarArea(this PanelReinforcement reinforcement)
         {
-            return reinforcement.IsNull() ? 0 : reinforcement.ReinforcingBarCount() * reinforcement.BarArea();
+            return reinforcement.TransverseDiameter * reinforcement.TransverseDiameter / 4 * Math.PI;
         }
 
         /***************************************************/
-        /**** Public Methods - Interfaces               ****/
-        /***************************************************/
 
-        [Description("Calculates the area of an IAreaElement.")]
-        [Input("element", "The element to calculate the area for.")]
-        [Output("area", "The area of the element.", typeof(Area))]
-        public static double IArea(this IAreaElement element)
-        {
-            return element.IIsNull() ? 0 : Area(element as dynamic);
-        }
-
-        /***************************************************/
-        /**** Private Methods                           ****/
-        /***************************************************/
-
-        private static double Area(this BH.oM.Dimensional.IElement2D element)
-        {
-            return Engine.Spatial.Query.Area(element);
-        }
-
-        /***************************************************/
     }
 
 }
