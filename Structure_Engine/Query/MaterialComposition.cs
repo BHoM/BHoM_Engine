@@ -156,14 +156,6 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [PreviousVersion("9.3", "BH.Engine.Structure.Query.IMaterialComposition(BH.oM.Structure.SurfaceProperties.ISurfaceProperty, BH.oM.Structure.Fragments.ReinforcementDensity)")]
-        [PreviousVersion("9.3", "BH.Engine.Structure.Query.MaterialComposition(BH.oM.Structure.SurfaceProperties.BuiltUpDoubleRibbed, BH.oM.Structure.Fragments.ReinforcementDensity)")]
-        [PreviousVersion("9.3", "BH.Engine.Structure.Query.MaterialComposition(BH.oM.Structure.SurfaceProperties.BuiltUpRibbed, BH.oM.Structure.Fragments.ReinforcementDensity)")]
-        [PreviousVersion("9.3", "BH.Engine.Structure.Query.MaterialComposition(BH.oM.Structure.SurfaceProperties.Cassette, BH.oM.Structure.Fragments.ReinforcementDensity)")]
-        [PreviousVersion("9.3", "BH.Engine.Structure.Query.MaterialComposition(BH.oM.Structure.SurfaceProperties.SlabOnDeck, BH.oM.Structure.Fragments.ReinforcementDensity)")]
-        [PreviousVersion("9.3", "BH.Engine.Structure.Query.MaterialComposition(BH.oM.Structure.SurfaceProperties.ToppedSlab, BH.oM.Structure.Fragments.ReinforcementDensity)")]
-        [PreviousVersion("9.3", "BH.Engine.Structure.Query.MaterialComposition(BH.oM.Structure.SurfaceProperties.CorrugatedDeck, BH.oM.Structure.Fragments.ReinforcementDensity)")]
-        [PreviousVersion("9.3", "BH.Engine.Structure.Query.MaterialComposition(BH.oM.Structure.SurfaceProperties.Layered, BH.oM.Structure.Fragments.ReinforcementDensity)")]
         [Description("Returns a SurfaceProperty's MaterialComposition.")]
         [Input("property", "The SurfaceProperty to query.")]
         [Input("reinforcementDensity", "ReinforcementDensity assigned to the SurfaceProperty.")]
