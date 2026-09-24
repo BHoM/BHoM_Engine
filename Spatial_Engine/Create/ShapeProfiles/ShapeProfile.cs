@@ -20,16 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Geometry;
 using System.Collections.Generic;
 using System.Linq;
-using System.Collections.ObjectModel;
-using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Geometry;
-using System;
-using BH.Engine.Reflection;
-using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
-using System.ComponentModel;
 
 namespace BH.Engine.Spatial
 {
@@ -43,7 +36,7 @@ namespace BH.Engine.Spatial
         private static List<ICurve> MirrorAboutLocalY(this List<ICurve> curves)
         {
             Plane plane = oM.Geometry.Plane.XZ;
-            return curves.Select(x => x.IMirror(plane)).ToList();
+            return curves.Select(x => Geometry.Modify.IMirror(x, plane)).ToList();
         }
 
         /***************************************************/
@@ -51,7 +44,7 @@ namespace BH.Engine.Spatial
         private static List<ICurve> MirrorAboutLocalZ(this List<ICurve> curves)
         {
             Plane plane = oM.Geometry.Plane.YZ;
-            return curves.Select(x => x.IMirror(plane)).ToList();
+            return curves.Select(x => Geometry.Modify.IMirror(x, plane)).ToList();
         }
 
         /***************************************************/

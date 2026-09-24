@@ -20,12 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Collections.Generic;
+using BH.oM.Base.Attributes;
 using BH.oM.Dimensional;
 using BH.oM.Geometry;
+using System.Collections.Generic;
 using System.ComponentModel;
-using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
 
 namespace BH.Engine.Spatial
 {
@@ -35,7 +34,7 @@ namespace BH.Engine.Spatial
         /**** Interface Methods - IElements             ****/
         /***************************************************/
 
-        [Description("Transforms the geometrical definition and location-dependent properties of an IElement by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the geometrical definition and location-dependent properties of an IElement by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("element", "IElement to transform.")]
         [Input("transform", "Transformation matrix to apply.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -47,7 +46,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        [Description("Transforms the geometrical definition and location-dependent properties of an IElement2D by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the geometrical definition and location-dependent properties of an IElement2D by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("element2D", "IElement2D to transform.")]
         [Input("transform", "Transformation matrix to apply.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -63,7 +62,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        [Description("Transforms the geometrical definition and location-dependent properties of an IElement1D by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the geometrical definition and location-dependent properties of an IElement1D by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("element1D", "IElement1D to transform.")]
         [Input("transform", "Transformation matrix to apply.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -79,7 +78,7 @@ namespace BH.Engine.Spatial
 
         /***************************************************/
 
-        [Description("Transforms the geometrical definition and location-dependent properties of an IElement0D by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the geometrical definition and location-dependent properties of an IElement0D by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("element0D", "IElement0D to transform.")]
         [Input("transform", "Transformation matrix to apply.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -100,12 +99,6 @@ namespace BH.Engine.Spatial
 
         private static IElement2D Transform(this IElement2D element2D, TransformMatrix transform, double tolerance)
         {
-            if (!transform.IsRigidTransformation(tolerance))
-            {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
-                return null;
-            }
-
             List<IElement1D> newOutline = new List<IElement1D>();
             foreach (IElement1D element1D in element2D.IOutlineElements1D())
             {
@@ -126,12 +119,6 @@ namespace BH.Engine.Spatial
 
         private static IElement1D Transform(this IElement1D element1D, TransformMatrix transform, double tolerance)
         {
-            if (!transform.IsRigidTransformation(tolerance))
-            {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
-                return null;
-            }
-
             return element1D.ISetGeometry(Geometry.Modify.ITransform(element1D.IGeometry(), transform));
         }
 
@@ -139,12 +126,6 @@ namespace BH.Engine.Spatial
 
         private static IElement0D Transform(this IElement0D element0D, TransformMatrix transform, double tolerance)
         {
-            if (!transform.IsRigidTransformation(tolerance))
-            {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
-                return null;
-            }
-
             return element0D.ISetGeometry(Geometry.Modify.Transform(element0D.IGeometry(), transform));
         }
 

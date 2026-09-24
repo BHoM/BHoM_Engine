@@ -20,17 +20,15 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
-using BH.oM.Spatial.ShapeProfiles;
+using BH.Engine.Geometry;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
+using BH.oM.Spatial.ShapeProfiles;
 using System;
-using BH.Engine.Reflection;
-using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Spatial
 {
@@ -63,7 +61,7 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
-            if (flangeSlope > flangeThickness / (width/4)) // Assume no fillets
+            if (flangeSlope > flangeThickness / (width / 4)) // Assume no fillets
             {
                 InvalidRatioError("Width", "FlangeThickness and flangeSlope");
                 return null;
@@ -77,14 +75,14 @@ namespace BH.Engine.Spatial
             }
 
             // check that the toe radius doesn't eliminate the face of the toe
-            if (Math.Sqrt(Math.Pow(toeRadius,2) + Math.Pow(flangeSlope * toeRadius, 2)) > flangeThickness - flangeSlope * (width / 4 - toeRadius))
+            if (Math.Sqrt(Math.Pow(toeRadius, 2) + Math.Pow(flangeSlope * toeRadius, 2)) > flangeThickness - flangeSlope * (width / 4 - toeRadius))
             {
                 InvalidRatioError("toeRadius", "flangeThickness, flangeSlope, and width");
                 return null;
             }
 
             // check that the toe and root radii don't eliminate the inner flange face
-            if (width < webThickness + 2 * (1 - flangeSlope)*( rootRadius + toeRadius ))
+            if (width < webThickness + 2 * (1 - flangeSlope) * (rootRadius + toeRadius))
             {
                 InvalidRatioError("width", "webthickness, rootRadius, and toeRadius");
                 return null;
@@ -115,7 +113,7 @@ namespace BH.Engine.Spatial
 
             Line l1 = new Line { Start = p, End = p = p + yAxis * (bft - bfw / 4 * slope) };
             Line l2 = new Line { Start = p, End = p = p - xAxis * (bfw - wt) / 2 + yAxis * ((bfw - wt) / 2 * slope) };
-            Line l3 = new Line { Start = p, End = p = p + yAxis * (height - (bft + (bfw/4 - wt/2) * slope + (tft + (tfw/4 - wt/2) * slope)))};
+            Line l3 = new Line { Start = p, End = p = p + yAxis * (height - (bft + (bfw / 4 - wt / 2) * slope + (tft + (tfw / 4 - wt / 2) * slope))) };
             Line l4 = new Line { Start = p, End = p = p + xAxis * (tfw - wt) / 2 + yAxis * ((tfw - wt) / 2 * slope) };
             Line l5 = new Line { Start = p, End = p = p + yAxis * (tft - tfw / 4 * slope) };
 
@@ -131,7 +129,7 @@ namespace BH.Engine.Spatial
             int count = edges.Count;
             for (int i = 0; i < count; i++)
             {
-                edges.Add(edges[i].IMirror(new Plane { Origin = origin, Normal = xAxis }));
+                edges.Add(Geometry.Modify.IMirror(edges[i], new Plane { Origin = origin, Normal = xAxis }));
             }
             edges.Add(new Line { Start = p, End = p - xAxis * (tfw) });
             edges.Add(new Line { Start = origin + xAxis * (-bfw / 2), End = origin + xAxis * (bfw / 2) });

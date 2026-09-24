@@ -20,16 +20,14 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
-using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Geometry;
-using System;
-using BH.Engine.Reflection;
-using BH.oM.Base.Attributes;
 using BH.Engine.Geometry;
+using BH.oM.Base.Attributes;
+using BH.oM.Geometry;
+using BH.oM.Spatial.ShapeProfiles;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Spatial
 {
@@ -106,7 +104,7 @@ namespace BH.Engine.Spatial
             int count = edges.Count;
             for (int i = 0; i < count; i++)
             {
-                edges.Add(edges[i].IMirror(new Plane { Origin = origin, Normal = xAxis }));
+                edges.Add(Geometry.Modify.IMirror(edges[i], new Plane { Origin = origin, Normal = xAxis }));
             }
             edges.Add(new Line { Start = p, End = p - xAxis * (tfw) });
             edges.Add(new Line { Start = origin + xAxis * (-bfw / 2), End = origin + xAxis * (bfw / 2) });

@@ -36,16 +36,16 @@ namespace BH.Engine.Graphics
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Transforms the Vertex's location by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the Vertex's location by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("vertex", "Vertex to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified Vertex with unchanged properties, but transformed location.")]
         public static RenderPoint Transform(this RenderPoint vertex, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -56,16 +56,16 @@ namespace BH.Engine.Graphics
 
         /***************************************************/
 
-        [Description("Transforms the RenderMesh's vertices by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the RenderMesh's vertices by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("renderMesh", "RenderMesh to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified RenderMesh with unchanged properties, but transformed vertices.")]
         public static RenderMesh Transform(this RenderMesh renderMesh, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 

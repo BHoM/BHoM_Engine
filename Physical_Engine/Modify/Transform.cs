@@ -40,16 +40,16 @@ namespace BH.Engine.Physical
         /**** Interface Methods - IElements             ****/
         /***************************************************/
 
-        [Description("Transforms the IFramingElement's location and orientation angle by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the IFramingElement's location and orientation angle by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("framingElement", "IFramingElement to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified IFramingElement with unchanged properties, but transformed location and orientation angle.")]
         public static IFramingElement Transform(this IFramingElement framingElement, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -78,16 +78,16 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Transforms the IOpening's location by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the IOpening's location by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("opening", "IOpening to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified IOpening with unchanged properties, but transformed location.")]
         public static IOpening Transform(this IOpening opening, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -98,16 +98,16 @@ namespace BH.Engine.Physical
 
         /***************************************************/
 
-        [Description("Transforms the ISurface's location and openings by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the ISurface's location and openings by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("panel", "ISurface to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
         [Output("transformed", "Modified ISurface with unchanged properties, but transformed location and openings.")]
         public static oM.Physical.Elements.ISurface Transform(this oM.Physical.Elements.ISurface panel, TransformMatrix transform, double tolerance = Tolerance.Distance)
         {
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 

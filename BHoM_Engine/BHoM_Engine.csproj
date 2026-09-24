@@ -9,7 +9,7 @@
     <Company>BHoM</Company>
     <Copyright>Copyright © https://github.com/BHoM</Copyright>
     <RootNamespace>BH.Engine.Base</RootNamespace>
-    <FileVersion>9.2.0.0</FileVersion>
+    <FileVersion>9.3.0.0</FileVersion>
     <Configurations>Debug;Release;Test</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -23,9 +23,11 @@
 using BH.Engine.Base;
 using BH.Engine.Geometry;
 using BH.Engine.Spatial;
-using BH.oM.Geometry;
 using BH.oM.Base.Attributes;
+using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
+using BH.oM.Structure.Offsets;
+using BH.oM.Structure.SectionProperties;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -38,7 +40,7 @@ namespace BH.Engine.Structure
         /**** Interface Methods - IElements             ****/
         /***************************************************/
 
-        [Description("Transforms the Node's position and orientation by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the Node's position and orientation by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("node", "Node to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -51,9 +53,9 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -65,7 +67,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Transforms the Bar's nodes and orientation by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the Bar's nodes and orientation by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("bar", "Bar to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -84,9 +86,10 @@ namespace BH.Engine.Structure
                 return bar;
             }
 
-            if (!transform.IsRigidTransformation(tolerance))
+            bool reflection = transform.IsPureReflection(tolerance);
+            if (!reflection && !transform.IsRigidTransformation(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -98,12 +101,41 @@ namespace BH.Engine.Structure
             Vector normalAfter = normalBefore.Transform(transform);
             result.OrientationAngle = normalAfter.OrientationAngleLinear(new Line { Start = result.Start.Position, End = result.End.Position });
 
+            if (reflection)
+            {
+                if (bar.SectionProperty != null)
+                {
+                    ISectionProperty flippedSectionProperty = Flip(bar.SectionProperty);
+                    result.SectionProperty = flippedSectionProperty;
+                }
+
+                Offset flippedOffset = bar.Offset?.ShallowClone();
+                if (flippedOffset != null)
+                {
+                    flippedOffset.Start = new Vector
+                    {
+                        X = bar.Offset.Start.X,
+                        Y = -bar.Offset.Start.Y,
+                        Z = bar.Offset.Start.Z
+                    };
+
+                    flippedOffset.End = new Vector
+                    {
+                        X = bar.Offset.End.X,
+                        Y = -bar.Offset.End.Y,
+                        Z = bar.Offset.End.Z
+                    };
+
+                    result.Offset = flippedOffset;
+                }
+            }
+
             return result;
         }
 
         /***************************************************/
 
-        [Description("Transforms the RigidLink's primary and secondary nodes by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the RigidLink's primary and secondary nodes by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("link", "RigidLink to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -116,9 +148,9 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -130,7 +162,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Transforms the Edge's location by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the Edge's location by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("edge", "Edge to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -143,9 +175,9 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -156,7 +188,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Transforms the Opening's edges by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the Opening's edges by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("opening", "Opening to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -169,9 +201,9 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -182,7 +214,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Transforms the Panel's edges, openings and orientation angle by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the Panel's edges, openings and orientation angle by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("panel", "Panel to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -195,9 +227,9 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -207,7 +239,12 @@ namespace BH.Engine.Structure
 
             Basis orientation = panel.LocalOrientation()?.Transform(transform);
             if (orientation != null)
+            {
                 result.OrientationAngle = orientation.Z.OrientationAngleAreaElement(orientation.X);
+
+                if (transform.IsPureReflection(tolerance))
+                    result.OrientationAngle = -result.OrientationAngle;
+            }
             else
                 BH.Engine.Base.Compute.RecordWarning("Local orientation of the panel could not be transformed. Please note that the orientation of the resultant panel may be incorrect.");
 
@@ -216,7 +253,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Transforms the FEMesh's nodes by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the FEMesh's nodes by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("mesh", "FEMesh to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -229,9 +266,9 @@ namespace BH.Engine.Structure
                 return null;
             }
 
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -250,7 +287,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Transforms the PadFoundation's edges, openings and basis by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the PadFoundation's edges, openings and basis by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("padFoundation", "PadFoundation to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -263,9 +300,9 @@ namespace BH.Engine.Structure
             if (transform.IsNull())
                 return padFoundation;
 
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -284,7 +321,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Transforms the Pile by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the Pile by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("pile", "Pile to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -297,9 +334,9 @@ namespace BH.Engine.Structure
             if (transform.IsNull())
                 return pile;
 
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 
@@ -316,7 +353,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Transforms the PileFoundation by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the PileFoundation by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("pileFoundation", "PileFoundation to transform.")]
         [Input("transform", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -329,9 +366,9 @@ namespace BH.Engine.Structure
             if (transform.IsNull())
                 return pileFoundation;
 
-            if (!transform.IsRigidTransformation(tolerance))
+            if (!transform.IsRigidTransformation(tolerance) && !transform.IsPureReflection(tolerance))
             {
-                Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 

@@ -22,9 +22,9 @@
 
 using BH.Engine.Base;
 using BH.Engine.Geometry;
+using BH.oM.Base.Attributes;
 using BH.oM.Environment.Elements;
 using BH.oM.Geometry;
-using BH.oM.Base.Attributes;
 using System.ComponentModel;
 
 namespace BH.Engine.Environment
@@ -35,7 +35,7 @@ namespace BH.Engine.Environment
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Transforms the Space's perimeter and location point by the transform matrix. Only rigid body transformations are supported.")]
+        [Description("Transforms the Space's perimeter and location point by the transform matrix. Only rigid body transformations and pure reflection are supported.")]
         [Input("space", "Space to transform.")]
         [Input("matrix", "Transform matrix.")]
         [Input("tolerance", "Tolerance used in the check whether the input matrix is equivalent to the rigid body transformation.")]
@@ -43,9 +43,9 @@ namespace BH.Engine.Environment
         [PreviousInputNames("matrix", "transform")]
         public static Space Transform(this Space space, TransformMatrix matrix, double tolerance = Tolerance.Distance)
         {
-            if (!matrix.IsRigidTransformation(tolerance))
+            if (!matrix.IsRigidTransformation(tolerance) && !matrix.IsPureReflection(tolerance))
             {
-                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations are currently supported.");
+                BH.Engine.Base.Compute.RecordError("Transformation failed: only rigid body transformations and pure reflection are currently supported.");
                 return null;
             }
 

@@ -20,17 +20,14 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
-using BH.oM.Spatial.ShapeProfiles;
-using BH.oM.Geometry;
-using System;
-using BH.Engine.Reflection;
-using BH.oM.Base.Attributes;
 using BH.Engine.Geometry;
-using System.ComponentModel;
+using BH.oM.Base.Attributes;
+using BH.oM.Geometry;
 using BH.oM.Quantities.Attributes;
+using BH.oM.Spatial.ShapeProfiles;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Spatial
 {
@@ -111,7 +108,7 @@ namespace BH.Engine.Spatial
             int intCount = internalEdges.Count;
             for (int i = 0; i < intCount; i++)
             {
-                internalEdges.Add(internalEdges[i].IMirror(new Plane { Origin = origin, Normal = xAxis }));
+                internalEdges.Add(Geometry.Modify.IMirror(internalEdges[i], new Plane { Origin = origin, Normal = xAxis }));
             }
 
             Point centroid = externalEdges.IJoin().Centroid(internalEdges.IJoin());

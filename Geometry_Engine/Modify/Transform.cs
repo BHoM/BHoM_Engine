@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2026, the respective contributors. All rights reserved.
  *
@@ -20,11 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Base;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Geometry.CoordinateSystem;
-using BH.oM.Base.Attributes;
-using BH.oM.Quantities.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -91,7 +89,12 @@ namespace BH.Engine.Geometry
         [Output("basis", "The transformed Basis.")]
         public static Basis Transform(this Basis basis, TransformMatrix transform)
         {
-            return Create.Basis(basis.X.Transform(transform), basis.Y.Transform(transform));
+            // Create the basis using Create method to handle non-orthogonal X and Y. Then reflect Z if needed (when transforming a mirrored basis or when transform itself is a mirror).
+            Basis result = Create.Basis(basis.X.Transform(transform), basis.Y.Transform(transform));
+            if (result.Z.DotProduct(basis.Z.Transform(transform)) < 0)
+                result = new Basis(result.X, result.Y, -result.Z);
+
+            return result;
         }
 
         /***************************************************/
@@ -122,7 +125,7 @@ namespace BH.Engine.Geometry
         [Output("curve", "The transformed curve as an Arc or NurbsCurve.")]
         public static ICurve Transform(this Arc curve, TransformMatrix transform)
         {
-            if (transform.IsRigidTransformation() || transform.IsUniformScaling())
+            if (transform.IsRigidTransformation() || transform.IsUniformScaling() || transform.IsPureReflection())
                 return new Arc
                 {
                     Radius = (curve.StartPoint() - curve.CoordinateSystem.Origin).Transform(transform).Length(),
@@ -132,7 +135,7 @@ namespace BH.Engine.Geometry
                 };
             else
             {
-                Base.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
+                Base.Compute.RecordNote("Transformation is not rigid or uniform or reflection. Converting into NurbsCurve. Change in shape may occur.");
                 return curve.ToNurbsCurve().Transform(transform);
             }
         }
@@ -145,7 +148,7 @@ namespace BH.Engine.Geometry
         [Output("curve", "The transformed curve as a Circle or NurbsCurve.")]
         public static ICurve Transform(this Circle curve, TransformMatrix transform)
         {
-            if (transform.IsRigidTransformation() || transform.IsUniformScaling())
+            if (transform.IsRigidTransformation() || transform.IsUniformScaling() || transform.IsPureReflection())
                 return new Circle
                 {
                     Centre = curve.Centre.Transform(transform),
@@ -154,7 +157,7 @@ namespace BH.Engine.Geometry
                 };
             else
             {
-                Base.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
+                Base.Compute.RecordNote("Transformation is not rigid or uniform or reflection. Converting into NurbsCurve. Change in shape may occur.");
                 return curve.ToNurbsCurve().Transform(transform);
             }
         }
@@ -167,7 +170,7 @@ namespace BH.Engine.Geometry
         [Output("curve", "The transformed curve as an Ellipse or NurbsCurve.")]
         public static ICurve Transform(this Ellipse curve, TransformMatrix transform)
         {
-            if (transform.IsRigidTransformation() || transform.IsUniformScaling())
+            if (transform.IsRigidTransformation() || transform.IsUniformScaling() || transform.IsPureReflection())
                 return new Ellipse
                 {
                     Centre = curve.Centre.Transform(transform),
@@ -178,7 +181,7 @@ namespace BH.Engine.Geometry
                 };
             else
             {
-                Base.Compute.RecordNote("Transformation is not rigid or uniform. Converting into NurbsCurve. Change in shape may occur.");
+                Base.Compute.RecordNote("Transformation is not rigid or uniform or reflection. Converting into NurbsCurve. Change in shape may occur.");
                 return curve.ToNurbsCurve().Transform(transform);
             }
         }
