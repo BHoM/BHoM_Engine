@@ -76,7 +76,7 @@ namespace BH.Engine.Geometry
                 { 0, 0, 1 }
             };
 
-            return multiplied.IsEqual(identity, tolerance) && Math.Abs(1 - rotation.Determinant()) <= tolerance;
+            return multiplied.IsEqual(identity, tolerance) && 1 - Math.Abs(rotation.Determinant()) <= tolerance;
         }
 
         /***************************************************/
