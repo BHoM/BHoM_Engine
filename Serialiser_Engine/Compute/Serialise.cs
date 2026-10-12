@@ -26,6 +26,7 @@ using MongoDB.Bson.IO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Serialiser
 {
@@ -89,7 +90,7 @@ namespace BH.Engine.Serialiser
             {
                 writer.WriteStartDocument();
                 writer.WriteName("_t");
-                writer.WriteString(value.GetType().FullName);
+                writer.WriteString(value.GetType().CleanFullName());
                 writer.WriteName("_v");
             }
 
@@ -98,6 +99,24 @@ namespace BH.Engine.Serialiser
             if (asDocument)
                 writer.WriteEndDocument();
 
+        }
+
+        /*******************************************/
+
+        // Type.FullName embeds the AssemblyQualifiedName of every generic argument, recursively, for any
+        // closed generic type - a CLR quirk, not a BHoM choice. This mirrors FullName's own "Name`arity[[arg],[arg]]"
+        // format (kept for compatibility with the existing square-bracket generic type parser) but replaces each
+        // argument with its own clean name instead of its assembly-qualified name.
+        private static string CleanFullName(this Type type)
+        {
+            if (type == null)
+                return null;
+
+            if (!type.IsGenericType)
+                return type.FullName;
+
+            return type.GetGenericTypeDefinition().FullName + "[["
+                + string.Join("],[", type.GetGenericArguments().Select(x => x.CleanFullName())) + "]]";
         }
 
         /*******************************************/

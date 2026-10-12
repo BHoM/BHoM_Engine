@@ -89,12 +89,8 @@ namespace BH.Engine.Serialiser
                         writer.WriteEndArray();
                     }
                 }
-                else if (value.Namespace.IsOmNamespace())
-                    writer.WriteString(value.FullName);
-                else if (value.AssemblyQualifiedName != null)
-                    writer.WriteString(value.AssemblyQualifiedName);
                 else
-                    writer.WriteString(""); //TODO: is that even possible?
+                    writer.WriteString(value.FullName); 
 
                 // Add additional information for generic types
                 if (generics.Length > 0)
