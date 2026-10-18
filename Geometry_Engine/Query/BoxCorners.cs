@@ -33,7 +33,7 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns corners of a box that has the input center point, width, height and directions.")]
+        [Description("Returns corners of a box that has the input center point, width, height and directions. The box lies on the plane through the centre, so the centre keeps its elevation.")]
         [Input("center", "Center of the new box.")]
         [Input("width", "Width of the new box.")]
         [Input("height", "Height of the new box.")]
@@ -42,7 +42,7 @@ namespace BH.Engine.Geometry
         [Output("corners", "Corners of a box that has the input center point, width, height and directions.")]
         public static List<Point> BoxCorners(this Point center, double width, double height, Vector xVector, Vector yVector)
         {
-            return center.BoxCorners(width, height, xVector, yVector, Plane.XY.Origin);
+            return center.BoxCorners(width, height, xVector, yVector, center);
         }
 
         /***************************************************/
