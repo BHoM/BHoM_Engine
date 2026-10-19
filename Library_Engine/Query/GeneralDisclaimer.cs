@@ -38,7 +38,7 @@ namespace BH.Engine.Library
         [Description("General disclaimer for all BHoM Datasets.")]
         public static string GeneralDisclaimer()
         {
-            return "Although care has been taken to ensure, to the best of our knowledge, that all information contained herein is accurate, the BHoM contributors assume no responsibility for any errors in or misinterpretations of such information or any loss or damage arising from or related to its use.";
+            return "Although care has taken to reasonably endeavour that all information contained herein is accurate, the BHoM contributors assume no responsibility for any errors in or misinterpretations of such information or any loss or damage arising from or related to its use or reliance on the contents.";
         }
 
         /***************************************************/
