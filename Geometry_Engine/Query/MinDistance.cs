@@ -22,6 +22,8 @@
 
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace BH.Engine.Geometry
@@ -32,13 +34,26 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a plane with origin at the start point of the line and normal being the cross product of the XY line direction and global Z.")]
-        [Input("line", "Line to be used to construct the plane.")]
-        [Output("plane", "Plane with origin at start point of the line and normal being the cross product of line direction and global Z vector.")]
-        public static Plane GridPlane(this Line line)
+        [Description("Returns the minimum distance between any two distinct points in the list.")]
+        [Input("points", "Points to compare.")]
+        [Output("minDistance", "Smallest pairwise distance, or MaxValue if fewer than two points.")]
+        public static double MinDistance(this List<Point> points)
         {
-            Vector dir = new Vector { X = line.End.X - line.Start.X, Y = line.End.Y - line.Start.Y, Z = 0 }.Normalise();
-            return new Plane { Origin = line.Start, Normal = new Vector { X = -dir.Y, Y = dir.X, Z = 0 } };
+            double minDistance = double.MaxValue;
+
+            foreach (Point point1 in points)
+            {
+                foreach (Point point2 in points)
+                {
+                    if (point1 == point2)
+                        continue;
+
+                    double distance = point1.Distance(point2);
+                    minDistance = Math.Min(distance, minDistance);
+                }
+            }
+
+            return minDistance;
         }
 
         /***************************************************/

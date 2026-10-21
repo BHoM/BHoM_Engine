@@ -22,6 +22,7 @@
 
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
+using System;
 using System.ComponentModel;
 
 namespace BH.Engine.Geometry
@@ -32,21 +33,21 @@ namespace BH.Engine.Geometry
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks whether two curves are parallel based on their start-to-end directions.")]
-        [Input("curve1", "The first curve whose start-to-end direction is used for comparison.")]
-        [Input("curve2", "The second curve whose start-to-end direction is used for comparison.")]
-        [Input("angleTolerance", "The maximum angle (in radians) between the two directions for them to be considered parallel.")]
-        [Output("isParallel", "True if the start-to-end directions of the two curves are parallel within the given tolerance, false otherwise.")]
-        public static bool IsStartToEndParallel(this ICurve curve1, ICurve curve2, double angleTolerance)
+        [Description("Returns the unit bisector of two vectors.")]
+        [Input("v1", "First vector.")]
+        [Input("v2", "Second vector.")]
+        [Output("bisector", "Normalised vector along the half-angle between v1 and v2.")]
+        public static Vector Bisector(this Vector v1, Vector v2)
         {
-            Vector hostVect = curve1.StartToEndDirection();
-            Vector elemVect = curve2.StartToEndDirection();
+            Vector normalizedV1 = v1.Normalise();
+            Vector normalizedV2 = v2.Normalise();
 
-            if (hostVect.IsParallel(elemVect) != 0)
-                return true;
+            float angle = (float)Math.Acos(normalizedV1.DotProduct(normalizedV2));
+            float halfAngle = angle / 2.0f;
+            Vector axis = normalizedV1.CrossProduct(normalizedV2);
+            TransformMatrix rotation = Create.RotationMatrix(Point.Origin, axis, halfAngle);
 
-            double angle = hostVect.AcuteAngle(elemVect);
-            return angle < angleTolerance;
+            return normalizedV1.Transform(rotation).Normalise();
         }
 
         /***************************************************/

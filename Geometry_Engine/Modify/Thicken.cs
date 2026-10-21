@@ -41,13 +41,14 @@ namespace BH.Engine.Geometry
         [Output("polyline", "A closed polyline with the same direction as the input line and a custom thickness.")]
         public static Polyline Thicken(this Line line, double thickness, Plane plane)
         {
-            if (line.StartToEndDirection().IsParallel(plane.Normal) != 0)
+            Vector chordDirection = (line.End - line.Start).Normalise();
+            if (chordDirection.IsParallel(plane.Normal) != 0)
             {
                 Base.Compute.RecordError("Can't thicken a line parallel to the plane normal.");
                 return null;
             }
 
-            Vector offsetVector = line.StartToEndDirection().CrossProduct(plane.Normal).Normalise() * thickness / 2;
+            Vector offsetVector = chordDirection.CrossProduct(plane.Normal).Normalise() * thickness / 2;
 
             Point p1 = line.Start + offsetVector;
             Point p2 = line.End + offsetVector;
@@ -66,7 +67,9 @@ namespace BH.Engine.Geometry
         [Output("polyline", "A closed polyline thickened from the input curve.")]
         public static Polyline Thicken(this ICurve crv, double thickness, Plane plane)
         {
-            if (crv.StartToEndDirection().IsParallel(plane.Normal) != 0)
+            List<Point> controlPoints = crv.IControlPoints();
+            Vector chordDirection = (controlPoints.Last() - controlPoints.First()).Normalise();
+            if (chordDirection.IsParallel(plane.Normal) != 0)
             {
                 Base.Compute.RecordError("Can't thicken a curve parallel to the plane normal.");
                 return null;
