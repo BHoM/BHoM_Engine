@@ -41,15 +41,12 @@ namespace BH.Engine.Geometry
         {
             double minDistance = double.MaxValue;
 
-            foreach (Point point1 in points)
+            for (int i = 0; i < points.Count - 1; i++)
             {
-                foreach (Point point2 in points)
+                for (int j = i + 1; j < points.Count; j++)
                 {
-                    if (point1 == point2)
-                        continue;
-
-                    double distance = point1.Distance(point2);
-                    minDistance = Math.Min(distance, minDistance);
+                    double distance = points[i].Distance(points[j]);
+                    minDistance = Math.Min(minDistance, distance);
                 }
             }
 
