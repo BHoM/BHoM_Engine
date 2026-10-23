@@ -36,23 +36,131 @@ namespace BH.Engine.MEP
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Calculates the internal sensible and latent load for each space. Returns one SpaceLoad per space that can be calculated.")]
-        [Input("spaces", "Approved calculation spaces.")]
-        [Input("criteria", "Rates for this calculation. The criteria name is stored on each result as ResultCase.")]
+        [Description("Calculates internal sensible and latent loads for each space. Explicit criteria take precedence over the assigned space-type defaults. Spaces with missing or invalid inputs are skipped.")]
+        [Input("spaces", "Approved calculation spaces with valid floor surfaces.")]
+        [Input("criteria", "Optional complete criteria set used for all spaces. If null, each space uses its assigned SpaceType.HVACCriteria. The selected criteria name is stored as ResultCase.")]
         [Output("loads", "Internal load for each calculated space.")]
-        public static List<SpaceLoad> SpaceLoad(IEnumerable<Space> spaces, HVACSpaceCriteria criteria)
+        public static List<SpaceLoad> SpaceLoad(
+            IEnumerable<Space> spaces,
+            HVACSpaceCriteria criteria = null)
         {
-            if (spaces == null || criteria == null)
+            List<SpaceLoad> loads = new List<SpaceLoad>();
+
+            if (spaces == null)
             {
-                Base.Compute.RecordError("Space load requires spaces and criteria.");
-                return new List<SpaceLoad>();
+                Base.Compute.RecordError("Space load requires spaces.");
+                return loads;
             }
 
-            if (!spaces.Any())
-                return new List<SpaceLoad>();
+            foreach (Space space in spaces)
+            {
+                if (space == null)
+                {
+                    Base.Compute.RecordWarning(
+                        "Space load skipped a null space.");
+                    continue;
+                }
 
-            Base.Compute.RecordWarning("Space load is not implemented.");
-            return new List<SpaceLoad>();
+                string label = string.IsNullOrWhiteSpace(space.Number)
+                    ? space.BHoM_Guid.ToString()
+                    : space.Number;
+
+                HVACSpaceCriteria selectedCriteria =
+                    criteria ?? space.SpaceType?.HVACCriteria;
+
+                if (selectedCriteria == null)
+                {
+                    Base.Compute.RecordWarning(
+                        $"Space '{label}' was skipped: no explicit criteria or space-type HVAC criteria were supplied.");
+                    continue;
+                }
+
+                if (space.Surface == null ||
+                    space.Surface.ExternalBoundary == null)
+                {
+                    Base.Compute.RecordWarning(
+                        $"Space '{label}' was skipped: a floor surface with an external boundary is required.");
+                    continue;
+                }
+
+                double area =
+                    BH.Engine.Geometry.Query.Area(space.Surface);
+
+                if (double.IsNaN(area) ||
+                    double.IsInfinity(area) ||
+                    area <= 0)
+                {
+                    Base.Compute.RecordWarning(
+                        $"Space '{label}' was skipped: floor area must be finite and greater than zero.");
+                    continue;
+                }
+
+                double areaPerPerson = selectedCriteria.AreaPerPerson;
+
+                if (double.IsNaN(areaPerPerson) ||
+                    double.IsInfinity(areaPerPerson) ||
+                    areaPerPerson <= 0)
+                {
+                    Base.Compute.RecordWarning(
+                        $"Space '{label}' was skipped: AreaPerPerson must be supplied, finite and greater than zero.");
+                    continue;
+                }
+
+                double[] gains =
+                {
+                    selectedCriteria.SensibleGainPerPerson,
+                    selectedCriteria.LatentGainPerPerson,
+                    selectedCriteria.LightingGainPerArea,
+                    selectedCriteria.EquipmentSensiblePerArea,
+                    selectedCriteria.EquipmentLatentPerArea
+                };
+
+                if (gains.Any(x =>
+                    double.IsNaN(x) ||
+                    double.IsInfinity(x) ||
+                    x < 0))
+                {
+                    Base.Compute.RecordWarning(
+                        $"Space '{label}' was skipped: all internal-gain rates must be supplied, finite and non-negative. Use an explicit zero where a gain does not apply.");
+                    continue;
+                }
+
+                double occupantCount = area / areaPerPerson;
+
+                double sensibleLoad =
+                    occupantCount * selectedCriteria.SensibleGainPerPerson
+                    + area * selectedCriteria.LightingGainPerArea
+                    + area * selectedCriteria.EquipmentSensiblePerArea;
+
+                double latentLoad =
+                    occupantCount * selectedCriteria.LatentGainPerPerson
+                    + area * selectedCriteria.EquipmentLatentPerArea;
+
+                double[] calculatedValues =
+                {
+                    occupantCount,
+                    sensibleLoad,
+                    latentLoad
+                };
+
+                if (calculatedValues.Any(x =>
+                    double.IsNaN(x) ||
+                    double.IsInfinity(x)))
+                {
+                    Base.Compute.RecordWarning(
+                        $"Space '{label}' was skipped: the calculated values were not finite.");
+                    continue;
+                }
+
+                loads.Add(new BH.oM.MEP.Results.SpaceLoad(
+                    space.BHoM_Guid,
+                    selectedCriteria.Name,
+                    occupantCount,
+                    sensibleLoad,
+                    latentLoad));
+            }
+
+            return loads;
         }
 
         /***************************************************/
