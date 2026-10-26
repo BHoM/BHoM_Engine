@@ -44,12 +44,14 @@ namespace BH.Engine.Diffing
         [Output("Diffing methods found in all Toolkits (i.e. not in the BHoM_Engine).")]
         public static List<MethodBase> AdaptersDiffingMethods()
         {
-            if (m_AdaptersDiffingMethods != null)
+            // The cached result is only valid as long as no method has been added since the scan (a newly loaded assembly can bring new Diffing methods)
+            List<MethodBase> allMethods = BH.Engine.Base.Query.AllMethodList();
+            if (m_AdaptersDiffingMethods != null && m_ScannedMethodCount == allMethods.Count)
                 return m_AdaptersDiffingMethods;
 
             List<MethodBase> adaptersDiffingMethods = new List<MethodBase>();
 
-            List<MethodBase> diffingMethods = BH.Engine.Base.Query.AllMethodList()
+            List<MethodBase> diffingMethods = allMethods
                 .Where(x => x.IsPublic)
                 .Where(x => x.Name.EndsWith("Diffing"))
                 .Where(mi => mi.DeclaringType.Module.Name != typeof(BH.Engine.Diffing.Query).Module.Name)
@@ -83,6 +85,7 @@ namespace BH.Engine.Diffing
             }
 
             m_AdaptersDiffingMethods = adaptersDiffingMethods;
+            m_ScannedMethodCount = allMethods.Count;
 
             return adaptersDiffingMethods;
         }
@@ -93,6 +96,8 @@ namespace BH.Engine.Diffing
         /***************************************************/
 
         private static List<MethodBase> m_AdaptersDiffingMethods = null;
+
+        private static int m_ScannedMethodCount = -1;
     }
 }
 
