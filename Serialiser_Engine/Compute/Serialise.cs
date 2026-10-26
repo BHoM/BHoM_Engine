@@ -112,12 +112,35 @@ namespace BH.Engine.Serialiser
             if (type == null)
                 return null;
 
+            // ---- TODO-NewSerialisation: START legacy code - delete down to the END marker when the toggle is removed ----
+            // Legacy format: return the raw Type.FullName, AQN of generic arguments included.
+            if (m_UseLegacySerialisation)
+                return type.FullName;
+            // ---- TODO-NewSerialisation: END legacy code ----
+
             if (!type.IsGenericType)
                 return type.FullName;
 
             return type.GetGenericTypeDefinition().FullName + "[["
                 + string.Join("],[", type.GetGenericArguments().Select(x => x.CleanFullName())) + "]]";
         }
+
+
+        /*******************************************/
+        /**** Private Fields                    ****/
+        /*******************************************/
+
+        // ---- TODO-NewSerialisation: START legacy code - delete down to the END marker when the toggle is removed ----
+        // Temporary switch, see BHoM_Engine #3618.
+        // When true, the serialiser keeps writing the pre-10.0 json format:
+        //   - "_t" discriminators use Type.FullName, with AQN embedded for generic arguments (CleanFullName),
+        //   - non-oM types are written with their AssemblyQualifiedName (Serialise/Type.cs),
+        //   - method parameters are written as json type documents rather than plain text (Serialise/MethodBase.cs).
+        // Deserialisation supports both formats regardless of this value.
+        // Set to false to write the new, AQN-free format.
+        // To remove the switch, delete every block delimited by TODO-NewSerialisation markers, including this one.
+        private static readonly bool m_UseLegacySerialisation = true;
+        // ---- TODO-NewSerialisation: END legacy code ----
 
         /*******************************************/
     }

@@ -90,7 +90,23 @@ namespace BH.Engine.Serialiser
                     }
                 }
                 else
-                    writer.WriteString(value.FullName); 
+                {
+                    // ---- TODO-NewSerialisation: START legacy code - delete down to the END marker when the toggle is removed ----
+                    // Legacy format: non-oM types are written with their AssemblyQualifiedName.
+                    if (m_UseLegacySerialisation)
+                    {
+                        if (value.Namespace.IsOmNamespace())
+                            writer.WriteString(value.FullName);
+                        else if (value.AssemblyQualifiedName != null)
+                            writer.WriteString(value.AssemblyQualifiedName);
+                        else
+                            writer.WriteString(""); //TODO: is that even possible?
+                    }
+                    else
+                    // ---- TODO-NewSerialisation: END legacy code ----
+
+                        writer.WriteString(value.FullName);
+                }
 
                 // Add additional information for generic types
                 if (generics.Length > 0)

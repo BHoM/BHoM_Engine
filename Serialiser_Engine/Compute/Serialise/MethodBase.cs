@@ -62,7 +62,16 @@ namespace BH.Engine.Serialiser
             writer.WriteName("Parameters");
             writer.WriteStartArray();
             foreach (ParameterInfo info in parameters)
-                writer.WriteString(info.ParameterType.ToText(true));
+            {
+                // ---- TODO-NewSerialisation: START legacy code - delete down to the END marker when the toggle is removed ----
+                // Legacy format: parameter types are written as json type documents.
+                if (m_UseLegacySerialisation)
+                    writer.WriteString(info.ParameterType.ToJson());
+                else
+                // ---- TODO-NewSerialisation: END legacy code ----
+
+                    writer.WriteString(info.ParameterType.ToText(true));
+            }
             writer.WriteEndArray();
 
             writer.AddVersion();
