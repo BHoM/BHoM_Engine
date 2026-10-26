@@ -30,6 +30,7 @@ using BH.oM.Versioning;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using MongoDB.Bson.Serialization;
+using System.Text.RegularExpressions;
 
 namespace BH.Engine.Versioning
 {
@@ -185,6 +186,13 @@ namespace BH.Engine.Versioning
 
         private static string UpgradeType(string type, Converter converter)
         {
+            if (type == null)
+                return null;
+
+            // Types written as text (e.g. method parameters in the new serialisation format) are upgraded name by name
+            if (!type.TrimStart().StartsWith("{"))
+                return UpgradeTypeText(type, converter);
+
             BsonDocument doc = null;
             BsonDocument.TryParse(type, out doc);
             BsonValue newType = Upgrade(doc, converter) as BsonValue;
@@ -198,6 +206,33 @@ namespace BH.Engine.Versioning
                 else
                     return newString;
             }
+        }
+
+        /***************************************************/
+
+        private static string UpgradeTypeText(string type, Converter converter)
+        {
+            // The text follows the Type.ToText(true) format, e.g. "System.Collections.Generic.List<BH.oM.Geometry.Point>[]"
+            // The regex @"[\w\.`+]+" matches each type name in that text: an unbroken run of letters, digits, '_', '.', '`' or '+'.
+            // Any other character ('<', '>', ',', '[', ']', '&', spaces) ends the current type name and is never matched.
+            // Regex.Replace calls the function below once per type name found and puts its return value in place of that name,
+            // leaving every unmatched character untouched. In the example above, the function is called with
+            // "System.Collections.Generic.List" and then with "BH.oM.Geometry.Point", while "<", ">" and "[]" are kept as they are.
+            // Because a match always covers a whole name, "BH.oM.Geometry.PointMatrix" is never mistaken for "BH.oM.Geometry.Point".
+            bool modified = false;
+            string result = Regex.Replace(type, @"[\w\.`+]+", match =>
+            {
+                CheckForNoUpgrade(converter, match.Value, "type");
+
+                string upgraded = GetTypeFromDic(converter.ToNewType, match.Value, true, false);
+                if (upgraded == null)
+                    return match.Value;
+
+                modified = true;
+                return upgraded;
+            });
+
+            return modified ? result : null;
         }
 
         /***************************************************/
@@ -502,6 +537,11 @@ namespace BH.Engine.Versioning
 
         private static string GetTypeString(string json)
         {
+            // In the new serialisation format, method parameter types are written as text (Type.ToText(true)),
+            // which is already the representation used by the method versioning keys
+            if (json != null && !json.TrimStart().StartsWith("{"))
+                return json;
+
             // The type stored in json might not exist anywhere anymore so we have to go old school (i.e. no FromJson(json).ToText())
             string typeString = "";
 
