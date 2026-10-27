@@ -440,13 +440,10 @@ namespace BH.Engine.Structure
             for (int i = 0; i < oldProfile.Profiles.Values.Count; i++)
             {
                 double key = keys[i];
-                newPositions.Add(1 - key);
+                newPositions.Add(key);
                 oldProfile.Profiles.TryGetValue(key, out IProfile newProfile);
                 newProfiles.Add(FlipProfile(newProfile as dynamic));
             }
-
-            newProfiles.Reverse();
-            newPositions.Reverse();
 
             return Spatial.Create.TaperedProfile(newPositions, newProfiles, oldProfile.InterpolationOrder);
         }
