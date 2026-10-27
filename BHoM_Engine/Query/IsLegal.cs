@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,6 +37,9 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Checks whether a method is legal, i.e. whether its parameters and return type can be loaded without errors.")]
+        [Input("method", "The method to check.")]
+        [Output("isLegal", "True if the method is not null and its parameters can be loaded, false otherwise.")]
         public static bool IsLegal(this MethodInfo method)
         {
             return method.IsLegal(out string reason);
@@ -44,7 +48,10 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        public static bool IsLegal(this Type type) 
+        [Description("Checks whether a type is legal, i.e. whether the parameter types of all its constructors can be loaded without errors.")]
+        [Input("type", "The type to check.")]
+        [Output("isLegal", "True if the type is not null and all its constructor parameter types can be loaded, false otherwise.")]
+        public static bool IsLegal(this Type type)
         {
             return type.IsLegal(out string reason);
         }

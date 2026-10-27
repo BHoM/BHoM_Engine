@@ -26,6 +26,8 @@ using System.IO;
 using System.Linq;
 using BH.Engine.Versioning.Objects;
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
+using System.ComponentModel;
 using BH.oM.Versioning;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
@@ -40,6 +42,10 @@ namespace BH.Engine.Versioning
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Upgrades a serialised BSON document (object, type or method) by one version step, using the upgrade information held in the provided converter.")]
+        [Input("document", "The serialised BSON document to upgrade. The input document is not modified.")]
+        [Input("converter", "The converter for a specific BHoM version that content is upgraded to. It holds the type, namespace, property, method and custom object upgrades loaded from the upgrade files of that version (see Query.Converter).")]
+        [Output("upgraded", "The upgraded copy of the document, or null if the document is null or has an unrecognised structure.")]
         public static BsonDocument Upgrade(this BsonDocument document, Converter converter)
         {
             if (document == null)

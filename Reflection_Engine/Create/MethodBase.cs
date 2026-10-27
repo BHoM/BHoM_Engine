@@ -37,6 +37,10 @@ namespace BH.Engine.Reflection
         /*******************************************/
 
         [Description("Extracts a method from the provided Type with the specified name and matching parameter types.")]
+        [Input("type", "The type declaring the method.")]
+        [Input("methodName", "The name of the method to extract. Use '.ctor' to extract a constructor.")]
+        [Input("paramTypeNames", "The names of the parameter types of the method, in order.")]
+        [Output("methodBase", "The method matching the provided name and parameter types, or null if none was found.")]
         public static MethodBase MethodBase(Type type, string methodName, List<string> paramTypeNames)
         {
             if(type == null)
@@ -71,6 +75,10 @@ namespace BH.Engine.Reflection
         /*******************************************/
 
         [Description("Extracts a method from the loaded BHoM methods with the provided declaring type name (including its namespace), method name and matching parameter types.")]
+        [Input("typeName", "The name of the type declaring the method, including its namespace.")]
+        [Input("methodName", "The name of the method to extract. Use '.ctor' to extract a constructor.")]
+        [Input("paramTypeNames", "The names of the parameter types of the method, in order.")]
+        [Output("methodBase", "The method matching the provided type name, method name and parameter types, or null if none was found.")]
         public static MethodBase MethodBase(string typeName, string methodName, List<string> paramTypeNames)
         {
             if (typeName == null)
@@ -112,6 +120,10 @@ namespace BH.Engine.Reflection
         /*******************************************/
 
         [Description("Extracts a method from the provided Type with the specified name and matching parameter types.")]
+        [Input("type", "The type declaring the method.")]
+        [Input("methodName", "The name of the method to extract. Use '.ctor' to extract a constructor.")]
+        [Input("paramTypes", "The parameter types of the method, in order.")]
+        [Output("methodBase", "The method matching the provided name and parameter types, or null if none was found.")]
         public static MethodBase MethodBase(Type type, string methodName, List<Type> paramTypes)
         {
             if (type == null)

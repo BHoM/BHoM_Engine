@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
@@ -37,6 +38,8 @@ namespace BH.Engine.Serialiser
         /*******************************************/
 
         [Description("Used to support ToJson, not recommended to be used in isolation.")]
+        [Input("value", "The object to serialise. A null value is written as a BSON null.")]
+        [Input("writer", "The BSON document writer the serialised object is written to.")]
         public static void ISerialise(this object value, BsonDocumentWriter writer)
         {
             if (value == null)
