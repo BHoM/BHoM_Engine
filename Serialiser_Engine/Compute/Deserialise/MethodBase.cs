@@ -103,16 +103,26 @@ namespace BH.Engine.Serialiser
                         BsonDocument paramTypeDoc;
                         if (BsonDocument.TryParse(paramTypeNames[i], out paramTypeDoc))
                             paramTypeNames[i] = OldTypeDocToText(paramTypeDoc);
-
-                        /* Alternative is to actually deserialise the type if we need type versioning on top of teh method versioning
-                        Type paramType = DeserialiseType(paramTypeDoc, null, version, isUpgraded);
-                        if (paramType != null)
-                            paramTypeNames[i] = paramType.ToText(true);
-                        */
                     }
                 }
 
                 method = BH.Engine.Reflection.Create.MethodBase(typeName, methodName, paramTypeNames); // type overload
+
+                // If this fails using type names, revert to deserialising the types themselves.
+                // This should not happen on code that is BHoM compliant and doesn't expose external types publicly.
+                if (method == null)
+                {
+                    Type type = DeserialiseType(typeDocument, null, version, isUpgraded);
+                    if (type != null)
+                    {
+                        // Prefer the Type overload as it also covers instance and inherited methods. It falls back to the name matching if needed
+                        List<Type> paramTypes = paramTypeNames.Select(x => BH.Engine.Base.Create.Type(x, true)).ToList();
+                        if (paramTypes.All(x => x != null))
+                            method = BH.Engine.Reflection.Create.MethodBase(type, methodName, paramTypes);
+                        else
+                            method = BH.Engine.Reflection.Create.MethodBase(type, methodName, paramTypeNames);
+                    }
+                }
             }
 
             return method;
