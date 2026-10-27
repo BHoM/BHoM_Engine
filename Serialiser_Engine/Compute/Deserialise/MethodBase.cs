@@ -106,6 +106,7 @@ namespace BH.Engine.Serialiser
                     }
                 }
 
+                // Try to create a BHoM method
                 method = BH.Engine.Reflection.Create.MethodBase(typeName, methodName, paramTypeNames); // type overload
 
                 // If this fails using type names, revert to deserialising the types themselves.
