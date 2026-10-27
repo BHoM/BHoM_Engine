@@ -87,54 +87,137 @@ namespace BH.Engine.Serialiser
 
         /*******************************************/
 
-        private static MethodBase GetMethod(string methodName, string typeName, List<string> paramTypesJson, string version, bool isUpgraded)
+        private static MethodBase GetMethod(string methodName, string typeName, List<string> paramTypeNames, string version, bool isUpgraded)
         {
-            List<Type> types = new List<Type>();
-            foreach (string paramType in paramTypesJson)
-            {
-                BsonDocument paramTypeDoc;
-                if (BsonDocument.TryParse(paramType, out paramTypeDoc) && paramTypeDoc.Contains("Name"))
-                {
-                    Type t = DeserialiseType(paramTypeDoc, null, version, isUpgraded);
-                    types.Add(t);
-                }
-                else
-                {
-                    Type t = DeserialiseType(paramType, null, version, isUpgraded);
-                    types.Add(t);
-                }
-            }
-
             MethodBase method = null;
             BsonDocument typeDocument;
             if (BsonDocument.TryParse(typeName, out typeDocument) && typeDocument.Contains("Name"))
             {
                 typeName = typeDocument["Name"].AsString.Split(new char[] { ',' }).First();
-                Type type = DeserialiseType(typeDocument, null, version, isUpgraded);
-                if (type == null)
-                    return null;
-                method = BH.Engine.Reflection.Create.MethodBase(type, methodName, types.Select(x => x.ToText(true)).ToList()); // type overload
-                if (method == null)
+                MakeSureAssemblyIsLoadedForType(typeName);
+
+                for (int i = 0; i < paramTypeNames.Count; i++)
                 {
-                    try
+                    if (paramTypeNames[i].StartsWith("{"))
                     {
-                        Type[] typesArray = types.ToArray();
-                        if (typesArray != null)
-                        {
-                            if (methodName == ".ctor")
-                                method = type.GetConstructor(typesArray);
-                            else
-                                method = type.GetMethod(methodName, typesArray);
-                        }
+                        BsonDocument paramTypeDoc;
+                        if (BsonDocument.TryParse(paramTypeNames[i], out paramTypeDoc))
+                            paramTypeNames[i] = OldTypeDocToText(paramTypeDoc);
                     }
-                    catch { }
                 }
 
-                if (method != null)
-                    return method;
+                // Try to create a BHoM method
+                method = BH.Engine.Reflection.Create.MethodBase(typeName, methodName, paramTypeNames); // type overload
+
+                // If this fails using type names, revert to deserialising the types themselves.
+                // This should not happen on code that is BHoM compliant and doesn't expose external types publicly.
+                if (method == null)
+                {
+                    Type type = DeserialiseType(typeDocument, null, version, isUpgraded);
+                    if (type != null)
+                    {
+                        // Prefer the Type overload as it also covers instance and inherited methods. It falls back to the name matching if needed
+                        List<Type> paramTypes = paramTypeNames.Select(x => BH.Engine.Base.Create.Type(x, true)).ToList();
+                        if (paramTypes.All(x => x != null))
+                            method = BH.Engine.Reflection.Create.MethodBase(type, methodName, paramTypes);
+                        else
+                            method = BH.Engine.Reflection.Create.MethodBase(type, methodName, paramTypeNames);
+                    }
+                }
             }
 
             return method;
+        }
+
+        /*******************************************/
+
+        private static string OldTypeDocToText(BsonDocument typeDoc)
+        {
+            string name = typeDoc.Contains("Name") ? typeDoc["Name"].AsString : "";
+            string fullName = StripAssemblyQualification(name);
+
+            int backtickIndex = fullName.IndexOf('`');
+            if (backtickIndex < 0)
+                return fullName;
+
+            if (typeDoc.Contains("GenericArguments"))
+            {
+                string baseName = fullName.Substring(0, backtickIndex);
+                List<string> args = typeDoc["GenericArguments"].AsBsonArray
+                    .Select(x => OldTypeDocToText(x.AsBsonDocument))
+                    .ToList();
+
+                return baseName + "<" + string.Join(", ", args) + ">";
+            }
+            else
+            {
+                // Generic arguments embedded inline in Name (e.g. by-ref/out parameters of a generic type,
+                // such as "List`1[[System.Double, ...]]&"). ToText never expands these - for such types
+                // IsGenericType is false, so it falls back to Namespace + "." + Name, and Name keeps the
+                // backtick/arity plus any by-ref/array suffix but drops the bracketed argument info.
+                int arityEnd = backtickIndex + 1;
+                while (arityEnd < fullName.Length && char.IsDigit(fullName[arityEnd]))
+                    arityEnd++;
+
+                string baseName = fullName.Substring(0, arityEnd);
+                string remainder = fullName.Substring(arityEnd);
+                return baseName + StripEmbeddedGenericArgBrackets(remainder);
+            }
+        }
+
+        /*******************************************/
+
+        private static string StripAssemblyQualification(string rawName)
+        {
+            int depth = 0;
+            for (int i = 0; i < rawName.Length; i++)
+            {
+                char c = rawName[i];
+                if (c == '[')
+                    depth++;
+                else if (c == ']')
+                    depth--;
+                else if (c == ',' && depth == 0)
+                    return rawName.Substring(0, i);
+            }
+            return rawName;
+        }
+
+        /*******************************************/
+
+        private static string StripEmbeddedGenericArgBrackets(string remainder)
+        {
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            while (i < remainder.Length)
+            {
+                if (remainder[i] == '[' && i + 1 < remainder.Length && remainder[i + 1] == '[')
+                {
+                    int depth = 0;
+                    int j = i;
+                    for (; j < remainder.Length; j++)
+                    {
+                        if (remainder[j] == '[')
+                            depth++;
+                        else if (remainder[j] == ']')
+                        {
+                            depth--;
+                            if (depth == 0)
+                            {
+                                j++;
+                                break;
+                            }
+                        }
+                    }
+                    i = j;
+                }
+                else
+                {
+                    sb.Append(remainder[i]);
+                    i++;
+                }
+            }
+            return sb.ToString();
         }
 
         /*******************************************/
