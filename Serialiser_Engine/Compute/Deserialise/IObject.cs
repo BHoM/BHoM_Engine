@@ -58,6 +58,10 @@ namespace BH.Engine.Serialiser
             if (!string.IsNullOrEmpty(docVersion))
                 version = docVersion;
 
+            // Documents without a type are custom objects (same as in IDeserialise). Leave it to the caller to handle the type mismatch, e.g. through versioning
+            if (!doc.Contains("_t"))
+                return doc.DeserialiseCustomObject(null, version, isUpgraded);
+
             Type type = doc["_t"].DeserialiseType(null, version, isUpgraded);
             if (type == null)
             {
