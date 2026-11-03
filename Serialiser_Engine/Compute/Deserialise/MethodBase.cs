@@ -107,21 +107,25 @@ namespace BH.Engine.Serialiser
                 }
 
                 // Try to create a BHoM method
-                method = BH.Engine.Reflection.Create.MethodBase(typeName, methodName, paramTypeNames); // type overload
+                method = BH.Engine.Reflection.Create.MethodBase(typeName, methodName, paramTypeNames);
 
                 // If this fails using type names, revert to deserialising the types themselves.
-                // This should not happen on code that is BHoM compliant and doesn't expose external types publicly.
+                // This should not happen on code that is BHoM compliant
                 if (method == null)
                 {
-                    Type type = DeserialiseType(typeDocument, null, version, isUpgraded);
-                    if (type != null)
+                    string ns = typeName.Substring(0, typeName.LastIndexOf("."));
+                    if (!ns.IsEngineNamespace() && !ns.IsAdapterNamespace())    //Dont run fallback for Engine methods and Adapters. Allowing fallback can render the wrong method being returned
                     {
-                        // Prefer the Type overload as it also covers instance and inherited methods. It falls back to the name matching if needed
-                        List<Type> paramTypes = paramTypeNames.Select(x => BH.Engine.Base.Create.Type(x, true)).ToList();
-                        if (paramTypes.All(x => x != null))
-                            method = BH.Engine.Reflection.Create.MethodBase(type, methodName, paramTypes);
-                        else
-                            method = BH.Engine.Reflection.Create.MethodBase(type, methodName, paramTypeNames);
+                        Type type = DeserialiseType(typeDocument, null, version, isUpgraded);
+                        if (type != null)
+                        {
+                            // Prefer the Type overload as it also covers instance and inherited methods. It falls back to the name matching if needed
+                            List<Type> paramTypes = paramTypeNames.Select(x => BH.Engine.Base.Create.Type(x, true)).ToList();
+                            if (paramTypes.All(x => x != null))
+                                method = BH.Engine.Reflection.Create.MethodBase(type, methodName, paramTypes);
+                            else
+                                method = BH.Engine.Reflection.Create.MethodBase(type, methodName, paramTypeNames);
+                        }
                     }
                 }
             }
