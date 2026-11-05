@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Base;
 using BH.Engine.Reflection;
 using BH.Engine.Versioning;
 using BH.oM.Base;
@@ -61,7 +62,16 @@ namespace BH.Engine.Serialiser
             writer.WriteName("Parameters");
             writer.WriteStartArray();
             foreach (ParameterInfo info in parameters)
-                writer.WriteString(info.ParameterType.ToJson());
+            {
+                // ---- TODO-NewSerialisation: START legacy code - delete down to the END marker when the toggle is removed ----
+                // Legacy format: parameter types are written as json type documents.
+                if (m_UseLegacySerialisation)
+                    writer.WriteString(info.ParameterType.ToJson());
+                else
+                // ---- TODO-NewSerialisation: END legacy code ----
+
+                    writer.WriteString(info.ParameterType.ToText(true));
+            }
             writer.WriteEndArray();
 
             writer.AddVersion();

@@ -37,6 +37,10 @@ namespace BH.Engine.Reflection
         /*******************************************/
 
         [Description("Extracts a method from the provided Type with the specified name and matching parameter types.")]
+        [Input("type", "The type declaring the method.")]
+        [Input("methodName", "The name of the method to extract. Use '.ctor' to extract a constructor.")]
+        [Input("paramTypeNames", "The names of the parameter types of the method, in order.")]
+        [Output("methodBase", "The method matching the provided name and parameter types, or null if none was found.")]
         public static MethodBase MethodBase(Type type, string methodName, List<string> paramTypeNames)
         {
             if(type == null)
@@ -44,7 +48,7 @@ namespace BH.Engine.Reflection
                 Base.Compute.RecordError("Cannot create a method base from a null type.");
                 return null;
             }
-            
+
             if(methodName == null)
             {
                 Base.Compute.RecordError("Cannot create a method base from a null method name.");
@@ -65,6 +69,107 @@ namespace BH.Engine.Reflection
                     .Where(x => x.Name == methodName)
                     .ToList<MethodBase>();
 
+            return MethodBaseFromCandidates(methods, paramTypeNames);
+        }
+
+        /*******************************************/
+
+        [Description("Extracts a method from the loaded BHoM methods with the provided declaring type name (including its namespace), method name and matching parameter types.")]
+        [Input("typeName", "The name of the type declaring the method, including its namespace.")]
+        [Input("methodName", "The name of the method to extract. Use '.ctor' to extract a constructor.")]
+        [Input("paramTypeNames", "The names of the parameter types of the method, in order.")]
+        [Output("methodBase", "The method matching the provided type name, method name and parameter types, or null if none was found.")]
+        public static MethodBase MethodBase(string typeName, string methodName, List<string> paramTypeNames)
+        {
+            if (typeName == null)
+            {
+                Base.Compute.RecordError("Cannot create a method base from a null type name.");
+                return null;
+            }
+
+            if (methodName == null)
+            {
+                Base.Compute.RecordError("Cannot create a method base from a null method name.");
+                return null;
+            }
+
+            if (paramTypeNames == null)
+            {
+                Base.Compute.RecordWarning("The 'paramTypeNames' input is null and was replaced by an empty list");
+                paramTypeNames = new List<string>();
+            }
+
+            List<MethodBase> methods = new List<MethodBase>();
+            if (methodName == ".ctor")
+            {
+                methods = Base.Query.AdapterTypeList()
+                    .Where(x => x.ToText(true) == typeName)
+                    .SelectMany(x => x.GetConstructors())
+                    .ToList<MethodBase>();
+            }
+            else
+            {
+                methods = Base.Query.BHoMMethodList()
+                    .Where(x => x.Name == methodName && x.DeclaringType != null && x.DeclaringType.ToText(true) == typeName)
+                    .ToList<MethodBase>();
+            }
+
+            return MethodBaseFromCandidates(methods, paramTypeNames);
+        }
+
+        /*******************************************/
+
+        [Description("Extracts a method from the provided Type with the specified name and matching parameter types.")]
+        [Input("type", "The type declaring the method.")]
+        [Input("methodName", "The name of the method to extract. Use '.ctor' to extract a constructor.")]
+        [Input("paramTypes", "The parameter types of the method, in order.")]
+        [Output("methodBase", "The method matching the provided name and parameter types, or null if none was found.")]
+        public static MethodBase MethodBase(Type type, string methodName, List<Type> paramTypes)
+        {
+            if (type == null)
+            {
+                Base.Compute.RecordError("Cannot create a method base from a null type.");
+                return null;
+            }
+
+            if (methodName == null)
+            {
+                Base.Compute.RecordError("Cannot create a method base from a null method name.");
+                return null;
+            }
+
+            if (paramTypes == null)
+            {
+                Base.Compute.RecordWarning("The 'paramTypes' input is null and was replaced by an empty list");
+                paramTypes = new List<Type>();
+            }
+
+            MethodBase method = null;
+            try
+            {
+                if (methodName == ".ctor")
+                    method = type.GetConstructor(paramTypes.ToArray());
+                else
+                    method = type.GetMethod(methodName, paramTypes.ToArray());
+            }
+            catch { }
+
+            // the above will return null if the type is a generic type
+            // that is because we serialise a generic method with its constraints
+            // rather than serialising the generics
+            if (method != null)
+                return method;
+
+            // So, let's try the other overload
+            return MethodBase(type, methodName, paramTypes.Select(x => x.ToText(true)).ToList());
+        }
+
+        /*******************************************/
+        /**** Private Methods                   ****/
+        /*******************************************/
+
+        private static MethodBase MethodBaseFromCandidates(List<MethodBase> methods, List<string> paramTypeNames)
+        {
             foreach (MethodBase method in methods)
             {
                 try
@@ -147,49 +252,6 @@ namespace BH.Engine.Reflection
             }
 
             return null;
-        }
-
-        /*******************************************/
-
-        [Description("Extracts a method from the provided Type with the specified name and matching parameter types.")]
-        public static MethodBase MethodBase(Type type, string methodName, List<Type> paramTypes)
-        {
-            if (type == null)
-            {
-                Base.Compute.RecordError("Cannot create a method base from a null type.");
-                return null;
-            }
-
-            if (methodName == null)
-            {
-                Base.Compute.RecordError("Cannot create a method base from a null method name.");
-                return null;
-            }
-
-            if (paramTypes == null)
-            {
-                Base.Compute.RecordWarning("The 'paramTypes' input is null and was replaced by an empty list");
-                paramTypes = new List<Type>();
-            }
-
-            MethodBase method = null;
-            try
-            {
-                if (methodName == ".ctor")
-                    method = type.GetConstructor(paramTypes.ToArray());
-                else
-                    method = type.GetMethod(methodName, paramTypes.ToArray());
-            }
-            catch { }
-
-            // the above will return null if the type is a generic type
-            // that is because we serialise a generic method with its constraints
-            // rather than serialising the generics
-            if (method != null)
-                return method;
-
-            // So, let's try the other overload
-            return MethodBase(type, methodName, paramTypes.Select(x => x.ToText(true)).ToList());
         }
 
         /*******************************************/

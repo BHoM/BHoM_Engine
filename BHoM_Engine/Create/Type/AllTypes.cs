@@ -47,12 +47,12 @@ namespace BH.Engine.Base
                 return new List<Type>();
             }
 
-            List<Type> typeList = Query.AllTypeList();
-            List<Type> types;
-            if (name.Contains(','))
-                types = typeList.Where(x => x.AssemblyQualifiedName.Contains(name)).ToList();
-            else
-                types = typeList.Where(x => x.FullName.EndsWith(name)).ToList();
+            List<Type> types = MatchingTypes(Query.AllTypeList(), name);
+
+            // The type may be in a BHoM assembly that has not been loaded yet: ask the resolver (if any) to load it, then look again.
+            // The resolver works on full type names, so a partial name will not trigger a load.
+            if (types.Count == 0 && Query.AssemblyResolver()?.MakeSureAssemblyIsLoadedForType(name) == true)
+                types = MatchingTypes(Query.AllTypeList(), name);
 
             if (types.Count != 0)
                 return types;
@@ -71,6 +71,18 @@ namespace BH.Engine.Base
                 }
                 return new List<Type> { type };
             }
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static List<Type> MatchingTypes(List<Type> typeList, string name)
+        {
+            if (name.Contains(','))
+                return typeList.Where(x => x.AssemblyQualifiedName.Contains(name)).ToList();
+            else
+                return typeList.Where(x => x.FullName.EndsWith(name)).ToList();
         }
 
         /***************************************************/

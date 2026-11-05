@@ -110,6 +110,11 @@ namespace BH.Engine.Versioning
 
         private static string GetTypeString(string json)
         {
+            // In the new serialisation format, method parameter types are written as text (Type.ToText(true)),
+            // which is already the representation used by the method versioning keys
+            if (json != null && !json.TrimStart().StartsWith("{"))
+                return json;
+
             // The type stored in json might not exist anywhere anymore so we have to go old school (i.e. no FromJson(json).ToText())
             string typeString = "";
 

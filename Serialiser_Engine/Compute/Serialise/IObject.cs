@@ -52,7 +52,7 @@ namespace BH.Engine.Serialiser
             writer.WriteStartDocument();
 
             writer.WriteName("_t");
-            writer.WriteString(value.GetType().FullName);
+            writer.WriteString(value.GetType().CleanFullName());
 
             foreach (PropertyInfo prop in value.GetType().GetProperties())
             {

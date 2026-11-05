@@ -61,6 +61,8 @@ namespace BH.Engine.Base
 
         internal static ConcurrentBag<MethodBase> ExternalMethodList { get; set; } = new ConcurrentBag<MethodBase>();
 
+        internal static ConcurrentDictionary<string, List<string>> ExtractionIssues { get; } = new ConcurrentDictionary<string, List<string>>();
+
         internal static IAssemblyResolver AssemblyResolver { get; set; } = null;
 
 

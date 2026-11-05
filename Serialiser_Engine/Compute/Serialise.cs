@@ -21,11 +21,13 @@
  */
 
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using MongoDB.Bson;
 using MongoDB.Bson.IO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace BH.Engine.Serialiser
 {
@@ -36,6 +38,8 @@ namespace BH.Engine.Serialiser
         /*******************************************/
 
         [Description("Used to support ToJson, not recommended to be used in isolation.")]
+        [Input("value", "The object to serialise. A null value is written as a BSON null.")]
+        [Input("writer", "The BSON document writer the serialised object is written to.")]
         public static void ISerialise(this object value, BsonDocumentWriter writer)
         {
             if (value == null)
@@ -89,7 +93,7 @@ namespace BH.Engine.Serialiser
             {
                 writer.WriteStartDocument();
                 writer.WriteName("_t");
-                writer.WriteString(value.GetType().FullName);
+                writer.WriteString(value.GetType().CleanFullName());
                 writer.WriteName("_v");
             }
 
@@ -99,6 +103,47 @@ namespace BH.Engine.Serialiser
                 writer.WriteEndDocument();
 
         }
+
+        /*******************************************/
+
+        // Type.FullName embeds the AssemblyQualifiedName of every generic argument, recursively, for any
+        // closed generic type - a CLR quirk, not a BHoM choice. This mirrors FullName's own "Name`arity[[arg],[arg]]"
+        // format (kept for compatibility with the existing square-bracket generic type parser) but replaces each
+        // argument with its own clean name instead of its assembly-qualified name.
+        private static string CleanFullName(this Type type)
+        {
+            if (type == null)
+                return null;
+
+            // ---- TODO-NewSerialisation: START legacy code - delete down to the END marker when the toggle is removed ----
+            // Legacy format: return the raw Type.FullName, AQN of generic arguments included.
+            if (m_UseLegacySerialisation)
+                return type.FullName;
+            // ---- TODO-NewSerialisation: END legacy code ----
+
+            if (!type.IsGenericType)
+                return type.FullName;
+
+            return type.GetGenericTypeDefinition().FullName + "[["
+                + string.Join("],[", type.GetGenericArguments().Select(x => x.CleanFullName())) + "]]";
+        }
+
+
+        /*******************************************/
+        /**** Private Fields                    ****/
+        /*******************************************/
+
+        // ---- TODO-NewSerialisation: START legacy code - delete down to the END marker when the toggle is removed ----
+        // Temporary switch, see BHoM_Engine #3618.
+        // When true, the serialiser keeps writing the pre-10.0 json format:
+        //   - "_t" discriminators use Type.FullName, with AQN embedded for generic arguments (CleanFullName),
+        //   - non-oM types are written with their AssemblyQualifiedName (Serialise/Type.cs),
+        //   - method parameters are written as json type documents rather than plain text (Serialise/MethodBase.cs).
+        // Deserialisation supports both formats regardless of this value.
+        // Set to false to write the new, AQN-free format.
+        // To remove the switch, delete every block delimited by TODO-NewSerialisation markers, including this one.
+        private static readonly bool m_UseLegacySerialisation = true;
+        // ---- TODO-NewSerialisation: END legacy code ----
 
         /*******************************************/
     }

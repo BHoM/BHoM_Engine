@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,8 +37,33 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Checks whether a method is legal, i.e. whether its parameters and return type can be loaded without errors.")]
+        [Input("method", "The method to check.")]
+        [Output("isLegal", "True if the method is not null and its parameters can be loaded, false otherwise.")]
         public static bool IsLegal(this MethodInfo method)
         {
+            return method.IsLegal(out string reason);
+        }
+
+
+        /***************************************************/
+
+        [Description("Checks whether a type is legal, i.e. whether the parameter types of all its constructors can be loaded without errors.")]
+        [Input("type", "The type to check.")]
+        [Output("isLegal", "True if the type is not null and all its constructor parameter types can be loaded, false otherwise.")]
+        public static bool IsLegal(this Type type)
+        {
+            return type.IsLegal(out string reason);
+        }
+
+
+        /***************************************************/
+        /**** Internal Methods                          ****/
+        /***************************************************/
+
+        internal static bool IsLegal(this MethodInfo method, out string reason)
+        {
+            reason = null;
             if (method == null)
                 return false;
 
@@ -46,17 +72,18 @@ namespace BH.Engine.Base
                 method.GetParameters();
                 return method.ReturnType != null;   //void is not null
             }
-            catch
+            catch (Exception e)
             {
+                reason = e.Message;
                 return false;
             }
         }
 
-
         /***************************************************/
 
-        public static bool IsLegal(this Type type) //TODO: Check if there is a better way to do this, instead of using a try-catch
+        internal static bool IsLegal(this Type type, out string reason) //TODO: Check if there is a better way to do this, instead of using a try-catch
         {
+            reason = null;
             if (type == null)
                 return false;
 
@@ -65,8 +92,9 @@ namespace BH.Engine.Base
                 //Checking that all the constructors have loaded parameter types
                 type.GetConstructors().SelectMany(x => x.GetParameters()).ToList(); //ToList() there to execute the linq query
             }
-            catch
+            catch (Exception e)
             {
+                reason = e.Message;
                 return false;
             }
             return true;

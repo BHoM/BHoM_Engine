@@ -63,6 +63,11 @@ namespace BH.Engine.Base
                 if (m_ExplicitSystemTypes.TryGetValue(unQualifiedName, out type))   //Handling of some specific System Types that do not work without assembly qualified name
                     return type;
 
+                // The type may be in a BHoM assembly that has not been loaded yet: ask the resolver (if any) to load it, then look again
+                if (Query.AssemblyResolver()?.MakeSureAssemblyIsLoadedForType(name) == true &&
+                    Global.BHoMTypeDictionary.TryGetValue(unQualifiedName, out types) && types.Count == 1)
+                    return types[0];
+
                 type = System.Type.GetType(name);
 
                 if (type == null)

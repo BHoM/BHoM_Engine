@@ -48,7 +48,7 @@ namespace BH.Engine.Serialiser
             if (value.GetType() != targetType)
             {
                 writer.WriteName("_t");
-                writer.WriteString(value.GetType().FullName);
+                writer.WriteString(value.GetType().CleanFullName());
             }
             foreach (var kvp in value)
             {
