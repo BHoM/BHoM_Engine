@@ -71,11 +71,11 @@ namespace BH.Engine.Facade
 
             double uValue = (uValues[0] as UValueGlassCentre).UValue;
 
-            List<IFragment> uValuesCont = opening.OpeningConstruction.GetAllFragments(typeof(UValueContinuous));
-            if (uValuesCont.Count == 1)
+            List<IFragment> uValuesCav = opening.OpeningConstruction.GetAllFragments(typeof(UValueCavity));
+            if (uValuesCav.Count == 1)
             {
-                double contUValue = (uValuesCont[0] as UValueContinuous).UValue;
-                uValue = 1 / (1 / uValue + 1 / contUValue);
+                double cavUValue = (uValuesCav[0] as UValueCavity).UValue;
+                uValue = 1 / (1 / uValue + 1 / cavUValue);
             }
 
             List<FrameEdge> frameEdges = opening.Edges;
@@ -108,7 +108,25 @@ namespace BH.Engine.Facade
                 psiProduct = psiProduct + (lengths[i] * psiValues[i]);
             }
 
-            double effectiveUValue = (((area * uValue) + psiProduct) / area);
+            double contUValue = 0;
+            List<IFragment> uValuesCont = opening.OpeningConstruction.GetAllFragments(typeof(UValueContinuous));
+            if (uValuesCont.Count == 1)
+            {
+                contUValue = (uValuesCont[0] as UValueContinuous).UValue;
+            }
+
+            double baseUValue = (((area * uValue) + psiProduct) / area);
+
+            double effectiveUValue;
+            if (contUValue == 0)
+            {
+                effectiveUValue = baseUValue;
+            }
+            else
+            {
+                effectiveUValue = 1 / (1 / baseUValue + 1 / contUValue);
+            }
+
             OverallUValue result = new OverallUValue(effectiveUValue, new List<IComparable> { opening.BHoM_Guid });
             return result;
         }

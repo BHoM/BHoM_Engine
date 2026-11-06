@@ -70,6 +70,13 @@ namespace BH.Engine.Facade
             }
             double glassUValue = (glassUValues[0] as UValueGlassCentre).UValue;
 
+            List<IFragment> uValuesCav = opening.OpeningConstruction.GetAllFragments(typeof(UValueCavity));
+            if (uValuesCav.Count == 1)
+            {
+                double cavUValue = (uValuesCav[0] as UValueCavity).UValue;
+                glassUValue = 1 / (1 / glassUValue + 1 / cavUValue);
+            }
+
             List<FrameEdge> frameEdges = opening.Edges;
             List<double> frameAreas = new List<double>();
             List<double> frameUValues = new List<double>();
@@ -146,7 +153,25 @@ namespace BH.Engine.Facade
             {
                 BH.Engine.Base.Compute.RecordError($"Opening {opening.BHoM_Guid} has a calculated area of 0. Ensure the opening is valid with associated edges defining its geometry and try again.");
             }
-            double effectiveUValue = (((glassArea * glassUValue) + psigProduct + FrameUValProduct) / totArea);
+            double baseUValue = (((glassArea * glassUValue) + psigProduct + FrameUValProduct) / totArea);
+
+            double contUValue = 0;
+            List<IFragment> uValuesCont = opening.OpeningConstruction.GetAllFragments(typeof(UValueContinuous));
+            if (uValuesCont.Count == 1)
+            {
+                contUValue = (uValuesCont[0] as UValueContinuous).UValue;
+            }
+
+            double effectiveUValue;
+            if (contUValue == 0)
+            {
+                effectiveUValue = baseUValue;
+            }
+            else
+            {
+                effectiveUValue = 1 / (1 / baseUValue + 1 / contUValue);
+            }
+
             OverallUValue result = new OverallUValue (effectiveUValue, new List<IComparable> { opening.BHoM_Guid });
             return result;
         }
