@@ -98,9 +98,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Checks if a Loadcase is valid by performing null checks and basic checks on its properties.")]
-        [Input("loadCase", "The Loadcase to check.")]
-        [Output("result", "Returns true if the Loadcase is valid.")]
+        [Description("Checks if a LoadCombination is valid by performing null checks and basic checks on its properties.")]
+        [Input("loadCombination", "The LoadCombination to check.")]
+        [Output("result", "Returns true if the LoadCombination is valid.")]
         public static bool IsValid(this LoadCombination loadCombination)
         {
             if (loadCombination.IsNull())
