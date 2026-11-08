@@ -28,6 +28,7 @@ using BH.oM.Base.Attributes;
 using BH.oM.Structure;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
+using BH.oM.Structure.Loads;
 using BH.Engine.Geometry;
 
 namespace BH.Engine.Structure
@@ -61,6 +62,62 @@ namespace BH.Engine.Structure
             if (footing.Perimeter.IControlPoints().OrderBy(p => p.Z).First().Z - stem.Perimeter.IControlPoints().OrderBy(p => p.Z).First().Z > Tolerance.MicroDistance)
             {
                 Base.Compute.RecordError("The footings highest control point is above the lowest control point of the stem. The two objects should not intersect.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a Loadcase is valid by performing null checks and basic checks on its properties.")]
+        [Input("loadCase", "The Loadcase to check.")]
+        [Output("result", "Returns true if the Loadcase is valid.")]
+        public static bool IsValid(this Loadcase loadCase)
+        {
+            if (loadCase.IsNull())
+            {
+                Base.Compute.RecordError("Loadcase is null.");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(loadCase.Name))
+            {
+                Base.Compute.RecordError("Loadcase name is null or whitespace.");
+                return false;
+            }
+
+            if (loadCase.Number <= 0)
+            {
+                Base.Compute.RecordError("Loadcase number is less than or equal to zero.");
+                return false;
+            }
+
+            return true;
+        }
+
+        /***************************************************/
+
+        [Description("Checks if a Loadcase is valid by performing null checks and basic checks on its properties.")]
+        [Input("loadCase", "The Loadcase to check.")]
+        [Output("result", "Returns true if the Loadcase is valid.")]
+        public static bool IsValid(this LoadCombination loadCombination)
+        {
+            if (loadCombination.IsNull())
+            {
+                Base.Compute.RecordError("LoadCombination is null.");
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(loadCombination.Name))
+            {
+                Base.Compute.RecordError("LoadCombination name is null or whitespace.");
+                return false;
+            }
+
+            if (loadCombination.Number <= 0)
+            {
+                Base.Compute.RecordError("LoadCombination number is less than or equal to zero.");
                 return false;
             }
 
