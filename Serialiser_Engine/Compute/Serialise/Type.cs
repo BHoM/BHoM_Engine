@@ -79,8 +79,8 @@ namespace BH.Engine.Serialiser
                         writer.WriteStartArray();
                         foreach (Type constraint in constraints)
                         {
-                            // T : IComparable<T> creates an infinite loop. Thankfully, that's the only case where a type constrained by itself even makes sense
-                            if (constraint.Name == "IComparable`1" && constraint.GenericTypeArguments.FirstOrDefault() == value)
+                            // A constraint referring to the generic parameter itself (T : IComparable<T>, T : IContainer<List<T>>, ...) creates an infinite loop
+                            if (ReferencesGenericParameter(constraint, value))
                                 typeof(IEnumerable).Serialise(writer, typeof(Type));
                             else
                                 constraint.Serialise(writer, typeof(Type));
@@ -123,6 +123,20 @@ namespace BH.Engine.Serialiser
             }
 
             writer.WriteEndDocument();
+        }
+
+        /*******************************************/
+
+        // Whether the generic parameter is found anywhere in the type, for example at any depth of its generic arguments
+        private static bool ReferencesGenericParameter(Type type, Type genericParameter)
+        {
+            if (type == genericParameter)
+                return true;
+
+            if (type.HasElementType)
+                return ReferencesGenericParameter(type.GetElementType(), genericParameter);
+
+            return type.IsGenericType && type.GetGenericArguments().Any(x => ReferencesGenericParameter(x, genericParameter));
         }
 
         /*******************************************/
