@@ -69,8 +69,7 @@ namespace BH.Engine.Reflection
                     {
                         if (method.ContainsGenericParameters)
                         {
-                            Type[] generics = method.GetGenericArguments().Select(x => x.MakeFromGeneric()).ToArray();
-                            method = method.MakeGenericMethod(generics);
+                            method = method.MakeFromGeneric();   // Falls back to the generic method if the constraints cannot be satisfied
                             parameters = method.GetParameters();
                         }
 

@@ -46,16 +46,10 @@ namespace BH.Engine.Reflection
                 return new ParameterInfo[0];
             }
 
-            ParameterInfo[] parameters = method.GetParameters();
-
-            if (method.ContainsGenericParameters)
-            {
-                Type[] generics = method.GetGenericArguments().Select(x => GenericTypeConstraint(x)).ToArray();
-                MethodInfo methodinfo = method as MethodInfo;
-                if (methodinfo != null)
-                    parameters = methodinfo.MakeGenericMethod(generics).GetParameters();
-            }
-            return parameters;
+            if (method.ContainsGenericParameters && method is MethodInfo methodInfo)
+                return methodInfo.MakeFromGeneric().GetParameters();
+            else
+                return method.GetParameters();
         }
 
         /*******************************************/

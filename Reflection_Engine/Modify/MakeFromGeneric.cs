@@ -45,24 +45,7 @@ namespace BH.Engine.Reflection
                 return null;
             }
 
-            if (genericType.IsGenericParameter)
-            {
-                Type[] constrains = genericType.GetGenericParameterConstraints();
-                if (constrains.Length == 0)
-                    return typeof(object);
-                else
-                    return MakeFromGeneric(constrains[0]);
-            }
-            else if (genericType.ContainsGenericParameters)
-            {
-                if (genericType.GetGenericArguments().Any(x => x.IsGenericParameter && x.GetGenericParameterConstraints().Any(c => c == genericType)))
-                    return genericType.GetGenericTypeDefinition().MakeGenericType(new Type[] { typeof(object) });
-
-                Type[] constrains = genericType.GetGenericArguments().Select(x => MakeFromGeneric(x)).ToArray();
-                return genericType.GetGenericTypeDefinition().MakeGenericType(constrains);
-            }
-            else
-                return genericType;
+            return genericType.GenericTypeConstraint();
         }
 
         /***************************************************/
@@ -81,8 +64,15 @@ namespace BH.Engine.Reflection
             if (genericMethod.ContainsGenericParameters)
             {
                 Type[] types = genericMethod.GetGenericArguments().Select(x => x.MakeFromGeneric()).ToArray();
-                genericMethod = genericMethod.MakeGenericMethod(types);
-
+                try
+                {
+                    genericMethod = genericMethod.MakeGenericMethod(types);
+                }
+                catch (ArgumentException e)
+                {
+                    // The constraints cannot be satisfied by the types found: the generic method is returned unchanged
+                    Base.Compute.RecordWarning($"Could not apply the generic constraints of method {genericMethod.Name} from {genericMethod.DeclaringType?.FullName}. The generic method is returned instead. Exception message: {e.Message}");
+                }
             }
             return genericMethod;
         }
