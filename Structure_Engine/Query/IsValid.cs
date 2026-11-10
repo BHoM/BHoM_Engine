@@ -73,7 +73,7 @@ namespace BH.Engine.Structure
         [Description("Checks if a Loadcase is valid by performing null checks and basic checks on its properties.")]
         [Input("loadCase", "The Loadcase to check.")]
         [Output("result", "Returns true if the Loadcase is valid.")]
-        public static bool IsValid(this Loadcase loadCase)
+        public static bool IsValid(this ICase loadCase)
         {
             if (loadCase.IsNull())
             {
@@ -90,34 +90,6 @@ namespace BH.Engine.Structure
             if (loadCase.Number <= 0)
             {
                 Base.Compute.RecordError("Loadcase number is less than or equal to zero.");
-                return false;
-            }
-
-            return true;
-        }
-
-        /***************************************************/
-
-        [Description("Checks if a LoadCombination is valid by performing null checks and basic checks on its properties.")]
-        [Input("loadCombination", "The LoadCombination to check.")]
-        [Output("result", "Returns true if the LoadCombination is valid.")]
-        public static bool IsValid(this LoadCombination loadCombination)
-        {
-            if (loadCombination.IsNull())
-            {
-                Base.Compute.RecordError("LoadCombination is null.");
-                return false;
-            }
-
-            if (string.IsNullOrWhiteSpace(loadCombination.Name))
-            {
-                Base.Compute.RecordError("LoadCombination name is null or whitespace.");
-                return false;
-            }
-
-            if (loadCombination.Number <= 0)
-            {
-                Base.Compute.RecordError("LoadCombination number is less than or equal to zero.");
                 return false;
             }
 
