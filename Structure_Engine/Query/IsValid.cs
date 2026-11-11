@@ -95,6 +95,46 @@ namespace BH.Engine.Structure
 
             return true;
         }
+
+        /***************************************************/
+
+        [Description("Checks a set of cases, Loadcases and/or LoadCombinations, is valid: each case is valid on its own, and no number or name is used twice.")]
+        [Input("loadCases", "The Loadcases and LoadCombinations to check.")]
+        [Output("result", "Returns true if every case is valid and no number or name is repeated.")]
+        public static bool IsValid(this IEnumerable<ICase> loadCases)
+        {
+            if (loadCases == null)
+            {
+                Base.Compute.RecordError("The cases to check are null.");
+                return false;
+            }
+
+            List<ICase> cases = loadCases.ToList();
+            bool valid = true;
+
+            foreach (ICase loadCase in cases)
+                valid &= loadCase.IsValid();    // &= so every case is checked and every problem recorded
+
+            List<ICase> present = cases.Where(loadCase => loadCase != null).ToList();
+
+            foreach (IGrouping<int, ICase> group in present.GroupBy(loadCase => loadCase.Number).Where(group => group.Count() > 1))
+            {
+                Base.Compute.RecordError($"The number {group.Key} is used by more than one case: {string.Join(", ", group.Select(loadCase => $"'{loadCase.Name}'"))}.");
+                valid = false;
+            }
+
+            IEnumerable<IGrouping<string, ICase>> sameName = present
+                .Where(loadCase => !string.IsNullOrWhiteSpace(loadCase.Name))
+                .GroupBy(loadCase => loadCase.Name.Trim(), StringComparer.OrdinalIgnoreCase)
+                .Where(group => group.Count() > 1);
+            foreach (IGrouping<string, ICase> group in sameName)
+            {
+                Base.Compute.RecordError($"The name '{group.Key}' is used by more than one case: numbers {string.Join(", ", group.Select(loadCase => loadCase.Number))}.");
+                valid = false;
+            }
+
+            return valid;
+        }
     }
 }
 
