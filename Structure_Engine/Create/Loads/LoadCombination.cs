@@ -37,6 +37,7 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [PreviousVersion("10.0", "BH.Engine.Structure.Create.LoadCombination(System.String, System.Int32, System.Collections.Generic.List<BH.oM.Structure.Loads.Loadcase>, System.Collections.Generic.List<System.Double>, System.Boolean)")]
         [Description("Creates a LoadCombination from two equal length lists of cases and factors. The cases can be Loadcases, other LoadCombinations, or a mix of both, so a combination can be built from combinations.")]
         [Input("name", "The name of the load combination. This is required for various structural packages to create the object.")]
         [InputFromProperty("number")]
