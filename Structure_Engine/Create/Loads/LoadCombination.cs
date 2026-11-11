@@ -37,31 +37,6 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Creates a LoadCombination from two equal length lists of Loadcases and factors.")]
-        [Input("name", "The name of the load combination. This is required for various structural packages to create the object.")]
-        [InputFromProperty("number")]
-        [Input("cases", "The cases to be assigned to the LoadCombination. This list should have the exact same length as the factors.")]
-        [Input("factors", "The factor to scale each of the cases with.  This list should have the exact same length as the cases.")]
-        [Input("excludeZeroFactorCases", "If set to true, any case that has a corresponding factor of 0 will NOT be added to the case.")]
-        [Output("comb", "The created LoadCombination.")]
-        public static LoadCombination LoadCombination(string name, int number, List<Loadcase> cases, List<double> factors, bool excludeZeroFactorCases = true)
-        {
-            if (cases.Count != factors.Count)
-                throw new ArgumentException("Loadcombinations require the same number of cases and factors");
-
-            List<Tuple<double, ICase>> factoredCases = new List<Tuple<double, ICase>>();
-
-            for (int i = 0; i < cases.Count; i++)
-            {
-                if (cases[i] != null && (!excludeZeroFactorCases || factors[i] != 0))
-                    factoredCases.Add(new Tuple<double, ICase>(factors[i], cases[i]));
-            }
-
-            return new LoadCombination { LoadCases = factoredCases, Name = name, Number = number };
-        }
-
-        /***************************************************/
-
         [Description("Creates a LoadCombination from two equal length lists of cases and factors. The cases can be Loadcases, other LoadCombinations, or a mix of both, so a combination can be built from combinations.")]
         [Input("name", "The name of the load combination. This is required for various structural packages to create the object.")]
         [InputFromProperty("number")]
@@ -69,7 +44,7 @@ namespace BH.Engine.Structure
         [Input("factors", "The factor to scale each of the cases with. This list should have the exact same length as the cases.")]
         [Input("excludeZeroFactorCases", "If set to true, any case that has a corresponding factor of 0 will NOT be added to the combination.")]
         [Output("comb", "The created LoadCombination.")]
-        public static LoadCombination LoadCombination(string name, int number, List<ICase> cases, List<double> factors, bool excludeZeroFactorCases = true)
+        public static LoadCombination LoadCombination(string name, int number, IReadOnlyList<ICase> cases, IReadOnlyList<double> factors, bool excludeZeroFactorCases = true)
         {
             if (cases == null || factors == null)
             {

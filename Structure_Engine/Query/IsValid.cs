@@ -87,9 +87,9 @@ namespace BH.Engine.Structure
                 return false;
             }
 
-            if (loadCase.Number <= 0)
+            if (loadCase.Number < 0)
             {
-                Base.Compute.RecordError("Case number is less than or equal to zero.");
+                Base.Compute.RecordError("Case number is less than zero.");
                 return false;
             }
 
