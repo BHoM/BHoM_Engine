@@ -83,13 +83,13 @@ namespace BH.Engine.Structure
 
             if (string.IsNullOrWhiteSpace(loadCase.Name))
             {
-                Base.Compute.RecordError("Case name is null or whitespace.");
+                Base.Compute.RecordError($"{loadCase.GetType().Name} {loadCase.Number} has no name.");
                 return false;
             }
 
-            if (loadCase.Number < 0)
+            if (loadCase.Number <= 0)
             {
-                Base.Compute.RecordError("Case number is less than zero.");
+                Base.Compute.RecordError($"{loadCase.GetType().Name} '{loadCase.Name}' has the number {loadCase.Number}, which is less than or equal to zero.");
                 return false;
             }
 
@@ -112,8 +112,17 @@ namespace BH.Engine.Structure
             List<ICase> cases = loadCases.ToList();
             bool valid = true;
 
-            foreach (ICase loadCase in cases)
-                valid &= loadCase.IsValid();    // &= so every case is checked and every problem recorded
+            for (int i = 0; i < cases.Count; i++)
+            {
+                if (cases[i] == null)
+                {
+                    Base.Compute.RecordError($"The case at position {i + 1} of the list is null.");
+                    valid = false;
+                    continue;
+                }
+
+                valid &= cases[i].IsValid();    // &= so every case is checked and every problem recorded
+            }
 
             List<ICase> present = cases.Where(loadCase => loadCase != null).ToList();
 
