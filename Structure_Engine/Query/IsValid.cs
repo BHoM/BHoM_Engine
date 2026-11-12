@@ -116,7 +116,7 @@ namespace BH.Engine.Structure
             {
                 if (cases[i] == null)
                 {
-                    Base.Compute.RecordError($"The case at position {i + 1} of the list is null.");
+                    Base.Compute.RecordError($"The case at position {i} of the list is null. The list indexing is 0-based, meaning the first item is at position 0.");
                     valid = false;
                     continue;
                 }
