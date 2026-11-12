@@ -20,8 +20,10 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -35,6 +37,11 @@ namespace BH.Engine.Reflection
         /**** Public Methods              ****/
         /*************************************/
 
+        [Description("Creates a method declared by the provided type, with the specified name and matching parameter types. For generic methods, the generic parameters are replaced by types satisfying their constraints before the parameter types are compared.")]
+        [Input("declaringType", "The type declaring the method. Inherited methods are not considered.")]
+        [Input("methodName", "The name of the method to extract.")]
+        [Input("paramTypes", "The types of the parameters of the method, in order. A null entry matches any type for that parameter. If null, the method is expected to have no parameters.")]
+        [Output("methodInfo", "The first method matching the provided name and parameter types, or null if none was found.")]
         public static MethodInfo MethodInfo(this Type declaringType, string methodName, List<Type> paramTypes)
         {
             if (declaringType == null)
@@ -69,8 +76,7 @@ namespace BH.Engine.Reflection
                     {
                         if (method.ContainsGenericParameters)
                         {
-                            Type[] generics = method.GetGenericArguments().Select(x => x.MakeFromGeneric()).ToArray();
-                            method = method.MakeGenericMethod(generics);
+                            method = method.MakeFromGeneric();   // Falls back to the generic method if the constraints cannot be satisfied
                             parameters = method.GetParameters();
                         }
 
