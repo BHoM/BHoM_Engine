@@ -394,7 +394,9 @@ namespace BH.Engine.Versioning
                 else if (converter.ToNewProperty.ContainsKey(key))
                 {
                     propName = converter.ToNewProperty[key].Split('.').Last();
-                    propertiesToRename.Add(property.Name, new BsonElement(propName, property.Value));
+
+                    if (!document.Contains(propName))
+                        propertiesToRename.Add(property.Name, new BsonElement(propName, property.Value));
                 }
             }
 
