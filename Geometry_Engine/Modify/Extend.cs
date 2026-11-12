@@ -68,37 +68,28 @@ namespace BH.Engine.Geometry
         {
             if (tangentExtensions)
                 return curve.ExtendTangent(start, end, tolerance);
-
-            if (curve.StartAngle != 0)
-            {
-                curve.CoordinateSystem = curve.CoordinateSystem.Rotate(curve.CoordinateSystem.Origin, curve.CoordinateSystem.Z, curve.StartAngle);
-                curve.EndAngle = -curve.StartAngle;
-                curve.StartAngle = 0;
-            }
-
+           
             double startAngleExt = start / curve.Radius;
             double endAngleExt = end / curve.Radius;
-
-            if (startAngleExt + endAngleExt + curve.EndAngle < tolerance)
+            
+            if (endAngleExt + startAngleExt - curve.StartAngle + curve.EndAngle  < tolerance)
             {
                 Base.Compute.RecordError("Negative extend values are smaller than curve length.");
                 return null;
             }
 
-            if (startAngleExt + endAngleExt + curve.EndAngle - (2 * Math.PI) > tolerance)
+            if (Math.Abs(startAngleExt + endAngleExt + curve.EndAngle - curve.StartAngle) - (2 * Math.PI) > tolerance)
             {
                 Base.Compute.RecordError("Extension values too great.");
                 return null;
             }
-            Cartesian oldCS = curve.CoordinateSystem;
-            Cartesian newCS = oldCS.Rotate(oldCS.Origin, oldCS.Z, -startAngleExt);
 
             return new Arc
             {
-                CoordinateSystem = newCS,
+                CoordinateSystem = curve.CoordinateSystem,
                 Radius = curve.Radius,
-                StartAngle = 0,
-                EndAngle = curve.EndAngle + startAngleExt + endAngleExt
+                StartAngle = curve.StartAngle - startAngleExt,
+                EndAngle = curve.EndAngle + endAngleExt,
             };
         }
 
