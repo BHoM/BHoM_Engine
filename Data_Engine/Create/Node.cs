@@ -122,7 +122,8 @@ namespace BH.Engine.Data
                 }
 
                 // Recursion
-                IEnumerable<TNode> branches = subLists.Select(x => Create.Node<TNode, T>(x, partitionMethod, setChildrenToNode, leafSize));
+                // Evaluated once here. A lazy Select would rebuild every subtree each time the branches are enumerated.
+                List<TNode> branches = subLists.Select(x => Create.Node<TNode, T>(x, partitionMethod, setChildrenToNode, leafSize)).ToList();
 
                 // Sets the children to the Node and computes it's Relation afterwards
                 return setChildrenToNode(branches);
