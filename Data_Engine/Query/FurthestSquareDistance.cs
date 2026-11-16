@@ -47,7 +47,17 @@ namespace BH.Engine.Data
                 return 0;
             }
 
-            return box1.Domains.Zip(box2.Domains, (a, b) => Math.Pow(FurthestEdgeDistance(a, b), 2)).Sum();
+            Domain[] d1 = box1.Domains;
+            Domain[] d2 = box2.Domains;
+            int count = Math.Min(d1.Length, d2.Length);
+
+            double sum = 0;
+            for (int i = 0; i < count; i++)
+            {
+                double d = FurthestEdgeDistance(d1[i], d2[i]);
+                sum += d * d;
+            }
+            return sum;
         }
 
         [Description("Gets the furthest possible distance between two vectors confined in respective tight DomainBoxes." +
@@ -81,7 +91,10 @@ namespace BH.Engine.Data
             for (int i = 0; i < box1.Domains.Length; i++)
             {
                 if (i != index)
-                    sq += Math.Pow(FurthestEdgeDistance(box1.Domains[i], box2.Domains[i]), 2);
+                {
+                    double d = FurthestEdgeDistance(box1.Domains[i], box2.Domains[i]);
+                    sq += d * d;
+                }
             }
 
             return sq;
@@ -103,16 +116,9 @@ namespace BH.Engine.Data
 
         private static double ShortestEdgeDistance(Domain a, Domain b)
         {
-            double[] values = new double[]
-            {
-                a.Min - b.Min,
-                a.Min - b.Max,
-                a.Max - b.Min,
-                a.Max - b.Max,
-
-            };
-
-            return values.Min(x => Math.Abs(x));
+            return Math.Min(
+                Math.Min(Math.Abs(a.Min - b.Min), Math.Abs(a.Min - b.Max)),
+                Math.Min(Math.Abs(a.Max - b.Min), Math.Abs(a.Max - b.Max)));
         }
 
         /***************************************************/
