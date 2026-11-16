@@ -201,11 +201,12 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        // Walks the combinations nested in a combination, depth first. Each is visited once, so a loop that does not
-        // pass through the given combination still ends.
+        // Walks the combinations nested in a combination, depth first, comparing by Number, since packages identify
+        // cases by number and copies of a combination share its number. Each number is visited once, so a loop that
+        // does not pass through the given combination still ends.
         private static bool ContainsItself(LoadCombination combination)
         {
-            List<LoadCombination> visited = new List<LoadCombination>();
+            List<int> visited = new List<int>();
             Stack<LoadCombination> toVisit = new Stack<LoadCombination>();
             toVisit.Push(combination);
 
@@ -220,12 +221,12 @@ namespace BH.Engine.Structure
                     .OfType<LoadCombination>();
                 foreach (LoadCombination nested in nestedCombinations)
                 {
-                    if (ReferenceEquals(nested, combination))
+                    if (nested.Number == combination.Number)
                         return true;
 
-                    if (!visited.Any(other => ReferenceEquals(other, nested)))
+                    if (!visited.Contains(nested.Number))
                     {
-                        visited.Add(nested);
+                        visited.Add(nested.Number);
                         toVisit.Push(nested);
                     }
                 }
