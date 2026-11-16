@@ -66,15 +66,68 @@ namespace BH.Engine.Data
             if (searchBox == null)
                 return new List<T>();
 
-            Func<DomainTree<T>, double> evaluationMethod = (x) => x.DomainBox?.SquareDistance(searchBox) ?? double.PositiveInfinity;
+            if (tree == null)
+                return new List<T>();
 
-            Func<DomainTree<T>, double> worstCaseMethod;
-            if (tightBox)
-                worstCaseMethod = (x) => x.DomainBox?.FurthestTightSquareDistance(searchBox) ?? double.PositiveInfinity;
-            else
-                worstCaseMethod = (x) => x.DomainBox?.FurthestSquareDistance(searchBox) ?? double.PositiveInfinity;
+            // Same search as the general ClosestData below, but on DomainTrees directly. No dynamic dispatch or tuple lists.
+            List<T> result = new List<T>();
+            double maxEvaluation = maxDistance * maxDistance;
+            double squareTolerance = tolerance * tolerance;
 
-            return ClosestData<DomainTree<T>, T>(tree, evaluationMethod, worstCaseMethod, maxDistance * maxDistance, tolerance * tolerance);
+            List<DomainTree<T>> nodes = new List<DomainTree<T>>() { tree };
+            List<double> evaluations = new List<double>() { BestCase(tree, searchBox) };
+
+            int closestIndex = 0;
+            do
+            {
+                // Add the sub items of the closest item to the list
+                List<DomainTree<T>> children = nodes[closestIndex].Children;
+                if (children != null)
+                {
+                    for (int i = 0; i < children.Count; i++)
+                    {
+                        nodes.Add(children[i]);
+                        evaluations.Add(BestCase(children[i], searchBox));
+                    }
+                }
+
+                // remove the parent item
+                nodes.RemoveAt(closestIndex);
+                evaluations.RemoveAt(closestIndex);
+
+                // Find the index of the closest item
+                double min = double.PositiveInfinity;
+                for (int j = 0; j < evaluations.Count; j++)
+                {
+                    if (evaluations[j] < min)
+                    {
+                        min = evaluations[j];
+                        closestIndex = j;
+                    }
+                }
+
+                // Break if the closest item is further away than the maxDistance
+                if (evaluations[closestIndex] > maxEvaluation)
+                    return new List<T>();
+
+            } while (nodes[closestIndex].Children != null && nodes[closestIndex].Children.Count > 0);
+
+            // Save the furthest possible distance from the closest item
+            maxEvaluation = Math.Min(WorstCase(nodes[closestIndex], searchBox, tightBox) + squareTolerance, maxEvaluation);
+
+            // gets every item with closest distance less than max, and evaluate new maxes based on the new closest data.
+            List<DomainTree<T>> closest = new List<DomainTree<T>>();
+            List<double> closestEvaluations = new List<double>();
+            LessThan(nodes, evaluations, searchBox, tightBox, ref maxEvaluation, squareTolerance, closest, closestEvaluations);
+
+            // Gets everything closer than that and returns the data
+            for (int i = 0; i < closest.Count; i++)
+            {
+                if (closestEvaluations[i] < maxEvaluation && closest[i].Values != null)
+                    result.AddRange(closest[i].Values);
+            }
+
+            return result;
         }
 
         /***********************************************/
@@ -190,6 +243,68 @@ namespace BH.Engine.Data
                 }
             }
             return result;
+        }
+
+        /***************************************************/
+
+        [Description("Same as the general LessThan, for DomainTrees.")]
+        private static void LessThan<T>(List<DomainTree<T>> nodes,
+                                        List<double> evaluations,
+                                        DomainBox searchBox,
+                                        bool tightBox,
+                                        ref double maxEvaluation,
+                                        double squareTolerance,
+                                        List<DomainTree<T>> result,
+                                        List<double> resultEvaluations)
+        {
+            // find those which one can get a worst case from to attempt to lower that value asap
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                List<DomainTree<T>> children = nodes[i].Children;
+                if (evaluations[i] < maxEvaluation && (children == null || children.Count == 0))
+                {
+                    double temp = WorstCase(nodes[i], searchBox, tightBox) + squareTolerance;
+                    if (temp < maxEvaluation)
+                        maxEvaluation = temp;
+
+                    result.Add(nodes[i]);
+                    resultEvaluations.Add(evaluations[i]);
+                }
+            }
+
+            // Afterwards go deeper into the children of those who pass the check
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                if (evaluations[i] < maxEvaluation)
+                {
+                    List<DomainTree<T>> children = nodes[i].Children;
+                    if (children == null || children.Count == 0)
+                        continue;
+
+                    List<double> childEvaluations = new List<double>(children.Count);
+                    for (int k = 0; k < children.Count; k++)
+                        childEvaluations.Add(BestCase(children[k], searchBox));
+
+                    LessThan(children, childEvaluations, searchBox, tightBox, ref maxEvaluation, squareTolerance, result, resultEvaluations);
+                }
+            }
+        }
+
+        /***************************************************/
+
+        private static double BestCase<T>(DomainTree<T> node, DomainBox searchBox)
+        {
+            return node.DomainBox == null ? double.PositiveInfinity : node.DomainBox.SquareDistance(searchBox);
+        }
+
+        /***************************************************/
+
+        private static double WorstCase<T>(DomainTree<T> node, DomainBox searchBox, bool tightBox)
+        {
+            if (node.DomainBox == null)
+                return double.PositiveInfinity;
+
+            return tightBox ? node.DomainBox.FurthestTightSquareDistance(searchBox) : node.DomainBox.FurthestSquareDistance(searchBox);
         }
 
         /***************************************************/
