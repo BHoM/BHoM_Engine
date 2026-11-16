@@ -70,7 +70,8 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Checks if a case, a Loadcase or a LoadCombination, is valid by performing null checks and basic checks on its properties.")]
+        [Description("Checks if a case, a Loadcase or a LoadCombination, is valid by performing null checks and basic checks on its properties. \n" +
+            "For a LoadCombination, also checks the cases and factors it holds.")]
         [Input("loadCase", "The Loadcase or LoadCombination to check.")]
         [Output("result", "Returns true if the case is valid.")]
         public static bool IsValid(this ICase loadCase)
@@ -92,6 +93,9 @@ namespace BH.Engine.Structure
                 Base.Compute.RecordError($"{loadCase.GetType().Name} '{loadCase.Name}' has the number {loadCase.Number}, which is less than or equal to zero.");
                 return false;
             }
+
+            if (loadCase is LoadCombination combination)
+                return HasValidFactors(combination);
 
             return true;
         }
@@ -144,6 +148,95 @@ namespace BH.Engine.Structure
 
             return valid;
         }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        // Checks the cases and factors a combination holds. Nested combinations are checked when they are validated
+        // themselves, for example as part of a set.
+        private static bool HasValidFactors(LoadCombination combination)
+        {
+            string label = $"{combination.GetType().Name} {combination.Number} '{combination.Name}'";
+
+            if (combination.LoadCases == null || combination.LoadCases.Count == 0)
+            {
+                Base.Compute.RecordError($"{label} must contain at least one case.");
+                return false;
+            }
+
+            bool valid = true;
+
+            foreach (Tuple<double, ICase> item in combination.LoadCases)
+            {
+                if ((item?.Item2).IsNull(nameof(IsValid), $"It is factored in {label}."))
+                {
+                    valid = false;
+                }
+                else if (double.IsNaN(item.Item1) || double.IsInfinity(item.Item1))
+                {
+                    Base.Compute.RecordError($"{label} has the factor {item.Item1} on {item.Item2.GetType().Name} {item.Item2.Number}, which is not a finite number.");
+                    valid = false;
+                }
+            }
+
+            // Packages identify cases by number, so a number repeated is the same case factored twice.
+            IEnumerable<IGrouping<int, ICase>> repeated = combination.LoadCases
+                .Where(item => item?.Item2 != null)
+                .Select(item => item.Item2)
+                .GroupBy(loadCase => loadCase.Number)
+                .Where(group => group.Count() > 1);
+            foreach (IGrouping<int, ICase> group in repeated)
+            {
+                Base.Compute.RecordError($"{label} contains the number {group.Key} more than once: {string.Join(", ", group.Select(loadCase => $"'{loadCase.Name}'"))}.");
+                valid = false;
+            }
+
+            if (ContainsItself(combination))
+            {
+                Base.Compute.RecordError($"{label} contains itself, directly or through the combinations it contains.");
+                valid = false;
+            }
+
+            return valid;
+        }
+
+        /***************************************************/
+
+        // Walks the combinations nested in a combination, depth first. Each is visited once, so a loop that does not
+        // pass through the given combination still ends.
+        private static bool ContainsItself(LoadCombination combination)
+        {
+            List<LoadCombination> visited = new List<LoadCombination>();
+            Stack<LoadCombination> toVisit = new Stack<LoadCombination>();
+            toVisit.Push(combination);
+
+            while (toVisit.Count > 0)
+            {
+                LoadCombination current = toVisit.Pop();
+                if (current.LoadCases == null)
+                    continue;
+
+                IEnumerable<LoadCombination> nestedCombinations = current.LoadCases
+                    .Select(item => item?.Item2)
+                    .OfType<LoadCombination>();
+                foreach (LoadCombination nested in nestedCombinations)
+                {
+                    if (ReferenceEquals(nested, combination))
+                        return true;
+
+                    if (!visited.Any(other => ReferenceEquals(other, nested)))
+                    {
+                        visited.Add(nested);
+                        toVisit.Push(nested);
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /***************************************************/
     }
 }
 
