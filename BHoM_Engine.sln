@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analytical_Engine", "Analyt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Architecture_Engine", "Architecture_Engine\Architecture_Engine.csproj", "{A73AB204-13A5-4D0D-9428-F65225928DBE}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Classification_Engine", "Classification_Engine\Classification_Engine.csproj", "{22F61154-8115-4387-8D38-B3712D080FA4}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data_Engine", "Data_Engine\Data_Engine.csproj", "{CE654FFA-0B42-436A-A743-53FCB7E35F30}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Diffing_Engine", "Diffing_Engine\Diffing_Engine.csproj", "{0328D1A7-FB22-4441-8912-90DE6060790B}"
@@ -183,6 +185,10 @@ Global
 		{3AC2FA07-E889-484B-A319-B5CA942C277E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3AC2FA07-E889-484B-A319-B5CA942C277E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3AC2FA07-E889-484B-A319-B5CA942C277E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22F61154-8115-4387-8D38-B3712D080FA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22F61154-8115-4387-8D38-B3712D080FA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22F61154-8115-4387-8D38-B3712D080FA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22F61154-8115-4387-8D38-B3712D080FA4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
