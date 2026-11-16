@@ -38,6 +38,12 @@ namespace BH.Engine.Data
         /**** Point Matrix                          ****/
         /***********************************************/
 
+        [Description("Finds the data in the PointMatrix which is positioned closest to the reference point, as long as it is closer than the maximum distance. " +
+                     "Only the cells of the matrix within reach of the reference point are searched. If several data items are equally close, the first one found is returned.")]
+        [Input("matrix", "PointMatrix to search for the data closest to the reference point.")]
+        [Input("refPt", "Point to find the closest data to.")]
+        [Input("maxDist", "Data positioned this distance or further from the reference point will not be considered.", typeof(Length))]
+        [Output("data", "The data, together with its position, which is closest to the reference point. Returns null if no data is positioned closer than the maximum distance.")]
         public static LocalData<T> ClosestData<T>(this PointMatrix<T> matrix, Point refPt, double maxDist)
         {
             List<LocalData<T>> closePts = matrix.CloseToPoint(refPt, maxDist);
