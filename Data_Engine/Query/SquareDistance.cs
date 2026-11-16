@@ -57,7 +57,17 @@ namespace BH.Engine.Data
                 return 0;
             }
 
-            return box1.Domains.Zip(box2.Domains, (a, b) => Math.Pow(Distance(a, b), 2)).Sum();
+            Domain[] d1 = box1.Domains;
+            Domain[] d2 = box2.Domains;
+            int count = Math.Min(d1.Length, d2.Length);
+
+            double sum = 0;
+            for (int i = 0; i < count; i++)
+            {
+                double d = Distance(d1[i], d2[i]);
+                sum += d * d;
+            }
+            return sum;
         }
 
         /***************************************************/
