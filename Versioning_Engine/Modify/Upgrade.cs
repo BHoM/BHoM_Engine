@@ -397,6 +397,8 @@ namespace BH.Engine.Versioning
 
                     if (!document.Contains(propName))
                         propertiesToRename.Add(property.Name, new BsonElement(propName, property.Value));
+                    else
+                        BH.Engine.Base.Compute.RecordWarning($"When versioning an object, property `{key}` could not be renamed `{propName}` because a property of that name already exists.");
                 }
             }
 
