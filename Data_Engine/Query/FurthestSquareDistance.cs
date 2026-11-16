@@ -60,46 +60,6 @@ namespace BH.Engine.Data
             return sum;
         }
 
-        [Description("Gets the furthest possible distance between two vectors confined in respective tight DomainBoxes." +
-                     "i.e. assume that the data in the DomainBoxes coincide with every side of the box and get a worst-case distance between their data.")]
-        [Input("box1", "Box to evaluate furthest possible square distance from.")]
-        [Input("box2", "Box to evaluate furthest possible square distance from.")]
-        [Output("sqDist", "The furthest possible square distance between two vectors confined in the respective tight DomainBoxes.")]
-        public static double FurthestTightSquareDistance(this DomainBox box1, DomainBox box2)
-        {
-            if (box1 == null || box2 == null)
-            {
-                BH.Engine.Base.Compute.RecordError("Cannot query the furthest square distance if either domain box is null.");
-                return 0;
-            }
-
-            // Find in which axis the distance between the outer bounderies of the boxes is the least
-            int index = 0;
-            double min = double.MaxValue;
-            for (int i = 0; i < box1.Domains.Length; i++)
-            {
-                double temp = ShortestEdgeDistance(box1.Domains[i], box2.Domains[i]);
-                if (temp < min)
-                {
-                    min = temp;
-                    index = i;
-                }
-            }
-
-            double sq = min * min;
-
-            for (int i = 0; i < box1.Domains.Length; i++)
-            {
-                if (i != index)
-                {
-                    double d = FurthestEdgeDistance(box1.Domains[i], box2.Domains[i]);
-                    sq += d * d;
-                }
-            }
-
-            return sq;
-        }
-
 
         /***************************************************/
         /**** Private Methods                           ****/
@@ -110,15 +70,6 @@ namespace BH.Engine.Data
             return Math.Max(
                 b.Max - a.Min,
                 a.Max - b.Min);
-        }
-
-        /***************************************************/
-
-        private static double ShortestEdgeDistance(Domain a, Domain b)
-        {
-            return Math.Min(
-                Math.Min(Math.Abs(a.Min - b.Min), Math.Abs(a.Min - b.Max)),
-                Math.Min(Math.Abs(a.Max - b.Min), Math.Abs(a.Max - b.Max)));
         }
 
         /***************************************************/
