@@ -157,11 +157,9 @@ namespace BH.Engine.Structure
         // themselves, for example as part of a set.
         private static bool HasValidFactors(LoadCombination combination)
         {
-            string label = $"{combination.GetType().Name} {combination.Number} '{combination.Name}'";
-
             if (combination.LoadCases == null || combination.LoadCases.Count == 0)
             {
-                Base.Compute.RecordError($"{label} must contain at least one case.");
+                Base.Compute.RecordError($"LoadCombination {combination.Number} must contain at least one case.");
                 return false;
             }
 
@@ -169,13 +167,13 @@ namespace BH.Engine.Structure
 
             foreach (Tuple<double, ICase> item in combination.LoadCases)
             {
-                if ((item?.Item2).IsNull(nameof(IsValid), $"It is factored in {label}."))
+                if ((item?.Item2).IsNull(nameof(IsValid), $"It is factored in LoadCombination {combination.Number}."))
                 {
                     valid = false;
                 }
                 else if (double.IsNaN(item.Item1) || double.IsInfinity(item.Item1))
                 {
-                    Base.Compute.RecordError($"{label} has the factor {item.Item1} on {item.Item2.GetType().Name} {item.Item2.Number}, which is not a finite number.");
+                    Base.Compute.RecordError($"LoadCombination {combination.Number} has the factor {item.Item1} on case {item.Item2.Number}, which is not a finite number.");
                     valid = false;
                 }
             }
@@ -188,13 +186,13 @@ namespace BH.Engine.Structure
                 .Where(group => group.Count() > 1);
             foreach (IGrouping<int, ICase> group in repeated)
             {
-                Base.Compute.RecordError($"{label} contains the number {group.Key} more than once: {string.Join(", ", group.Select(loadCase => $"'{loadCase.Name}'"))}.");
+                Base.Compute.RecordError($"LoadCombination {combination.Number} contains case {group.Key} more than once.");
                 valid = false;
             }
 
             if (ContainsItself(combination))
             {
-                Base.Compute.RecordError($"{label} contains itself, directly or through the combinations it contains.");
+                Base.Compute.RecordError($"LoadCombination {combination.Number} contains itself, directly or through the combinations it contains.");
                 valid = false;
             }
 
