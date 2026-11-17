@@ -25,6 +25,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
+using BH.oM.Base.Attributes.Enums;
 using BH.oM.Structure;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
@@ -73,35 +74,27 @@ namespace BH.Engine.Structure
         [Description("Checks if a case, a Loadcase or a LoadCombination, is valid by performing null checks and basic checks on its properties. \n" +
             "For a LoadCombination, also checks the cases and factors it holds, validating each nested case, and that it does not contain itself.")]
         [Input("loadCase", "The Loadcase or LoadCombination to check.")]
+        [Input("message", "Optional text added to the end of every error recorded, for example to say which LoadCombination the case is factored in.", UIExposure.Hidden)]
         [Output("result", "Returns true if the case is valid.")]
-        public static bool IsValid(this ICase loadCase)
+        public static bool IsValid(this ICase loadCase, string message = "")
         {
-            if (loadCase.IsNull())
+            if (loadCase.IsNull(nameof(IsValid), message))
                 return false;
 
             if (string.IsNullOrWhiteSpace(loadCase.Name))
             {
-                Base.Compute.RecordError($"{loadCase.GetType().Name} {loadCase.Number} has no name.");
+                Base.Compute.RecordError(WithMessage($"{loadCase.GetType().Name} {loadCase.Number} has no name.", message));
                 return false;
             }
 
             if (loadCase.Number <= 0)
             {
-                Base.Compute.RecordError($"{loadCase.GetType().Name} '{loadCase.Name}' has the number {loadCase.Number}, which is less than or equal to zero.");
+                Base.Compute.RecordError(WithMessage($"{loadCase.GetType().Name} '{loadCase.Name}' has the number {loadCase.Number}, which is less than or equal to zero.", message));
                 return false;
             }
 
             if (loadCase is LoadCombination combination)
-            {
-                // Checked before the factors, as these validate the nested cases, and a combination that contains itself would never stop doing so.
-                if (ContainsItself(combination))
-                {
-                    Base.Compute.RecordError($"LoadCombination {combination.Number} contains itself, directly or through the combinations it contains.");
-                    return false;
-                }
-
-                return HasValidFactors(combination);
-            }
+                return HasValidFactors(combination, message);
 
             return true;
         }
@@ -159,29 +152,34 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
-        // Checks the cases and factors a combination holds, validating each nested case in turn. Expects that the
-        // combination has already been checked not to contain itself.
-        private static bool HasValidFactors(LoadCombination combination)
+        // Checks the cases and factors a combination holds, validating each nested case in turn. The message is added
+        // to every error recorded, and passed on to the nested cases with this combination added to it.
+        private static bool HasValidFactors(LoadCombination combination, string message)
         {
+            // Checked first, as the nested cases are validated below, and a combination that contains itself would never stop doing so.
+            if (ContainsItself(combination))
+            {
+                Base.Compute.RecordError(WithMessage($"LoadCombination {combination.Number} contains itself, directly or through the combinations it contains.", message));
+                return false;
+            }
+
             if (combination.LoadCases == null || combination.LoadCases.Count == 0)
             {
-                Base.Compute.RecordError($"LoadCombination {combination.Number} must contain at least one case.");
+                Base.Compute.RecordError(WithMessage($"LoadCombination {combination.Number} must contain at least one case.", message));
                 return false;
             }
 
             bool valid = true;
+            string nestedMessage = WithMessage($"It is factored in LoadCombination {combination.Number}.", message);
 
             foreach (Tuple<double, ICase> item in combination.LoadCases)
             {
-                if ((item?.Item2).IsNull(nameof(IsValid), $"It is factored in LoadCombination {combination.Number}."))
-                    valid = false;
-                else
-                    valid &= item.Item2.IsValid();    // &= so every case is checked and every problem recorded
+                valid &= (item?.Item2).IsValid(nestedMessage);    // &= so every case is checked and every problem recorded
 
                 if (item != null && (double.IsNaN(item.Item1) || double.IsInfinity(item.Item1)))
                 {
                     string caseName = item.Item2 == null ? "a null case" : $"case {item.Item2.Number}";
-                    Base.Compute.RecordError($"LoadCombination {combination.Number} has the factor {item.Item1} on {caseName}, which is not a finite number.");
+                    Base.Compute.RecordError(WithMessage($"LoadCombination {combination.Number} has the factor {item.Item1} on {caseName}, which is not a finite number.", message));
                     valid = false;
                 }
             }
@@ -194,11 +192,19 @@ namespace BH.Engine.Structure
                 .Where(group => group.Count() > 1);
             foreach (IGrouping<int, ICase> group in repeated)
             {
-                Base.Compute.RecordError($"LoadCombination {combination.Number} contains case {group.Key} more than once.");
+                Base.Compute.RecordError(WithMessage($"LoadCombination {combination.Number} contains case {group.Key} more than once.", message));
                 valid = false;
             }
 
             return valid;
+        }
+
+        /***************************************************/
+
+        // Adds the optional message to the end of an error.
+        private static string WithMessage(string error, string message)
+        {
+            return string.IsNullOrWhiteSpace(message) ? error : $"{error} {message}";
         }
 
         /***************************************************/
