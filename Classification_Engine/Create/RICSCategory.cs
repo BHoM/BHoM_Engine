@@ -48,7 +48,14 @@ namespace BH.Engine.Classification
                 return default(RICSCategory);
             }
 
-            code = "_" + code.Replace(".", "_").Trim(new char[] { ' ', '_' });
+            code = code.Replace(".", "_").Trim(new char[] { ' ', '_' });
+            if (string.IsNullOrEmpty(code))
+            {
+                BH.Engine.Base.Compute.RecordWarning("Cannot create a RICS category from an empty code. Undefined category returned.");
+                return default(RICSCategory);
+            }
+
+            code = "_" + code;
             return Enum.GetValues(typeof(RICSCategory)).OfType<RICSCategory>().FirstOrDefault(x => x.ToString().StartsWith(code));
         }
 

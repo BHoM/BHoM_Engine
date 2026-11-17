@@ -49,18 +49,21 @@ namespace BH.Engine.Classification
                 return category;
             }
 
+            if (category == RICSCategory.Undefined)
+                return category;
+
             int currentLevel = category.CategoryLevel();
             string code = category.CategoryCode();
 
             while (currentLevel > level)
             {
                 string[] split = code.Split('.');
-                code = split.Take(split.Length - 1).Aggregate((a, b) => a + "." + b);
+                code = string.Join(".", split.Take(split.Length - 1));
                 category = Create.RICSCategory(code);
                 currentLevel = category.CategoryLevel();
             }
 
-            return Create.RICSCategory(code);
+            return category;
         }
 
         /***************************************************/
