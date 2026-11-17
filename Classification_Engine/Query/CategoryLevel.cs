@@ -24,6 +24,7 @@ using BH.oM.Base.Attributes;
 using BH.oM.Classification.Attributes;
 using BH.oM.Classification.Element;
 using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -42,6 +43,16 @@ namespace BH.Engine.Classification
         [Output("level", "Level of the category, or -1 if the category has none.")]
         public static int CategoryLevel(this RICSCategory category)
         {
+            // The level is read through reflection the first time a category is requested, and then reused
+            return m_RICSCategoryLevels.GetOrAdd(category, ReadCategoryLevel);
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static int ReadCategoryLevel(RICSCategory category)
+        {
             FieldInfo fi = typeof(RICSCategory).GetField(category.ToString());
             if (fi == null)
                 return -1;
@@ -53,6 +64,13 @@ namespace BH.Engine.Classification
             else
                 return -1;
         }
+
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        // Thread-safe, filled on demand by CategoryLevel
+        private static readonly ConcurrentDictionary<RICSCategory, int> m_RICSCategoryLevels = new ConcurrentDictionary<RICSCategory, int>();
 
         /***************************************************/
     }

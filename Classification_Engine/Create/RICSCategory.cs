@@ -24,6 +24,8 @@ using BH.oM.Base.Attributes;
 using BH.oM.Classification.Attributes;
 using BH.oM.Classification.Element;
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -56,8 +58,29 @@ namespace BH.Engine.Classification
             }
 
             code = "_" + code;
-            return Enum.GetValues(typeof(RICSCategory)).OfType<RICSCategory>().FirstOrDefault(x => x.ToString().StartsWith(code));
+
+            // Reuse the result if this code has been resolved before
+            RICSCategory category;
+            if (m_RICSCategoriesByCode.TryGetValue(code, out category))
+                return category;
+
+            // The first category (in declaration order) whose name starts with the code is returned
+            IEnumerable<RICSCategory> allCategories = Enum.GetValues(typeof(RICSCategory)).OfType<RICSCategory>();
+            category = allCategories.FirstOrDefault(x => x.ToString().StartsWith(code));
+
+            // Only matches are stored, which keeps the dictionary limited to valid codes however many different strings are provided
+            if (category != default(RICSCategory))
+                m_RICSCategoriesByCode[code] = category;
+
+            return category;
         }
+
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        // Thread-safe, filled on demand by RICSCategory. Keyed on the normalised code, for example _2_1_2
+        private static readonly ConcurrentDictionary<string, RICSCategory> m_RICSCategoriesByCode = new ConcurrentDictionary<string, RICSCategory>();
 
         /***************************************************/
     }

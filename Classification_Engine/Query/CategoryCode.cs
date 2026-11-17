@@ -24,6 +24,7 @@ using BH.oM.Base.Attributes;
 using BH.oM.Classification.Attributes;
 using BH.oM.Classification.Element;
 using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -42,6 +43,16 @@ namespace BH.Engine.Classification
         [Output("code", "Code of the category, or an empty string if the category has none.")]
         public static string CategoryCode(this RICSCategory category)
         {
+            // The code is read through reflection the first time a category is requested, and then reused
+            return m_RICSCategoryCodes.GetOrAdd(category, ReadCategoryCode);
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static string ReadCategoryCode(RICSCategory category)
+        {
             FieldInfo fi = typeof(RICSCategory).GetField(category.ToString());
             if (fi == null)
                 return "";
@@ -53,6 +64,13 @@ namespace BH.Engine.Classification
             else
                 return "";
         }
+
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        // Thread-safe, filled on demand by CategoryCode
+        private static readonly ConcurrentDictionary<RICSCategory, string> m_RICSCategoryCodes = new ConcurrentDictionary<RICSCategory, string>();
 
         /***************************************************/
     }

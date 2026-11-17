@@ -24,6 +24,7 @@ using BH.oM.Base.Attributes;
 using BH.oM.Classification.Attributes;
 using BH.oM.Classification.Element;
 using System;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -52,6 +53,19 @@ namespace BH.Engine.Classification
             if (category == RICSCategory.Undefined)
                 return category;
 
+            // The roll up is done the first time a category and level combination is requested, and then reused
+            return m_RICSCategoriesForLevel.GetOrAdd((category, level), RollUpToLevel);
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        private static RICSCategory RollUpToLevel((RICSCategory category, int level) key)
+        {
+            RICSCategory category = key.category;
+            int level = key.level;
+
             int currentLevel = category.CategoryLevel();
             string code = category.CategoryCode();
 
@@ -65,6 +79,13 @@ namespace BH.Engine.Classification
 
             return category;
         }
+
+        /***************************************************/
+        /**** Private Fields                            ****/
+        /***************************************************/
+
+        // Thread-safe, filled on demand by CategoryForLevel. Only valid levels (1 to 3) are ever stored, so the size is limited
+        private static readonly ConcurrentDictionary<(RICSCategory category, int level), RICSCategory> m_RICSCategoriesForLevel = new ConcurrentDictionary<(RICSCategory category, int level), RICSCategory>();
 
         /***************************************************/
     }
