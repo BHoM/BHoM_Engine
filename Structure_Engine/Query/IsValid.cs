@@ -71,16 +71,13 @@ namespace BH.Engine.Structure
         /***************************************************/
 
         [Description("Checks if a case, a Loadcase or a LoadCombination, is valid by performing null checks and basic checks on its properties. \n" +
-            "For a LoadCombination, also checks the cases and factors it holds.")]
+            "For a LoadCombination, also checks the cases and factors it holds, validating each nested case, and that it does not contain itself.")]
         [Input("loadCase", "The Loadcase or LoadCombination to check.")]
         [Output("result", "Returns true if the case is valid.")]
         public static bool IsValid(this ICase loadCase)
         {
             if (loadCase.IsNull())
-            {
-                Base.Compute.RecordError("Case is null.");
                 return false;
-            }
 
             if (string.IsNullOrWhiteSpace(loadCase.Name))
             {
@@ -95,7 +92,16 @@ namespace BH.Engine.Structure
             }
 
             if (loadCase is LoadCombination combination)
+            {
+                // Checked before the factors, as these validate the nested cases, and a combination that contains itself would never stop doing so.
+                if (ContainsItself(combination))
+                {
+                    Base.Compute.RecordError($"LoadCombination {combination.Number} contains itself, directly or through the combinations it contains.");
+                    return false;
+                }
+
                 return HasValidFactors(combination);
+            }
 
             return true;
         }
@@ -153,8 +159,8 @@ namespace BH.Engine.Structure
         /**** Private Methods                           ****/
         /***************************************************/
 
-        // Checks the cases and factors a combination holds. Nested combinations are checked when they are validated
-        // themselves, for example as part of a set.
+        // Checks the cases and factors a combination holds, validating each nested case in turn. Expects that the
+        // combination has already been checked not to contain itself.
         private static bool HasValidFactors(LoadCombination combination)
         {
             if (combination.LoadCases == null || combination.LoadCases.Count == 0)
@@ -169,6 +175,8 @@ namespace BH.Engine.Structure
             {
                 if ((item?.Item2).IsNull(nameof(IsValid), $"It is factored in LoadCombination {combination.Number}."))
                     valid = false;
+                else
+                    valid &= item.Item2.IsValid();    // &= so every case is checked and every problem recorded
 
                 if (item != null && (double.IsNaN(item.Item1) || double.IsInfinity(item.Item1)))
                 {
@@ -190,23 +198,18 @@ namespace BH.Engine.Structure
                 valid = false;
             }
 
-            if (ContainsItself(combination))
-            {
-                Base.Compute.RecordError($"LoadCombination {combination.Number} contains itself, directly or through the combinations it contains.");
-                valid = false;
-            }
-
             return valid;
         }
 
         /***************************************************/
 
         // Walks the combinations nested in a combination, depth first, comparing by Number, since packages identify
-        // cases by number and copies of a combination share its number. Each number is visited once, so a loop that
-        // does not pass through the given combination still ends.
+        // cases by number and copies of a combination share its number. Each object is visited once, so a loop that
+        // does not pass through the given combination still ends, and every nested combination is reached even when
+        // two of them share a number. IsValid relies on this to stop when it validates the nested cases.
         private static bool ContainsItself(LoadCombination combination)
         {
-            List<int> visited = new List<int>();
+            HashSet<LoadCombination> visited = new HashSet<LoadCombination> { combination };
             Stack<LoadCombination> toVisit = new Stack<LoadCombination>();
             toVisit.Push(combination);
 
@@ -224,11 +227,8 @@ namespace BH.Engine.Structure
                     if (nested.Number == combination.Number)
                         return true;
 
-                    if (!visited.Contains(nested.Number))
-                    {
-                        visited.Add(nested.Number);
+                    if (visited.Add(nested))
                         toVisit.Push(nested);
-                    }
                 }
             }
 
