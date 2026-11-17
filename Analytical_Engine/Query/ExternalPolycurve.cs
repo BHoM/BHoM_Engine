@@ -44,7 +44,7 @@ namespace BH.Engine.Analytical
         [Description("Gets the polycurve that defines the outline of the panel and checks for a single continuous linear curve")]
         [Input("panel", "The IPanel to get the polycurve from")]
         [Output("polycurve", "The polycurve defining the outline of the panel")]
-        public static PolyCurve ExternalPolyCurve<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
+        public static PolyCurve ExternalPolycurve<TEdge, TOpening>(this IPanel<TEdge, TOpening> panel)
             where TEdge : IEdge
             where TOpening : IOpening<TEdge>
         {

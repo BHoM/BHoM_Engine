@@ -117,7 +117,7 @@ namespace BH.Engine.Environment
         [MultiOutput(0, "regionsByLevel", "A collection of BHoM Regions grouped by levels.")]
         [MultiOutput(1, "levelsInUse", "A sublist of the BHoM Levels that have Room.")]
         [MultiOutput(2, "regionsNotMapped", "A collection of BHoM Regions which did not sit neatly on any of the provided levels")]
-        public static Output<List<List<IRegion>>, List<oM.Spatial.SettingOut.Level>, List<IRegion>> MaptoLevel(List<IRegion> regions, int decimals = 6)
+        public static Output<List<List<IRegion>>, List<oM.Spatial.SettingOut.Level>, List<IRegion>> MapToLevel(List<IRegion> regions, int decimals = 6)
         {
             List<oM.Spatial.SettingOut.Level> levels = Create.Levels(regions);
             Output<List<List<IRegion>>, List<oM.Spatial.SettingOut.Level>, List<IRegion>> output = MapToLevel(regions, levels, decimals);
