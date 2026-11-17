@@ -168,12 +168,12 @@ namespace BH.Engine.Structure
             foreach (Tuple<double, ICase> item in combination.LoadCases)
             {
                 if ((item?.Item2).IsNull(nameof(IsValid), $"It is factored in LoadCombination {combination.Number}."))
-                {
                     valid = false;
-                }
-                else if (double.IsNaN(item.Item1) || double.IsInfinity(item.Item1))
+
+                if (item != null && (double.IsNaN(item.Item1) || double.IsInfinity(item.Item1)))
                 {
-                    Base.Compute.RecordError($"LoadCombination {combination.Number} has the factor {item.Item1} on case {item.Item2.Number}, which is not a finite number.");
+                    string caseName = item.Item2 == null ? "a null case" : $"case {item.Item2.Number}";
+                    Base.Compute.RecordError($"LoadCombination {combination.Number} has the factor {item.Item1} on {caseName}, which is not a finite number.");
                     valid = false;
                 }
             }
