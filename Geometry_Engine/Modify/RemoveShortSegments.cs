@@ -40,8 +40,8 @@ namespace BH.Engine.Geometry
         [Input("minimumSegmentLength", "The tolerance of what a short segment is. Segments greater than this length will be kept, segments shorter will be cleaned (removed). Default is set to the value defined by BH.oM.Geometry.Tolerance.Distance.")]
         [Input("distanceTolerance", "Distance tolerance for the operation.", typeof(Length))]
         [Output("polyline", "The cleaned polyline.")]
-        public static Polyline RemoveShortSegments(this Polyline polyline, double minimumSegmentLength = Tolerance.Distance, double distanceTolerance = Tolerance.Distance)
-        {            
+        public static Polyline RemoveShortSegments(this Polyline polyline, double minimumSegmentLength = Tolerance.Distance, double distanceTolerance = BH.oM.Geometry.Tolerance.Distance)
+        {
             List<Point> pnts = new List<Point>(polyline.IControlPoints());
             Point originalLastPoint = pnts.Last();
 
@@ -50,7 +50,7 @@ namespace BH.Engine.Geometry
             while (startIndex < maxIndex)
             {
                 Point first = pnts[startIndex];
-                Point second = pnts[(startIndex + 1) % pnts.Count];                
+                Point second = pnts[(startIndex + 1) % pnts.Count];
 
                 if (first.Distance(second) <= minimumSegmentLength)
                 {
@@ -60,18 +60,21 @@ namespace BH.Engine.Geometry
                 else
                     startIndex++; //Move onto the next point
             }
-            
+
+            if (pnts.Count < 2)
+                return polyline;
+
             if (!polyline.IsClosed(distanceTolerance))
             {
                 pnts.Remove(pnts.Last());
-                pnts.Add(originalLastPoint);                
+                pnts.Add(originalLastPoint);
             }
             else //Only re-close if original polyline is closed
             {
-                pnts.Add(pnts.First());                
+                pnts.Add(pnts.First());
             }
 
-            while (pnts.Last().Distance(pnts[pnts.Count() - 2]) < minimumSegmentLength)
+            while (pnts.Count > 2 && pnts.Last().Distance(pnts[pnts.Count - 2]) < minimumSegmentLength)
             {
                 pnts.RemoveAt(pnts.Count - 2);
             }
