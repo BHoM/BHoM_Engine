@@ -111,6 +111,7 @@ namespace BH.Engine.Environment
             return output;
         }
 
+        [PreviousVersion("10.0", "BH.Engine.Environment.Compute.MaptoLevel(System.Collections.Generic.List<BH.oM.Analytical.Elements.IRegion>, System.Int32)")]
         [Description("Organise the BHoM Region objects into a data structure based on the level of each region")]
         [Input("regions", "A collection of BHoM Regions to be organised.")]
         [Input("decimals", "Provide decimal location to define the degree of tolerance for data matching.")]
