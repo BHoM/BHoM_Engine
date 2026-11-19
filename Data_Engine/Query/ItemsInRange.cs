@@ -48,9 +48,11 @@ namespace BH.Engine.Data
             if (box == null)
                 return new List<T>();
 
-            Func<DomainTree<T>, bool> isWithinSearch = x => x.DomainBox?.IsInRange(box, tolerance) ?? false;
+            List<T> result = new List<T>();
+            if (tree != null)
+                CollectItemsInRange(tree, box, tolerance, result);
 
-            return ItemsInRange<DomainTree<T>, T>(tree, isWithinSearch);
+            return result;
         }
 
         /***************************************************/
@@ -63,6 +65,16 @@ namespace BH.Engine.Data
         [Output("data", "All data in the tree which nodes returned true for the isWithinSearch method.")]
         public static IEnumerable<T> ItemsInRange<TNode, T>(this TNode tree, Func<TNode, bool> isWithinSearch) where TNode : INode<T>
         {
+            // DomainTrees are traversed directly, which avoids the dynamic dispatch needed to get the children and values of a general node
+            DomainTree<T> domainTree = (object)tree as DomainTree<T>;
+            Func<DomainTree<T>, bool> domainTreeSearch = (object)isWithinSearch as Func<DomainTree<T>, bool>;
+            if (domainTree != null && domainTreeSearch != null)
+            {
+                List<T> result = new List<T>();
+                CollectItemsInRange(domainTree, domainTreeSearch, result);
+                return result;
+            }
+
             if (tree != null && isWithinSearch(tree))
             {
                 return tree.IChildren<TNode, T>().SelectMany(x => ItemsInRange<TNode, T>(x, isWithinSearch)).Concat(tree.IValues());
@@ -71,6 +83,45 @@ namespace BH.Engine.Data
             {
                 return new List<T>();
             }
+        }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        // Adds the values of every node within the tolerance of the box to the result. Children first, then the node's own values.
+        private static void CollectItemsInRange<T>(DomainTree<T> node, DomainBox box, double tolerance, List<T> result)
+        {
+            if (node == null || !node.DomainBox.IsInRange(box, tolerance))
+                return;
+
+            List<DomainTree<T>> children = node.Children;
+            if (children != null)
+            {
+                for (int i = 0; i < children.Count; i++)
+                    CollectItemsInRange(children[i], box, tolerance, result);
+            }
+
+            if (node.Values != null)
+                result.AddRange(node.Values);
+        }
+
+        /***************************************************/
+
+        private static void CollectItemsInRange<T>(DomainTree<T> node, Func<DomainTree<T>, bool> isWithinSearch, List<T> result)
+        {
+            if (node == null || !isWithinSearch(node))
+                return;
+
+            List<DomainTree<T>> children = node.Children;
+            if (children != null)
+            {
+                for (int i = 0; i < children.Count; i++)
+                    CollectItemsInRange(children[i], isWithinSearch, result);
+            }
+
+            if (node.Values != null)
+                result.AddRange(node.Values);
         }
 
         /***************************************************/

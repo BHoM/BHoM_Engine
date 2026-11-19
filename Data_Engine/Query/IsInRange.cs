@@ -49,7 +49,21 @@ namespace BH.Engine.Data
             if (box1 == null || box2 == null)
                 return false; //Cannot be in range if either is null
 
-            return SquareDistance(box1, box2) < (tolerance * tolerance);
+            // Same as SquareDistance(box1, box2) < tolerance * tolerance, but stops as soon as the sum reaches the threshold
+            double threshold = tolerance * tolerance;
+            Domain[] d1 = box1.Domains;
+            Domain[] d2 = box2.Domains;
+            int count = Math.Min(d1.Length, d2.Length);
+
+            double sum = 0;
+            for (int i = 0; i < count; i++)
+            {
+                double d = Distance(d1[i], d2[i]);
+                sum += d * d;
+                if (sum >= threshold)
+                    return false;
+            }
+            return sum < threshold;
         }
 
         /***************************************************/
