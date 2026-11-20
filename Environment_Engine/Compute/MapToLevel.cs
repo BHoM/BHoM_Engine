@@ -111,13 +111,14 @@ namespace BH.Engine.Environment
             return output;
         }
 
+        [PreviousVersion("10.0", "BH.Engine.Environment.Compute.MaptoLevel(System.Collections.Generic.List<BH.oM.Analytical.Elements.IRegion>, System.Int32)")]
         [Description("Organise the BHoM Region objects into a data structure based on the level of each region")]
         [Input("regions", "A collection of BHoM Regions to be organised.")]
         [Input("decimals", "Provide decimal location to define the degree of tolerance for data matching.")]
         [MultiOutput(0, "regionsByLevel", "A collection of BHoM Regions grouped by levels.")]
         [MultiOutput(1, "levelsInUse", "A sublist of the BHoM Levels that have Room.")]
         [MultiOutput(2, "regionsNotMapped", "A collection of BHoM Regions which did not sit neatly on any of the provided levels")]
-        public static Output<List<List<IRegion>>, List<oM.Spatial.SettingOut.Level>, List<IRegion>> MaptoLevel(List<IRegion> regions, int decimals = 6)
+        public static Output<List<List<IRegion>>, List<oM.Spatial.SettingOut.Level>, List<IRegion>> MapToLevel(List<IRegion> regions, int decimals = 6)
         {
             List<oM.Spatial.SettingOut.Level> levels = Create.Levels(regions);
             Output<List<List<IRegion>>, List<oM.Spatial.SettingOut.Level>, List<IRegion>> output = MapToLevel(regions, levels, decimals);
