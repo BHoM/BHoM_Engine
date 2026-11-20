@@ -19,6 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public License     
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
+
 using System;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
@@ -60,35 +61,36 @@ namespace BH.Engine.Geometry
 
         /***************************************************/
 
-        [Description("Creates a rectangle with rounded corners, lying flat in the XY plane and centred on the origin.")]
+        [Description("Creates a rectangle lying flat in the XY plane, centred on a point, with its sides parallel to the X and Y axes.")]
         [Input("width", "Total width of the rectangle, measured along the X axis.")]
         [Input("height", "Total height of the rectangle, measured along the Y axis.")]
-        [Input("radius", "How rounded the corners are. Use 0 for sharp corners. Should be no more than half the shorter side.")]
-        [Output("rectangle", "The outline of the rectangle as a list of straight edges and corner arcs in order, starting on the left-hand side and running anticlockwise.")]
-        public static List<ICurve> Rectangle(double width, double height, double radius)
+        [Output("rectangle", "The rectangle as a closed outline, starting at its bottom-left corner and running anticlockwise.")]
+        public static Polygon Rectangle(double width, double height, Point centre)
         {
-            Vector xAxis = oM.Geometry.Vector.XAxis;
             Vector yAxis = oM.Geometry.Vector.YAxis;
+            Vector xAxis = oM.Geometry.Vector.XAxis;
             
-            List<ICurve> perimeter = new List<ICurve>();
-            Point p = new Point { X = -width / 2, Y = height / 2 - radius, Z = 0 };
-            perimeter.Add(new Line { Start = p, End = p = p - yAxis * (height - 2 * radius) });
-            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + xAxis * radius, p, p = p + new Vector { X = radius, Y = -radius, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (width - 2 * radius) });
-            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * radius, p, p = p + new Vector { X = radius, Y = radius, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (height - 2 * radius) });
-            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - xAxis * radius, p, p = p + new Vector { X = -radius, Y = radius, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p - xAxis * (width - 2 * radius) });
-            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - yAxis * radius, p, p = p + new Vector { X = -radius, Y = -radius, Z = 0 }));
-            return perimeter;
+            Vector halfWidth = xAxis * width / 2;
+            Vector halfHeight = yAxis * height / 2;
+
+            List<Point> rectanglePoints = new List<Point>
+            {
+            centre - halfWidth - halfHeight,
+            centre + halfWidth - halfHeight,
+            centre + halfWidth + halfHeight,
+            centre - halfWidth + halfHeight,
+            centre - halfWidth - halfHeight,
+            };
+
+            return BH.Engine.Geometry.Create.Polygon(rectanglePoints);
         }
 
         /***************************************************/
 
         [Description("Creates a rectangle around a centre point, with its size and direction set by two arrows pointing from the centre to the middle of two sides.")]
         [Input("centre", "The point at the middle of the rectangle.")]
-        [Input("halfHeightVector", "Arrow from the centre to the middle of the top edge. Its direction sets which way the rectangle faces, and its length is half the rectangle's height.")]
-        [Input("halfWidthVector", "Arrow from the centre to the middle of the right-hand edge. Its length is half the rectangle's width. It must be at right angles to the height arrow.")]
+        [Input("HeightVector", "Arrow from the centre to the middle of the top edge. Its direction sets which way the rectangle faces, and its length is half the rectangle's height.")]
+        [Input("WidthVector", "Arrow from the centre to the middle of the right-hand edge. Its length is half the rectangle's width. It must be at right angles to the height arrow.")]
         [Output("rectangle", "The rectangle as a closed outline. If the two arrows are not at right angles, nothing is created and an error is shown.")]
         public static Polygon Rectangle(Point centre, Vector halfHeightVector, Vector halfWidthVector)
         {
