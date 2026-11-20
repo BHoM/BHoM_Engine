@@ -55,7 +55,7 @@ namespace BH.Engine.Serialiser
                 Serialise(value.GetType(), writer, typeof(Type));
 
                 writer.WriteName("Value");
-                writer.WriteString(Enum.GetName(value.GetType(), value));
+                writer.WriteString(value.ToString());
 
                 writer.WriteEndDocument();
             }
