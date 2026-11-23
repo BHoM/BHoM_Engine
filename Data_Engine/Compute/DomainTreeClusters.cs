@@ -63,17 +63,22 @@ namespace BH.Engine.Data
 
                 result.Add(new List<T>());
                 count++;
+                // toEvaluate is used as a queue. Items before head are done, which avoids the cost of removing from the start of the list.
+                toEvaluate.Clear();
+                int head = 0;
                 toEvaluate.Add(i);
                 check[i] = true;
 
-                while (toEvaluate.Count > 0)
+                while (head < toEvaluate.Count)
                 {
-                    // Find all the neighbours for each item in toEvaluate, and add them in toEvaluate
-                    foreach (int index in Data.Query.ItemsInRange<DomainTree<int>, int>(indexTree, x => treeEvaluator(x.DomainBox, domainBoxes[toEvaluate[0]])))
+                    int current = toEvaluate[head];
+
+                    // Find all the neighbours for the current item, and add them in toEvaluate
+                    foreach (int index in Data.Query.ItemsInRange<DomainTree<int>, int>(indexTree, x => treeEvaluator(x.DomainBox, domainBoxes[current])))
                     {
                         if (!check[index])
                         {
-                            if (itemEvaluator(items[toEvaluate[0]], items[index]))
+                            if (itemEvaluator(items[current], items[index]))
                             {
                                 toEvaluate.Add(index);
                                 check[index] = true;
@@ -81,9 +86,9 @@ namespace BH.Engine.Data
                         }
                     }
 
-                    // move the checked items from toEvaluate to result
-                    result[count].Add(items[toEvaluate[0]]);
-                    toEvaluate.RemoveAt(0);
+                    // move the checked item from toEvaluate to result
+                    result[count].Add(items[current]);
+                    head++;
                 }
             }
 

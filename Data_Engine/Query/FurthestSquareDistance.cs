@@ -47,44 +47,17 @@ namespace BH.Engine.Data
                 return 0;
             }
 
-            return box1.Domains.Zip(box2.Domains, (a, b) => Math.Pow(FurthestEdgeDistance(a, b), 2)).Sum();
-        }
+            Domain[] d1 = box1.Domains;
+            Domain[] d2 = box2.Domains;
+            int count = Math.Min(d1.Length, d2.Length);
 
-        [Description("Gets the furthest possible distance between two vectors confined in respective tight DomainBoxes." +
-                     "i.e. assume that the data in the DomainBoxes coincide with every side of the box and get a worst-case distance between their data.")]
-        [Input("box1", "Box to evaluate furthest possible square distance from.")]
-        [Input("box2", "Box to evaluate furthest possible square distance from.")]
-        [Output("sqDist", "The furthest possible square distance between two vectors confined in the respective tight DomainBoxes.")]
-        public static double FurthestTightSquareDistance(this DomainBox box1, DomainBox box2)
-        {
-            if (box1 == null || box2 == null)
+            double sum = 0;
+            for (int i = 0; i < count; i++)
             {
-                BH.Engine.Base.Compute.RecordError("Cannot query the furthest square distance if either domain box is null.");
-                return 0;
+                double d = FurthestEdgeDistance(d1[i], d2[i]);
+                sum += d * d;
             }
-
-            // Find in which axis the distance between the outer bounderies of the boxes is the least
-            int index = 0;
-            double min = double.MaxValue;
-            for (int i = 0; i < box1.Domains.Length; i++)
-            {
-                double temp = ShortestEdgeDistance(box1.Domains[i], box2.Domains[i]);
-                if (temp < min)
-                {
-                    min = temp;
-                    index = i;
-                }
-            }
-
-            double sq = min * min;
-
-            for (int i = 0; i < box1.Domains.Length; i++)
-            {
-                if (i != index)
-                    sq += Math.Pow(FurthestEdgeDistance(box1.Domains[i], box2.Domains[i]), 2);
-            }
-
-            return sq;
+            return sum;
         }
 
 
@@ -97,22 +70,6 @@ namespace BH.Engine.Data
             return Math.Max(
                 b.Max - a.Min,
                 a.Max - b.Min);
-        }
-
-        /***************************************************/
-
-        private static double ShortestEdgeDistance(Domain a, Domain b)
-        {
-            double[] values = new double[]
-            {
-                a.Min - b.Min,
-                a.Min - b.Max,
-                a.Max - b.Min,
-                a.Max - b.Max,
-
-            };
-
-            return values.Min(x => Math.Abs(x));
         }
 
         /***************************************************/

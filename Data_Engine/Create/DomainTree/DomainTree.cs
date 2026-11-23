@@ -78,14 +78,18 @@ namespace BH.Engine.Data
             {
                 DomainTree<T> tree = new DomainTree<T>()
                 {
-                    Children = children?.ToList() ?? new List<DomainTree<T>>(),
-                    DomainBox = children?.Select(x => x?.DomainBox).Aggregate((x, y) => x + y)
+                    Children = children?.ToList() ?? new List<DomainTree<T>>()
                 };
+
+                // Only a null collection of children leaves the DomainBox unset
+                if (children != null)
+                    tree.DomainBox = tree.Bounds();
 
                 return tree;
             };
 
-            return Node<DomainTree<T>, T>(dataItems, splitMethod, setChildrenToNode, treeDegree, leafSize);
+            // Evaluated once, the items are traversed multiple times when building the tree
+            return Node<DomainTree<T>, T>(dataItems?.ToList(), splitMethod, setChildrenToNode, treeDegree, leafSize);
         }
 
 
@@ -98,18 +102,33 @@ namespace BH.Engine.Data
         {
             sampleSize = Math.Min(list.Count, sampleSize);
 
-            int step = (int)Math.Floor((decimal)(list.Count / sampleSize));
-            // find centre
-            DomainBox box = list[0].DomainBox;
+            int step = list.Count / sampleSize;
+            // find centre, from the union of the sampled DomainBoxes
+            Domain[] first = list[0].DomainBox.Domains;
+            double[] boxMin = new double[first.Length];
+            double[] boxMax = new double[first.Length];
+            for (int i = 0; i < first.Length; i++)
+            {
+                boxMin[i] = first[i].Min;
+                boxMax[i] = first[i].Max;
+            }
+
             for (int i = 1; i < sampleSize; i++)
-                box += list[i * step].DomainBox;
+            {
+                Domain[] domains = list[i * step].DomainBox.Domains;
+                for (int j = 0; j < boxMin.Length; j++)
+                {
+                    boxMin[j] = Math.Min(boxMin[j], domains[j].Min);
+                    boxMax[j] = Math.Max(boxMax[j], domains[j].Max);
+                }
+            }
 
             int index = -1;
             double max = double.MinValue;
 
-            for (int i = 0; i < box.Domains.Length; i++)
+            for (int i = 0; i < boxMin.Length; i++)
             {
-                double temp = box.Domains[i].Max - box.Domains[i].Min;
+                double temp = boxMax[i] - boxMin[i];
                 if (temp > max)
                 {
                     max = temp;
@@ -117,7 +136,7 @@ namespace BH.Engine.Data
                 }
             }
 
-            double centre = (box.Domains[index].Min + box.Domains[index].Max) / 2;
+            double centre = (boxMin[index] + boxMax[index]) / 2;
 
             // split into two
             List<DomainTree<T>> one = new List<DomainTree<T>>();
@@ -140,7 +159,42 @@ namespace BH.Engine.Data
         [Description("Creates a union DomainBox around the childrens DomainBoxes.")]
         private static DomainBox Bounds<T>(this DomainTree<T> domainTree)
         {
-            return domainTree.Children.Select(x => x.DomainBox).Aggregate((x, y) => x + y);
+            // Same result as adding all the DomainBoxes together, without creating a DomainBox for each step.
+            List<DomainTree<T>> children = domainTree.Children;
+            if (children.Count == 0)
+                throw new InvalidOperationException("Cannot create the bounds of a DomainTree without any children.");
+
+            DomainBox firstBox = children[0]?.DomainBox;
+            if (children.Count == 1 || firstBox == null)
+                return firstBox;
+
+            Domain[] first = firstBox.Domains;
+            double[] min = new double[first.Length];
+            double[] max = new double[first.Length];
+            for (int i = 0; i < first.Length; i++)
+            {
+                min[i] = first[i].Min;
+                max[i] = first[i].Max;
+            }
+
+            for (int i = 1; i < children.Count; i++)
+            {
+                Domain[] domains = children[i]?.DomainBox?.Domains;
+                if (domains == null || domains.Length != min.Length)
+                    return null;    // Boxes which can't be added together
+
+                for (int j = 0; j < min.Length; j++)
+                {
+                    min[j] = Math.Min(min[j], domains[j].Min);
+                    max[j] = Math.Max(max[j], domains[j].Max);
+                }
+            }
+
+            Domain[] union = new Domain[min.Length];
+            for (int i = 0; i < union.Length; i++)
+                union[i] = new Domain(min[i], max[i]);
+
+            return new DomainBox { Domains = union };
         }
 
         /***************************************************/
