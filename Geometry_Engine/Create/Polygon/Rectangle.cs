@@ -64,6 +64,7 @@ namespace BH.Engine.Geometry
         [Description("Creates a rectangle lying flat in the XY plane, centred on a point, with its sides parallel to the X and Y axes.")]
         [Input("width", "Total width of the rectangle, measured along the X axis.")]
         [Input("height", "Total height of the rectangle, measured along the Y axis.")]
+        [Input("centre", "The point at the middle of the rectangle.")]
         [Output("rectangle", "The rectangle as a closed outline, starting at its bottom-left corner and running anticlockwise.")]
         public static Polygon Rectangle(double width, double height, Point centre)
         {
