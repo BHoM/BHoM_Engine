@@ -142,7 +142,11 @@ namespace BH.Engine.Base
             }
             //Main type definition as string up until the first split char (first '<').
             //Number of generic arguments will be 1 less than the number of argsSplit count
-            return GenericType(name.Substring(0, argsSplit[0]) + "`" + (argsSplit.Count - 1), arguments, silent, takeFirstIfMultiple);
+            Type type = GenericType(name.Substring(0, argsSplit[0]) + "`" + (argsSplit.Count - 1), arguments, silent, takeFirstIfMultiple);
+
+            if (type != null && name.Contains("&"))
+                type = type.MakeByRefType();
+            return type;
         }
 
         /***************************************************/
@@ -209,9 +213,12 @@ namespace BH.Engine.Base
                 arguments.Add(name.Substring(argsStarts[i], argsEnd[i] - argsStarts[i]).Trim());
             }
             string mainName = name.Substring(0, nameEnd);
-            //Main type definition as string up until the first split char (first '<').
+            //Main type definition as string up until the first split char (first '[[').
             //Number of generic arguments will be 1 less than the number of argsSplit count
-            return GenericType(mainName, arguments, silent, takeFirstIfMultiple);
+            Type type = GenericType(mainName, arguments, silent, takeFirstIfMultiple);
+            if (type != null && name.Contains("&"))
+                type = type.MakeByRefType();
+            return type;
         }
 
         /***************************************************/
