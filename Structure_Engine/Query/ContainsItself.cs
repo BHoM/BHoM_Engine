@@ -34,22 +34,18 @@ namespace BH.Engine.Structure
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Checks if a LoadCombination contains itself, directly or through the LoadCombinations nested in it. Such a combination can never be fully expanded into its base cases. \n" +
-            "Combinations are compared by Number, as packages identify cases by number, so a copy of the combination with the same Number counts as the combination itself. If the combination has no positive Number, it is compared by reference instead. \n" +
-            "Only loops that pass back through the given combination are found. A loop further down, for example A > B > C > B checked from A, is found by checking B. Use IsValid to check every nested combination.")]
+        [Description("Checks if a LoadCombination contains itself, directly or through nested LoadCombinations.")]
         [Input("combination", "The LoadCombination to check.")]
-        [Output("containsItself", "Returns true if the LoadCombination contains itself. Returns false if it does not, or if it is null.")]
+        [Output("containsItself", "True if the LoadCombination contains itself.")]
         public static bool ContainsItself(this LoadCombination combination)
         {
             if (combination.IsNull())
                 return false;
 
-            // Unnumbered combinations would all match each other by Number, so fall back to the object itself.
+            // Compare by Number, as packages identify cases by number. Unnumbered combinations are compared by reference.
             bool byNumber = combination.Number > 0;
 
-            // Walks the nested combinations depth first. Each object is visited once, so a loop that does not pass
-            // through the given combination still ends, and every nested combination is reached even when two of
-            // them share a number. IsValid relies on this to stop when it validates the nested cases.
+            // Only loops back to this combination are found. Each combination is visited once, so other loops still end.
             HashSet<LoadCombination> visited = new HashSet<LoadCombination> { combination };
             Stack<LoadCombination> toVisit = new Stack<LoadCombination>();
             toVisit.Push(combination);

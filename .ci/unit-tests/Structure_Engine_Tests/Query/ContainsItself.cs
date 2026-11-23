@@ -32,7 +32,7 @@ namespace BH.Tests.Engine.Structure.Query
     public class ContainsItself : NUnitTest
     {
         [Test]
-        [Description("Checks that a combination containing only Loadcases does not contain itself.")]
+        [Description("Only Loadcases returns false.")]
         public void NoNestedCombinations()
         {
             LoadCombination combination = Combination(1, Case(1));
@@ -41,7 +41,7 @@ namespace BH.Tests.Engine.Structure.Query
         }
 
         [Test]
-        [Description("Checks that a combination factored directly in itself is found.")]
+        [Description("Direct self-reference returns true.")]
         public void DirectSelfReference()
         {
             LoadCombination combination = Combination(1, Case(1));
@@ -51,7 +51,7 @@ namespace BH.Tests.Engine.Structure.Query
         }
 
         [Test]
-        [Description("Checks that a loop passing through a nested combination, A > B > A, is found from both ends.")]
+        [Description("A > B > A returns true for A and B.")]
         public void IndirectSelfReference()
         {
             LoadCombination a = Combination(1, Case(1));
@@ -63,7 +63,7 @@ namespace BH.Tests.Engine.Structure.Query
         }
 
         [Test]
-        [Description("Checks that a loop further down, A > B > C > B, is not reported for A but is reported for B, and that the walk still ends.")]
+        [Description("A > B > C > B returns false for A and true for B.")]
         public void LowerLoopOnlyFoundFromInsideIt()
         {
             LoadCombination c = Combination(3, Case(1));
@@ -76,7 +76,7 @@ namespace BH.Tests.Engine.Structure.Query
         }
 
         [Test]
-        [Description("Checks that a separate copy of the combination with the same Number counts as the combination itself.")]
+        [Description("A copy with the same Number returns true.")]
         public void CopyWithSameNumber()
         {
             LoadCombination copy = Combination(1, Case(1));
@@ -86,7 +86,7 @@ namespace BH.Tests.Engine.Structure.Query
         }
 
         [Test]
-        [Description("Checks that unnumbered combinations are compared by reference, so two different unnumbered combinations do not match.")]
+        [Description("Unnumbered combinations are compared by reference.")]
         public void UnnumberedComparedByReference()
         {
             LoadCombination inner = Combination(0, Case(1));
@@ -99,7 +99,7 @@ namespace BH.Tests.Engine.Structure.Query
         }
 
         [Test]
-        [Description("Checks that a null combination returns false and records an error.")]
+        [Description("Null returns false and records an error.")]
         public void NullCombination()
         {
             BH.Engine.Structure.Query.ContainsItself(null).ShouldBeFalse();
@@ -107,7 +107,7 @@ namespace BH.Tests.Engine.Structure.Query
         }
 
         [Test]
-        [Description("Checks that IsValid finds a loop further down, A > B > C > B, when checking A.")]
+        [Description("IsValid returns false for A when A > B > C > B.")]
         public void IsValidFindsLowerLoop()
         {
             LoadCombination c = Combination(3, Case(1));
