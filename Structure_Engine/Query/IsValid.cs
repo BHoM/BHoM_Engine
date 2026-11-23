@@ -208,40 +208,6 @@ namespace BH.Engine.Structure
         }
 
         /***************************************************/
-
-        // Walks the combinations nested in a combination, depth first, comparing by Number, since packages identify
-        // cases by number and copies of a combination share its number. Each object is visited once, so a loop that
-        // does not pass through the given combination still ends, and every nested combination is reached even when
-        // two of them share a number. IsValid relies on this to stop when it validates the nested cases.
-        private static bool ContainsItself(LoadCombination combination)
-        {
-            HashSet<LoadCombination> visited = new HashSet<LoadCombination> { combination };
-            Stack<LoadCombination> toVisit = new Stack<LoadCombination>();
-            toVisit.Push(combination);
-
-            while (toVisit.Count > 0)
-            {
-                LoadCombination current = toVisit.Pop();
-                if (current.LoadCases == null)
-                    continue;
-
-                IEnumerable<LoadCombination> nestedCombinations = current.LoadCases
-                    .Select(item => item?.Item2)
-                    .OfType<LoadCombination>();
-                foreach (LoadCombination nested in nestedCombinations)
-                {
-                    if (nested.Number == combination.Number)
-                        return true;
-
-                    if (visited.Add(nested))
-                        toVisit.Push(nested);
-                }
-            }
-
-            return false;
-        }
-
-        /***************************************************/
     }
 }
 
