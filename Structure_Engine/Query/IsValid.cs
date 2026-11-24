@@ -25,6 +25,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using BH.oM.Base.Attributes;
+using BH.oM.Base.Attributes.Enums;
 using BH.oM.Structure;
 using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
@@ -70,28 +71,30 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        [Description("Checks if a case, a Loadcase or a LoadCombination, is valid by performing null checks and basic checks on its properties.")]
+        [Description("Checks if a case, a Loadcase or a LoadCombination, is valid by performing null checks and basic checks on its properties. \n" +
+            "For a LoadCombination, also checks the cases and factors it holds, validating each nested case, and that it does not contain itself.")]
         [Input("loadCase", "The Loadcase or LoadCombination to check.")]
+        [Input("message", "Optional text added to the end of every error recorded, for example to say which LoadCombination the case is factored in.", UIExposure.Hidden)]
         [Output("result", "Returns true if the case is valid.")]
-        public static bool IsValid(this ICase loadCase)
+        public static bool IsValid(this ICase loadCase, string message = "")
         {
-            if (loadCase.IsNull())
-            {
-                Base.Compute.RecordError("Case is null.");
+            if (loadCase.IsNull(nameof(IsValid), message))
                 return false;
-            }
 
             if (string.IsNullOrWhiteSpace(loadCase.Name))
             {
-                Base.Compute.RecordError($"{loadCase.GetType().Name} {loadCase.Number} has no name.");
+                Base.Compute.RecordError(WithMessage($"{loadCase.GetType().Name} {loadCase.Number} has no name.", message));
                 return false;
             }
 
             if (loadCase.Number <= 0)
             {
-                Base.Compute.RecordError($"{loadCase.GetType().Name} '{loadCase.Name}' has the number {loadCase.Number}, which is less than or equal to zero.");
+                Base.Compute.RecordError(WithMessage($"{loadCase.GetType().Name} '{loadCase.Name}' has the number {loadCase.Number}, which is less than or equal to zero.", message));
                 return false;
             }
+
+            if (loadCase is LoadCombination combination)
+                return HasValidFactors(combination, message);
 
             return true;
         }
@@ -144,6 +147,67 @@ namespace BH.Engine.Structure
 
             return valid;
         }
+
+        /***************************************************/
+        /**** Private Methods                           ****/
+        /***************************************************/
+
+        // Checks the cases and factors a combination holds, validating each nested case in turn. The message is added
+        // to every error recorded, and passed on to the nested cases with this combination added to it.
+        private static bool HasValidFactors(LoadCombination combination, string message)
+        {
+            // Checked first, as the nested cases are validated below, and a combination that contains itself would never stop doing so.
+            if (ContainsItself(combination))
+            {
+                Base.Compute.RecordError(WithMessage($"LoadCombination {combination.Number} contains itself, directly or through the combinations it contains.", message));
+                return false;
+            }
+
+            if (combination.LoadCases == null || combination.LoadCases.Count == 0)
+            {
+                Base.Compute.RecordError(WithMessage($"LoadCombination {combination.Number} must contain at least one case.", message));
+                return false;
+            }
+
+            bool valid = true;
+            string nestedMessage = WithMessage($"It is factored in LoadCombination {combination.Number}.", message);
+
+            foreach (Tuple<double, ICase> item in combination.LoadCases)
+            {
+                valid &= (item?.Item2).IsValid(nestedMessage);    // &= so every case is checked and every problem recorded
+
+                if (item != null && (double.IsNaN(item.Item1) || double.IsInfinity(item.Item1)))
+                {
+                    string caseName = item.Item2 == null ? "a null case" : $"case {item.Item2.Number}";
+                    Base.Compute.RecordError(WithMessage($"LoadCombination {combination.Number} has the factor {item.Item1} on {caseName}, which is not a finite number.", message));
+                    valid = false;
+                }
+            }
+
+            // Packages identify cases by number, so a number repeated is the same case factored twice.
+            IEnumerable<IGrouping<int, ICase>> repeated = combination.LoadCases
+                .Where(item => item?.Item2 != null)
+                .Select(item => item.Item2)
+                .GroupBy(loadCase => loadCase.Number)
+                .Where(group => group.Count() > 1);
+            foreach (IGrouping<int, ICase> group in repeated)
+            {
+                Base.Compute.RecordError(WithMessage($"LoadCombination {combination.Number} contains case {group.Key} more than once.", message));
+                valid = false;
+            }
+
+            return valid;
+        }
+
+        /***************************************************/
+
+        // Adds the optional message to the end of an error.
+        private static string WithMessage(string error, string message)
+        {
+            return string.IsNullOrWhiteSpace(message) ? error : $"{error} {message}";
+        }
+
+        /***************************************************/
     }
 }
 
