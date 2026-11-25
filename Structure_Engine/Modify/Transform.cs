@@ -28,6 +28,7 @@ using BH.oM.Geometry;
 using BH.oM.Structure.Elements;
 using BH.oM.Structure.Offsets;
 using BH.oM.Structure.SectionProperties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -105,7 +106,7 @@ namespace BH.Engine.Structure
             {
                 if (bar.SectionProperty != null)
                 {
-                    ISectionProperty flippedSectionProperty = Flip(bar.SectionProperty);
+                    ISectionProperty flippedSectionProperty = Flip(bar.SectionProperty, true);
                     result.SectionProperty = flippedSectionProperty;
                 }
 
@@ -384,9 +385,3 @@ namespace BH.Engine.Structure
 
     }
 }
-
-
-
-
-
-
