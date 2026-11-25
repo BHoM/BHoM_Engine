@@ -355,7 +355,7 @@ namespace BH.Engine.Structure
 
         private static IProfile IFlipProfile(IProfile profile, Boolean isMirroring)
         {
-            if (profile.ISymmetry() == Symmetry.DoublySymmetric)
+            if (!(profile is TaperedProfile) && profile.ISymmetry() == Symmetry.DoublySymmetric)
             {
                 return profile;
             }
@@ -433,35 +433,25 @@ namespace BH.Engine.Structure
 
         private static IProfile FlipProfile(TaperedProfile oldProfile, Boolean isMirroring)
         {
-            List<IProfile> newProfiles = new List<IProfile>();
-            List<double> newPositions = new List<double>();
-            List<double> keys = oldProfile.Profiles.Keys.ToList();
+            Dictionary<double, IProfile> flippedProfiles = new Dictionary<double, IProfile>();
 
             if (isMirroring)
             {
-                for (int i = 0; i < oldProfile.Profiles.Values.Count; i++)
+                foreach (var kvp in oldProfile.Profiles)
                 {
-                    double key = keys[i];
-                    newPositions.Add(key);
-                    oldProfile.Profiles.TryGetValue(key, out IProfile newProfile);
-                    newProfiles.Add(IFlipProfile(newProfile, isMirroring));
+                    flippedProfiles[kvp.Key] = IFlipProfile(kvp.Value,isMirroring);
                 }
             }
             else
             {
-                for (int i = 0; i < oldProfile.Profiles.Values.Count; i++)
+                foreach (var kvp in oldProfile.Profiles)
                 {
-                    double key = keys[i];
-                    newPositions.Add(1 - key);
-                    oldProfile.Profiles.TryGetValue(key, out IProfile newProfile);
-                    newProfiles.Add(IFlipProfile(newProfile, isMirroring));
+                    flippedProfiles[1 - kvp.Key] = IFlipProfile(kvp.Value, isMirroring);
+                    flippedProfiles.Reverse();
                 }
-
-                newProfiles.Reverse();
-                newPositions.Reverse();
             }
 
-            return Spatial.Create.TaperedProfile(newPositions, newProfiles, oldProfile.InterpolationOrder);
+            return new TaperedProfile(flippedProfiles, oldProfile.InterpolationOrder, oldProfile.Shape);
         }
 
         /***************************************************/
