@@ -20,15 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
-using BH.oM.Geometry.CoordinateSystem;
 using BH.oM.Spatial.ShapeProfiles;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace BH.Engine.Spatial
 {
@@ -49,48 +46,48 @@ namespace BH.Engine.Spatial
         [Output("I", "The created ISectionProfile.")]
         public static TaperFlangeISectionProfile TaperFlangeISectionProfile(double height, double width, double webThickness, double flangeThickness, double flangeSlope, double rootRadius, double toeRadius)
         {
+            if (!AreFinite(height, width, webThickness, flangeThickness, flangeSlope, rootRadius, toeRadius))
+                return null;
+
+            if (!ArePositive(height, width, webThickness, flangeThickness) || !AreNonNegative(flangeSlope, rootRadius, toeRadius))
+                return null;
+
             if (height < 2 * (flangeThickness + flangeSlope * (width / 4 - webThickness / 2))) // assume no fillets
             {
-                InvalidRatioError("height", "flangeThickness, flangeSlope, webThickness");
+                InvalidRatioError(nameof(height), $"{nameof(flangeThickness)}, {nameof(flangeSlope)} and {nameof(webThickness)}");
                 return null;
             }
 
             if (width < webThickness) // Assume no fillets
             {
-                InvalidRatioError("width", "webThickness");
+                InvalidRatioError(nameof(width), nameof(webThickness));
                 return null;
             }
 
             if (flangeSlope > flangeThickness / (width / 4)) // Assume no fillets
             {
-                InvalidRatioError("Width", "FlangeThickness and flangeSlope");
+                InvalidRatioError(nameof(width), $"{nameof(flangeThickness)} and {nameof(flangeSlope)}");
                 return null;
             }
 
             // check that the root radius doesn't take up the whole web
             if (height < 2 * (flangeThickness + flangeSlope * (width / 4 - webThickness / 2 - rootRadius) + Math.Sqrt(Math.Pow(rootRadius, 2) + Math.Pow(flangeSlope * rootRadius, 2))))
             {
-                InvalidRatioError("rootRadius", "flangeThickness, flangeSlope, flangeWidth, webThickness, and height");
+                InvalidRatioError(nameof(rootRadius), $"{nameof(flangeThickness)}, {nameof(flangeSlope)}, {nameof(width)}, {nameof(webThickness)} and {nameof(height)}");
                 return null;
             }
 
             // check that the toe radius doesn't eliminate the face of the toe
             if (Math.Sqrt(Math.Pow(toeRadius, 2) + Math.Pow(flangeSlope * toeRadius, 2)) > flangeThickness - flangeSlope * (width / 4 - toeRadius))
             {
-                InvalidRatioError("toeRadius", "flangeThickness, flangeSlope, and width");
+                InvalidRatioError(nameof(toeRadius), $"{nameof(flangeThickness)}, {nameof(flangeSlope)} and {nameof(width)}");
                 return null;
             }
 
             // check that the toe and root radii don't eliminate the inner flange face
             if (width < webThickness + 2 * (1 - flangeSlope) * (rootRadius + toeRadius))
             {
-                InvalidRatioError("width", "webthickness, rootRadius, and toeRadius");
-                return null;
-            }
-
-            if (height <= 0 || width <= 0 || webThickness <= 0 || flangeThickness <= 0 || flangeSlope < 0 || rootRadius < 0 || toeRadius < 0)
-            {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
+                InvalidRatioError(nameof(width), $"{nameof(webThickness)}, {nameof(rootRadius)} and {nameof(toeRadius)}");
                 return null;
             }
 
@@ -104,93 +101,29 @@ namespace BH.Engine.Spatial
 
         private static List<ICurve> TaperFlangeIProfileCurves(double tft, double tfw, double bft, double bfw, double slope, double wt, double height, double r1, double r2)
         {
-            List<ICurve> edges = new List<ICurve>();
-            Point p = new Point { X = bfw / 2, Y = 0, Z = 0 };
+            //Built with the mid height at the origin. Only profiles with differing flanges need to compute the centre of area.
+            //The flange thicknesses are measured at a quarter of the flange width from the tip.
+            double yb = -height / 2;
+            double yt = height / 2;
+            double bx = bfw / 2;
+            double tx = tfw / 2;
+            double wx = wt / 2;
+            double ybToe = yb + bft - bfw / 4 * slope;          //Inner face of bottom flange at the toe
+            double ybRoot = yb + bft + (bfw / 4 - wx) * slope;  //Inner face of bottom flange at the web
+            double ytToe = yt - (tft - tfw / 4 * slope);        //Inner face of top flange at the toe
+            double ytRoot = yt - (tft + (tfw / 4 - wx) * slope);//Inner face of top flange at the web
 
-            Vector xAxis = oM.Geometry.Vector.XAxis;
-            Vector yAxis = oM.Geometry.Vector.YAxis;
-            Point origin = oM.Geometry.Point.Origin;
-
-            Line l1 = new Line { Start = p, End = p = p + yAxis * (bft - bfw / 4 * slope) };
-            Line l2 = new Line { Start = p, End = p = p - xAxis * (bfw - wt) / 2 + yAxis * ((bfw - wt) / 2 * slope) };
-            Line l3 = new Line { Start = p, End = p = p + yAxis * (height - (bft + (bfw / 4 - wt / 2) * slope + (tft + (tfw / 4 - wt / 2) * slope))) };
-            Line l4 = new Line { Start = p, End = p = p + xAxis * (tfw - wt) / 2 + yAxis * ((tfw - wt) / 2 * slope) };
-            Line l5 = new Line { Start = p, End = p = p + yAxis * (tft - tfw / 4 * slope) };
-
-            List<ICurve> fillet = Fillet(l1, l2, r2);
-            edges.AddRange(fillet.GetRange(0, fillet.Count - 1));
-            fillet = Fillet(fillet.Last() as Line, l3, r1);
-            edges.AddRange(fillet.GetRange(0, fillet.Count - 1));
-            fillet = Fillet(fillet.Last() as Line, l4, r1);
-            edges.AddRange(fillet.GetRange(0, fillet.Count - 1));
-            fillet = Fillet(fillet.Last() as Line, l5, r2);
-            edges.AddRange(fillet);
-
-            int count = edges.Count;
-            for (int i = 0; i < count; i++)
+            List<ProfileCorner> corners = new List<ProfileCorner>
             {
-                edges.Add(Geometry.Modify.IMirror(edges[i], new Plane { Origin = origin, Normal = xAxis }));
-            }
-            edges.Add(new Line { Start = p, End = p - xAxis * (tfw) });
-            edges.Add(new Line { Start = origin + xAxis * (-bfw / 2), End = origin + xAxis * (bfw / 2) });
+                new ProfileCorner(-bx, yb, 0), new ProfileCorner(bx, yb, 0), new ProfileCorner(bx, ybToe, r2), new ProfileCorner(wx, ybRoot, r1),
+                new ProfileCorner(wx, ytRoot, r1), new ProfileCorner(tx, ytToe, r2), new ProfileCorner(tx, yt, 0), new ProfileCorner(-tx, yt, 0),
+                new ProfileCorner(-tx, ytToe, r2), new ProfileCorner(-wx, ytRoot, r1), new ProfileCorner(-wx, ybRoot, r1), new ProfileCorner(-bx, ybToe, r2)
+            };
 
-            Point centroid = edges.IJoin().Centroid();
-            Vector translation = Point.Origin - centroid;
-            return edges.Select(x => x.ITranslate(translation)).ToList();
+            return ProfileCurves(tft != bft || tfw != bfw, corners);
         }
 
         /***************************************************/
-
-        private static List<ICurve> Fillet(Line l1, Line l2, double r)
-        {
-            // Check that the radius is not absurd- if it is, return the two lines un-modified. If the radius is sensible, return l1 trimmed, arc, l2 trimmed.
-            if (r > 0 && l1.End.Distance(l2.Start) == 0)
-            {
-                Arc fillet = Fillet(l1.Start, l1.End, l2.End, r);
-                if (fillet != null)
-                {
-                    l1 = new Line { Start = l1.Start, End = fillet.StartPoint() };
-                    l2 = new Line { Start = fillet.EndPoint(), End = l2.End };
-
-                    return new List<ICurve> { l1, fillet, l2 };
-                }
-            }
-            return new List<ICurve> { l1, l2 };
-        }
-
-        private static Arc Fillet(Point a, Point b, Point c, double r)
-        {
-            double len1 = a.Distance(b);
-            double len2 = b.Distance(c);
-
-            if (len1 == 0.0 || len2 == 0.0)
-            {
-                return null;
-            }
-
-            Vector vector1 = (a - b).Normalise();
-            Vector vector2 = (c - b).Normalise();
-
-            double angle = vector1.Angle(vector2);
-
-            Vector localZ = vector1.CrossProduct(vector2).Normalise();
-
-            double trim = r / Math.Tan(angle / 2);
-
-            if (trim > len1 || trim > len2)
-            {
-                return null;
-            }
-
-            Point p = b + vector1 * trim + r * localZ.CrossProduct(vector1);
-
-            Vector localX = vector1.CrossProduct(localZ);
-            Vector localY = -vector1;
-
-            Cartesian center = Geometry.Create.CartesianCoordinateSystem(p, localX, localY);
-
-            return Geometry.Create.Arc(center, r, 0, Math.PI - angle);
-        }
     }
 }
 

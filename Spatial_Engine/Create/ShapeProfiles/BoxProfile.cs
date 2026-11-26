@@ -21,14 +21,10 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Geometry;
 using System;
-using BH.Engine.Reflection;
 using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
 using System.ComponentModel;
 
 namespace BH.Engine.Spatial
@@ -48,51 +44,51 @@ namespace BH.Engine.Spatial
         [Output("box", "The created BoxProfile.")]
         public static BoxProfile BoxProfile(double height, double width, double thickness, double outerRadius = 0, double innerRadius = 0)
         {
+            if (!AreFinite(height, width, thickness, outerRadius, innerRadius))
+                return null;
+
+            if (!ArePositive(height, width, thickness) || !AreNonNegative(outerRadius, innerRadius))
+                return null;
+
             if (thickness >= height / 2)
             {
-                InvalidRatioError("thickness", "height");
+                InvalidRatioError(nameof(thickness), nameof(height));
                 return null;
             }
 
             if (thickness >= width / 2)
             {
-                InvalidRatioError("thickness", "width");
+                InvalidRatioError(nameof(thickness), nameof(width));
                 return null;
             }
 
             if (outerRadius > height / 2)
             {
-                InvalidRatioError("outerRadius", "height");
+                InvalidRatioError(nameof(outerRadius), nameof(height));
                 return null;
             }
 
             if (outerRadius > width / 2)
             {
-                InvalidRatioError("outerRadius", "width");
+                InvalidRatioError(nameof(outerRadius), nameof(width));
                 return null;
             }
 
             if (innerRadius * 2 > width - thickness * 2)
             {
-                InvalidRatioError("innerRadius", "width and thickness");
+                InvalidRatioError(nameof(innerRadius), $"{nameof(width)} and {nameof(thickness)}");
                 return null;
             }
 
             if (innerRadius * 2 > height - thickness * 2)
             {
-                InvalidRatioError("innerRadius", "height and thickness");
+                InvalidRatioError(nameof(innerRadius), $"{nameof(height)} and {nameof(thickness)}");
                 return null;
             }
 
             if (Math.Sqrt(2) * thickness <= Math.Sqrt(2) * outerRadius - outerRadius - Math.Sqrt(2) * innerRadius + innerRadius)
             {
-                InvalidRatioError("thickness", "outerRadius and innerRadius");
-                return null;
-            }
-
-            if (height <= 0 || width <= 0 || thickness <= 0 || outerRadius < 0 || innerRadius < 0)
-            {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
+                InvalidRatioError(nameof(thickness), $"{nameof(outerRadius)} and {nameof(innerRadius)}");
                 return null;
             }
 
@@ -106,9 +102,8 @@ namespace BH.Engine.Spatial
 
         private static List<ICurve> BoxProfileCurves(double width, double height, double webThickness, double flangeThickness, double innerRadius, double outerRadius)
         {
-            List<ICurve> box = RectangleProfileCurves(width, height, outerRadius);
-            box.AddRange(RectangleProfileCurves(width - 2 * webThickness, height - 2 * flangeThickness, innerRadius));
-            return box;
+            //Outer loop counter-clockwise, inner loop clockwise
+            return ProfileCurves(false, RectangleCorners(width, height, outerRadius), RectangleCorners(width - 2 * webThickness, height - 2 * flangeThickness, innerRadius, true));
         }
 
         /***************************************************/

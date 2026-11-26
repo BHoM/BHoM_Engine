@@ -20,14 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Spatial.ShapeProfiles;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace BH.Engine.Spatial
 {
@@ -44,15 +42,23 @@ namespace BH.Engine.Spatial
         [Output("kite", "The created KiteProfile.")]
         public static KiteProfile KiteProfile(double width1, double angle1, double thickness)
         {
+            if (!AreFinite(width1, angle1, thickness))
+                return null;
+
+            if (!ArePositive(width1, angle1, thickness))
+                return null;
+
             if ((width1 * Math.Sin(angle1 / 2) / Math.Sqrt(2)) / (Math.Sin(Math.PI * 0.75 - (angle1 / 2))) <= thickness)
             {
-                InvalidRatioError("thickness", "width and angle1");
+                InvalidRatioError(nameof(thickness), $"{nameof(width1)} and {nameof(angle1)}");
                 return null;
             }
 
-            if (width1 <= 0 || angle1 <= 0 || thickness <= 0)
+            double angle2 = Math.PI - angle1;
+            double tolerance = 1e-3;
+            if (angle2 < tolerance || angle2 > Math.PI - tolerance)
             {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
+                Base.Compute.RecordError("Angles must be well between 0 and Pi");
                 return null;
             }
 
@@ -66,57 +72,24 @@ namespace BH.Engine.Spatial
 
         private static List<ICurve> KiteProfileCurves(double width1, double angle1, double thickness)
         {
-            Vector xAxis = oM.Geometry.Vector.XAxis;
-            Vector yAxis = oM.Geometry.Vector.YAxis;
-            Vector zAxis = oM.Geometry.Vector.ZAxis;
-            Point origin = oM.Geometry.Point.Origin;
+            //Kite symmetric about the x-axis with the corner of angle1 at the origin, right angles at the side corners, and the
+            //last corner on the positive x-axis. The void is the kite offset inwards by the thickness.
+            double cos = Math.Cos(angle1 / 2);
+            double sin = Math.Sin(angle1 / 2);
 
-            List<ICurve> externalEdges = new List<ICurve>();
-            List<ICurve> internalEdges = new List<ICurve>();
-            List<ICurve> group = new List<ICurve>();
+            //Outer loop counter-clockwise
+            double ax = width1 * cos;
+            double ay = width1 * sin;
+            List<ProfileCorner> outer = new List<ProfileCorner> { new ProfileCorner(0, 0, 0), new ProfileCorner(ax, -ay, 0), new ProfileCorner(width1 / cos, 0, 0), new ProfileCorner(ax, ay, 0) };
 
-            double width2 = width1 * Math.Tan(angle1 / 2);
-            double angle2 = Math.PI - angle1;
+            //Inner loop clockwise
+            double px = thickness / sin;
+            double innerLength = width1 - thickness - thickness * cos / sin;
+            double cx = px + innerLength * cos;
+            double cy = innerLength * sin;
+            List<ProfileCorner> inner = new List<ProfileCorner> { new ProfileCorner(px, 0, 0), new ProfileCorner(cx, cy, 0), new ProfileCorner((width1 - thickness) / cos, 0, 0), new ProfileCorner(cx, -cy, 0) };
 
-            double tolerance = 1e-3;
-
-            if (angle2 < tolerance || angle2 > Math.PI - tolerance)
-            {
-                Base.Compute.RecordError("Angles must be well between 0 and Pi");
-                return null;
-            }
-
-            Point p1 = new Point { X = 0, Y = 0, Z = 0 };
-            Point p2 = p1 + xAxis * Math.Abs(thickness / Math.Sin(angle1 / 2));
-
-            Vector dirVec1 = xAxis.Rotate(angle1 / 2, zAxis);
-            Vector dirVec2 = dirVec1.Rotate(-(Math.PI / 2), zAxis);
-
-            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + dirVec1 * width1 });
-            externalEdges.Add(new Line { Start = p1, End = p1 + dirVec2 * (width1 * Math.Tan(angle1 / 2)) });
-
-            int extCount = externalEdges.Count;
-            for (int i = 0; i < extCount; i++)
-            {
-                externalEdges.Add(Geometry.Modify.IMirror(externalEdges[i], new Plane { Origin = origin, Normal = yAxis }));
-            }
-
-            internalEdges.Add(new Line { Start = p2, End = p2 = p2 + dirVec1 * (width1 - thickness - (thickness * Math.Cos(angle1 / 2)) / Math.Sin(angle1 / 2)) });
-            internalEdges.Add(new Line { Start = p2, End = p2 + dirVec2 * (width2 - thickness - (thickness * Math.Cos(angle2 / 2)) / Math.Sin(angle2 / 2)) });
-
-            int intCount = internalEdges.Count;
-            for (int i = 0; i < intCount; i++)
-            {
-                internalEdges.Add(Geometry.Modify.IMirror(internalEdges[i], new Plane { Origin = origin, Normal = yAxis }));
-            }
-
-            Point centroid = externalEdges.IJoin().Centroid(internalEdges.IJoin());
-            Vector translation = Point.Origin - centroid;
-
-            group.AddRange(externalEdges);
-            group.AddRange(internalEdges);
-
-            return group.Select(x => x.ITranslate(translation)).ToList();
+            return ProfileCurves(true, outer, inner);
         }
 
         /***************************************************/

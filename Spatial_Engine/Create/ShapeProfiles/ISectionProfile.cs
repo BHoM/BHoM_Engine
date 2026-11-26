@@ -20,14 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Spatial.ShapeProfiles;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace BH.Engine.Spatial
 {
@@ -47,27 +45,27 @@ namespace BH.Engine.Spatial
         [Output("I", "The created ISectionProfile.")]
         public static ISectionProfile ISectionProfile(double height, double width, double webThickness, double flangeThickness, double rootRadius, double toeRadius)
         {
+            if (!AreFinite(height, width, webThickness, flangeThickness, rootRadius, toeRadius))
+                return null;
+
+            if (!ArePositive(height, width, webThickness, flangeThickness) || !AreNonNegative(rootRadius, toeRadius))
+                return null;
+
             if (height < flangeThickness * 2 + rootRadius * 2 || height <= flangeThickness * 2)
             {
-                InvalidRatioError("height", "flangeThickness and rootRadius");
+                InvalidRatioError(nameof(height), $"{nameof(flangeThickness)} and {nameof(rootRadius)}");
                 return null;
             }
 
             if (width < webThickness + rootRadius * 2 + toeRadius * 2)
             {
-                InvalidRatioError("width", "webthickness, rootRadius and toeRadius");
+                InvalidRatioError(nameof(width), $"{nameof(webThickness)}, {nameof(rootRadius)} and {nameof(toeRadius)}");
                 return null;
             }
 
             if (toeRadius > flangeThickness)
             {
-                InvalidRatioError("toeRadius", "flangeThickness");
-                return null;
-            }
-
-            if (height <= 0 || width <= 0 || webThickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
-            {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
+                InvalidRatioError(nameof(toeRadius), nameof(flangeThickness));
                 return null;
             }
 
@@ -81,37 +79,49 @@ namespace BH.Engine.Spatial
 
         private static List<ICurve> IProfileCurves(double tft, double tfw, double bft, double bfw, double wt, double wd, double r1, double r2, double weldSize)
         {
-            List<ICurve> edges = new List<ICurve>();
-            Point p = new Point { X = bfw / 2, Y = 0, Z = 0 };
+            //Built with the mid height at the origin. Only profiles with differing flanges need to compute the centre of area.
+            double yb = -(bft + wd + tft) / 2;  //Bottom
+            double yt = yb + bft + wd + tft;    //Top
+            double ybf = yb + bft;              //Top of bottom flange
+            double ytf = yt - tft;              //Underside of top flange
+            double bx = bfw / 2;
+            double tx = tfw / 2;
+            double wx = wt / 2;
 
-            Vector xAxis = oM.Geometry.Vector.XAxis;
-            Vector yAxis = oM.Geometry.Vector.YAxis;
-            Point origin = oM.Geometry.Point.Origin;
-            double weldLength = weldSize * 2 / Math.Sqrt(2);
+            List<ProfileCorner> corners = new List<ProfileCorner>(16) { new ProfileCorner(-bx, yb, 0), new ProfileCorner(bx, yb, 0), new ProfileCorner(bx, ybf, r2) };
 
-            edges.Add(new Line { Start = p, End = p = p + yAxis * (bft - r2) });
-            if (r2 > 0) edges.Add(BH.Engine.Geometry.Create.ArcByCentre(p - xAxis * r2, p, p = p + new Vector { X = -r2, Y = r2, Z = 0 }));
-            edges.Add(new Line { Start = p, End = p = p - xAxis * (bfw / 2 - wt / 2 - r1 - r2 - weldLength) });
-            if (r1 > 0) edges.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * r1, p, p = p + new Vector { X = -r1, Y = r1, Z = 0 }));
-            if (weldSize > 0) edges.Add(new Line { Start = p, End = p = p + new Vector { X = -weldLength, Y = weldLength, Z = 0 } });
-            edges.Add(new Line { Start = p, End = p = p + yAxis * (wd - 2 * r1 - 2 * weldLength) });
-            if (weldSize > 0) edges.Add(new Line { Start = p, End = p = p + new Vector { X = weldLength, Y = weldLength, Z = 0 } });
-            if (r1 > 0) edges.Add(BH.Engine.Geometry.Create.ArcByCentre(p + xAxis * r1, p, p = p + new Vector { X = r1, Y = r1, Z = 0 }));
-            edges.Add(new Line { Start = p, End = p = p + xAxis * (tfw / 2 - wt / 2 - r1 - r2 - weldLength) });
-            if (r2 > 0) edges.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * r2, p, p = p + new Vector { X = r2, Y = r2, Z = 0 }));
-            edges.Add(new Line { Start = p, End = p = p + yAxis * (tft - r2) });
-
-            int count = edges.Count;
-            for (int i = 0; i < count; i++)
+            if (weldSize > 0)
             {
-                edges.Add(Geometry.Modify.IMirror(edges[i], new Plane { Origin = origin, Normal = xAxis }));
+                //Welds as chamfers in the corners between web and flanges
+                double wl = weldSize * Math.Sqrt(2);
+                corners.Add(new ProfileCorner(wx + wl, ybf, 0));
+                corners.Add(new ProfileCorner(wx, ybf + wl, 0));
+                corners.Add(new ProfileCorner(wx, ytf - wl, 0));
+                corners.Add(new ProfileCorner(wx + wl, ytf, 0));
+                corners.Add(new ProfileCorner(tx, ytf, r2));
+                corners.Add(new ProfileCorner(tx, yt, 0));
+                corners.Add(new ProfileCorner(-tx, yt, 0));
+                corners.Add(new ProfileCorner(-tx, ytf, r2));
+                corners.Add(new ProfileCorner(-wx - wl, ytf, 0));
+                corners.Add(new ProfileCorner(-wx, ytf - wl, 0));
+                corners.Add(new ProfileCorner(-wx, ybf + wl, 0));
+                corners.Add(new ProfileCorner(-wx - wl, ybf, 0));
             }
-            edges.Add(new Line { Start = p, End = p - xAxis * (tfw) });
-            edges.Add(new Line { Start = origin + xAxis * (-bfw / 2), End = origin + xAxis * (bfw / 2) });
+            else
+            {
+                corners.Add(new ProfileCorner(wx, ybf, r1));
+                corners.Add(new ProfileCorner(wx, ytf, r1));
+                corners.Add(new ProfileCorner(tx, ytf, r2));
+                corners.Add(new ProfileCorner(tx, yt, 0));
+                corners.Add(new ProfileCorner(-tx, yt, 0));
+                corners.Add(new ProfileCorner(-tx, ytf, r2));
+                corners.Add(new ProfileCorner(-wx, ytf, r1));
+                corners.Add(new ProfileCorner(-wx, ybf, r1));
+            }
 
-            Point centroid = edges.IJoin().Centroid();
-            Vector translation = Point.Origin - centroid;
-            return edges.Select(x => x.ITranslate(translation)).ToList();
+            corners.Add(new ProfileCorner(-bx, ybf, r2));
+
+            return ProfileCurves(tft != bft || tfw != bfw, corners);
         }
 
         /***************************************************/

@@ -45,19 +45,26 @@ namespace BH.Engine.Geometry
         {
             List<Polyline> clones = pLines.Select(x => x.RemoveShortSegments(tol, tol)).ToList();
 
-            int digits = (int)Math.Floor(-Math.Log10(tol));
+            //Number of decimals to round the x-values to, limited to the range supported by Math.Round for doubles
+            int digits = Math.Max(0, Math.Min(15, (int)Math.Floor(-Math.Log10(tol))));
 
-            List<decimal> xes = new List<decimal>();
+            //Round the x-values of all points. The rounded points are new objects, as the points of the clones are the same objects as the points
+            //of the input polylines, which in turn may be shared with other geometry, such as the edge curves of a profile.
+            //Values rounding to the same multiple of the tolerance become identical doubles, which lets Distinct cull them below.
+            List<double> xes = new List<double>();
             foreach (Polyline pLine in clones)
             {
-                foreach (Point pt in pLine.ControlPoints)
-                    pt.X = System.Convert.ToDouble(Math.Round(System.Convert.ToDecimal(pt.X), digits));
-
-                xes.AddRange(pLine.ControlPoints.Select(x => System.Convert.ToDecimal(x.X)));
+                List<Point> pts = pLine.ControlPoints;
+                for (int i = 0; i < pts.Count; i++)
+                {
+                    Point pt = pts[i];
+                    pts[i] = new Point { X = Math.Round(pt.X, digits), Y = pt.Y, Z = pt.Z };
+                    xes.Add(pts[i].X);
+                }
             }
 
             // sort and cull point x-positions
-            List<double> xValues = xes.Distinct().Select(x => System.Convert.ToDouble(x)).ToList();
+            List<double> xValues = xes.Distinct().ToList();
             xValues.Sort();
 
             List<Tuple<Point, int, int>> list = new List<Tuple<Point, int, int>>();

@@ -20,13 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Spatial.ShapeProfiles;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace BH.Engine.Spatial
 {
@@ -47,35 +45,31 @@ namespace BH.Engine.Spatial
         [Output("channel", "The created ChannelProfile.")]
         public static ChannelProfile ChannelProfile(double height, double flangeWidth, double webThickness, double flangeThickness, double rootRadius = 0, double toeRadius = 0, bool mirrorAboutLocalZ = false)
         {
+            if (!AreFinite(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius))
+                return null;
+
+            if (!ArePositive(height, flangeWidth, webThickness, flangeThickness) || !AreNonNegative(rootRadius, toeRadius))
+                return null;
+
             if (height < flangeThickness * 2 + rootRadius * 2 || height <= flangeThickness * 2)
             {
-                InvalidRatioError("height", "flangeThickness and rootRadius");
+                InvalidRatioError(nameof(height), $"{nameof(flangeThickness)} and {nameof(rootRadius)}");
                 return null;
             }
 
             if (flangeWidth < webThickness + rootRadius + toeRadius)
             {
-                InvalidRatioError("width", "webthickness, toeRadius and rootRadius");
+                InvalidRatioError(nameof(flangeWidth), $"{nameof(webThickness)}, {nameof(toeRadius)} and {nameof(rootRadius)}");
                 return null;
             }
 
             if (flangeThickness < toeRadius)
             {
-                InvalidRatioError("flangeThickness", "toeRadius");
+                InvalidRatioError(nameof(flangeThickness), nameof(toeRadius));
                 return null;
             }
 
-            if (height <= 0 || flangeWidth <= 0 || webThickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
-            {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
-                return null;
-            }
-
-            List<ICurve> curves = ChannelProfileCurves(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius);
-
-            if (mirrorAboutLocalZ)
-                curves = curves.MirrorAboutLocalZ();
-
+            List<ICurve> curves = ChannelProfileCurves(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalZ);
             return new ChannelProfile(height, flangeWidth, webThickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalZ, curves);
         }
 
@@ -83,28 +77,18 @@ namespace BH.Engine.Spatial
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static List<ICurve> ChannelProfileCurves(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius)
+        private static List<ICurve> ChannelProfileCurves(double height, double width, double webthickness, double flangeThickness, double rootRadius, double toeRadius, bool mirrorAboutLocalZ)
         {
-            List<ICurve> edges = new List<ICurve>();
-
-            Point p = new Point() { X = 0, Y = -height / 2 };
-            edges.Add(new Line() { Start = new Point() { X = 0, Y = 0 }, End = new Point() { X = 0, Y = height / 2 } });
-            edges.Add(new Line() { Start = new Point() { X = 0, Y = height / 2 }, End = new Point() { X = width, Y = height / 2 } });
-            edges.Add(new Line() { Start = new Point() { X = width, Y = height / 2 }, End = new Point() { X = width, Y = height / 2 - flangeThickness + toeRadius } });
-            if (toeRadius > 0) edges.Add(Geometry.Create.ArcByCentre(new Point() { X = width - toeRadius, Y = height / 2 - flangeThickness + toeRadius }, new Point() { X = width, Y = height / 2 - flangeThickness + toeRadius }, new Point() { X = width - toeRadius, Y = height / 2 - flangeThickness }));
-            edges.Add(new Line() { Start = new Point() { X = width - toeRadius, Y = height / 2 - flangeThickness }, End = new Point() { X = webthickness + rootRadius, Y = height / 2 - flangeThickness } });
-            if (rootRadius > 0) edges.Add(Geometry.Create.ArcByCentre(new Point() { X = webthickness + rootRadius, Y = height / 2 - flangeThickness - rootRadius }, new Point() { X = webthickness + rootRadius, Y = height / 2 - flangeThickness }, new Point() { X = webthickness, Y = height / 2 - flangeThickness - rootRadius }));
-            edges.Add(new Line() { Start = new Point() { X = webthickness, Y = height / 2 - flangeThickness - rootRadius }, End = new Point() { X = webthickness, Y = 0 } });
-
-            int count = edges.Count;
-            for (int i = 0; i < count; i++)
+            //Web along the y-axis and flanges pointing in positive x, with the mid height at the origin
+            double y = height / 2;
+            double yf = y - flangeThickness;
+            List<ProfileCorner> corners = new List<ProfileCorner>
             {
-                edges.Add(Geometry.Modify.IMirror(edges[i], new Plane { Origin = oM.Geometry.Point.Origin, Normal = oM.Geometry.Vector.YAxis }));
-            }
+                new ProfileCorner(0, -y, 0), new ProfileCorner(width, -y, 0), new ProfileCorner(width, -yf, toeRadius), new ProfileCorner(webthickness, -yf, rootRadius),
+                new ProfileCorner(webthickness, yf, rootRadius), new ProfileCorner(width, yf, toeRadius), new ProfileCorner(width, y, 0), new ProfileCorner(0, y, 0)
+            };
 
-            Point centroid = edges.IJoin().Centroid();
-            Vector translation = Point.Origin - centroid;
-            return edges.Select(x => x.ITranslate(translation)).ToList();
+            return ProfileCurves(true, corners.MirrorCorners(mirrorAboutLocalZ, false));
         }
 
         /***************************************************/

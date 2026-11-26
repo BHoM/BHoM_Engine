@@ -21,14 +21,9 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Geometry;
-using System;
-using BH.Engine.Reflection;
 using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
 using System.ComponentModel;
 
 namespace BH.Engine.Spatial
@@ -46,23 +41,24 @@ namespace BH.Engine.Spatial
         [Output("rectangle", "The created RectangleProfile.")]
         public static RectangleProfile RectangleProfile(double height, double width, double cornerRadius = 0)
         {
+            if (!AreFinite(height, width, cornerRadius))
+                return null;
+
+            if (!ArePositive(height, width) || !AreNonNegative(cornerRadius))
+                return null;
+
             if (cornerRadius > height / 2)
             {
-                InvalidRatioError("cornerRadius", "height");
+                InvalidRatioError(nameof(cornerRadius), nameof(height));
                 return null;
             }
 
             if (cornerRadius > width / 2)
             {
-                InvalidRatioError("cornerRadius", "width");
+                InvalidRatioError(nameof(cornerRadius), nameof(width));
                 return null;
             }
 
-            if (height <= 0 || width <= 0 || cornerRadius < 0)
-            {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
-                return null;
-            }
             List<ICurve> curves = RectangleProfileCurves(width, height, cornerRadius);
             return new RectangleProfile(height, width, cornerRadius, curves);
         }
@@ -73,21 +69,7 @@ namespace BH.Engine.Spatial
 
         private static List<ICurve> RectangleProfileCurves(double width, double height, double radius)
         {
-            Vector xAxis = oM.Geometry.Vector.XAxis;
-            Vector yAxis = oM.Geometry.Vector.YAxis;
-            Point origin = oM.Geometry.Point.Origin;
-
-            List<ICurve> perimeter = new List<ICurve>();
-            Point p = new Point { X = -width / 2, Y = height / 2 - radius, Z = 0 };
-            perimeter.Add(new Line { Start = p, End = p = p - yAxis * (height - 2 * radius) });
-            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + xAxis * radius, p, p = p + new Vector { X = radius, Y = -radius, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (width - 2 * radius) });
-            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * radius, p, p = p + new Vector { X = radius, Y = radius, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (height - 2 * radius) });
-            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - xAxis * radius, p, p = p + new Vector { X = -radius, Y = radius, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p - xAxis * (width - 2 * radius) });
-            if (radius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - yAxis * radius, p, p = p + new Vector { X = -radius, Y = -radius, Z = 0 }));
-            return perimeter;
+            return ProfileCurves(false, RectangleCorners(width, height, radius));
         }
 
         /***************************************************/

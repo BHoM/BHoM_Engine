@@ -21,14 +21,9 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Geometry;
-using System;
-using BH.Engine.Reflection;
 using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
 using System.ComponentModel;
 
 namespace BH.Engine.Spatial
@@ -50,41 +45,37 @@ namespace BH.Engine.Spatial
         [Output("genT", "The created GeneralisedTSectionProfile.")]
         public static GeneralisedTSectionProfile GeneralisedTSectionProfile(double height, double webThickness, double leftOutstandWidth, double leftOutstandThickness, double rightOutstandWidth, double rightOutstandThickness, bool mirrorAboutLocalY = false)
         {
+            if (!AreFinite(height, webThickness, leftOutstandWidth, leftOutstandThickness, rightOutstandWidth, rightOutstandThickness))
+                return null;
+
+            if (!ArePositive(height, webThickness) || !AreNonNegative(leftOutstandThickness, leftOutstandWidth, rightOutstandThickness, rightOutstandWidth))
+                return null;
+
             if (height < leftOutstandThickness)
             {
-                InvalidRatioError("height", "leftOutstandThickness");
+                InvalidRatioError(nameof(height), nameof(leftOutstandThickness));
                 return null;
             }
 
             if (height < rightOutstandThickness)
             {
-                InvalidRatioError("height", "rightOutstandThickness");
+                InvalidRatioError(nameof(height), nameof(rightOutstandThickness));
                 return null;
             }
 
             if (leftOutstandThickness <= 0 && leftOutstandWidth > 0 || leftOutstandWidth <= 0 && leftOutstandThickness > 0)
             {
-                InvalidRatioError("leftOutstandThickness", "leftOutstandWidth");
+                InvalidRatioError(nameof(leftOutstandThickness), nameof(leftOutstandWidth));
                 return null;
             }
 
             if (rightOutstandThickness <= 0 && rightOutstandWidth > 0 || rightOutstandWidth <= 0 && rightOutstandThickness > 0)
             {
-                InvalidRatioError("rightOutstandThickness", "rightOutstandWidth");
+                InvalidRatioError(nameof(rightOutstandThickness), nameof(rightOutstandWidth));
                 return null;
             }
 
-            if (height <= 0 || webThickness <= 0 || leftOutstandThickness < 0 || leftOutstandWidth < 0 || rightOutstandThickness < 0 || rightOutstandWidth < 0)
-            {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
-                return null;
-            }
-
-            List<ICurve> curves = GeneralisedTeeProfileCurves(height, webThickness, leftOutstandWidth, leftOutstandThickness, rightOutstandWidth, rightOutstandThickness);
-
-            if (mirrorAboutLocalY)
-                curves = curves.MirrorAboutLocalY();
-
+            List<ICurve> curves = GeneralisedTeeProfileCurves(height, webThickness, leftOutstandWidth, leftOutstandThickness, rightOutstandWidth, rightOutstandThickness, mirrorAboutLocalY);
             return new GeneralisedTSectionProfile(height, webThickness, leftOutstandWidth, leftOutstandThickness, rightOutstandWidth, rightOutstandThickness, mirrorAboutLocalY, curves);
         }
 
@@ -92,28 +83,57 @@ namespace BH.Engine.Spatial
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static List<ICurve> GeneralisedTeeProfileCurves(double height, double webThickness, double leftOutstandWidth, double leftOutstandThickness, double rightOutstandWidth, double rightOutstandThickness)
+        private static List<ICurve> GeneralisedTeeProfileCurves(double height, double webThickness, double leftOutstandWidth, double leftOutstandThickness, double rightOutstandWidth, double rightOutstandThickness, bool mirrorAboutLocalY)
         {
-            List<ICurve> perimeter = new List<ICurve>();
-            Point p = new Point { X = -webThickness / 2, Y = 0, Z = 0 };
+            //Web centred on the y-axis with its bottom at the origin and outstands at the top
+            double wx = webThickness / 2;                       //Right face of the web
+            double rx = wx + rightOutstandWidth;                //Tip of the right outstand
+            double ry = height - rightOutstandThickness;        //Underside of the right outstand
+            double lx = -wx - leftOutstandWidth;                //Tip of the left outstand
+            double ly = height - leftOutstandThickness;         //Underside of the left outstand
 
-            Vector xAxis = oM.Geometry.Vector.XAxis;
-            Vector yAxis = oM.Geometry.Vector.YAxis;
-            Point origin = oM.Geometry.Point.Origin;
+            //Only corners that exist are added, so that outstands of zero size, or running the full height, give no coinciding corners or corners in the middle of a straight edge
+            List<ProfileCorner> corners = new List<ProfileCorner>(8);
 
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (height - leftOutstandThickness) });
-            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (-leftOutstandWidth) });
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (leftOutstandThickness) });
-            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (leftOutstandWidth + webThickness + rightOutstandWidth) });
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (-rightOutstandThickness) });
-            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (-rightOutstandWidth) });
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (-height + rightOutstandThickness) });
-            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (-webThickness) });
+            //Right side, from bottom to top
+            if (rightOutstandWidth <= 0)
+            {
+                corners.Add(new ProfileCorner(wx, 0));
+                corners.Add(new ProfileCorner(wx, height));
+            }
+            else if (rightOutstandThickness >= height)
+            {
+                corners.Add(new ProfileCorner(rx, 0));
+                corners.Add(new ProfileCorner(rx, height));
+            }
+            else
+            {
+                corners.Add(new ProfileCorner(wx, 0));
+                corners.Add(new ProfileCorner(wx, ry));
+                corners.Add(new ProfileCorner(rx, ry));
+                corners.Add(new ProfileCorner(rx, height));
+            }
 
-            Point centroid = perimeter.IJoin().Centroid();
-            Vector translation = Point.Origin - centroid;
+            //Left side, from top to bottom
+            if (leftOutstandWidth <= 0)
+            {
+                corners.Add(new ProfileCorner(-wx, height));
+                corners.Add(new ProfileCorner(-wx, 0));
+            }
+            else if (leftOutstandThickness >= height)
+            {
+                corners.Add(new ProfileCorner(lx, height));
+                corners.Add(new ProfileCorner(lx, 0));
+            }
+            else
+            {
+                corners.Add(new ProfileCorner(lx, height));
+                corners.Add(new ProfileCorner(lx, ly));
+                corners.Add(new ProfileCorner(-wx, ly));
+                corners.Add(new ProfileCorner(-wx, 0));
+            }
 
-            return perimeter.Select(x => x.ITranslate(translation)).ToList();
+            return ProfileCurves(true, corners.MirrorCorners(false, mirrorAboutLocalY));
         }
 
         /***************************************************/
