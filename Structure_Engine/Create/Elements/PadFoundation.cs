@@ -69,10 +69,8 @@ namespace BH.Engine.Structure
         {
             PolyCurve perimeter = Spatial.Create.RectangleProfile(length, width).Edges.ToList().IJoin()[0];
 
-            if (coordinateSystem == null)
-                coordinateSystem = new Cartesian();
-            else
-                perimeter.Orient(new Cartesian(), coordinateSystem);
+            if (coordinateSystem != null)
+                perimeter = (PolyCurve)perimeter.Orient(new Cartesian(), coordinateSystem);
 
             return PadFoundation(perimeter, thickness, orientationAngle);
         }
