@@ -113,7 +113,7 @@ namespace BH.Engine.Structure
         [Description("Calculates all non-torsional section constants for a section profile based on its edge curves and translates the profile curves to be centred around the origin.")]
         [Input("profile", "The profile to integrate.")]
         [Input("tolerance", "The angleTolerance for dividing the section curves.")]
-        [MultiOutput(0, "profile", "The profile used in the integration. The section curves are translated to be centred around the global origin.")]
+        [MultiOutput(0, "profile", "The profile used in the integration, with the section curves centred around the global origin. If the profile is already centred, within micro distance tolerance, the input profile is returned as is. Otherwise a translated copy is returned.")]
         [MultiOutput(1, "constants", "The section constants calculated based on the provided section profile.")]
         public static Output<IProfile, Dictionary<string, double>> Integrate(IProfile profile, double tolerance = Tolerance.Distance)
         {
@@ -122,11 +122,18 @@ namespace BH.Engine.Structure
 
             Dictionary<string, double> results = IntegrateSection(profile.Edges.ToList(), tolerance);
 
-            Vector adjustment = new Vector() { X = -results["CentreY"], Y = -results["CentreZ"], Z = 0 };
+            double centreY = results["CentreY"];
+            double centreZ = results["CentreZ"];
 
             results["CentreY"] = 0.0d;
             results["CentreZ"] = 0.0d;
 
+            //Profiles already centred around the origin, such as all parametric profiles from the Spatial_Engine Create methods, are returned as they are.
+            //The computed centre then only differs from the origin by the numerical error of the integration, so moving the curves would not improve them.
+            if (Math.Abs(centreY) < Tolerance.MicroDistance && Math.Abs(centreZ) < Tolerance.MicroDistance)
+                return new Output<IProfile, Dictionary<string, double>> { Item1 = profile, Item2 = results };
+
+            Vector adjustment = new Vector() { X = -centreY, Y = -centreZ, Z = 0 };
             return new Output<IProfile, Dictionary<string, double>> { Item1 = AdjustCurves(profile, adjustment), Item2 = results };
         }
 
