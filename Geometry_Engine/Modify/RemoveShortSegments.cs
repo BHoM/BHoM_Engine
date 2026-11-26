@@ -61,8 +61,9 @@ namespace BH.Engine.Geometry
                     startIndex++; //Move onto the next point
             }
 
+            //Everything collapsed into a single point: return it rather than the uncleaned input, so that callers can detect the degenerate result.
             if (pnts.Count < 2)
-                return polyline;
+                return new Polyline { ControlPoints = pnts };
 
             if (!polyline.IsClosed(distanceTolerance))
             {
