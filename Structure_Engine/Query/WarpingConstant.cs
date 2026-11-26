@@ -209,7 +209,9 @@ namespace BH.Engine.Structure
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
 
-            double cz = Math.Abs(curvesZ.Bounds().Min.X);
+            //Distance from the centroid to the back of the web, which is on the positive x side for mirrored profiles
+            BoundingBox bounds = curvesZ.Bounds();
+            double cz = profile.MirrorAboutLocalZ ? Math.Abs(bounds.Max.X) : Math.Abs(bounds.Min.X);
 
             double hSubTf2 = (h - tf) * (h - tf);
 
@@ -263,7 +265,9 @@ namespace BH.Engine.Structure
             double tf = profile.FlangeThickness;
             double tw = profile.WebThickness;
 
-            double y0 = Math.Abs(curvesZ.Bounds().Min.X);
+            //Distance from the centroid to the back of the web, which is on the positive x side for mirrored profiles
+            BoundingBox bounds = curvesZ.Bounds();
+            double y0 = profile.MirrorAboutLocalZ ? Math.Abs(bounds.Max.X) : Math.Abs(bounds.Min.X);
             double ew = y0 - 0.5 * tw;
 
             double hf2 = (h - tf) * (h - tf);
