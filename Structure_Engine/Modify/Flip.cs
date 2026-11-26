@@ -51,7 +51,7 @@ namespace BH.Engine.Structure
         [Description("Flips the Bar geometry and the properties including releases, sectionproperty and orientation angle.")]
         [Input("bar", "The Bar to flip.")]
         [Output("bar", "The Bar with flipped end Nodes.")]
-        public static Bar Flip(this Bar bar)
+        public static Bar Flip(this Bar bar, Boolean isMirroring = false)
         {
             if (bar.IsNull())
                 return null;
@@ -81,7 +81,7 @@ namespace BH.Engine.Structure
             // Flip section property
             if (bar.SectionProperty != null)
             {
-                ISectionProperty flippedSectionProperty = Flip(bar.SectionProperty);
+                ISectionProperty flippedSectionProperty = Flip(bar.SectionProperty, isMirroring);
                 flipped.SectionProperty = flippedSectionProperty;
             }
 
@@ -176,16 +176,16 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static ISectionProperty Flip(this ISectionProperty section)
+        private static ISectionProperty Flip(this ISectionProperty section, Boolean isMirroring)
         {
-            return FlipSection(section as dynamic);
+            return FlipSection(section as dynamic, isMirroring);
         }
 
         /***************************************************/
 
-        private static ISectionProperty FlipSection(AluminiumSection section)
+        private static ISectionProperty FlipSection(AluminiumSection section, Boolean isMirroring)
         {
-            IProfile flippedProfile = IFlipProfile(section.SectionProfile);
+            IProfile flippedProfile = IFlipProfile(section.SectionProfile, isMirroring);
             IMaterialFragment material = section.Material;
             AluminiumSection flippedSection = Create.AluminiumSectionFromProfile(flippedProfile, (Aluminium)material, section.Name);
             flippedSection.Fragments = section.Fragments;
@@ -195,22 +195,22 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static ISectionProperty FlipSection(CableSection section)
+        private static ISectionProperty FlipSection(CableSection section, Boolean isMirroring)
         {
             return section;
         }
 
         /***************************************************/
-        private static ISectionProperty FlipSection(CellularSection section)
+        private static ISectionProperty FlipSection(CellularSection section, Boolean isMirroring)
         {
             return section;
         }
 
         /***************************************************/
 
-        private static ISectionProperty FlipSection(ConcreteSection section)
+        private static ISectionProperty FlipSection(ConcreteSection section, Boolean isMirroring)
         {
-            IProfile flippedProfile = IFlipProfile(section.SectionProfile);
+            IProfile flippedProfile = IFlipProfile(section.SectionProfile, isMirroring);
             IMaterialFragment material = section.Material;
 
             // Flip reinforcement layouts
@@ -246,7 +246,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static ISectionProperty FlipSection(ExplicitSection section)
+        private static ISectionProperty FlipSection(ExplicitSection section, Boolean isMirroring)
         {
             ExplicitSection flippedSection = section.ShallowClone();
             flippedSection.Vy = section.Vpy;
@@ -257,9 +257,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static ISectionProperty FlipSection(GenericSection section)
+        private static ISectionProperty FlipSection(GenericSection section, Boolean isMirroring)
         {
-            IProfile flippedProfile = IFlipProfile(section.SectionProfile);
+            IProfile flippedProfile = IFlipProfile(section.SectionProfile, isMirroring);
             GenericSection flippedSection = Create.GenericSectionFromProfile(flippedProfile, section.Material, section.Name);
             flippedSection.Fragments = section.Fragments;
 
@@ -268,9 +268,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static ISectionProperty FlipSection(SteelSection section)
+        private static ISectionProperty FlipSection(SteelSection section, Boolean isMirroring)
         {
-            IProfile flippedProfile = IFlipProfile(section.SectionProfile);
+            IProfile flippedProfile = IFlipProfile(section.SectionProfile, isMirroring);
             IMaterialFragment material = section.Material;
             SteelSection flippedSection = Create.SteelSectionFromProfile(flippedProfile, (Steel)material, section.Name);
             flippedSection.Fragments = section.Fragments;
@@ -282,9 +282,9 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static ISectionProperty FlipSection(TimberSection section)
+        private static ISectionProperty FlipSection(TimberSection section, Boolean isMirroring)
         {
-            IProfile flippedProfile = IFlipProfile(section.SectionProfile);
+            IProfile flippedProfile = IFlipProfile(section.SectionProfile, isMirroring);
             IMaterialFragment material = section.Material;
             TimberSection flippedSection = Create.TimberSectionFromProfile(flippedProfile, (ITimber)material, section.Name);
             flippedSection.Fragments = section.Fragments;
@@ -294,7 +294,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static ISectionProperty FlipSection(ISectionProperty section)
+        private static ISectionProperty FlipSection(ISectionProperty section, Boolean isMirroring)
         {
             Base.Compute.RecordWarning($"The given ISectionProperty {section.Name} of type {section.GetType()}" +
                 $"does not have a FlipProfile method implemented, the original section is returned.");
@@ -353,15 +353,15 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static IProfile IFlipProfile(IProfile profile)
+        private static IProfile IFlipProfile(IProfile profile, Boolean isMirroring)
         {
-            if (profile.ISymmetry() == Symmetry.DoublySymmetric)
+            if (!(profile is TaperedProfile) && profile.ISymmetry() == Symmetry.DoublySymmetric)
             {
                 return profile;
             }
             else
             {
-                IProfile flippedProfile = FlipProfile(profile as dynamic);
+                IProfile flippedProfile = FlipProfile(profile as dynamic, isMirroring);
                 flippedProfile.Name = profile.Name;
                 flippedProfile.Fragments = profile.Fragments;
 
@@ -371,7 +371,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static IProfile FlipProfile(AngleProfile oldProfile)
+        private static IProfile FlipProfile(AngleProfile oldProfile, Boolean isMirroring)
         {
             return Spatial.Create.AngleProfile(oldProfile.Height, oldProfile.Width, oldProfile.WebThickness, oldProfile.FlangeThickness, oldProfile.RootRadius,
                 oldProfile.ToeRadius, !oldProfile.MirrorAboutLocalZ, oldProfile.MirrorAboutLocalY);
@@ -379,7 +379,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static IProfile FlipProfile(ChannelProfile oldProfile)
+        private static IProfile FlipProfile(ChannelProfile oldProfile, Boolean isMirroring)
         {
             return Spatial.Create.ChannelProfile(oldProfile.Height, oldProfile.FlangeWidth, oldProfile.WebThickness, oldProfile.FlangeThickness,
                 oldProfile.RootRadius, oldProfile.ToeRadius, !oldProfile.MirrorAboutLocalZ);
@@ -387,14 +387,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static IProfile FlipProfile(FabricatedISectionProfile oldProfile)
+        private static IProfile FlipProfile(FabricatedISectionProfile oldProfile, Boolean isMirroring)
         {
             return oldProfile;
         }
 
         /***************************************************/
 
-        private static IProfile FlipProfile(FreeFormProfile oldProfile)
+        private static IProfile FlipProfile(FreeFormProfile oldProfile, Boolean isMirroring)
         {
             List<ICurve> curves = oldProfile.Edges.ToList();
             return Spatial.Create.FreeFormProfile(curves.Select(x => x.IMirror(Geometry.Create.Plane(new Point(), Vector.XAxis))));
@@ -402,14 +402,14 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static IProfile FlipProfile(GeneralisedFabricatedBoxProfile oldProfile)
+        private static IProfile FlipProfile(GeneralisedFabricatedBoxProfile oldProfile, Boolean isMirroring)
         {
             return oldProfile;
         }
 
         /***************************************************/
 
-        private static IProfile FlipProfile(GeneralisedTSectionProfile oldProfile)
+        private static IProfile FlipProfile(GeneralisedTSectionProfile oldProfile, Boolean isMirroring)
         {
             return Spatial.Create.GeneralisedTSectionProfile(oldProfile.Height, oldProfile.WebThickness, oldProfile.RightOutstandWidth, oldProfile.RightOutstandThickness,
                 oldProfile.LeftOutstandWidth, oldProfile.LeftOutstandThickness, oldProfile.MirrorAboutLocalY);
@@ -417,43 +417,46 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static IProfile FlipProfile(KiteProfile oldProfile)
+        private static IProfile FlipProfile(KiteProfile oldProfile, Boolean isMirroring)
         {
             return Spatial.Create.KiteProfile(oldProfile.Width1 * Math.Tan(oldProfile.Angle1 / 2), Math.PI - oldProfile.Angle1, oldProfile.Thickness);
         }
 
         /***************************************************/
 
-        private static IProfile FlipProfile(TSectionProfile oldProfile)
+        private static IProfile FlipProfile(TSectionProfile oldProfile, Boolean isMirroring)
         {
             return oldProfile;
         }
 
         /***************************************************/
 
-        private static IProfile FlipProfile(TaperedProfile oldProfile)
+        private static IProfile FlipProfile(TaperedProfile oldProfile, Boolean isMirroring)
         {
-            List<IProfile> newProfiles = new List<IProfile>();
-            List<double> newPositions = new List<double>();
-            List<double> keys = oldProfile.Profiles.Keys.ToList();
+            Dictionary<double, IProfile> flippedProfiles = new Dictionary<double, IProfile>();
 
-            for (int i = 0; i < oldProfile.Profiles.Values.Count; i++)
+            if (isMirroring)
             {
-                double key = keys[i];
-                newPositions.Add(1 - key);
-                oldProfile.Profiles.TryGetValue(key, out IProfile newProfile);
-                newProfiles.Add(FlipProfile(newProfile as dynamic));
+                foreach (var kvp in oldProfile.Profiles)
+                {
+                    flippedProfiles[kvp.Key] = IFlipProfile(kvp.Value,isMirroring);
+                }
+            }
+            else
+            {
+                foreach (var kvp in oldProfile.Profiles)
+                {
+                    flippedProfiles[1 - kvp.Key] = IFlipProfile(kvp.Value, isMirroring);
+                    flippedProfiles.Reverse();
+                }
             }
 
-            newProfiles.Reverse();
-            newPositions.Reverse();
-
-            return Spatial.Create.TaperedProfile(newPositions, newProfiles, oldProfile.InterpolationOrder);
+            return new TaperedProfile(flippedProfiles, oldProfile.InterpolationOrder, oldProfile.Shape);
         }
 
         /***************************************************/
 
-        private static IProfile FlipProfile(TaperFlangeChannelProfile oldProfile)
+        private static IProfile FlipProfile(TaperFlangeChannelProfile oldProfile, Boolean isMirroring)
         {
             return Spatial.Create.TaperFlangeChannelProfile(oldProfile.Height, oldProfile.FlangeWidth, oldProfile.WebThickness, oldProfile.FlangeThickness, oldProfile.FlangeSlope,
                 oldProfile.RootRadius, oldProfile.ToeRadius, !oldProfile.MirrorAboutLocalZ);
@@ -461,7 +464,7 @@ namespace BH.Engine.Structure
 
         /***************************************************/
 
-        private static IProfile FlipProfile(IProfile oldProfile)
+        private static IProfile FlipProfile(IProfile oldProfile, Boolean isMirroring)
         {
             Base.Compute.RecordWarning($"The given shape profile {oldProfile.Name} of type {oldProfile.GetType()} " +
                 $"does not have a FlipProfile method implemented, the original profile is returned.");
@@ -472,10 +475,3 @@ namespace BH.Engine.Structure
 
     }
 }
-
-
-
-
-
-
-
