@@ -21,14 +21,9 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Geometry;
-using System;
-using BH.Engine.Reflection;
 using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
 using System.ComponentModel;
 
 namespace BH.Engine.Spatial
@@ -51,43 +46,37 @@ namespace BH.Engine.Spatial
         [Output("angle", "The created AngleProfile.")]
         public static AngleProfile AngleProfile(double height, double width, double webThickness, double flangeThickness, double rootRadius = 0, double toeRadius = 0, bool mirrorAboutLocalZ = false, bool mirrorAboutLocalY = false)
         {
+            if (!AreFinite(height, width, webThickness, flangeThickness, rootRadius, toeRadius))
+                return null;
+
+            if (!ArePositive(height, width, webThickness, flangeThickness) || !AreNonNegative(rootRadius, toeRadius))
+                return null;
+
             if (height < flangeThickness + rootRadius + toeRadius)
             {
-                InvalidRatioError("height", "flangeThickness, rootRadius and toeRadius");
+                InvalidRatioError(nameof(height), $"{nameof(flangeThickness)}, {nameof(rootRadius)} and {nameof(toeRadius)}");
                 return null;
             }
 
             if (width < webThickness + rootRadius + toeRadius)
             {
-                InvalidRatioError("width", "webthickness, rootRadius and toeRadius");
+                InvalidRatioError(nameof(width), $"{nameof(webThickness)}, {nameof(rootRadius)} and {nameof(toeRadius)}");
                 return null;
             }
 
             if (flangeThickness < toeRadius)
             {
-                InvalidRatioError("flangeThickness", "toeRadius");
+                InvalidRatioError(nameof(flangeThickness), nameof(toeRadius));
                 return null;
             }
 
             if (webThickness < toeRadius)
             {
-                InvalidRatioError("webthickness", "toeRadius");
+                InvalidRatioError(nameof(webThickness), nameof(toeRadius));
                 return null;
             }
 
-            if (height <= 0 || width <= 0 || webThickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
-            {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
-                return null;
-            }
-
-            List<ICurve> curves = AngleProfileCurves(width, height, flangeThickness, webThickness, rootRadius, toeRadius);
-
-            if (mirrorAboutLocalZ)
-                curves = curves.MirrorAboutLocalZ();
-            if (mirrorAboutLocalY)
-                curves = curves.MirrorAboutLocalY();
-
+            List<ICurve> curves = AngleProfileCurves(width, height, flangeThickness, webThickness, rootRadius, toeRadius, mirrorAboutLocalZ, mirrorAboutLocalY);
             return new AngleProfile(height, width, webThickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalZ, mirrorAboutLocalY, curves);
         }
 
@@ -95,28 +84,16 @@ namespace BH.Engine.Spatial
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static List<ICurve> AngleProfileCurves(double width, double depth, double flangeThickness, double webThickness, double innerRadius, double toeRadius)
+        private static List<ICurve> AngleProfileCurves(double width, double depth, double flangeThickness, double webThickness, double innerRadius, double toeRadius, bool mirrorAboutLocalZ, bool mirrorAboutLocalY)
         {
-            List<ICurve> perimeter = new List<ICurve>();
+            //Heel at the origin, horizontal leg along positive x and vertical leg along positive y
+            List<ProfileCorner> corners = new List<ProfileCorner>
+            {
+                new ProfileCorner(0, 0, 0), new ProfileCorner(width, 0, 0), new ProfileCorner(width, flangeThickness, toeRadius),
+                new ProfileCorner(webThickness, flangeThickness, innerRadius), new ProfileCorner(webThickness, depth, toeRadius), new ProfileCorner(0, depth, 0)
+            };
 
-            Vector xAxis = oM.Geometry.Vector.XAxis;
-            Vector yAxis = oM.Geometry.Vector.YAxis;
-            Point origin = oM.Geometry.Point.Origin;
-
-            Point p = new Point { X = 0, Y = 0, Z = 0 };
-            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (width) });
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (flangeThickness - toeRadius) });
-            if (toeRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - xAxis * (toeRadius), p, p = p + new Vector { X = -toeRadius, Y = toeRadius, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p - xAxis * (width - webThickness - innerRadius - toeRadius) });
-            if (innerRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * (innerRadius), p, p = p + new Vector { X = -innerRadius, Y = innerRadius, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (depth - flangeThickness - innerRadius - toeRadius) });
-            if (toeRadius > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p - xAxis * (toeRadius), p, p = p + new Vector { X = -toeRadius, Y = toeRadius, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p - xAxis * (webThickness - toeRadius) });
-            perimeter.Add(new Line { Start = p, End = p = p - yAxis * (depth) });
-
-            Point centroid = perimeter.IJoin().Centroid();
-            Vector translation = Point.Origin - centroid;
-            return perimeter.Select(x => x.ITranslate(translation)).ToList();
+            return ProfileCurves(true, corners.MirrorCorners(mirrorAboutLocalZ, mirrorAboutLocalY));
         }
 
         /***************************************************/

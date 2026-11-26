@@ -20,14 +20,12 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Quantities.Attributes;
 using BH.oM.Spatial.ShapeProfiles;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace BH.Engine.Spatial
 {
@@ -48,21 +46,21 @@ namespace BH.Engine.Spatial
         [Output("fabBox", "The created GeneralisedFabricatedBoxProfile.")]
         public static GeneralisedFabricatedBoxProfile GeneralisedFabricatedBoxProfile(double height, double width, double webThickness, double topFlangeThickness = 0.0, double botFlangeThickness = 0.0, double topCorbelWidth = 0.0, double botCorbelWidth = 0.0)
         {
+            if (!AreFinite(height, width, webThickness, topFlangeThickness, botFlangeThickness, topCorbelWidth, botCorbelWidth))
+                return null;
+
+            if (!ArePositive(height, width, webThickness, topFlangeThickness, botFlangeThickness) || !AreNonNegative(topCorbelWidth, botCorbelWidth))
+                return null;
+
             if (webThickness >= width / 2)
             {
-                InvalidRatioError("webThickness", "width");
+                InvalidRatioError(nameof(webThickness), nameof(width));
                 return null;
             }
 
             if (height <= topFlangeThickness + botFlangeThickness)
             {
-                InvalidRatioError("height", "topFlangeThickness and botFlangeThickness");
-                return null;
-            }
-
-            if (height <= 0 || width <= 0 || webThickness <= 0 || topFlangeThickness <= 0 || botFlangeThickness <= 0 || topCorbelWidth < 0 || botCorbelWidth < 0)
-            {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
+                InvalidRatioError(nameof(height), $"{nameof(topFlangeThickness)} and {nameof(botFlangeThickness)}");
                 return null;
             }
 
@@ -76,48 +74,43 @@ namespace BH.Engine.Spatial
 
         private static List<ICurve> GeneralisedFabricatedBoxProfileCurves(double height, double width, double webThickness, double topFlangeThickness, double botFlangeThickness, double topLeftCorbelWidth, double topRightCorbelWidth, double botLeftCorbelWidth, double botRightCorbelWidth)
         {
+            //Box centred on the y-axis with its bottom at the origin
+            double x = width / 2;
+            double xi = x - webThickness;
+            double yb = botFlangeThickness;
+            double yt = height - topFlangeThickness;
 
-            Vector xAxis = oM.Geometry.Vector.XAxis;
-            Vector yAxis = oM.Geometry.Vector.YAxis;
-            Point origin = oM.Geometry.Point.Origin;
-
-            List<ICurve> externalEdges = new List<ICurve>();
-            List<ICurve> internalEdges = new List<ICurve>();
-            List<ICurve> group = new List<ICurve>();
-            Point p1 = new Point { X = 0, Y = 0, Z = 0 };
-            Point p2 = new Point { X = 0, Y = botFlangeThickness, Z = 0 };
-
-            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + xAxis * ((width / 2) + botRightCorbelWidth) });
-            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + yAxis * botFlangeThickness });
-            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - xAxis * botRightCorbelWidth });
-            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + yAxis * (height - botFlangeThickness - topFlangeThickness) });
-            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + xAxis * topRightCorbelWidth });
-            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + yAxis * topFlangeThickness });
-            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - xAxis * (width + topRightCorbelWidth + topLeftCorbelWidth) });
-            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - yAxis * topFlangeThickness });
-            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + xAxis * topLeftCorbelWidth });
-            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - yAxis * (height - botFlangeThickness - topFlangeThickness) });
-            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - xAxis * botLeftCorbelWidth });
-            externalEdges.Add(new Line { Start = p1, End = p1 = p1 - yAxis * botFlangeThickness });
-            externalEdges.Add(new Line { Start = p1, End = p1 = p1 + xAxis * ((width / 2) + botLeftCorbelWidth) });
-
-            internalEdges.Add(new Line { Start = p2, End = p2 = p2 + xAxis * ((width / 2) - webThickness) });
-            internalEdges.Add(new Line { Start = p2, End = p2 = p2 + yAxis * (height - botFlangeThickness - topFlangeThickness) });
-            internalEdges.Add(new Line { Start = p2, End = p2 = p2 - xAxis * ((width / 2) - webThickness) });
-
-            int intCount = internalEdges.Count;
-            for (int i = 0; i < intCount; i++)
+            //Outer loop counter-clockwise, starting at the bottom left. Corners of corbels of zero width are left out, as they would coincide with the corners of the box.
+            List<ProfileCorner> outer = new List<ProfileCorner>(12);
+            outer.Add(new ProfileCorner(-x - botLeftCorbelWidth, 0));
+            outer.Add(new ProfileCorner(x + botRightCorbelWidth, 0));
+            if (botRightCorbelWidth > 0)
             {
-                internalEdges.Add(Geometry.Modify.IMirror(internalEdges[i], new Plane { Origin = origin, Normal = xAxis }));
+                outer.Add(new ProfileCorner(x + botRightCorbelWidth, yb));
+                outer.Add(new ProfileCorner(x, yb));
+            }
+            if (topRightCorbelWidth > 0)
+            {
+                outer.Add(new ProfileCorner(x, yt));
+                outer.Add(new ProfileCorner(x + topRightCorbelWidth, yt));
+            }
+            outer.Add(new ProfileCorner(x + topRightCorbelWidth, height));
+            outer.Add(new ProfileCorner(-x - topLeftCorbelWidth, height));
+            if (topLeftCorbelWidth > 0)
+            {
+                outer.Add(new ProfileCorner(-x - topLeftCorbelWidth, yt));
+                outer.Add(new ProfileCorner(-x, yt));
+            }
+            if (botLeftCorbelWidth > 0)
+            {
+                outer.Add(new ProfileCorner(-x, yb));
+                outer.Add(new ProfileCorner(-x - botLeftCorbelWidth, yb));
             }
 
-            Point centroid = externalEdges.IJoin().Centroid(internalEdges.IJoin());
-            Vector translation = Point.Origin - centroid;
+            //Inner loop clockwise
+            List<ProfileCorner> inner = new List<ProfileCorner> { new ProfileCorner(-xi, yb, 0), new ProfileCorner(-xi, yt, 0), new ProfileCorner(xi, yt, 0), new ProfileCorner(xi, yb, 0) };
 
-            group.AddRange(externalEdges);
-            group.AddRange(internalEdges);
-
-            return group.Select(x => x.ITranslate(translation)).ToList();
+            return ProfileCurves(true, outer, inner);
         }
 
         /***************************************************/

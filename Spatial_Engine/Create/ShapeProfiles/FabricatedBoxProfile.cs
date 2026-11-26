@@ -21,14 +21,10 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Geometry;
 using System;
-using BH.Engine.Reflection;
 using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
 using System.ComponentModel;
 
 namespace BH.Engine.Spatial
@@ -49,21 +45,21 @@ namespace BH.Engine.Spatial
         [Output("fabBox", "The created BoxProfile.")]
         public static FabricatedBoxProfile FabricatedBoxProfile(double height, double width, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize = 0)
         {
+            if (!AreFinite(height, width, webThickness, topFlangeThickness, botFlangeThickness, weldSize))
+                return null;
+
+            if (!ArePositive(height, width, webThickness, topFlangeThickness, botFlangeThickness) || !AreNonNegative(weldSize))
+                return null;
+
             if (height < topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize || height <= topFlangeThickness + botFlangeThickness)
             {
-                InvalidRatioError("height", "topFlangeThickness, botFlangeThickness and weldSize");
+                InvalidRatioError(nameof(height), $"{nameof(topFlangeThickness)}, {nameof(botFlangeThickness)} and {nameof(weldSize)}");
                 return null;
             }
 
             if (width < webThickness * 2 + 2 * Math.Sqrt(2) * weldSize || width <= webThickness * 2)
             {
-                InvalidRatioError("width", "webThickness and weldSize");
-                return null;
-            }
-
-            if (height <= 0 || width <= 0 || webThickness <= 0 || topFlangeThickness <= 0 || botFlangeThickness <= 0 || weldSize < 0)
-            {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
+                InvalidRatioError(nameof(width), $"{nameof(webThickness)} and {nameof(weldSize)}");
                 return null;
             }
 
@@ -77,40 +73,27 @@ namespace BH.Engine.Spatial
 
         private static List<ICurve> FabricatedBoxProfileCurves(double width, double height, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize)
         {
-            List<ICurve> box = RectangleProfileCurves(width, height, 0);
+            //Inner edges of webs and flanges, relative to the centre of the outer rectangle
+            double x = width / 2 - webThickness;
+            double yt = height / 2 - topFlangeThickness;
+            double yb = -height / 2 + botFlangeThickness;
 
-            List<ICurve> welds = new List<ICurve>();
-            double weldLength = weldSize * 2 / Math.Sqrt(2);
-            Point q1 = new Point { X = (width / 2) - webThickness, Y = (height / 2) - topFlangeThickness, Z = 0 };
-            Point q2 = new Point { X = -(width / 2) + webThickness, Y = (height / 2) - topFlangeThickness, Z = 0 };
-            Point q3 = new Point { X = -(width / 2) + webThickness, Y = -(height / 2) + botFlangeThickness, Z = 0 };
-            Point q4 = new Point { X = (width / 2) - webThickness, Y = -(height / 2) + botFlangeThickness, Z = 0 };
-            Vector wx = new Vector { X = weldLength, Y = 0, Z = 0 };
-            Vector wy = new Vector { X = 0, Y = weldLength, Z = 0 };
-
-            List<ICurve> innerBox = new List<ICurve>();
-
+            //Inner loop clockwise, with the welds as chamfers in the corners
+            List<ProfileCorner> inner;
             if (weldSize > 0)
             {
-                welds.Add(new Line { Start = q1 - wx, End = q1 - wy });
-                welds.Add(new Line { Start = q2 + wx, End = q2 - wy });
-                welds.Add(new Line { Start = q3 + wx, End = q3 + wy });
-                welds.Add(new Line { Start = q4 - wx, End = q4 + wy });
-                innerBox.AddRange(welds);
+                double wl = weldSize * Math.Sqrt(2);
+                inner = new List<ProfileCorner>
+                {
+                    new ProfileCorner(-x, yb + wl, 0), new ProfileCorner(-x, yt - wl, 0), new ProfileCorner(-x + wl, yt, 0), new ProfileCorner(x - wl, yt, 0),
+                    new ProfileCorner(x, yt - wl, 0), new ProfileCorner(x, yb + wl, 0), new ProfileCorner(x - wl, yb, 0), new ProfileCorner(-x + wl, yb, 0)
+                };
             }
+            else
+                inner = new List<ProfileCorner> { new ProfileCorner(-x, yb, 0), new ProfileCorner(-x, yt, 0), new ProfileCorner(x, yt, 0), new ProfileCorner(x, yb, 0) };
 
-
-            innerBox.Add(new Line { Start = q1 - wy, End = q4 + wy });
-            innerBox.Add(new Line { Start = q4 - wx, End = q3 + wx });
-            innerBox.Add(new Line { Start = q3 + wy, End = q2 - wy });
-            innerBox.Add(new Line { Start = q2 + wx, End = q1 - wx });
-
-            Point centroid = box.IJoin().Centroid(innerBox.IJoin());
-            Vector translation = Point.Origin - centroid;
-
-            box.AddRange(innerBox);
-
-            return box.Select(x => x.ITranslate(translation)).ToList();
+            //Only differing flanges move the centre of area away from the centre of the outer rectangle
+            return ProfileCurves(topFlangeThickness != botFlangeThickness, RectangleCorners(width, height, 0), inner);
         }
 
         /***************************************************/

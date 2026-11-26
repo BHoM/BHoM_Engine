@@ -44,11 +44,12 @@ namespace BH.Engine.Spatial
         [Output("circle", "The created CircleProfile.")]
         public static CircleProfile CircleProfile(double diameter)
         {
-            if (diameter <= 0)
-            {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
+            if (!AreFinite(diameter))
                 return null;
-            }
+
+            if (!ArePositive(diameter))
+                return null;
+
             List<ICurve> curves = CircleProfileCurves(diameter / 2);
             return new CircleProfile(diameter, curves);
         }

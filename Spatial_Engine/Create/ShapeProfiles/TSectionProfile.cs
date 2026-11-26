@@ -20,13 +20,11 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.Engine.Geometry;
 using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using BH.oM.Spatial.ShapeProfiles;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace BH.Engine.Spatial
 {
@@ -47,35 +45,32 @@ namespace BH.Engine.Spatial
         [Output("T", "The created TSectionProfile.")]
         public static TSectionProfile TSectionProfile(double height, double width, double webThickness, double flangeThickness, double rootRadius = 0, double toeRadius = 0, bool mirrorAboutLocalY = false)
         {
+            if (!AreFinite(height, width, webThickness, flangeThickness, rootRadius, toeRadius))
+                return null;
+
+            if (!ArePositive(height, width, webThickness, flangeThickness) || !AreNonNegative(rootRadius, toeRadius))
+                return null;
+
             if (height < flangeThickness + rootRadius)
             {
-                InvalidRatioError("height", "flangeThickness and rootRadius");
+                InvalidRatioError(nameof(height), $"{nameof(flangeThickness)} and {nameof(rootRadius)}");
                 return null;
             }
 
             if (width < webThickness + 2 * rootRadius + 2 * toeRadius)
             {
-                InvalidRatioError("width", "webThickess, rootRadius and toeRadius");
+                InvalidRatioError(nameof(width), $"{nameof(webThickness)}, {nameof(rootRadius)} and {nameof(toeRadius)}");
                 return null;
             }
 
             if (toeRadius > flangeThickness)
             {
-                InvalidRatioError("toeTadius", "flangeThickness");
+                InvalidRatioError(nameof(toeRadius), nameof(flangeThickness));
                 return null;
             }
 
-            if (height <= 0 || width <= 0 || webThickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
-            {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
-                return null;
-            }
-
-            List<ICurve> curves = TeeProfileCurves(flangeThickness, width, webThickness, height - flangeThickness, rootRadius, toeRadius);
-
-            if (mirrorAboutLocalY)
-                curves = curves.MirrorAboutLocalY();
-
+            List<ProfileCorner> corners = TeeCorners(flangeThickness, width, webThickness, height - flangeThickness, rootRadius, toeRadius, 0);
+            List<ICurve> curves = ProfileCurves(true, corners.MirrorCorners(false, mirrorAboutLocalY));
             return new TSectionProfile(height, width, webThickness, flangeThickness, rootRadius, toeRadius, mirrorAboutLocalY, curves);
         }
 
@@ -83,36 +78,19 @@ namespace BH.Engine.Spatial
         /**** Private Methods                           ****/
         /***************************************************/
 
-        private static List<ICurve> TeeProfileCurves(double tft, double tfw, double wt, double wd, double r1, double r2)
+        [Description("Counter-clockwise corners of a T-shape centred on the y-axis, with the bottom of the web at y = y0 and the flange on top.")]
+        private static List<ProfileCorner> TeeCorners(double tft, double tfw, double wt, double wd, double r1, double r2, double y0)
         {
-            List<ICurve> perimeter = new List<ICurve>();
-            Point p = new Point { X = wt / 2, Y = 0, Z = 0 };
-
-            Vector xAxis = oM.Geometry.Vector.XAxis;
-            Vector yAxis = oM.Geometry.Vector.YAxis;
-            Point origin = oM.Geometry.Point.Origin;
-
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (wd - r1) });
-            if (r1 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + xAxis * (r1), p, p = p + new Vector { X = r1, Y = r1, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p + xAxis * (tfw / 2 - wt / 2 - r1 - r2) });
-            if (r2 > 0) perimeter.Add(BH.Engine.Geometry.Create.ArcByCentre(p + yAxis * (r2), p, p = p + new Vector { X = r2, Y = r2, Z = 0 }));
-            perimeter.Add(new Line { Start = p, End = p = p + yAxis * (tft - r2) });
-
-            int count = perimeter.Count;
-            for (int i = 0; i < count; i++)
+            double wx = wt / 2;
+            double fx = tfw / 2;
+            double yf = y0 + wd;    //Underside of flange
+            double yt = yf + tft;   //Top
+            return new List<ProfileCorner>
             {
-                perimeter.Add(Geometry.Modify.IMirror(perimeter[i], new Plane { Origin = origin, Normal = xAxis }));
-            }
-
-            perimeter.Add(new Line { Start = p, End = p - xAxis * (tfw) });
-            perimeter.Add(new Line { Start = origin + xAxis * (-wt / 2), End = origin + xAxis * (wt / 2) });
-
-            Point centroid = perimeter.IJoin().Centroid();
-            Vector translation = Point.Origin - centroid;
-
-            return perimeter.Select(x => x.ITranslate(translation)).ToList();
+                new ProfileCorner(-wx, y0, 0), new ProfileCorner(wx, y0, 0), new ProfileCorner(wx, yf, r1), new ProfileCorner(fx, yf, r2),
+                new ProfileCorner(fx, yt, 0), new ProfileCorner(-fx, yt, 0), new ProfileCorner(-fx, yf, r2), new ProfileCorner(-wx, yf, r1)
+            };
         }
-
 
         /***************************************************/
 

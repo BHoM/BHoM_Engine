@@ -25,7 +25,6 @@ using BH.oM.Geometry;
 using BH.oM.Spatial.ShapeProfiles;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 namespace BH.Engine.Spatial
 {
@@ -46,27 +45,27 @@ namespace BH.Engine.Spatial
         [Output("I", "The created ISectionProfile.")]
         public static VoidedISectionProfile VoidedISectionProfile(double height, double openingHeight, double width, double webThickness, double flangeThickness, double rootRadius, double toeRadius)
         {
+            if (!AreFinite(height, openingHeight, width, webThickness, flangeThickness, rootRadius, toeRadius))
+                return null;
+
+            if (!ArePositive(height, openingHeight, width, webThickness, flangeThickness) || !AreNonNegative(rootRadius, toeRadius))
+                return null;
+
             if (height < flangeThickness * 2 + rootRadius * 2 || height <= flangeThickness * 2)
             {
-                InvalidRatioError("height", "flangeThickness and rootRadius");
+                InvalidRatioError(nameof(height), $"{nameof(flangeThickness)} and {nameof(rootRadius)}");
                 return null;
             }
 
             if (width < webThickness + rootRadius * 2 + toeRadius * 2)
             {
-                InvalidRatioError("width", "webthickness, rootRadius and toeRadius");
+                InvalidRatioError(nameof(width), $"{nameof(webThickness)}, {nameof(rootRadius)} and {nameof(toeRadius)}");
                 return null;
             }
 
             if (toeRadius > flangeThickness)
             {
-                InvalidRatioError("toeRadius", "flangeThickness");
-                return null;
-            }
-
-            if (height <= 0 || width <= 0 || webThickness <= 0 || flangeThickness <= 0 || rootRadius < 0 || toeRadius < 0)
-            {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
+                InvalidRatioError(nameof(toeRadius), nameof(flangeThickness));
                 return null;
             }
 
@@ -76,16 +75,9 @@ namespace BH.Engine.Spatial
                 return null;
             }
 
-            List<ICurve> curves = TeeProfileCurves(flangeThickness, width, webThickness, (height - openingHeight) / 2 - flangeThickness, rootRadius, toeRadius);
-
-            BoundingBox boundsOpeningProfile = Geometry.Query.Bounds(curves.Select(x => Geometry.Query.IBounds(x)).ToList());
-
-            double move = height / 2 - boundsOpeningProfile.Max.Y;
-            Vector translationVector = new Vector { Y = move };
-            curves = curves.Select(x => Geometry.Modify.ITranslate(x, translationVector)).ToList();
-            Plane mirrorPlane = Plane.XZ;
-            curves = curves.Concat(curves.Select(x => Geometry.Modify.IMirror(x, mirrorPlane))).ToList();
-
+            //Top T with the web ending at the top of the opening, and the bottom T as its mirror. Symmetric, so already centred around the origin.
+            List<ProfileCorner> top = TeeCorners(flangeThickness, width, webThickness, (height - openingHeight) / 2 - flangeThickness, rootRadius, toeRadius, openingHeight / 2);
+            List<ICurve> curves = ProfileCurves(false, top, top.MirrorCorners(false, true));
 
             return new VoidedISectionProfile(height, openingHeight, (height - openingHeight) / 2, width, webThickness, flangeThickness, rootRadius, toeRadius, curves);
         }

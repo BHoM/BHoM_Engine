@@ -21,14 +21,10 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Geometry;
 using System;
-using BH.Engine.Reflection;
 using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
 using System.ComponentModel;
 
 namespace BH.Engine.Spatial
@@ -50,36 +46,31 @@ namespace BH.Engine.Spatial
         [Output("fabI", "The created FabricatedISectionProfile.")]
         public static FabricatedISectionProfile FabricatedISectionProfile(double height, double topFlangeWidth, double botFlangeWidth, double webThickness, double topFlangeThickness, double botFlangeThickness, double weldSize = 0)
         {
+            if (!AreFinite(height, topFlangeWidth, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize))
+                return null;
+
+            if (!ArePositive(height, topFlangeWidth, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness) || !AreNonNegative(weldSize))
+                return null;
+
             if (height < topFlangeThickness + botFlangeThickness + 2 * Math.Sqrt(2) * weldSize || height <= topFlangeThickness + botFlangeThickness)
             {
-                InvalidRatioError("height", "topFlangeThickness, botFlangeThickness and weldSize");
+                InvalidRatioError(nameof(height), $"{nameof(topFlangeThickness)}, {nameof(botFlangeThickness)} and {nameof(weldSize)}");
                 return null;
             }
 
             if (botFlangeWidth < webThickness + 2 * Math.Sqrt(2) * weldSize)
             {
-                InvalidRatioError("botFlangeWidth", "webThickness and weldSize");
+                InvalidRatioError(nameof(botFlangeWidth), $"{nameof(webThickness)} and {nameof(weldSize)}");
                 return null;
             }
 
             if (topFlangeWidth < webThickness + 2 * Math.Sqrt(2) * weldSize)
             {
-                InvalidRatioError("topFlangeWidth", "webThickness and weldSize");
-                return null;
-            }
-
-            if (height <= 0 || topFlangeWidth <= 0 || botFlangeWidth <= 0 || webThickness <= 0 || topFlangeThickness <= 0 || botFlangeThickness <= 0 || weldSize < 0)
-            {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
+                InvalidRatioError(nameof(topFlangeWidth), $"{nameof(webThickness)} and {nameof(weldSize)}");
                 return null;
             }
 
             List<ICurve> curves = IProfileCurves(topFlangeThickness, topFlangeWidth, botFlangeThickness, botFlangeWidth, webThickness, height - botFlangeThickness - topFlangeThickness, 0, 0, weldSize);
-
-            Point centroid = curves.IJoin().Centroid();
-            Vector translation = Point.Origin - centroid;
-            curves = curves.Select(x => x.ITranslate(translation)).ToList();
-
             return new FabricatedISectionProfile(height, topFlangeWidth, botFlangeWidth, webThickness, topFlangeThickness, botFlangeThickness, weldSize, curves);
         }
 

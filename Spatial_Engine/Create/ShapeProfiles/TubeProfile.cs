@@ -21,14 +21,9 @@
  */
 
 using System.Collections.Generic;
-using System.Linq;
-using System.Collections.ObjectModel;
 using BH.oM.Spatial.ShapeProfiles;
 using BH.oM.Geometry;
-using System;
-using BH.Engine.Reflection;
 using BH.oM.Base.Attributes;
-using BH.Engine.Geometry;
 using System.ComponentModel;
 
 namespace BH.Engine.Spatial
@@ -45,15 +40,15 @@ namespace BH.Engine.Spatial
         [Output("tube", "The created TubeProfile.")]
         public static TubeProfile TubeProfile(double diameter, double thickness)
         {
+            if (!AreFinite(diameter, thickness))
+                return null;
+
+            if (!ArePositive(diameter, thickness))
+                return null;
+
             if (thickness >= diameter / 2)
             {
-                InvalidRatioError("diameter", "thickness");
-                return null;
-            }
-
-            if (diameter <= 0 || thickness <= 0)
-            {
-                Engine.Base.Compute.RecordError("Input length less or equal to 0");
+                InvalidRatioError(nameof(diameter), nameof(thickness));
                 return null;
             }
 
@@ -67,10 +62,12 @@ namespace BH.Engine.Spatial
 
         private static List<ICurve> TubeProfileCurves(double outerRadius, double thickness)
         {
-            List<ICurve> group = new List<ICurve>();
-            group.AddRange(CircleProfileCurves(outerRadius));
-            group.AddRange(CircleProfileCurves(outerRadius - thickness));
-            return group;
+            //Inner circle with normal in negative z, i.e. clockwise, to mark it as a void
+            return new List<ICurve>
+            {
+                new Circle { Centre = new Point(), Radius = outerRadius },
+                new Circle { Centre = new Point(), Normal = new Vector { Z = -1 }, Radius = outerRadius - thickness }
+            };
         }
 
         /***************************************************/
