@@ -1,0 +1,32 @@
+# Trial of the ci-unit-tests check. Nothing requires its result, and no existing
+# check is changed. To end the trial, delete this file.
+#
+# The workflow name and the concurrency prefix keep these runs apart from
+# ci-beta.yml, which is also a workflow and whose group has no prefix. Sharing a
+# group would let one workflow's runs cancel the other's.
+
+name: CI unit tests
+
+on:
+  pull_request:
+    branches:
+      - develop
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: local-ci-unit-tests-${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  ci-unit-tests:
+    runs-on: windows-2025-vs2026
+    timeout-minutes: 30
+    steps:
+      - name: Run unit tests
+        uses: BHoM/CI_Toolkit/.github/actions/ci-unit-tests@develop
+        with:
+          app_id: ${{ secrets.BHOM_APP_ID }}
+          private_key: ${{ secrets.BHOM_APP_PRIVATE_KEY }}
