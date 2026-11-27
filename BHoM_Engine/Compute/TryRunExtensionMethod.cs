@@ -334,7 +334,7 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [Description("Finds the extension method with the given name and arguments and compiles it to a function taking the main object and the additional arguments as provided, with the default values of any further parameters baked in. Null is returned if no applicable method is found.")]
+        [Description("Finds the extension method with the given name and arguments and compiles it to a function taking the main object and the additional arguments as provided, adding the default values of any further parameters. Null is returned if no applicable method is found.")]
         private static Func<object, object[], object> CompileExtensionMethod(object obj, string methodName, object[] parameters)
         {
             // The lookup of the method requires the full set of arguments
@@ -355,44 +355,12 @@ namespace BH.Engine.Base
                     return null;
             }
 
-            //Compiles the call directly: main object and additional arguments converted to the parameter types, default values as constants. No array is built per call
-            if (method.IsStatic && parameterInfo.Length >= providedCount && !parameterInfo.Any(x => x.ParameterType.IsByRef))
-            {
-                try
-                {
-                    ParameterExpression target = Expression.Parameter(typeof(object), "obj");
-                    ParameterExpression additional = Expression.Parameter(typeof(object[]), "parameters");
-                    Expression[] arguments = new Expression[parameterInfo.Length];
-                    for (int i = 0; i < parameterInfo.Length; i++)
-                    {
-                        if (i == 0)
-                            arguments[i] = Expression.Convert(target, parameterInfo[i].ParameterType);
-                        else if (i < providedCount)
-                            arguments[i] = Expression.Convert(Expression.ArrayIndex(additional, Expression.Constant(i - 1)), parameterInfo[i].ParameterType);
-                        else
-                            arguments[i] = DefaultValueExpression(parameterInfo[i]);
-                    }
-
-                    Expression call = Expression.Call(method, arguments);
-                    Expression body;
-                    if (method.ReturnType == typeof(void))
-                        body = Expression.Block(call, Expression.Constant(true, typeof(object)));  //Same as ToFunc: methods returning void return true
-                    else
-                        body = Expression.Convert(call, typeof(object));
-
-                    return Expression.Lambda<Func<object, object[], object>>(body, target, additional).Compile();
-                }
-                catch (Exception)
-                {
-                    // Fall through to the general compilation below
-                }
-            }
-
-            //Anything not handled above (e.g. by-ref parameters) goes through ToFunc, with the default values appended to the arguments of every call
+            //Compiles the method to a function for quicker execution
             Func<object[], object> methodFunc = method.ToFunc();
             if (methodFunc == null)
                 return null;
 
+            //The default values of the parameters not provided get appended to the arguments of every call
             object[] defaultArgs = parameterInfo.Skip(providedCount).Select(x => x.DefaultValue).ToArray();
             return (x, p) => methodFunc(BuildArguments(x, p, defaultArgs));
         }
