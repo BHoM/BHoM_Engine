@@ -4,20 +4,20 @@
  *
  * Each contributor holds copyright over their respective contributions.
  * The project versioning (Git) records all such contribution source information.
- *                                           
- *                                                                              
- * The BHoM is free software: you can redistribute it and/or modify         
- * it under the terms of the GNU Lesser General Public License as published by  
- * the Free Software Foundation, either version 3.0 of the License, or          
- * (at your option) any later version.                                          
- *                                                                              
- * The BHoM is distributed in the hope that it will be useful,              
- * but WITHOUT ANY WARRANTY; without even the implied warranty of               
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the                 
- * GNU Lesser General Public License for more details.                          
- *                                                                            
- * You should have received a copy of the GNU Lesser General Public License     
- * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
+ *
+ *
+ * The BHoM is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3.0 of the License, or
+ * (at your option) any later version.
+ *
+ * The BHoM is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.
  */
 
 using BH.oM.Base;
@@ -27,6 +27,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -47,7 +48,7 @@ namespace BH.Engine.Base
         [Output("True if a method was found and an invocation was attempted. False otherwise.")]
         public static bool TryRunExtensionMethod(this object obj, string methodName, out object result)
         {
-            return TryRunExtensionMethod(methodName, new object[] { obj }, out result);
+            return RunCompiledExtensionMethod(obj, methodName, null, out result);
         }
 
         /***************************************************/
@@ -62,7 +63,7 @@ namespace BH.Engine.Base
         [Output("True if a method was found and an invocation was attempted. False otherwise.")]
         public static bool TryRunExtensionMethod(this object obj, string methodName, object[] parameters, out object result)
         {
-            return TryRunExtensionMethod(methodName, new object[] { obj }.Concat(parameters).ToArray(), out result);
+            return RunCompiledExtensionMethod(obj, methodName, parameters, out result);
         }
 
         /***************************************************/
@@ -76,7 +77,7 @@ namespace BH.Engine.Base
                 "\nSecond output: result of the call if an attempt was made.")]
         public static async Task<Output<bool, object>> TryRunExtensionMethodAsync(this object obj, string methodName)
         {
-            return await TryRunExtensionMethodAsync(methodName, new object[] { obj });
+            return await RunCompiledExtensionMethodAsync(obj, methodName, null);
         }
 
         /***************************************************/
@@ -91,7 +92,7 @@ namespace BH.Engine.Base
                 "\nSecond output: result of the call if an attempt was made.")]
         public static async Task<Output<bool, object>> TryRunExtensionMethodAsync(this object obj, string methodName, object[] parameters)
         {
-            return await TryRunExtensionMethodAsync(methodName, new object[] { obj }.Concat(parameters).ToArray());
+            return await RunCompiledExtensionMethodAsync(obj, methodName, parameters);
         }
 
         /***************************************************/
@@ -99,21 +100,25 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Runs the requested method and returns the result. For performance reasons compiles the method to a function the first time it is run, then stores it for subsequent calls.")]
-        private static bool TryRunExtensionMethod(string methodName, object[] parameters, out object result)
+        private static bool RunCompiledExtensionMethod(object obj, string methodName, object[] parameters, out object result)
         {
-            Func<object[], object> func = ExtensionMethodToRun(methodName, parameters);
+            // Methods taking the main object only have their own, leaner, path
+            if (parameters == null || parameters.Length == 0)
+                return RunCompiledSingleArgumentExtensionMethod(obj, methodName, out result);
+
+            Func<object, object[], object> function = FunctionToRun(obj, methodName, parameters);
 
             // Try calling the method
             try
             {
-                if (func == null)
+                if (function == null)
                 {
                     result = null;
                     return false;
                 }
                 else
                 {
-                    result = func(parameters);
+                    result = function(obj, parameters);
                     return true;
                 }
             }
@@ -128,17 +133,35 @@ namespace BH.Engine.Base
         /***************************************************/
 
         [Description("Asynchronously runs the requested method and returns the result. For performance reasons compiles the method to a function the first time it is run, then stores it for subsequent calls.")]
-        private static async Task<Output<bool, object>> TryRunExtensionMethodAsync(string methodName, object[] parameters)
+        private static async Task<Output<bool, object>> RunCompiledExtensionMethodAsync(object obj, string methodName, object[] parameters)
         {
-            Func<object[], object> func = ExtensionMethodToRun(methodName, parameters) as Func<object[], object>;
+            // Methods taking the main object only have their own, leaner, path
+            if (parameters == null || parameters.Length == 0)
+            {
+                Func<object, object> singleArgumentFunction = SingleArgumentFunctionToRun(obj, methodName);
+                try
+                {
+                    if (singleArgumentFunction == null)
+                        return new Output<bool, object> { Item1 = false, Item2 = null };
+                    else
+                        return new Output<bool, object> { Item1 = true, Item2 = await (singleArgumentFunction(obj) as dynamic) };
+                }
+                catch (Exception e)
+                {
+                    BH.Engine.Base.Compute.RecordError($"Failed to run {methodName} extension method.\nError: {e.Message}");
+                    return new Output<bool, object> { Item1 = false, Item2 = null };
+                }
+            }
+
+            Func<object, object[], object> function = FunctionToRun(obj, methodName, parameters);
 
             // Try calling the method
             try
             {
-                if (func == null)
+                if (function == null)
                     return new Output<bool, object> { Item1 = false, Item2 = null };
                 else
-                    return new Output<bool, object> { Item1 = true, Item2 = await (func(parameters) as dynamic) };
+                    return new Output<bool, object> { Item1 = true, Item2 = await (function(obj, parameters) as dynamic) };
             }
             catch (Exception e)
             {
@@ -149,10 +172,39 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
-        [Description("Finds an extension method with given name and parameters. For performance reasons compiles the method to a function the first time it is run, then stores it for subsequent calls.")]
-        private static Func<object[], object> ExtensionMethodToRun(string methodName, object[] parameters)
+        [Description("Runs the requested extension method, that only takes the main object as input, and returns the result. Compiles the method to a function accepting the object directly the first time it is run, then stores it for subsequent calls.")]
+        private static bool RunCompiledSingleArgumentExtensionMethod(object obj, string methodName, out object result)
         {
-            if (parameters == null || parameters.Length == 0 || parameters[0] == null)
+            Func<object, object> function = SingleArgumentFunctionToRun(obj, methodName);
+
+            // Try calling the method
+            try
+            {
+                if (function == null)
+                {
+                    result = null;
+                    return false;
+                }
+                else
+                {
+                    result = function(obj);
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                BH.Engine.Base.Compute.RecordError($"Failed to run {methodName} extension method.\nError: {e.Message}");
+                result = null;
+                return false;
+            }
+        }
+
+        /***************************************************/
+
+        [Description("Gets the compiled function for an extension method that only takes the main object as input. Returns null if no method is found.")]
+        private static Func<object, object> SingleArgumentFunctionToRun(object obj, string methodName)
+        {
+            if (obj == null)
             {
                 BH.Engine.Base.Compute.RecordError("Can't find extension method to call because provided method arguments are not valid.");
                 return null;
@@ -164,108 +216,177 @@ namespace BH.Engine.Base
                 return null;
             }
 
-            //Construct key used to store/extract method
-            string key = methodName + string.Join("", parameters.Select(x => x?.GetType()?.ToString() ?? "null"));
+            // Key is only the type of the object and the method name. Hit = a single dictionary lookup
+            SingleArgumentKey key = new SingleArgumentKey(obj.GetType(), methodName);
+            Func<object, object> function;
+            if (Global.CompiledSingleArgumentExtensionMethods.TryGetValue(key, out function))
+                return function;
 
-            // If the method has been called before, use the previously compiled function
-            Func<object[], object> func;
-            if (FunctionPreviouslyCompiled(key))
-                func = GetStoredCompiledFunction(key);
-            else
+            // Not found: resolve and compile the method. A null entry is stored when no method was found
+            function = CompileSingleArgumentExtensionMethod(obj, methodName);
+            return Global.CompiledSingleArgumentExtensionMethods.GetOrAdd(key, function);
+        }
+
+        /***************************************************/
+
+        [Description("Finds the extension method with the given name for the provided object and compiles it to a function taking the object directly. Any default values of additional arguments are baked into the compiled function. Null is returned if no applicable method is found.")]
+        private static Func<object, object> CompileSingleArgumentExtensionMethod(object obj, string methodName)
+        {
+            MethodInfo method = Query.ExtensionMethodToCall(methodName, new object[] { obj });
+            if (method == null)
+                return null;
+
+            try
             {
-                MethodInfo method = Query.ExtensionMethodToCall(methodName, parameters);
-                if (method == null)
-                    func = null;
-                else
+                ParameterInfo[] parameters = method.GetParameters();
+                if (method.IsStatic && parameters.Length > 0 && !parameters.Any(x => x.ParameterType.IsByRef))
                 {
-                    //COmpiles the method to a function for quicker execution
-                    Func<object[], object> methodFunc = method.ToFunc();
+                    ParameterExpression input = Expression.Parameter(typeof(object), "x");
+                    Expression[] arguments = new Expression[parameters.Length];
+                    arguments[0] = Expression.Convert(input, parameters[0].ParameterType);
 
-                    //ExtensionMethodToCall allows for returning methods that har more arguments than the provided parameters, if those have default value.
-                    //Check if the provided parameter count matches the parameters of the method
-                    ParameterInfo[] parameterInfo = method.GetParameters();
-                    if (parameterInfo.Length != parameters.Length)
+                    bool allDefaultsFound = true;
+                    for (int i = 1; i < parameters.Length; i++)
                     {
-                        //If count is different, loop through all additional arguments and find the default value
-                        List<object> defaultArgs = new List<object>();
-                        for (int i = parameters.Length; i < parameterInfo.Length; i++)
+                        if (!parameters[i].HasDefaultValue)
                         {
-                            //Check that the parameter has a default value.
-                            //This should always be true, based on the logic of the ExtensionMethodToCall but additional check here for safety
-                            if (parameterInfo[i].HasDefaultValue)
-                            {
-                                defaultArgs.Add(parameterInfo[i].DefaultValue); //Add the argument to be used when calling the function
-                            }
-                            else
-                            {
-                                //Should never happen, but added as a guard against crash
-                                func = null;
-                                break;
-                            }
+                            allDefaultsFound = false;
+                            break;
                         }
-                        //Make a new function to store that adds the default arguments to the end of the array of parameters and then calls the method function
-                        //This function will be stored rather than the methodFunction
-                        func = x => methodFunc(x.Concat(defaultArgs).ToArray());
+
+                        arguments[i] = DefaultValueExpression(parameters[i]);
                     }
-                    else
-                        func = methodFunc;  //Provided parameter count matches the parameters of the method -> set func to the compiled function of the method
+
+                    if (allDefaultsFound)
+                    {
+                        Expression call = Expression.Call(method, arguments);
+                        Expression body;
+                        if (method.ReturnType == typeof(void))
+                            body = Expression.Block(call, Expression.Constant(true, typeof(object)));  //Same as ToFunc: methods returning void return true
+                        else
+                            body = Expression.Convert(call, typeof(object));
+
+                        return Expression.Lambda<Func<object, object>>(body, input).Compile();
+                    }
                 }
-
-                StoreCompiledFunction(key, func);
             }
-
-            return func;
-        }
-
-        /***************************************************/
-
-        [Description("Checks if an entry with the provided key has already been extracted. Put in its own method to simplify the use of locks to provide thread safety.")]
-        private static bool FunctionPreviouslyCompiled(string methodKey)
-        {
-            lock (m_RunExtensionMethodLock)
+            catch (Exception)
             {
-                return m_CompiledFunctions.ContainsKey(methodKey);
+                // Fall through to the general compilation below
             }
+
+            // Anything not handled above is compiled the general way, and wrapped
+            Func<object, object[], object> function = CompileExtensionMethod(obj, methodName, null);
+            if (function == null)
+                return null;
+
+            return x => function(x, null);
         }
 
         /***************************************************/
 
-        [Description("Gets a previously compiled function from the stored functions. Put in its own method to simplify the use of locks to provide thread safety.")]
-        private static Func<object[], object> GetStoredCompiledFunction(string methodKey)
+        [Description("Creates the expression for the default value of an optional parameter.")]
+        private static Expression DefaultValueExpression(ParameterInfo parameter)
         {
-            lock (m_RunExtensionMethodLock)
-            {
-                return m_CompiledFunctions[methodKey];
-            }
+            Type parameterType = parameter.ParameterType;
+            object value = parameter.DefaultValue;
+
+            if (value == null || value is DBNull)
+                return Expression.Default(parameterType);
+
+            // Default values of enums can be reported as their underlying type
+            Type underlyingType = Nullable.GetUnderlyingType(parameterType) ?? parameterType;
+            if (underlyingType.IsEnum && value.GetType() != underlyingType)
+                value = Enum.ToObject(underlyingType, value);
+
+            return Expression.Constant(value, parameterType);
         }
 
         /***************************************************/
 
-        [Description("Stores a compiled function. Put in its own method to simplify the use of locks to provide thread safety.")]
-        private static void StoreCompiledFunction(string methodKey, Func<object[], object> method)
+        [Description("Gets the compiled function to run for the provided object, method name and additional arguments. For performance reasons compiles the method to a function the first time it is requested, then stores it for subsequent calls. Returns null if no method is found.")]
+        private static Func<object, object[], object> FunctionToRun(object obj, string methodName, object[] parameters)
         {
-            lock (m_RunExtensionMethodLock)
+            if (obj == null)
             {
-                m_CompiledFunctions[methodKey] = method;
+                BH.Engine.Base.Compute.RecordError("Can't find extension method to call because provided method arguments are not valid.");
+                return null;
             }
+
+            if (string.IsNullOrWhiteSpace(methodName))
+            {
+                BH.Engine.Base.Compute.RecordError("Can't find extension method to call because provided method name is not valid.");
+                return null;
+            }
+
+            // Look for the method with a key built directly from the runtime types of the arguments. Hit = a single dictionary lookup
+            ExtensionMethodKey key = new ExtensionMethodKey(methodName, obj, parameters);
+            Func<object, object[], object> function;
+            if (Global.CompiledExtensionMethods.TryGetValue(key, out function))
+                return function;
+
+            // Not found: resolve and compile the method (done once for each combination of method name and argument types)
+            function = CompileExtensionMethod(obj, methodName, parameters);
+
+            // Store the method. A null entry is stored when no method was found
+            return Global.CompiledExtensionMethods.GetOrAdd(key, function);
         }
 
-
-        /***************************************************/
-        /**** Private fields                            ****/
         /***************************************************/
 
-        private static ConcurrentDictionary<string, Func<object[], object>> m_CompiledFunctions = new ConcurrentDictionary<string, Func<object[], object>>();
-        private static readonly object m_RunExtensionMethodLock = new object();
+        [Description("Finds the extension method with the given name and arguments and compiles it to a function taking the main object and the additional arguments as provided, adding the default values of any further parameters. Null is returned if no applicable method is found.")]
+        private static Func<object, object[], object> CompileExtensionMethod(object obj, string methodName, object[] parameters)
+        {
+            // The lookup of the method requires the full set of arguments
+            object[] allArguments = BuildArguments(obj, parameters, null);
+
+            MethodInfo method = Query.ExtensionMethodToCall(methodName, allArguments);
+            if (method == null)
+                return null;
+
+            //ExtensionMethodToCall allows for returning methods that have more arguments than the provided parameters, if those have default value.
+            //Check that all parameters not provided have a default value.
+            //This should always be true, based on the logic of the ExtensionMethodToCall but additional check here for safety
+            ParameterInfo[] parameterInfo = method.GetParameters();
+            int providedCount = allArguments.Length;
+            for (int i = providedCount; i < parameterInfo.Length; i++)
+            {
+                if (!parameterInfo[i].HasDefaultValue)
+                    return null;
+            }
+
+            //Compiles the method to a function for quicker execution
+            Func<object[], object> methodFunc = method.ToFunc();
+            if (methodFunc == null)
+                return null;
+
+            //The default values of the parameters not provided get appended to the arguments of every call
+            object[] defaultArgs = parameterInfo.Skip(providedCount).Select(x => x.DefaultValue).ToArray();
+            return (x, p) => methodFunc(BuildArguments(x, p, defaultArgs));
+        }
+
+        /***************************************************/
+
+        [Description("Builds the array of arguments to call the compiled method with: the main object first, then the additional arguments, then any default values to fill in. Creates a single array of the exact size.")]
+        private static object[] BuildArguments(object obj, object[] parameters, object[] defaultArguments)
+        {
+            int parameterCount = parameters?.Length ?? 0;
+            int defaultCount = defaultArguments?.Length ?? 0;
+
+            object[] arguments = new object[1 + parameterCount + defaultCount];
+            arguments[0] = obj;
+
+            if (parameterCount > 0)
+                Array.Copy(parameters, 0, arguments, 1, parameterCount);
+
+            if (defaultCount > 0)
+                Array.Copy(defaultArguments, 0, arguments, 1 + parameterCount, defaultCount);
+
+            return arguments;
+        }
 
         /***************************************************/
 
 
     }
 }
-
-
-
-
-
-

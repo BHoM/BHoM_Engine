@@ -67,6 +67,19 @@ namespace BH.Engine.Base
 
 
         /***************************************************/
+        /****  Internal properties - extension methods  ****/
+        /***************************************************/
+
+        // Caches of the extension method lookups (null value = no method found). Entries without a method are cleared when a BHoM engine assembly is loaded.
+
+        internal static ConcurrentDictionary<ExtensionMethodKey, MethodInfo> ExtensionMethodsToCall { get; } = new ConcurrentDictionary<ExtensionMethodKey, MethodInfo>();
+
+        internal static ConcurrentDictionary<ExtensionMethodKey, Func<object, object[], object>> CompiledExtensionMethods { get; } = new ConcurrentDictionary<ExtensionMethodKey, Func<object, object[], object>>();
+
+        internal static ConcurrentDictionary<SingleArgumentKey, Func<object, object>> CompiledSingleArgumentExtensionMethods { get; } = new ConcurrentDictionary<SingleArgumentKey, Func<object, object>>();
+
+
+        /***************************************************/
         /****        Internal properties - locks        ****/
         /***************************************************/
 
@@ -113,6 +126,41 @@ namespace BH.Engine.Base
         private static void ReflectAssemblyOnLoad(object sender, AssemblyLoadEventArgs args)
         {
             Compute.ExtractAssembly(args?.LoadedAssembly);
+
+            // Done after the extraction, so the methods of the new assembly are known when the lookups are made again
+            ClearNotFoundExtensionMethods(args?.LoadedAssembly);
+        }
+
+        /***************************************************/
+
+        private static void ClearNotFoundExtensionMethods(Assembly assembly)
+        {
+            try
+            {
+                // A method not found before might be in a newly loaded engine assembly: forget those lookups so they are made again. Methods found are kept
+                if (assembly != null && !assembly.IsDynamic && assembly.IsEngineAssembly())
+                {
+                    ClearNotFound(ExtensionMethodsToCall);
+                    ClearNotFound(CompiledExtensionMethods);
+                    ClearNotFound(CompiledSingleArgumentExtensionMethods);
+                }
+            }
+            catch (Exception)
+            {
+                // A failure here must never get in the way of the loading of an assembly
+            }
+        }
+
+        /***************************************************/
+
+        private static void ClearNotFound<TKey, TValue>(ConcurrentDictionary<TKey, TValue> cache) where TValue : class
+        {
+            // An entry is only removed if it still has no value at the time of removal, so entries filled in by other threads in the meantime are kept
+            foreach (KeyValuePair<TKey, TValue> entry in cache)
+            {
+                if (entry.Value == null)
+                    ((ICollection<KeyValuePair<TKey, TValue>>)cache).Remove(entry);
+            }
         }
 
         /***************************************************/

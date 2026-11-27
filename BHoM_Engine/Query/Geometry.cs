@@ -21,9 +21,11 @@
  */
 
 using BH.oM.Base;
+using BH.oM.Base.Attributes;
 using BH.oM.Geometry;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace BH.Engine.Base
@@ -34,6 +36,11 @@ namespace BH.Engine.Base
         /**** Public Methods                            ****/
         /***************************************************/
 
+        [Description("Gets the geometry representing the object, by finding and running the Geometry method matching its type, in any of the loaded BHoM engines.\n" +
+                     "This is the method generally used by the UIs to visualise BHoM objects.\n" +
+                     "CustomObjects return the geometry found in their CustomData. Returns null if no Geometry method is found for the type of the object.")]
+        [Input("obj", "The BHoMObject to get the geometry from.")]
+        [Output("geometry", "The geometry representing the object, or null if none could be found.")]
         public static IGeometry IGeometry(this IBHoMObject obj)
         {
             if (obj == null)
@@ -44,6 +51,10 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Gets the geometry held in the CustomData of a CustomObject: any value that is a geometry, a BHoMObject with geometry, or a collection of those.\n" +
+                     "Returns that geometry if exactly one is found, otherwise a CompositeGeometry of all of them (empty if none are found).")]
+        [Input("obj", "The CustomObject to get the geometry from.")]
+        [Output("geometry", "The single geometry found in the CustomData, or a CompositeGeometry of all the geometries found.")]
         public static IGeometry Geometry(this CustomObject obj)
         {
             if(obj == null)
@@ -72,6 +83,10 @@ namespace BH.Engine.Base
         /**** Private Methods                           ****/
         /***************************************************/
 
+        [Description("Gets the geometry of any object found in the CustomData of a CustomObject: geometry is returned as is, BHoMObjects through IGeometry, and collections as a CompositeGeometry of the geometry of their items.\n" +
+                     "Returns null for any other object, and for collections without any geometry.")]
+        [Input("obj", "The object to get the geometry from.")]
+        [Output("geometry", "The geometry of the object, or null if it has none.")]
         private static IGeometry Geometry(this object obj)
         {
             if (obj is IGeometry)
@@ -98,11 +113,14 @@ namespace BH.Engine.Base
 
         /***************************************************/
 
+        [Description("Fallback for IGeometry, for BHoMObjects without a more specific Geometry method in this class: finds and runs the Geometry extension method matching the type of the object, in any of the loaded BHoM engines.\n" +
+                     "Returns null if no such method is found, or if its result is not a geometry.")]
+        [Input("obj", "The BHoMObject to get the geometry from.")]
+        [Output("geometry", "The result of the Geometry method found for the object, or null.")]
         private static IGeometry Geometry(this IBHoMObject obj)
         {
-            System.Reflection.MethodInfo mi = Query.ExtensionMethodToCall(obj, "Geometry");
-            if (mi != null)
-                return Compute.RunExtensionMethod(obj, "Geometry") as IGeometry;
+            if (Compute.TryRunExtensionMethod(obj, "Geometry", out object result))
+                return result as IGeometry;
             else
                 return null;
         }

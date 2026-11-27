@@ -82,16 +82,14 @@ namespace BH.Engine.Base
                 return null;
             }
 
+            // If the method has been called before, just use that. The key is built directly from the method name and the types of the arguments
+            ExtensionMethodKey key = new ExtensionMethodKey(methodName, parameters);
+            MethodInfo method;
+            if (Global.ExtensionMethodsToCall.TryGetValue(key, out method))
+                return method;
+
             // Get types of input arguments, to be used for first method extraction filtering
             Type[] types = parameters.Select(x => x?.GetType()).ToArray();
-
-            // Construct key used to store/extract method
-            string name = methodName + parameters.Select(x => x?.GetType()?.ToString() ?? "null").Aggregate((a, b) => a + b);
-            Tuple<Type, string> key = new Tuple<Type, string>(types[0], name);
-
-            // If the method has been called before, just use that
-            if (MethodPreviouslyExtracted(key))
-                return GetStoredExtensionMethod(key);
 
             // Loop through all methods with matching name, pick applicable ones, then sort by best match to the provided inputs
             var applicableMethods = types[0].ExtensionMethods(methodName).Where(x => x.IsApplicable(parameters)).ExtensionMethodHierarchy(types);
@@ -99,7 +97,7 @@ namespace BH.Engine.Base
             // Return null if no applicable methods
             if (applicableMethods.Count == 0 || applicableMethods[0].Count == 0)
             {
-                StoreExtensionMethod(key, null);
+                Global.ExtensionMethodsToCall.GetOrAdd(key, (MethodInfo)null);
                 return null;
             }
 
@@ -121,8 +119,7 @@ namespace BH.Engine.Base
                 methodToCall = candidates.First()?.MakeGenericFromInputs(parameters.Select(x => x?.GetType()).ToList());
 
             // Cache and return the method
-            StoreExtensionMethod(key, methodToCall);
-            return methodToCall;
+            return Global.ExtensionMethodsToCall.GetOrAdd(key, methodToCall);
         }
 
         /***************************************************/
@@ -155,47 +152,6 @@ namespace BH.Engine.Base
 
             return true;
         }
-
-        /***************************************************/
-
-        [Description("Checks if an entry with the provided key has already been extracted. This method is separated to simplify the use of locks for thread safety.")]
-        private static bool MethodPreviouslyExtracted(Tuple<Type, string> key)
-        {
-            lock (m_ExtensionMethodToCallLock)
-            {
-                return m_PreviousFoundMethods.ContainsKey(key);
-            }
-        }
-
-        /***************************************************/
-
-        [Description("Retrieves a previously extracted method from the stored methods. This method is separated to simplify the use of locks for thread safety.")]
-        private static MethodInfo GetStoredExtensionMethod(Tuple<Type, string> key)
-        {
-            lock (m_ExtensionMethodToCallLock)
-            {
-                return m_PreviousFoundMethods[key];
-            }
-        }
-
-        /***************************************************/
-
-        [Description("Stores an extracted method for future use. This method is separated to simplify the use of locks for thread safety.")]
-        private static void StoreExtensionMethod(Tuple<Type, string> key, MethodInfo method)
-        {
-            lock (m_ExtensionMethodToCallLock)
-            {
-                m_PreviousFoundMethods[key] = method;
-            }
-        }
-
-
-        /***************************************************/
-        /**** Private fields                            ****/
-        /***************************************************/
-
-        private static ConcurrentDictionary<Tuple<Type, string>, MethodInfo> m_PreviousFoundMethods = new ConcurrentDictionary<Tuple<Type, string>, MethodInfo>();
-        private static readonly object m_ExtensionMethodToCallLock = new object();
 
         /***************************************************/
     }
