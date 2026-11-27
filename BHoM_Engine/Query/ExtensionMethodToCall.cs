@@ -85,11 +85,8 @@ namespace BH.Engine.Base
             // If the method has been called before, just use that. The key is built directly from the method name and the types of the arguments
             ExtensionMethodKey key = new ExtensionMethodKey(methodName, parameters);
             MethodInfo method;
-            if (m_PreviousFoundMethods.TryGetValue(key, out method))
+            if (Global.ExtensionMethodsToCall.TryGetValue(key, out method))
                 return method;
-
-            // Not found in the cache: from now on, forget the ones not found whenever a BHoM engine assembly is loaded
-            Compute.SubscribeToEngineAssemblyLoad();
 
             // Get types of input arguments, to be used for first method extraction filtering
             Type[] types = parameters.Select(x => x?.GetType()).ToArray();
@@ -100,7 +97,7 @@ namespace BH.Engine.Base
             // Return null if no applicable methods
             if (applicableMethods.Count == 0 || applicableMethods[0].Count == 0)
             {
-                m_PreviousFoundMethods.GetOrAdd(key, (MethodInfo)null);
+                Global.ExtensionMethodsToCall.GetOrAdd(key, (MethodInfo)null);
                 return null;
             }
 
@@ -122,7 +119,7 @@ namespace BH.Engine.Base
                 methodToCall = candidates.First()?.MakeGenericFromInputs(parameters.Select(x => x?.GetType()).ToList());
 
             // Cache and return the method
-            return m_PreviousFoundMethods.GetOrAdd(key, methodToCall);
+            return Global.ExtensionMethodsToCall.GetOrAdd(key, methodToCall);
         }
 
         /***************************************************/
@@ -155,21 +152,6 @@ namespace BH.Engine.Base
 
             return true;
         }
-
-        /***************************************************/
-
-        [Description("Removes the cached results of lookups that did not find a method, so they are looked up again. Entries holding a method are kept.")]
-        internal static void ClearNotFoundExtensionMethods()
-        {
-            Compute.ClearNotFound(m_PreviousFoundMethods);
-        }
-
-
-        /***************************************************/
-        /**** Private fields                            ****/
-        /***************************************************/
-
-        private static readonly ConcurrentDictionary<ExtensionMethodKey, MethodInfo> m_PreviousFoundMethods = new ConcurrentDictionary<ExtensionMethodKey, MethodInfo>();
 
         /***************************************************/
     }

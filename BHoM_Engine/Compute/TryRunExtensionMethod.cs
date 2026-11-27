@@ -29,7 +29,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace BH.Engine.Base
@@ -220,12 +219,12 @@ namespace BH.Engine.Base
             // Key is only the type of the object and the method name. Hit = a single dictionary lookup
             SingleArgumentKey key = new SingleArgumentKey(obj.GetType(), methodName);
             Func<object, object> function;
-            if (m_CompiledSingleArgumentMethods.TryGetValue(key, out function))
+            if (Global.CompiledSingleArgumentExtensionMethods.TryGetValue(key, out function))
                 return function;
 
             // Not found: resolve and compile the method. A null entry is stored when no method was found
             function = CompileSingleArgumentExtensionMethod(obj, methodName);
-            return m_CompiledSingleArgumentMethods.GetOrAdd(key, function);
+            return Global.CompiledSingleArgumentExtensionMethods.GetOrAdd(key, function);
         }
 
         /***************************************************/
@@ -323,14 +322,14 @@ namespace BH.Engine.Base
             // Look for the method with a key built directly from the runtime types of the arguments. Hit = a single dictionary lookup
             ExtensionMethodKey key = new ExtensionMethodKey(methodName, obj, parameters);
             Func<object, object[], object> function;
-            if (m_CompiledExtensionMethods.TryGetValue(key, out function))
+            if (Global.CompiledExtensionMethods.TryGetValue(key, out function))
                 return function;
 
             // Not found: resolve and compile the method (done once for each combination of method name and argument types)
             function = CompileExtensionMethod(obj, methodName, parameters);
 
             // Store the method. A null entry is stored when no method was found
-            return m_CompiledExtensionMethods.GetOrAdd(key, function);
+            return Global.CompiledExtensionMethods.GetOrAdd(key, function);
         }
 
         /***************************************************/
@@ -417,79 +416,6 @@ namespace BH.Engine.Base
 
             return arguments;
         }
-
-
-        /***************************************************/
-
-        [Description("Makes sure the cached results of extension method lookups that did not find a method are forgotten whenever a BHoM engine assembly is loaded, as the method might be in there. Subscribes to the assembly load event the first time it is called, and does nothing after that.")]
-        internal static void SubscribeToEngineAssemblyLoad()
-        {
-            if (m_SubscribedToAssemblyLoad)
-                return;
-
-            lock (m_AssemblyLoadSubscriptionLock)
-            {
-                if (m_SubscribedToAssemblyLoad)
-                    return;
-
-                // The Global class needs to be initialised first: its own subscription to the event is what extracts the methods of a loaded assembly.
-                // Subscriptions are invoked in the order they were made, so this has to come second, to only clear the cache once the new methods are known.
-                RuntimeHelpers.RunClassConstructor(typeof(Global).TypeHandle);
-                AppDomain.CurrentDomain.AssemblyLoad += ClearNotFoundOnEngineAssemblyLoad;
-                m_SubscribedToAssemblyLoad = true;
-            }
-        }
-
-        /***************************************************/
-
-        [Description("Clears the cached lookups that did not find a method if the assembly that was loaded is a BHoM engine assembly.")]
-        private static void ClearNotFoundOnEngineAssemblyLoad(object sender, AssemblyLoadEventArgs args)
-        {
-            try
-            {
-                Assembly assembly = args?.LoadedAssembly;
-                if (assembly != null && !assembly.IsDynamic && assembly.IsEngineAssembly())
-                    ClearNotFoundExtensionMethods();
-            }
-            catch (Exception)
-            {
-                // A failure here must never get in the way of the loading of an assembly
-            }
-        }
-
-        /***************************************************/
-
-        [Description("Removes the cached results of extension method lookups that did not find a method, so they are looked up again. Meant to be called when new BHoM engine assemblies are loaded, that might contain the methods. Entries holding a method are kept.")]
-        internal static void ClearNotFoundExtensionMethods()
-        {
-            ClearNotFound(m_CompiledExtensionMethods);
-            ClearNotFound(m_CompiledSingleArgumentMethods);
-            Query.ClearNotFoundExtensionMethods();
-        }
-
-        /***************************************************/
-
-        [Description("Removes the entries without a value from the cache. An entry is only removed if it still has no value at the time of removal, so entries filled in by other threads in the meantime are kept.")]
-        internal static void ClearNotFound<TKey, TValue>(ConcurrentDictionary<TKey, TValue> cache) where TValue : class
-        {
-            foreach (KeyValuePair<TKey, TValue> entry in cache)
-            {
-                if (entry.Value == null)
-                    ((ICollection<KeyValuePair<TKey, TValue>>)cache).Remove(entry);
-            }
-        }
-
-        /***************************************************/
-        /**** Private fields                            ****/
-        /***************************************************/
-
-        private static readonly ConcurrentDictionary<ExtensionMethodKey, Func<object, object[], object>> m_CompiledExtensionMethods = new ConcurrentDictionary<ExtensionMethodKey, Func<object, object[], object>>();
-
-        private static readonly ConcurrentDictionary<SingleArgumentKey, Func<object, object>> m_CompiledSingleArgumentMethods = new ConcurrentDictionary<SingleArgumentKey, Func<object, object>>();
-
-        private static volatile bool m_SubscribedToAssemblyLoad;
-
-        private static readonly object m_AssemblyLoadSubscriptionLock = new object();
 
         /***************************************************/
 
