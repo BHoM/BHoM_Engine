@@ -54,8 +54,15 @@ namespace BH.Engine.Geometry
 
                 if (first.Distance(second) <= minimumSegmentLength)
                 {
-                    pnts.RemoveAt((startIndex + 1) % pnts.Count); //Delete the second point as it is too close to the first to produce any meaningful change...
+                    //A closed polyline of coincident points wraps onto itself. Keep the last point so Bounds() stays non-null.
+                    if (pnts.Count < 2)
+                        break;
+
+                    pnts.RemoveAt((startIndex + 1) % pnts.Count);
                     maxIndex--;
+
+                    if (pnts.Count < 2)
+                        break;
                 }
                 else
                     startIndex++; //Move onto the next point

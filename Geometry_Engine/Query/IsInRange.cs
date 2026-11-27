@@ -41,6 +41,9 @@ namespace BH.Engine.Geometry
         [Output("result", "True if the BoundingBoxes are in range (overlapping), false otherwise.")]
         public static bool IsInRange(this BoundingBox box1, BoundingBox box2, double tolerance = Tolerance.Distance)
         {
+            if (box1?.Min == null || box1.Max == null || box2?.Min == null || box2.Max == null)
+                return false;
+
             return (box1.Min.X <= box2.Max.X + tolerance && box2.Min.X <= box1.Max.X + tolerance &&
                      box1.Min.Y <= box2.Max.Y + tolerance && box2.Min.Y <= box1.Max.Y + tolerance &&
                      box1.Min.Z <= box2.Max.Z + tolerance && box2.Min.Z <= box1.Max.Z + tolerance);
